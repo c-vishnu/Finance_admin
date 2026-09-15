@@ -10,6 +10,7 @@
 - Tabler React icons and Recharts.
 - ES modules; no TypeScript and no external state framework.
 - Browser-local persistence through `localStorage` and transient navigation hints through `sessionStorage`.
+- `src/crypto-uuid.js` polyfills `crypto.randomUUID` for HTTP VM hosts, where the method is absent outside a secure context.
 - Sites-compatible build preparation through `scripts/prepare-sites-build.mjs` and `worker/index.js`.
 
 ```mermaid

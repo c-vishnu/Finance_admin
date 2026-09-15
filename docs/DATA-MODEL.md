@@ -1,6 +1,6 @@
 # Data Model
 
-**Last verified:** 2026-09-12  
+**Last verified:** 2026-09-15  
 **Primary sources:** `invoice-engine.js`, `account-master.js`, `receipt-engine.js`, `credit-note-service.js`, `period-locking.js`, `organisation-scope.js`, `organisation-context.js`.
 
 ### Additive account-master fields
@@ -71,7 +71,7 @@ An unlock request records the lock it targets, the requested `unlockScope` with 
 
 ## Identity and consistency
 
-- Browser entities generally use `crypto.randomUUID()`.
+- Browser entities generally use `crypto.randomUUID()`. `src/crypto-uuid.js` installs a UUID v4 fallback when that method is missing (HTTP VM / non-secure context), so identity generation does not require HTTPS.
 - Human document numbers are generated locally and checked case-insensitively.
 - Revisions protect some draft edits from stale updates.
 - Posting and allocation tokens implement local idempotency.

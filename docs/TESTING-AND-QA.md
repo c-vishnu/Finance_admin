@@ -1,6 +1,13 @@
 # Testing and QA
 
 **Last verified:** 2026-09-15
+## HTTP VM crypto.randomUUID checkpoint - 2026-09-15
+
+- The user report: after the hosting fix the page showed `Wayvida Books could not start. crypto.randomUUID is not a function`.
+- Cause: `crypto.randomUUID()` exists only in a secure context (HTTPS or localhost). A Docker VM opened at `http://<ip>:4002` has `crypto.getRandomValues` but not `randomUUID`. Demo bootstrap writes `localStorage`, the audit wrapper calls `crypto.randomUUID()`, and the start error boundary shows that message.
+- `src/crypto-uuid.js` installs a UUID v4 fallback on `crypto` when the method is missing. `index.html` runs the same install in a classic script before the app module. `src/main.jsx` and `src/audit-log.js` import the helper first. Existing `crypto.randomUUID()` call sites stay unchanged.
+- Validation actually executed: `node --test tests/crypto-uuid.test.mjs tests/audit-log.test.mjs` 6/6; `npm run docs:check` passed; `npm run build` succeeded (existing large-chunk advisory remains); `npm run test:sites` 4/4. A Node bootstrap of `installAuditLog` plus `bootstrapDemoData` against memory storage completed `{ loaded: true }` after `installRandomUUID()`. Docker Engine is still absent here, so a live HTTP VM pass is not claimed.
+
 ## Deployed UI visibility checkpoint - 2026-09-15
 
 - The user report: after deployment the UI is not visible.

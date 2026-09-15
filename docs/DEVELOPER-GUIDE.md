@@ -37,6 +37,7 @@ Every completed feature includes its documentation delta. Update the relevant mo
 ## Entry points
 
 - Start at `src/main.jsx`, then `src/App.jsx` and `src/Navigation.jsx`.
+- HTTP VM hosts lack `crypto.randomUUID`; keep `src/crypto-uuid.js` and the `index.html` boot script.
 - Read `AGENTS.md` before changing domain behavior or visual conventions.
 - For accounting work, read `invoice-engine.js` and the feature service before editing UI.
 - For established module requirements, read the corresponding root specification and this knowledge base.

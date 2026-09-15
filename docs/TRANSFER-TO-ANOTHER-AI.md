@@ -17,6 +17,8 @@ This is the starting point for continuing the project in another AI account or t
 
 ## 2. Latest completed feature
 
+Newest change (2026-09-15): HTTP VM deploys threw `crypto.randomUUID is not a function` during demo bootstrap because `randomUUID` is secure-context-only. `src/crypto-uuid.js` now installs a UUID v4 fallback (via `getRandomValues`) when the method is missing; `index.html` runs the same install before the app module, and `src/main.jsx` / `src/audit-log.js` import the helper first. Existing `crypto.randomUUID()` call sites are unchanged. `tests/crypto-uuid.test.mjs` pins the fallback and the HTML boot order. No storage keys, routing, or accounting behaviour changed.
+
 Newest change (2026-09-15): deployed UI was blank because Vite only allowed `terminal.local` and nginx could serve `index.html` as a JavaScript module. `vite.config.mjs` now uses `allowedHosts: true` on the 4001 dev and preview servers, and `docker/nginx.conf` 404s missing `/assets/` files, sets JS MIME types, and disables HTML caching. Instrument Sans is linked from `index.html` rather than a blocking CSS `@import`. `src/main.jsx` surfaces a start error instead of leaving `#root` empty. `tests/vite-port.test.mjs` and `tests/docker-vm.test.mjs` pin the host and nginx contracts. No storage, routing, or accounting behaviour changed.
 
 Newest change (2026-09-15): the Docker VM host port is 4002. `docker-compose.yml` maps `${WAYVIDA_PORT:-4002}:80`, so `docker compose up --build -d` is available at `http://<host>:4002/`. Local Vite stays on 4001. `tests/docker-vm.test.mjs` pins the Docker default. No image, nginx, Sites, storage, or accounting behaviour changed.
