@@ -112,7 +112,7 @@ npm run preview
 node --test tests/*.test.mjs
 ```
 
-`npm run build` runs Vite and `scripts/prepare-sites-build.mjs`. Preserve `.openai/hosting.json`, `public/_headers`, `public/_redirects`, and `worker.js` when changing hosting behavior.
+Install from the npm `package-lock.json`. Do not restore `tmp/` scratch scripts, browser profiles, page-screenshot archives, `design-qa.md`, `vite.sandbox.config.mjs`, or a second pnpm lockfile; those are not part of the product. `npm run build` runs Vite and `scripts/prepare-sites-build.mjs`. Preserve `.openai/hosting.json`, `worker/index.js`, `scripts/prepare-sites-build.mjs`, and `tests/sites-worker.test.mjs` when changing hosting behavior.
 
 ## 4. Module inventory
 

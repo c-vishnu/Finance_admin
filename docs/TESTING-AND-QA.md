@@ -1,6 +1,18 @@
 # Testing and QA
 
 **Last verified:** 2026-09-15
+## Unused-file cleanup checkpoint - 2026-09-15
+
+- The user instruction: remove all unused and unwanted files. A reference scan of `src/`, `tests/`, `docs/`, `scripts/`, `worker/`, and config found every `src/` module still imported or asserted, so no application source was deleted.
+- Deleted local/generated junk: `tmp/`, `.edge-cdp-profile/`, `.tmp-edge-profile/`, `.pnpm-store/`, `qa-evidence/`, `dist/`, `.DS_Store`.
+- Deleted unused committed artifacts: `screenshots/`, `Wayvida-Books-Page-Screenshots.zip`, `banking-settings-fixed.png`, `transaction-register-header-fixed.png`, `design-qa.md`, `vite.sandbox.config.mjs`, leftover `pnpm-lock.yaml` / `pnpm-workspace.yaml`, and the accidental `const a = \`x\`;` file.
+- Kept: `src/`, `tests/`, `docs/`, `public/`, `scripts/`, `worker/`, `.openai/`, `AGENTS.md`, root feature specifications, `package.json`, `package-lock.json`, `vite.config.mjs`, and `index.html`.
+- `.gitignore` now excludes those deleted artifact classes so they are not re-added.
+- No routing, storage, accounting, or UI behaviour changed.
+- Validation actually executed: `npm run docs:check` passed (15 required files, valid manifest, metadata and local links); `node --test tests/navigation-structure.test.mjs` 2/2; `node --test tests/ui-quality.test.mjs` 5/5; `node --test tests/sites-worker.test.mjs` 3/4, with the packaging test failing because `dist/` is generated and was not present yet.
+- `npm install` restored a complete npm tree (105 packages) after the leftover Windows/pnpm `node_modules` shims could not run Vite. `package-lock.json` was refreshed by that install.
+- Unresolved: `npm run build` failed with `Rollup failed to resolve import "react-is" from node_modules/recharts/es6/util/ReactUtils.js`. This is a missing transitive dependency, not caused by deleting unused files. `npm run test:sites` packaging check therefore still cannot see `dist/client/index.html`. Not verified and not claimed: a painted browser pass.
+
 ## Budgets-only Accounting destination checkpoint - 2026-09-15
 
 - The user instruction: remove Budget Reports, Budget Settings and the Budget sub-module from Accounting, leaving `Budgets` as the only budget destination under Accounting. Read as a removal of the two extra screens and their group, because the register, the create wizard, the plan detail tabs, the store, the storage keys and every budget calculation stay the same.
@@ -816,7 +828,7 @@
 
 - The Purchase Reports semantic header is isolated from the legacy fixed application-header selector, keeping its title, subtitle, and Export CSV action in the report workspace without overlap.
 - Focused Purchase Reports contracts: **5 passed, 0 failed**.
-**Primary sources:** `tests/`, `package.json`, `design-qa.md`.
+**Primary sources:** `tests/`, `package.json`.
 
 ## Existing automated coverage
 

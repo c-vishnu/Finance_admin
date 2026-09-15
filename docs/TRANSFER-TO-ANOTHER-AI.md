@@ -17,6 +17,8 @@ This is the starting point for continuing the project in another AI account or t
 
 ## 2. Latest completed feature
 
+Newest change (2026-09-15): unused local junk was removed from the workspace. The scan found every `src/` module still referenced, so no product source, test, or required knowledge document was deleted. Removed: `tmp/` scratch appliers, browser profiles (`.edge-cdp-profile/`, `.tmp-edge-profile/`), `.pnpm-store/`, empty `qa-evidence/`, generated `dist/`, unused page-screenshot folder and zip, leftover QA PNGs, the accidental `const a = \`x\`;` file, historical `design-qa.md`, unused `vite.sandbox.config.mjs`, and leftover `pnpm-lock.yaml` / `pnpm-workspace.yaml` (this project installs with npm and `package-lock.json`). `.gitignore` now keeps those artifacts out. No routing, storage, accounting, or UI behaviour changed.
+
 Newest change (2026-09-15): the Budget section is now a single `Budgets` destination inside Accounting. On the user instruction Budget Reports, Budget Settings and the Budget sub-group left the Accounting section, so `src/Navigation.jsx` declares `{label:'Accounting',icon:IconBook,children:[leaf('Chart of Accounts'),leaf('Journal Entries'),leaf('Budgets'),leaf('Period Closing')]}` and drops the now-unused `IconChartBar` import. `src/BudgetWorkspace.jsx` deleted the `BudgetReports` and `BudgetSettings` components, their two `page` routes and the `IconFilter` / `BUDGET_PERMISSIONS` / `emptyBudgetState` imports they alone used, and reworded the plan Overview alert hint from `Alerts follow the thresholds in Budget Settings.` to `Alerts follow the saved alert thresholds.`. `src/budget-workspace.css` deleted the 24 rules those screens owned and trimmed the two media queries that named them, and `src/App.jsx` now routes the page with `a==='Budgets'` alone because the two extra names can never be active. The register, the create wizard, the plan detail tabs, the store, the storage keys and every budget calculation are untouched. `tests/navigation-structure.test.mjs` (2/2) and `tests/budget-navigation-ui.test.mjs` (3/3) were re-pointed, `tests/budget-register-ui.test.mjs` stays 7/7, `tmp/budget-nav-ssr.mjs` proves the rendered sidebar has no Budget group, and the sweep stays `FILES=72 green=58 red=10 tests=414 passed=403 failed=11` with the same ten pre-existing failures and the same four esbuild-blocked suites. Not verified here and not claimed: no painted browser pass and no production build (`npm` and `npx` are absent and esbuild cannot spawn, so `vite build` fails with `spawn EPERM`).
 
 Newest change (2026-09-15): the Budget group moved back under Accounting. On the user instruction the Budget section no longer has its own top-level sidebar slot between Accounting and Inventory and is now nested inside the Accounting section, between Journal Entries and Period Closing. `src/Navigation.jsx` declares `{label:'Accounting',icon:IconBook,children:[leaf('Chart of Accounts'),leaf('Journal Entries'),{label:'Budget',icon:IconChartBar,children:[leaf('Budgets'),leaf('Budget Reports'),leaf('Budget Settings')]},leaf('Period Closing')]}` and the Inventory section is back to a single `Items` child, so the three budget leaves keep their names and the group's ids become `Accounting/Budget` and `nav-Accounting-Budget`. No `src/App.jsx` change was needed, because it routes budgets by page name and hides the welcome block for those pages, and the shared `nav.budgetWorkspaceTabs` row, the storage keys and every budget calculation are untouched. `tests/navigation-structure.test.mjs` (2/2) and `tests/budget-navigation-ui.test.mjs` (3/3) were re-pointed to the nested placement and the Journal Entries < Budget < Period Closing order, `tmp/budget-nav-ssr.mjs` proves the rendered sidebar, and the sweep stays `FILES=72 green=58 red=10 tests=414 passed=403 failed=11` with the same ten pre-existing failures and the same four esbuild-blocked suites. Not verified here and not claimed: no painted browser pass and no production build (`npm` and `npx` are absent and esbuild cannot spawn, so `vite build` fails with `spawn EPERM`).
@@ -457,10 +459,7 @@ npm run test:sites
 
 The current environment used Node.js 24.19.0. The application normally runs at `http://127.0.0.1:5173/` during local development.
 
-Sandbox note (2026-09-14): in this restricted Windows workspace `vite` and `vite build` fail because the sandbox denies child processes, so the esbuild binary can never start (`spawn EPERM`).
-A local-only workaround still starts the real dev server: `node tmp/dev-live.mjs` registers `tmp/esbuild-loader.mjs`, which resolves Vite's static `import ... from "esbuild"` to `tmp/esbuild-shim.mjs`, a pure-JS JSX transform built on `@babel/core` and `tmp/jsx-auto-runtime.mjs`.
-The plugin list still comes from `vite.config.mjs`, so the dependency-optimizer hash is unchanged and `node_modules/.vite/deps` is reused; esbuild is never spawned or asked to pre-bundle.
-Restart that process after changing any of those `tmp/` files. They are sandbox workarounds, not product code, and are unnecessary in a normal environment.
+Sandbox note (2026-09-14, superseded 2026-09-15): a restricted Windows workspace once used local `tmp/` esbuild shims to start Vite when the sandbox denied child processes. Those `tmp/` files were scratch workarounds, not product code, and they are no longer in the repository. Use `npm install` and `npm run dev` in a normal environment.
 
 ## 6. What must not be transferred
 
@@ -484,8 +483,6 @@ worker/
 .openai/
 package.json
 package-lock.json
-pnpm-lock.yaml
-pnpm-workspace.yaml
 vite.config.mjs
 index.html
 root feature specifications (*.md)

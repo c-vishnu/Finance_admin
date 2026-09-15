@@ -5,8 +5,13 @@ tmp/
 .tmp-edge-profile/
 .pnpm-store/
 qa-evidence/
+screenshots/
 .DS_Store
 *.log
 .vite/
+*.zip
 const a = `x`;
-Wayvida-Books-Page-Screenshots.zip
+pnpm-lock.yaml
+pnpm-workspace.yaml
+vite.sandbox.config.mjs
+design-qa.md
