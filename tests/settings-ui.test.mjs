@@ -1,0 +1,6 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
+const jsx=fs.readFileSync(new URL('../src/SettingsWorkspace.jsx',import.meta.url),'utf8'),nav=fs.readFileSync(new URL('../src/Navigation.jsx',import.meta.url),'utf8');
+const css=fs.readFileSync(new URL('../src/settings-portal.css',import.meta.url),'utf8');
+test('settings center exposes grouped control navigation and safety messaging',()=>{for(const text of ['Organization','Accounting','Sales & Purchases','Taxes & Compliance','Users & Security','Documents & Templates','Backend capability required','posted history'])assert.ok(jsx.includes(text),text);assert.ok(nav.includes("active==='Settings Center'"))});
+test('settings controls include dependencies, numbering and local persistence actions',()=>{for(const text of ['Require Branch on Transactions','Require Cost Centre','Maximum backdated days','Maximum discount','Document numbering','Save changes'])assert.ok(jsx.includes(text),text)});
+test('settings nested navigation resets global dashboard aside and main positioning',()=>{for(const text of ['.settingsPortal .sw>aside','position:static!important','transform:none!important','.settingsPortal .sw>main','max-width:none!important'])assert.ok(css.includes(text),text)});

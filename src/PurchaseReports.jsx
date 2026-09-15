@@ -1,0 +1,26 @@
+import {useMemo,useState} from 'react';
+import {IconCalendar,IconDownload,IconFileInvoice,IconReportAnalytics,IconSearch} from '@tabler/icons-react';
+import {money} from './invoice-engine.js';
+import {PURCHASE_BILL_KEY} from './purchase-service.js';
+import {purchaseReportCsv,purchaseReportRows,purchaseReportSummary} from './purchase-reports.js';
+import './purchase-reports.css';
+
+const readBills=()=>{try{const rows=JSON.parse(localStorage.getItem(PURCHASE_BILL_KEY)||'[]');return Array.isArray(rows)?rows:[]}catch{return[]}};
+const fyStart=()=>{const now=new Date(),year=now.getMonth()<3?now.getFullYear()-1:now.getFullYear();return `${year}-04-01`};
+const today=()=>new Date().toLocaleDateString('en-CA');
+
+export default function PurchaseReports({onNavigate=()=>{}}){
+ const [bills]=useState(readBills),[filters,setFilters]=useState({from:fyStart(),to:today(),vendor:'All vendors',status:'All statuses',query:''});
+ const vendors=useMemo(()=>[...new Map(bills.filter(row=>row.vendorId||row.vendorName).map(row=>[row.vendorId||row.vendorName,{id:row.vendorId||row.vendorName,name:row.vendorName}])).values()].sort((a,b)=>a.name.localeCompare(b.name)),[bills]);
+ const statuses=useMemo(()=>[...new Set(bills.map(row=>row.status).filter(Boolean))].sort(),[bills]);
+ const rows=useMemo(()=>purchaseReportRows(bills,filters),[bills,filters]),summary=useMemo(()=>purchaseReportSummary(rows),[rows]);
+ const set=(key,value)=>setFilters(current=>({...current,[key]:value}));
+ function exportCsv(){const blob=new Blob([purchaseReportCsv(rows)],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=`purchase-report-${filters.from||'all'}-${filters.to||'all'}.csv`;link.click();URL.revokeObjectURL(url)}
+ return <section className="purchaseReportPage"><header className="purchaseReportHead"><div><span>Purchases</span><h1>Purchase Reports</h1><p>Review vendor spend, input tax, payments, and outstanding payables.</p></div><button onClick={exportCsv} disabled={!rows.length}><IconDownload/>Export CSV</button></header>
+  <div className="purchaseReportFilters"><label className="purchaseReportSearch"><IconSearch/><input aria-label="Search purchase report" placeholder="Search bill, vendor, or reference…" value={filters.query} onChange={e=>set('query',e.target.value)}/></label><label><span>From</span><div><IconCalendar/><input type="date" value={filters.from} onChange={e=>set('from',e.target.value)}/></div></label><label><span>To</span><div><IconCalendar/><input type="date" value={filters.to} onChange={e=>set('to',e.target.value)}/></div></label><label><span>Vendor</span><select value={filters.vendor} onChange={e=>set('vendor',e.target.value)}><option>All vendors</option>{vendors.map(v=><option key={v.id} value={v.id}>{v.name}</option>)}</select></label><label><span>Status</span><select value={filters.status} onChange={e=>set('status',e.target.value)}><option>All statuses</option>{statuses.map(value=><option key={value}>{value}</option>)}</select></label></div>
+  <div className="purchaseReportMetrics">{[['Purchase bills',summary.billCount],['Total purchases',money(summary.total)],['Input tax',money(summary.inputTax)],['Paid',money(summary.paid)],['Outstanding',money(summary.outstanding)]].map(([label,value],index)=><article key={label} className={index===4?'due':''}><span>{label}</span><strong>{value}</strong><small>{label==='Purchase bills'?'Excludes cancelled bills':'For selected period'}</small></article>)}</div>
+  <section className="purchaseReportCard"><div className="purchaseReportTitle"><div><h2>Vendor summary</h2><p>{summary.vendors.length} vendors in the selected period</p></div></div><div className="purchaseReportTable"><table><thead><tr>{['Vendor','Bills','Purchases','Input tax','Paid','Outstanding'].map(x=><th key={x}>{x}</th>)}</tr></thead><tbody>{summary.vendors.map(row=><tr key={row.vendorId}><td><b>{row.vendorName}</b></td><td>{row.bills}</td><td>{money(row.total)}</td><td>{money(row.inputTax)}</td><td>{money(row.paid)}</td><td className="reportDue">{money(row.balance)}</td></tr>)}</tbody></table>{!summary.vendors.length&&<Empty onNavigate={onNavigate}/>}</div></section>
+  {!!rows.length&&<section className="purchaseReportCard"><div className="purchaseReportTitle"><div><h2>Purchase bill details</h2><p>{rows.length} matching records</p></div></div><div className="purchaseReportTable"><table><thead><tr>{['Date','Bill','Vendor','Vendor invoice','Status','Total','Paid','Balance due'].map(x=><th key={x}>{x}</th>)}</tr></thead><tbody>{rows.map(row=><tr key={row.id}><td>{row.date}</td><td><button className="reportLink" onClick={()=>onNavigate('Purchase Bills')}>{row.number}</button></td><td>{row.vendorName}</td><td>{row.vendorInvoice||'—'}</td><td><span className={`purchaseStatus ${String(row.status).replaceAll(' ','').toLowerCase()}`}>{row.status}</span></td><td>{money(row.total)}</td><td>{money(row.paidAmount)}</td><td className="reportDue">{money(row.balance)}</td></tr>)}</tbody></table></div></section>}
+ </section>;
+}
+function Empty({onNavigate}){return <div className="purchaseReportEmpty"><IconReportAnalytics/><h3>No purchase data found</h3><p>Adjust the report filters or create a purchase bill.</p><button onClick={()=>onNavigate('Purchase Bills')}><IconFileInvoice/>Open Purchase Bills</button></div>}

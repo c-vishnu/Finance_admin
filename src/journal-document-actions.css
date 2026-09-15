@@ -1,0 +1,19 @@
+.je-document-actions { display: inline-flex; align-items: center; gap: 6px; }
+.je-document-actions button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 38px; padding: 0 11px; border: 1px solid #d6deea; border-radius: 7px; background: #fff; color: #344054; font: 600 12px "Instrument Sans", sans-serif; }
+.je-document-actions button:hover { border-color: #aac4ef; background: #f2f6ff; color: #245fc5; }
+.je-share-message { margin: -6px 0 10px auto; padding: 7px 10px; border-radius: 6px; background: #ecfdf3; color: #23734d; font-size: 12px; }
+@media (max-width: 900px) { .je-document-actions button span { display: none; } .je-document-actions button { width: 38px; padding: 0; } }
+@media print {
+  body:has(.je-detail) .app > aside,
+  body:has(.je-detail) .app > header,
+  body:has(.je-detail) .welcome,
+  body:has(.je-detail) .je-detail-actions,
+  body:has(.je-detail) .je-document-actions,
+  body:has(.je-detail) .je-detail-tabs { display: none !important; }
+  body:has(.je-detail) .app { display: block !important; }
+  body:has(.je-detail) main { margin: 0 !important; padding: 0 !important; }
+  body:has(.je-detail) .je-detail > header,
+  body:has(.je-detail) .je-detail-card { box-shadow: none !important; border-color: #d0d5dd !important; }
+  body:has(.je-detail) .je-detail-card { min-height: 0 !important; }
+  @page { margin: 14mm; }
+}

@@ -1,0 +1,41 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+
+const source=readFileSync(new URL('../src/JournalEntriesPro.jsx',import.meta.url),'utf8');
+const preview=readFileSync(new URL('../src/JournalPreview.jsx',import.meta.url),'utf8');
+
+test('journal register shows only manual journals without redundant origin controls',()=>{
+ assert.match(source,/const list=manual\.filter\(j=>!j\.automatic\)/);
+ assert.match(source,/Create manual journal/);
+ assert.match(source,/Create and manage manual accounting entries\. Daily business transactions are recorded automatically\./);
+ assert.match(source,/className="je-create-callout"/);
+ assert.doesNotMatch(source,/All origins/);
+ assert.doesNotMatch(source,/aria-label="Journal origin"/);
+ assert.doesNotMatch(source,/const list=\[\.\.\.automatic/);
+ assert.match(source,/Entry purpose/);
+ assert.match(source,/purposeFilters/);
+ assert.match(source,/className="je-filters"/);
+ assert.match(source,/>Created by<select/);
+ assert.match(source,/>From date<input type="date"/);
+ assert.match(source,/>To date<input type="date"/);
+ assert.match(source,/Fix a mistake/);
+ assert.match(source,/Transfer Journal/);
+ assert.doesNotMatch(source,/const TYPES=.*Reversal/);
+ assert.doesNotMatch(source,/className="je-filter-panel"/);
+ assert.doesNotMatch(source,/Automatic Journals/);
+ const register=source.slice(source.indexOf('const JournalRegister='),source.indexOf('export default function JournalEntriesPro'));
+ assert.doesNotMatch(register,/Recurring Journals/);
+ assert.doesNotMatch(register,/Journal Templates/);
+ assert.match(source,/className="je-edit-journal"/);
+ assert.match(source,/j\.status==='Draft'/);
+ assert.match(preview,/>Print<\/button>/);
+ assert.match(preview,/>Download<\/button>/);
+ assert.match(preview,/>Share<\/button>/);
+ assert.match(preview,/>Customize<\/button>/);
+ assert.match(source,/JournalPreview/);
+ assert.match(source,/title="Preview journal"/);
+ assert.match(source,/Supporting Documents/);
+ assert.match(source,/Uploaded attachments/);
+ assert.doesNotMatch(source,/\['Overview','Accounting Impact','Source Document'/);
+});

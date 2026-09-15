@@ -1,0 +1,285 @@
+.pc{--blue:#326df4;--text:#1d293d;--muted:#69778c;--border:#e1e8f2;position:fixed;z-index:40;left:338px;top:183px;right:0;bottom:0;overflow:auto;background:#f7f9fc;padding:24px 30px 42px;color:var(--text);font:14px/1.5 'Instrument Sans',sans-serif}.pc *{box-sizing:border-box}.pc h1,.pc h2,.pc h3,.pc p{margin:0}.pc h1{font-size:26px;letter-spacing:-.6px}.pc h2{font-size:20px}.pc h3{font-size:16px}.pc small{font-size:12px}.pc button,.pc input,.pc select,.pc textarea{font:inherit}.pc button{min-height:38px;border:1px solid var(--border);border-radius:8px;background:#fff;color:var(--text);padding:8px 12px;display:inline-flex;align-items:center;justify-content:center;gap:7px;cursor:pointer}.pc button:hover{border-color:#b9c9e3;background:#f8faff}.pc button:focus-visible,.pc input:focus-visible,.pc select:focus-visible,.pc textarea:focus-visible{outline:3px solid #a8c2ff;outline-offset:2px}.pc button.primary{background:var(--blue);border-color:var(--blue);color:white}.pc button:disabled{opacity:.5;cursor:not-allowed}.pc-heading{display:flex;justify-content:space-between;align-items:center;gap:20px;background:#fff;border:1px solid var(--border);border-top:3px solid var(--blue);border-radius:12px;padding:20px 22px}.pc-heading>div>span{display:flex;align-items:center;gap:7px;color:#245fd9;font-weight:650;font-size:12px;margin-bottom:6px}.pc-heading p,.pc-context small{color:var(--muted)}.pc-context{display:grid;grid-template-columns:220px 180px minmax(300px,1fr);gap:12px;margin:16px 0}.pc-context>div{display:flex;flex-direction:column;background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px 16px}.pc-control-note{flex-direction:row!important;align-items:center;gap:12px;background:#eef5ff!important;border-color:#c9dcff!important}.pc-control-note svg{color:var(--blue);flex:none}.pc-control-note small{display:block}.pc-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.pc-summary article{display:flex;align-items:center;gap:12px;padding:16px;background:#fff;border:1px solid var(--border);border-radius:10px}.pc-summary i{width:40px;height:40px;border-radius:9px;display:grid;place-items:center;background:#eaf1ff;color:#326df4}.pc-summary .amber i{background:#fff3df;color:#bd7416}.pc-summary .red i{background:#ffeaed;color:#c94557}.pc-summary .violet i{background:#f0eaff;color:#7651cb}.pc-summary span{display:flex;flex-direction:column}.pc-summary small{color:var(--muted)}.pc-summary strong{font-size:22px}.pc-tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-top:22px}.pc-tabs button{border:0;border-bottom:2px solid transparent;border-radius:0;background:transparent}.pc-tabs button.active{color:var(--blue);border-bottom-color:var(--blue)}.pc-tabs span{background:#e8efff;border-radius:20px;padding:1px 6px;font-size:12px}.pc-toolbar{display:flex;gap:10px;margin:14px 0}.pc-toolbar label{display:flex;align-items:center;gap:8px;min-width:280px;flex:1;max-width:520px;background:white;border:1px solid var(--border);border-radius:8px;padding:0 11px;color:var(--muted)}.pc-toolbar input{border:0;outline:0;min-height:40px;width:100%}.pc-toolbar select,.pc-field select{border:1px solid var(--border);border-radius:8px;background:#fff;padding:9px 32px 9px 11px}.pc-table-card{background:#fff;border:1px solid var(--border);border-radius:11px;overflow:visible}.pc-table-scroll{overflow-x:auto}.pc table{width:100%;border-collapse:collapse;min-width:900px}.pc th{text-align:left;padding:12px 14px;background:#f5f7fb;color:#68768b;font-size:12px;font-weight:600}.pc td{padding:13px 14px;border-top:1px solid #edf1f6;vertical-align:middle}.pc td small{display:block;color:var(--muted)}.pc-badge{display:inline-flex;border-radius:20px;padding:4px 9px;font-size:12px;background:#edf1f5;color:#536176;white-space:nowrap}.pc-badge.open,.pc-badge.reopened{background:#e4f5ec;color:#19734c}.pc-badge.closing,.pc-badge.pending-approval{background:#fff2db;color:#99600e}.pc-badge.locked,.pc-badge.soft-locked{background:#ffe9ec;color:#b7374b}.pc-action{white-space:nowrap}.pc-empty{text-align:center;padding:52px 20px;color:var(--muted)}.pc-empty svg{color:#8fa0b7}.pc-empty h3{color:var(--text);margin-top:10px}.pc-modal,.pc-scrim{position:fixed;inset:0;z-index:250;background:#14233d70;display:flex;align-items:center;justify-content:center;padding:20px}.pc-modal>section{width:590px;max-width:100%;max-height:92vh;overflow:auto;background:#fff;border-radius:13px;box-shadow:0 28px 80px #14233d38}.pc-modal>section>header,.pc-settings>header{display:flex;justify-content:space-between;align-items:flex-start;padding:20px 22px;border-bottom:1px solid var(--border)}.pc-modal header p,.pc-settings header p{color:var(--muted)}.pc-modal header button,.pc-settings header button{border:0;padding:4px;min-height:32px}.pc-modal-body{padding:22px}.pc-step{display:flex;align-items:center;margin-bottom:22px}.pc-step span{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#e9edf4;color:#66758a;font-size:12px}.pc-step span.active{background:var(--blue);color:white}.pc-step i{height:1px;background:var(--border);flex:1}.pc-field{display:flex;flex-direction:column;gap:8px;margin-top:18px;font-weight:600}.pc-field textarea{min-height:88px;resize:vertical;border:1px solid var(--border);border-radius:8px;padding:10px 12px}.pc-lock-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pc-lock-options button{padding:14px;justify-content:flex-start;text-align:left;min-height:88px}.pc-lock-options button.active{border-color:var(--blue);background:#f3f7ff;box-shadow:0 0 0 1px var(--blue)}.pc-lock-options button>i{color:var(--blue)}.pc-lock-options button span{display:flex;flex-direction:column;flex:1}.pc-lock-options small{color:var(--muted);font-weight:400}.pc-lock-options .check{opacity:0;color:var(--blue)}.pc-lock-options .active .check{opacity:1}.pc-modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:24px}.pc-impact{display:flex;gap:12px;background:#fff7e8;border:1px solid #f5d89e;border-radius:9px;padding:14px}.pc-impact svg{color:#b66b0d;flex:none}.pc-impact p,.pc-confirm p{color:var(--muted);margin-top:4px}.pc-review{margin:18px 0}.pc-review>div{display:grid;grid-template-columns:130px 1fr;padding:11px 0;border-bottom:1px solid #edf1f6}.pc-review dt{color:var(--muted)}.pc-review dd{margin:0;font-weight:600}.pc-confirm{text-align:center;padding:16px}.pc-confirm>svg{width:44px;height:44px;color:#23855b}.pc-settings{margin-left:auto;width:440px;max-width:100%;height:100%;background:#fff;box-shadow:-16px 0 50px #14233d2d;display:flex;flex-direction:column}.pc-scrim{padding:0;justify-content:flex-end}.pc-settings>div{padding:8px 22px;overflow:auto;flex:1}.pc-switch{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid #edf1f6}.pc-switch span{display:flex;flex-direction:column}.pc-switch small{color:var(--muted)}.pc-switch input{appearance:none;width:40px;height:23px;border-radius:20px;background:#c9d2df;position:relative;cursor:pointer;flex:none}.pc-switch input:after{content:'';position:absolute;left:3px;top:3px;width:17px;height:17px;background:white;border-radius:50%;transition:.18s}.pc-switch input:checked{background:var(--blue)}.pc-switch input:checked:after{left:20px}.pc-settings>footer{display:flex;justify-content:flex-end;gap:9px;padding:16px 22px;border-top:1px solid var(--border)}
+@media(max-width:1000px){.pc{left:0;top:120px}.pc-context{grid-template-columns:1fr 1fr}.pc-control-note{grid-column:1/-1}.pc-summary{grid-template-columns:1fr 1fr}}@media(max-width:650px){.pc{top:106px;padding:16px}.pc-heading{align-items:flex-start;flex-direction:column}.pc-context,.pc-summary{grid-template-columns:1fr}.pc-control-note{grid-column:auto}.pc-toolbar{flex-direction:column}.pc-toolbar label{min-width:0;max-width:none}.pc-lock-options{grid-template-columns:1fr}}
+.pc{top:110px}.pc-request-actions{display:flex;gap:6px}.pc-request-actions button{min-height:32px;padding:5px 9px;font-size:12px}
+.pc-focused{padding-top:24px}.pc-heading-actions{display:flex;gap:9px;flex-wrap:wrap}.pc-register{margin-top:0;background:transparent;border:0;border-radius:0;overflow:visible}.pc-register-tools{display:flex;align-items:center;gap:10px;padding:14px;border-bottom:1px solid var(--border)}.pc-register-tools label{display:flex;align-items:center;gap:8px;flex:1;max-width:500px;border:1px solid var(--border);border-radius:8px;padding:0 11px;color:var(--muted)}.pc-register-tools input{border:0;outline:0;min-height:40px;width:100%}.pc-register-tools select{min-height:42px;border:1px solid var(--border);border-radius:8px;background:#fff;padding:8px 34px 8px 11px}.pc-register-tools>span{margin-left:auto;color:var(--muted);font-size:12px;white-space:nowrap}.pc-frequency{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.pc-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.pc-field input{width:100%;min-height:42px;border:1px solid var(--border);border-radius:8px;padding:9px 11px}.pc-help{font-size:12px;color:var(--muted);margin-top:10px!important}.pc-inline-error{font-size:12px;color:#b83245;background:#fff0f2;border:1px solid #ffd4da;border-radius:7px;padding:9px 11px;margin-top:12px!important}.pc-review-banner{display:flex;align-items:center;gap:12px;background:#eef5ff;border:1px solid #c9dcff;border-radius:9px;padding:14px;margin-bottom:16px}.pc-review-banner>svg{color:var(--blue)}.pc-review-banner div{display:flex;flex-direction:column}.pc-review-banner span{color:var(--muted);font-size:12px}@media(max-width:650px){.pc-heading-actions{width:100%}.pc-heading-actions button,.pc-heading-actions .pc-more{flex:1}.pc-register-tools{align-items:stretch;flex-direction:column}.pc-register-tools label{max-width:none}.pc-register-tools>span{margin-left:0}.pc-fields{grid-template-columns:1fr}}
+.pc-business-history{margin-top:16px;background:#fff;border:1px solid var(--border);border-radius:11px;overflow:hidden}.pc-business-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;padding:16px}.pc-business-period{border:1px solid var(--border);border-radius:10px;padding:16px;background:#fff}.pc-business-period>div,.pc-business-period footer{display:flex;align-items:center;justify-content:space-between;gap:10px}.pc-business-period dl{margin:18px 0;display:grid;gap:12px}.pc-business-period dl div{display:flex;justify-content:space-between;gap:12px}.pc-business-period dt{color:var(--muted);font-size:12px}.pc-business-period dd{margin:0;font-weight:650;text-align:right}.pc-business-period footer button{min-height:35px;padding:7px 10px;font-size:12px}.pc-business-open{margin:0 16px 16px;padding:16px;border-radius:10px;background:#f5f8ff;border:1px solid #dbe6ff}.pc-business-open h2{font-size:15px}.pc-business-open p{margin:3px 0 12px;color:var(--muted);font-size:13px}.pc-business-open>button{margin:0 8px 8px 0;min-height:34px;font-size:12px}.pc-next-closing{display:flex;align-items:center;gap:10px;margin:18px 0 2px;padding:12px;border:1px solid #cbdcff;border-radius:9px;background:#f4f8ff}.pc-next-closing svg{color:var(--blue)}.pc-next-closing span{display:flex;flex-direction:column}.pc-next-closing small{color:var(--muted)}
+/* Period closing workspace redesign: summary cards, tabs and task lists */
+.pc-role{display:flex;align-items:center;gap:8px;color:#667085;font-size:12px}
+.pc-role select{min-height:36px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#172033;font-weight:600}
+.pc-banner{display:flex;align-items:center;gap:10px;margin:12px 0;padding:11px 14px;border:1px solid #bfe3cd;border-radius:9px;background:#f2fbf6;color:#18794e;font-size:13px}
+.pc-banner>span{flex:1}
+.pc-banner button{border:0;background:transparent;color:inherit;cursor:pointer}
+.pc-panel{margin:16px 0;border:1px solid #e1e6ed;border-radius:10px;background:#fff;box-shadow:0 2px 8px #10182808}
+.pc-panel>header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px 18px;border-bottom:1px solid #eef1f6}
+.pc-panel>header h2{margin:0;color:#172033;font-size:16px}
+.pc-panel>header p{margin:3px 0 0;color:#667085;font-size:12px}
+.pc-panel>header button{display:inline-flex;align-items:center;gap:7px;min-height:36px}
+.pc-panel-actions{display:flex;align-items:center;gap:12px;padding:0 18px 16px}
+.pc-checklist{display:grid;gap:8px;margin:0;padding:15px 18px;list-style:none}
+.pc-checklist.compact{padding:8px 0}
+.pc-checklist li{display:flex;align-items:center;gap:11px;padding:11px 13px;border:1px solid #d9eee3;border-radius:8px;background:#f5fcf8;color:#18794e}
+.pc-checklist li>i{display:grid;place-items:center;flex:none;width:20px;height:20px;border:1px solid currentColor;border-radius:50%;background:#fff;font-size:12px;font-style:normal;font-weight:700}
+.pc-checklist li>div{display:flex;flex:1;flex-direction:column;min-width:0}
+.pc-checklist li b{font-size:13px}
+.pc-checklist li small{color:#667085;font-size:12px}
+.pc-checklist li.warning{border-color:#f1dfb6;background:#fffaeb;color:#9a6700}
+.pc-checklist li.failed{border-color:#f1c8cc;background:#fff5f5;color:#b42318}
+.pc-checklist li button{display:inline-flex;align-items:center;gap:5px;min-height:32px;border:1px solid currentColor;background:#fff;white-space:nowrap}
+.pc-timeline{display:grid;padding:6px 18px 16px}
+.pc-timeline article{display:grid;grid-template-columns:32px 1fr;gap:11px;padding:12px 0;border-bottom:1px solid #f0f3f8}
+.pc-timeline article:last-child{border-bottom:0}
+.pc-timeline article>i{display:grid;place-items:center;width:32px;height:32px;border-radius:8px;background:#eef4ff;color:#3478f6}
+.pc-timeline article>div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.pc-timeline b{color:#172033;font-size:13px}
+.pc-timeline span{color:#667085;font-size:12px}
+.pc-timeline small{color:#7a8799;font-size:12px}
+.pc-badge.pc-status.open{background:#e8f1ff;color:#245fd9}
+.pc-badge.pc-status.closing{background:#fff2db;color:#99600e}
+.pc-badge.pc-status.closed{background:#eef1f6;color:#475467}
+.pc-badge.pc-status.reopened{background:#f4ecff;color:#6941c6}
+.pc-filters{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:14px 20px 16px;border:0;border-bottom:1px solid #eef1f6;border-radius:0;background:transparent}
+.pc-filter{display:flex;flex-direction:column;gap:5px}
+.pc-filter>span{color:#667085;font-size:12px;font-weight:600}
+.pc-filter select{min-height:38px;width:100%;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#172033}
+.pc-filter-search{display:flex;align-items:center;gap:8px;min-height:38px;padding:0 10px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#8fa0b7}
+.pc-filter-search input{width:100%;min-width:0;border:0;background:transparent;color:#172033;padding:0}
+.pc-history-cards{display:none}
+.pc-row-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px}
+.pc-kebab{position:relative}
+.pc-kebab>summary{display:grid;place-items:center;width:32px;height:32px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#475467;cursor:pointer;list-style:none}
+.pc-kebab>summary::-webkit-details-marker{display:none}
+.pc-kebab[open]>summary{border-color:#3478f6;color:#245fd9}
+.pc-kebab-menu{position:absolute;right:0;top:38px;z-index:20;display:flex;flex-direction:column;min-width:196px;padding:6px;border:1px solid #e1e6ed;border-radius:9px;background:#fff;box-shadow:0 12px 30px #1018281f}
+.pc-kebab-menu button{display:flex;align-items:center;gap:9px;min-height:36px;padding:0 10px;border:0;border-radius:6px;background:transparent;color:#344054;text-align:left}
+.pc-kebab-menu button:hover{background:#f4f7ff;color:#245fd9}
+.pc-request-list{display:block;padding:0}
+/* Every request row reads the same way: one neutral View button and one 3-dot menu holding
+   Approve, Cancel, View Details and Delete, so the actions cell never changes shape. */
+.pc .pc-request-actions{align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:8px}
+/* The request row menu reuses the canonical 3-dot geometry and never squeezes inside the actions cell. */
+.pc .pc-request-kebab{flex:none;position:relative}
+.pc .pc-request-kebab>summary:hover{border-color:#b9c9e3;color:#245fd9}
+/* View Details reads one unlock request as label and value pairs. */
+.pc-request-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 16px;margin:0}
+.pc-request-facts>div{display:flex;flex-direction:column;min-width:0}
+.pc-request-facts dt{color:#7a8799;font-size:12px}
+.pc-request-facts dd{margin:3px 0 0;color:#344054;font-size:13px;font-weight:600;overflow-wrap:anywhere}
+.pc-request-facts>div:nth-last-child(1):nth-child(odd){grid-column:1/-1}
+.pc .pc-request-actions button.pc-request-view{border-color:#e1e6ed;background:#fff;color:#475467;font-weight:600}
+.pc .pc-request-actions button.pc-request-view:hover{border-color:#b9c9e3;background:#f8faff;color:#245fd9}
+/* Delete is the only destructive entry in the row menu, and never the primary blue. */
+.pc .pc-request-kebab-menu button.pc-kebab-danger{color:#b42318}
+.pc .pc-request-kebab-menu button.pc-kebab-danger:hover{background:#fff5f6;color:#b42318}
+/* Pagination only appears once the request list runs past one page. */
+.pc-request-form .pc-fields{padding:14px 18px}
+.pc-inline-note{color:#18794e;font-size:12px;font-weight:600}
+.pc-inline-warning{display:flex;align-items:center;gap:8px;margin:12px 0;padding:11px 13px;border:1px solid #f1dfb6;border-radius:8px;background:#fffaeb;color:#9a6700;font-size:13px}
+.pc-ack{display:flex;align-items:flex-start;gap:9px;margin:12px 0;padding:11px 13px;border:1px solid #f1dfb6;border-radius:8px;background:#fffaeb;color:#9a6700;font-size:13px}
+.pc-ack input{width:17px;height:17px;accent-color:#3478f6}
+.pc-settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:16px 18px}
+.pc-roles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 18px 16px;padding:12px 14px;border:1px solid #e1e6ed;border-radius:9px}
+.pc-roles legend{padding:0 6px;color:#667085;font-size:12px;font-weight:600}
+.pc-roles small{grid-column:1/-1;color:#667085;font-size:12px}
+.pc-steps{display:flex;gap:10px;margin:0 0 14px}
+.pc-steps span{padding:5px 11px;border-radius:999px;background:#eef1f6;color:#667085;font-size:12px;font-weight:600}
+.pc-steps span.active{background:#e8efff;color:#245fd9}
+.pc-drawer-footer{flex:none;display:flex;justify-content:flex-end;gap:9px;margin:0;padding:14px 22px;border-top:1px solid #e1e8f2;background:#fff}
+@media(max-width:1100px){.pc-settings-grid{grid-template-columns:1fr}.pc-roles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.pc-history-table{display:none}.pc-history-cards{display:grid;gap:10px}.pc-history-card{padding:14px;border:1px solid #e1e6ed;border-radius:9px;background:#fff}.pc-history-card>header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0;background:transparent;border:0}.pc-history-card h3{margin:0;font-size:15px}.pc-history-card small{color:#667085;font-size:12px}.pc-history-card dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}.pc-history-card dt{color:#7a8799;font-size:11px}.pc-history-card dd{margin:2px 0 0;color:#344054;font-size:12px;font-weight:600}.pc-history-card>footer{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.pc-roles{grid-template-columns:1fr}.pc-panel>header{align-items:flex-start;flex-direction:column}}
+
+/* Period closing settings action and temporary unlock labels */
+.pc-settings-btn{white-space:nowrap}
+.pc-status-cell{display:inline-flex;flex-direction:column;align-items:flex-start;gap:3px}
+.pc-unlock-until{color:#245fd9;font-size:12px;font-weight:600;white-space:nowrap}
+.pc-lock-scope{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:600;color:#38445a}
+.pc-lock-scope>span{font-size:12px}
+.pc-lock-drawer .pc-details-body{gap:12px}
+
+/* Lean period closing header, status line and inline actions */
+/* Lean period closing header: the title sits above the journal-style subheading,
+   and every page action lives in a single More actions menu. */
+.pc-title-block{display:flex;flex-direction:column;align-items:flex-start;gap:5px;min-width:0}
+.pc-heading-note{margin:0;max-width:72ch;color:#667085;font-size:12.5px;line-height:1.45}
+/* Period Closing heading actions. The More actions control is a <summary> inside a
+   <details>, so it has to be told the same box as the Create Lock / Close button
+   beside it or the pair reads as two different sizes: 40px tall, 15px side
+   padding, a 7px icon gap, the same border colour, and a 14px semibold label that
+   never wraps - the values .je-create > footer button uses on the journal page.
+   The summary also fills the details box (flex:1 1 auto) so it stretches with
+   the sibling button when the action row wraps on small screens. */
+.pc-more{position:relative;display:flex;min-width:0}
+.pc-more>summary{display:inline-flex;flex:1 1 auto;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:0 15px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#1d293d;font-family:inherit;font-size:14px;font-weight:600;white-space:nowrap;cursor:pointer;list-style:none;transition:border-color .15s ease,background-color .15s ease,color .15s ease,box-shadow .15s ease}
+.pc-more>summary::-webkit-details-marker{display:none}
+.pc-more>summary:hover{border-color:#b9c9e3;background:#f8faff}
+.pc-more>summary:focus-visible{outline:3px solid #a8c2ff;outline-offset:2px}
+.pc-more-caret{flex:none;margin-left:1px;color:#98a6bb;transition:transform .15s ease,color .15s ease}
+.pc-more>summary:hover .pc-more-caret{color:#5d6b80}
+.pc-more[open]>summary{border-color:#3478f6;background:#f2f7ff;color:#245fd9;box-shadow:0 0 0 3px #eaf1ff}
+.pc-more[open]>summary .pc-more-caret{color:#245fd9;transform:rotate(180deg)}
+.pc-more-menu{position:absolute;right:0;top:calc(100% + 6px);z-index:30;display:flex;flex-direction:column;gap:2px;min-width:296px;max-width:min(360px,92vw);max-height:min(70vh,420px);overflow-y:auto;padding:6px;border:1px solid #e1e6ed;border-radius:10px;background:#fff;box-shadow:0 18px 40px #0f172a24}
+.pc-more-menu button{display:flex;align-items:flex-start;gap:10px;width:100%;padding:9px 10px;border:0;border-radius:7px;background:transparent;color:#344054;text-align:left;font-family:inherit;cursor:pointer}
+.pc-more-menu button:hover{background:#f4f7ff;color:#245fd9}
+.pc-more-menu svg{flex:none;margin-top:1px;color:#7a8799;transition:color .15s ease}
+.pc-more-menu button:hover svg{color:#245fd9}
+.pc-more-menu button:focus-visible{outline:3px solid #a8c2ff;outline-offset:-2px}
+.pc-more-menu span{display:flex;flex-direction:column;gap:2px;min-width:0}
+.pc-more-menu b{color:#1d293d;font-size:13px;font-weight:600}
+.pc-more-menu small{color:#69778c;font-size:12px;font-weight:400}
+.pc-more-badge{flex:none;margin-left:auto;display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:#fff2db;color:#99600e;font-size:11px;font-weight:700;font-style:normal}
+.pc-more-badge.warn{background:#ffe9ec;color:#b7374b}
+.pc-lock-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.pc-lock-scope{display:inline-flex;align-items:center;align-self:flex-start;margin:6px 0 0;padding:5px 9px;border:1px solid #c9dcff;border-radius:7px;background:#eef5ff;color:#245fd9;font-size:12px;font-weight:600}
+.pc-lock-preview{margin:12px 0 0;padding:10px 12px;border:1px solid #dbe5f4;border-radius:8px;background:#f7faff;color:#526176;font-size:12px}
+.pc-lock-preview.blocked{border-color:#f0d39a;background:#fff9ec;color:#8a5b0a}
+.pc-before-drawer .pc-drawer-body .pc-panel{margin:0;border:0;border-radius:0;box-shadow:none;padding:0}
+.pc-impact-chips{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid #eef1f6}
+.pc-impact-total{color:#475467;font-size:13px;font-weight:600}
+.pc-impact-total b{margin-right:4px;color:#172033;font-size:16px}
+.pc-impact-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid #e1e7ef;border-radius:20px;background:#f7f9fc;color:#475467;font-size:12px}
+.pc-impact-chip b{color:#172033;font-size:12px}
+ @media(max-width:760px){.pc-lock-fields{grid-template-columns:minmax(0,1fr)}.pc-more-menu{min-width:min(296px,92vw)}}
+
+/* Locked periods list page */
+.pc-locks-panel>header{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:16px 20px 12px}
+.pc-locks-panel>header h2{font-size:16px}
+.pc-locks-panel>header p{color:#69778c;font-size:12px;margin-top:3px}
+.pc-current-period-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-left:auto;justify-content:flex-end}
+/* Portalled panels own their own geometry. These panels are rendered into
+   document.body, so the legacy global "aside{position:fixed;inset:0 auto 0 0;
+   width:206px}" navigation rule would otherwise pin every drawer to the left
+   rail on top of the sidebar. This is the one canonical right-side shell. */
+.pc-history-scrim{position:fixed!important;z-index:1390!important;inset:0!important;width:auto!important;height:auto!important;min-height:0!important;max-height:none!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:#10182859!important;box-shadow:none!important;display:block!important;cursor:default!important}
+.pc-history-drawer{position:fixed!important;z-index:1400!important;top:0!important;right:0!important;bottom:0!important;left:auto!important;width:min(560px,96vw)!important;height:100%!important;max-height:100%!important;margin:0!important;padding:0!important;display:flex!important;flex-direction:column;background:#fff;border:0;border-left:1px solid #dfe6ef;border-radius:0;box-shadow:-18px 0 48px #10182826;overflow:hidden;transform:none!important}
+.pc-history-drawer>header{position:static!important;inset:auto!important;z-index:auto!important;width:auto!important;height:auto!important;min-height:0!important;max-width:none!important;margin:0!important;padding:18px 22px!important;display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:16px!important;border:0!important;border-bottom:1px solid #e7ebf1!important;border-radius:0!important;background:#fff!important;box-shadow:none!important;flex:none}
+.pc-history-drawer>header>div{display:flex;flex-direction:column;gap:3px;min-width:0}
+.pc-history-drawer>header span{color:#245fd9;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.pc-history-drawer>header h2{margin:2px 0 0;font-size:20px;letter-spacing:-.3px}
+.pc-history-drawer>header p{margin:3px 0 0;color:#667085;font-size:12px;line-height:1.5}
+.pc-history-drawer>header>button{flex:none;width:36px;min-height:36px;padding:0;border:1px solid #d9e1ec;border-radius:9px;background:#fff;color:#475467}
+.pc-history-list{flex:1 1 auto;min-height:0;overflow-y:auto;padding:18px 22px;display:flex;flex-direction:column;gap:12px}
+.pc-settings-drawer{width:min(620px,96vw)!important}
+.pc-requests-drawer{width:min(820px,96vw)!important}
+.pc-request-drawer{width:min(460px,96vw)!important}
+.pc-drawer-body{flex:1 1 auto;min-height:0;overflow:auto;padding:18px 22px;display:flex;flex-direction:column;gap:14px}
+@media(max-width:650px){.pc-current-period-actions{width:100%;justify-content:flex-start}.pc-locks-panel>header{flex-direction:column}}
+
+/* Period Closing layout polish: one consistent card grid instead of three
+   nested bordered boxes, proportional register columns, and a header that
+   wraps instead of colliding with its action group. */
+.pc-heading{flex-wrap:wrap;align-items:center;gap:14px 20px}
+.pc-title-block{flex:1 1 320px}
+.pc-heading-actions{flex:0 1 auto;margin-left:auto;justify-content:flex-end}
+.pc-locks-panel{padding:0}
+.pc-locks-panel .pc-table-fit th:last-child,.pc-locks-panel .pc-table-fit td:last-child{text-align:right}
+.pc-locks-panel .pc-table-fit th:nth-child(1){width:17%}
+.pc-locks-panel .pc-table-fit th:nth-child(2){width:17%}
+.pc-locks-panel .pc-table-fit th:nth-child(3){width:14%}
+.pc-locks-panel .pc-table-fit th:nth-child(4){width:11%}
+.pc-locks-panel .pc-table-fit th:nth-child(5){width:12%}
+.pc-locks-panel .pc-table-fit th:nth-child(6){width:11%}
+.pc-drawer-body .pc-request-list{padding:0}
+.pc-lock-drawer .pc-drawer-body .pc-field{margin-top:0}
+
+@media(max-width:760px){.pc-locks-panel .pc-table-fit th:nth-child(n){width:auto}}
+
+/* Standard page chrome. The heading mirrors the Journal Entries heading grid:
+   the title takes the free space and the action group keeps its intrinsic
+   width, so the two never collide. The current period card owns its own
+   status row instead of a hard coded left offset. */
+.pc-heading{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:24px;row-gap:12px;width:100%;min-width:0}
+.pc-title-block{min-width:0}
+.pc-heading-actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:9px;margin:0}
+@media(max-width:1000px){.pc-heading{grid-template-columns:minmax(0,1fr)}.pc-heading-actions{width:100%;margin-left:0}}
+@media(max-width:900px){.pc .pc-current-period{display:grid;grid-template-columns:40px minmax(0,1fr);align-items:center;gap:12px 14px}.pc .pc-current-period-icon{grid-column:1;grid-row:1}.pc .pc-current-period-copy{grid-column:2;grid-row:1;min-width:0}.pc .pc-current-period-status{grid-column:2;margin:0}.pc .pc-current-period-actions{grid-column:1/-1;width:100%;margin:0;justify-content:flex-start}}
+
+
+/* Period Closing heading and toolbar. A journal style subheading sits beneath the
+   title, and the page actions stay beside it: one More actions menu plus a separate create
+   action. Before you close is a one line attention strip, the register is
+   switched between locked periods and unlock requests, and its advanced
+   filters live behind one Filters disclosure. */
+.pc .pc-heading-note{color:#667085}
+/* The pre-close attention pill: a status control in the header action group that opens a read-only review popover. Amber when checks need review, red when one of them blocks the close, neutral grey for one or two soft checks, and never the primary blue. */
+.pc .pc-attention-pop{position:relative;display:flex;flex:none;margin-right:7px}
+.pc .pc-attention-pill{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 13px;border:1px solid #e2e6ed;border-radius:999px;background:#f4f6f9;color:#4a5468;font-family:inherit;font-size:13px;font-weight:650;white-space:nowrap;cursor:pointer;list-style:none;transition:border-color .15s ease,background-color .15s ease,color .15s ease}
+.pc .pc-attention-pill::-webkit-details-marker{display:none}
+.pc .pc-attention-pill>svg{flex:none}
+.pc .pc-attention-pill:hover{border-color:#c3cbd8;background:#eef1f6}
+.pc .pc-attention-pill:focus-visible,.pc .pc-attention-pop[open]>.pc-attention-pill{outline:3px solid #a8c2ff;outline-offset:2px}
+.pc .pc-attention-pill.warn{border-color:#f0d3b8;background:rgba(234,88,12,.07);color:#9a3412}
+.pc .pc-attention-pill.warn:hover{border-color:#e0b892;background:rgba(234,88,12,.11)}
+.pc .pc-attention-pill.danger{border-color:#f3c9cd;background:rgba(220,38,38,.06);color:#b42318}
+.pc .pc-attention-pill.danger:hover{border-color:#e9aeb4;background:rgba(220,38,38,.1)}
+.pc .pc-attention-count{font-variant-numeric:tabular-nums}
+.pc-attention-pop-menu{position:absolute;right:0;top:calc(100% + 8px);z-index:30;display:flex;flex-direction:column;width:min(400px,92vw);padding:14px;border:1px solid #e1e6ed;border-radius:11px;background:#fff;box-shadow:0 18px 40px #0f172a24;text-align:left}
+.pc-attention-pop-head{display:flex;flex-direction:column;gap:3px;padding-bottom:10px;border-bottom:1px solid #eef1f6}
+.pc-attention-pop-head b{font-size:14px;color:#1d293d}
+.pc-attention-pop-head span{color:#667085;font-size:12px}
+.pc-attention-pop-menu .pc-checklist{padding:0}
+.pc-attention-pop-menu .pc-checklist li{padding:8px 0;border:0;border-radius:0;background:transparent}
+.pc-attention-pop-menu .pc-checklist li+li{border-top:1px solid #f2f4f8}
+.pc-attention-pop-menu .pc-checklist li small{color:#667085;font-size:12px}
+.pc-attention-pop-empty{margin:10px 0;color:#166534;font-size:13px;font-weight:600}
+.pc-attention-pop-menu>button.pc-attention-pop-all{width:100%;min-height:36px;margin-top:10px;border-color:#d9e1ec;background:#f8faff;color:#1d293d;font-weight:650}
+.pc .pc-view-toggle{display:inline-flex;flex:none;border:1px solid #d9e2ee;border-radius:9px;overflow:hidden;background:#fff}
+.pc .pc-view-toggle button{border:0;background:transparent;padding:0 14px;min-height:36px;font-size:12px;font-weight:600;color:#5a6b82;font-family:inherit;cursor:pointer}
+.pc .pc-view-toggle button+button{border-left:1px solid #d9e2ee}
+.pc .pc-view-toggle button.active{background:#eef4ff;color:#245fd9}
+.pc .pc-view-toggle em{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#e8efff;color:#245fd9;font-size:11px;font-weight:700;font-style:normal}
+.pc .pc-view-toggle button.active em{background:#d8e6ff}
+.pc .pc-filters>.pc-filter{flex:0 1 190px;min-width:150px}
+.pc .pc-filters>.pc-filter-search{flex:1 1 230px;min-width:200px}
+.pc .pc-filters-more{position:relative;flex:none}
+.pc .pc-filters-more>summary{display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:0 14px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#1d293d;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;list-style:none}
+.pc .pc-filters-more>summary::-webkit-details-marker{display:none}
+.pc .pc-filters-more[open]>summary{border-color:#9fbdf0;box-shadow:0 0 0 3px #eaf1ff}
+.pc .pc-filters-panel{position:absolute;right:0;top:44px;z-index:30;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;min-width:min(440px,90vw);padding:14px;border:1px solid #e1e6ed;border-radius:10px;background:#fff;box-shadow:0 14px 30px #0f172a1f}
+.pc .pc-filters-panel-actions{grid-column:1/-1;display:flex;justify-content:flex-end}
+.pc .pc-filters-panel-actions button{min-height:34px;padding:0 12px;font-size:12px;font-weight:600;color:#33415c}
+@media(max-width:620px){.pc .pc-filters-panel{grid-template-columns:minmax(0,1fr);min-width:min(320px,92vw)}}
+
+/* Register toolbar and the current period popup (2026-09-14).
+
+   The locked periods / requests toggle, the search box and the Filters
+   disclosure now share one compact row, and Period and Status moved inside
+   the Filters panel so the visible row stays short. The bar is a div rather
+   than a header on purpose: the legacy global app bar rules in styles.css
+   (`header label{height:38px;background:#f6f8fb;padding:0 12px}`) would
+   otherwise restyle every filter label that sits in this row. */
+.pc .pc-register-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:10px 14px;padding:12px 20px;border-bottom:1px solid #eef1f6}
+.pc .pc-register-heading{display:flex;flex-direction:column;gap:2px;flex:1 1 240px;min-width:0}
+.pc .pc-register-heading h2{font-size:16px}
+.pc .pc-register-heading p{color:#69778c;font-size:12px;margin-top:3px}
+.pc .pc-register-bar .pc-filters{flex:0 1 auto;justify-content:flex-end;gap:8px;margin-left:auto;padding:0;border:0;background:transparent}
+.pc .pc-register-bar .pc-filters>.pc-filter-search{flex:0 1 210px;min-width:150px}
+.pc .pc-register-bar .pc-filters-panel{max-height:min(72vh,520px);overflow-y:auto;min-width:min(460px,92vw)}
+.pc .pc-filters-panel .pc-filter{min-width:0}
+@media(max-width:820px){.pc .pc-register-bar{gap:8px 12px;padding:12px 14px}.pc .pc-register-heading{flex:1 1 100%}.pc .pc-register-bar .pc-filters{flex:1 1 100%;margin-left:0}.pc .pc-register-bar .pc-filters>.pc-filter-search{flex:1 1 auto;min-width:0}}
+
+/* Current accounting period popup, opened from More actions. It reuses the
+   period card as its body, so the card is flattened into a stacked summary
+   and its duplicate eyebrow is dropped in favour of the drawer title. */
+.pc-current-drawer{width:min(520px,96vw)!important}
+.pc-current-drawer .pc-current-period{display:flex!important;flex-wrap:wrap;align-items:center;gap:12px 14px;margin:0}
+.pc-current-drawer .pc-current-period-icon{display:none}
+.pc-current-drawer .pc-current-period-copy{flex:1 1 100%;min-width:0}
+.pc-current-drawer .pc-current-period-copy>span{display:none}
+.pc-current-drawer .pc-current-period-copy h2{font-size:18px}
+.pc-current-drawer .pc-current-period-copy p{overflow:visible;white-space:normal;text-overflow:clip}
+.pc-current-drawer .pc-current-period-status{flex:none;min-width:0}
+.pc-current-drawer .pc-current-period-actions{flex:1 1 auto;margin:0;justify-content:flex-end}
+@media(max-width:620px){.pc-current-drawer .pc-current-period-actions{flex:1 1 100%;justify-content:flex-start}}
+
+/* The legacy app bar rule `@media(max-width:1050px){header>button:not(.primary):not(.hamb){display:none}}`
+   in styles.css hides every direct child button of a header below 1050px,
+   which silently removed the close button from this page's drawers and
+   modals. Restore them explicitly. */
+.pc-history-drawer>header>button,.pc-modal>section>header>button{display:inline-flex!important}
+
+/* The shared organisation/branch picker (src/OrganisationBranchScope.jsx). The
+   context line reuses .pc-lock-scope; the fields reuse .pc-field/.pc-fields so
+   the control keeps the page design system, exactly like the journal line
+   organisation and branch selectors. */
+.pc-scope-picker{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.pc-scope-picker .pc-lock-scope{margin:0}
+.pc-scope-picker .pc-fields{margin:0}

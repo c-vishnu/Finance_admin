@@ -1,0 +1,20 @@
+/* Isolate customer document previews from legacy application element selectors. */
+.dpOverlay header,.dpOverlay .dpPreviewBar,.dpOverlay .dpLetterhead{position:static;inset:auto;width:auto;max-width:none;height:auto;margin:0}
+.dpOverlay nav{height:auto;overflow:visible;padding:0;background:transparent}
+.dpOverlay aside{position:static;inset:auto;transform:none;background:#fff}
+.dpOverlay main{max-width:none;margin:0}
+.dpEmbedded.dpOverlay{height:calc(100dvh - 92px);min-height:560px;border:1px solid #dfe5ed;border-radius:10px;background:#f3f5f8}
+.dpEmbedded .dpPreviewBar{min-height:62px;padding:10px 16px;flex-wrap:nowrap}
+.dpPreviewBar>div{min-width:0}.dpPreviewBar>div strong{font-size:16px;white-space:nowrap}.dpPreviewBar>div span{white-space:nowrap}
+.dpPreviewBar nav{margin-left:auto;flex:none}.dpPreviewBar nav button{min-height:38px;padding:8px 11px;white-space:nowrap}
+.dpEmbedded .dpPreviewBody>.dpCleanCanvas{padding:24px;background:#edf1f6}
+.dpEmbedded .dpPaper{min-width:0;width:210mm;max-width:100%;padding:13mm;box-shadow:0 4px 18px #20324d12}
+.dpPaper .dpLetterhead{display:flex;padding:0 0 22px;border-bottom:2px solid var(--dp-accent);background:transparent;color:#192a40}
+.dpPaper .dpLetterhead h1{color:var(--dp-title-ink)}
+.dpPaper .dpLetterhead p,.dpPaper .dpEyebrow,.dpPaper .dpDocumentTitle>strong{color:#4a5d76}
+.dpModern .dpLetterhead{background:var(--dp-accent);color:var(--dp-on-accent);padding:18px;margin:0 0 20px}
+.dpModern .dpLetterhead h1,.dpModern .dpLetterhead p,.dpModern .dpEyebrow,.dpModern .dpDocumentTitle>strong{color:var(--dp-on-accent)}
+@media(max-width:900px){.dpPreviewBar nav button{font-size:12px}.dpPreviewBar nav button svg{margin:0}.dpEmbedded .dpPreviewBody>.dpCleanCanvas{padding:16px}}
+@media(max-width:700px){.dpEmbedded.dpOverlay{height:calc(100dvh - 82px)}.dpEmbedded .dpPreviewBar{align-items:flex-start;flex-wrap:wrap}.dpPreviewBar nav{width:100%;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.dpPreviewBar nav button{padding:7px 5px}.dpEmbedded .dpPreviewBody>.dpCleanCanvas{padding:12px;overflow:auto}.dpEmbedded .dpPaper{width:680px;max-width:none;padding:30px}.dpOverlay .dpRightDrawer{position:absolute;right:0;top:0;bottom:0;width:min(340px,100%);z-index:8}}
+@media(max-width:430px){.dpPreviewBar nav button{font-size:0;min-width:0}.dpPreviewBar nav button svg{width:18px;height:18px}.dpPreviewBar nav button:last-child{font-size:12px}}
+@media print{.dpEmbedded.dpOverlay,.dpEmbedded .dpPreviewBody,.dpEmbedded .dpCleanCanvas{height:auto!important;min-height:0!important}.dpEmbedded .dpPaper{width:100%!important;max-width:none!important;min-width:0!important;padding:0!important}}

@@ -1,0 +1,103 @@
+/* Right-side Create Account drawer */
+.am-create-drawer-layer{position:fixed;inset:0;z-index:1200;display:flex;align-items:stretch;justify-content:flex-end}
+.am-create-drawer-layer .am-create-drawer-backdrop{position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;border-radius:0;background:rgba(15,23,42,.08);background-color:rgba(15,23,42,.08)!important;backdrop-filter:none;cursor:default}
+.am-create-drawer{position:fixed;z-index:1;top:0;right:0;bottom:0;left:auto;width:min(560px,100vw);max-width:100%;height:100%;max-height:100dvh;margin:0;background:#fff;border:0;border-left:1px solid #dfe6ef;border-radius:0;box-shadow:-18px 0 48px rgba(16,24,40,.15);display:flex;flex-direction:column;overflow:hidden;animation:amDrawerIn .22s ease-out}
+@keyframes amDrawerIn{from{transform:translateX(28px);opacity:.6}to{transform:translateX(0);opacity:1}}
+.am-create-drawer-header{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 20px;border-bottom:1px solid #e6ecf4;background:#fff}
+.am-create-drawer-header h2{margin:0;font-size:18px;letter-spacing:-.3px;color:#17233a}
+.am-create-drawer-header p{margin:4px 0 0;color:#69778c;font-size:13px;line-height:1.45}
+.am-create-drawer-header-actions{display:flex;align-items:center;gap:8px}
+.am-create-drawer-cancel-text{min-height:34px;padding:0 10px;border:0;border-radius:8px;background:transparent;color:#536176;font-weight:650}
+.am-create-drawer-cancel-text:hover{background:#f3f6fc;color:#253047}
+.am-create-drawer-close{flex:0 0 auto;width:34px;height:34px;min-width:34px;min-height:34px;padding:0;border:1px solid #d8e0ec;border-radius:8px;background:#fff;color:#536176}
+.am-create-drawer-close:hover{background:#f3f6fc;border-color:#b8c9e9}
+.am-create-drawer-form{flex:1;display:flex;flex-direction:column;min-height:0}
+.am-create-drawer-body{flex:1;min-height:0;overflow-y:auto;padding:14px 18px 18px;display:flex;flex-direction:column;gap:14px;background:#f6f8fb}
+.am-create-drawer-page-title h2{margin:0;font-size:20px;letter-spacing:-.35px;color:#17233a}
+.am-create-drawer-body::-webkit-scrollbar{width:8px}
+.am-create-drawer-body::-webkit-scrollbar-thumb{background:#d7dfea;border-radius:20px}
+.am-create-drawer .am-error{margin:0}
+.am-create-drawer .am-field{margin-top:0;gap:4px}
+.am-drawer-field-label{font-size:12px;font-weight:650;color:#344054}
+.am-create-drawer .am-field input,.am-create-drawer .am-field select,.am-create-drawer .am-field textarea{width:100%;min-height:40px;padding:9px 11px;border:1px solid #d5deea;border-radius:8px;background:#fff;color:#17233a;font-weight:400;transition:border-color .15s,box-shadow .15s,background-color .15s}
+.am-create-drawer .am-field input[readonly]{background:#f6f8fb;color:#42536b;cursor:default}
+.am-create-drawer .am-field input:focus,.am-create-drawer .am-field select:focus,.am-create-drawer .am-field textarea:focus{outline:0;border-color:#3478f6;box-shadow:0 0 0 3px #3478f61c}
+.am-create-drawer .am-field select{appearance:none;padding-right:36px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='none' stroke='%23667585' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;background-size:17px}
+.am-create-drawer .am-field textarea{height:70px;max-height:70px;resize:vertical;line-height:1.45}
+.am-create-drawer .am-field small{font-size:12px;font-weight:400;color:#7a8799}
+.am-create-drawer .am-inline-error{color:#b33243!important}
+.am-code-badge{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 11px;border:1px solid #d7e0ec;border-radius:8px;background:#f6f8fb;color:#33415c;font-size:13px;font-weight:650;letter-spacing:.2px;white-space:nowrap}
+.am-status-segment{display:grid;grid-template-columns:1fr 1fr;gap:4px;min-height:40px;padding:3px;border:1px solid #d7e0ec;border-radius:9px;background:#f6f8fb}
+.am-status-segment button{min-height:32px;padding:0 10px;border:0;border-radius:7px;background:transparent;color:#6b7789;font-weight:650;transition:background .15s,color .15s,box-shadow .15s}
+.am-status-segment button.active{background:#fff;color:#1d6fe0;box-shadow:0 1px 4px rgba(17,25,45,.14)}
+.am-status-segment button:disabled{opacity:.6;cursor:not-allowed}
+.am-drawer-section{background:#fff;border:1px solid #e5ebf3;border-radius:12px;padding:14px;box-shadow:0 1px 2px rgba(16,24,40,.03)}
+.am-drawer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px}
+.am-drawer-grid>.am-wide{grid-column:1/-1}
+.am-drawer-section-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.55px;color:#5b6b82;margin-bottom:10px}
+.am-drawer-section-heading h3{margin:0;font-size:14px;color:#17233a}
+.am-drawer-section-heading p{margin:3px 0 0;color:#7a8799;font-size:12px}
+.am-drawer-section-heading{margin-bottom:10px}
+.am-description-section{margin-top:2px}
+.am-accounting-card{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:11px 12px;border:1px solid #e4ebf5;border-radius:9px;background:#f8faff}
+.am-accounting-card>div{display:flex;flex-direction:column;gap:3px}
+.am-accounting-card span{color:#69778c;font-size:12px;text-transform:uppercase;letter-spacing:.35px}
+.am-accounting-card strong{color:#1d293d;font-size:13px}
+.am-availability-row{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:10px}
+.am-availability-heading h3{margin:0;font-size:14px;color:#17233a}
+.am-availability-heading p{margin:3px 0 0;color:#7a8799;font-size:12px}
+.am-drawer-switch{display:inline-flex;align-items:center;gap:8px;color:#667085;font-size:12px;font-weight:700;cursor:pointer}
+.am-status-switch{display:flex;width:100%;min-height:40px;justify-content:space-between;align-items:center;gap:12px;padding:0;border:0;background:transparent;color:#344054;font-size:13px;font-weight:650}
+.am-status-switch>span{color:#344054}
+.am-status-switch input[role=switch]{width:42px;height:24px;border:1px solid #cbd4e1;background:#cbd4e1}
+.am-status-switch input[role=switch]::after{width:20px;height:20px;top:1px;left:1px;border:1px solid #d0d5dd;box-shadow:0 2px 5px rgba(17,25,45,.16)}
+.am-status-switch input[role=switch]:checked::after{left:19px}
+.am-drawer-switch input[role=switch]{appearance:none;width:38px;height:22px;margin:0;border-radius:20px;background:#cbd4e1;position:relative;cursor:pointer;transition:.18s}
+.am-drawer-switch input[role=switch]::after{content:"";position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:3px;left:3px;box-shadow:0 1px 4px #15233b38;transition:.18s}
+.am-drawer-switch input[role=switch]:checked{background:#3478f6}
+.am-drawer-switch input[role=switch]:checked::after{left:19px}
+.am-drawer-switch input[role=switch]:focus-visible{outline:3px solid #9cbbff;outline-offset:2px}
+.am-availability-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:2px}
+.am-availability-org{color:#1d293d;font-size:13px;font-weight:650}
+.am-availability-branch{display:inline-flex;align-items:center;gap:5px;color:#69778c;font-size:12px}
+.am-availability-fields{gap:12px;margin-top:2px}
+.am-scope-strip{display:inline-flex;align-items:center;align-self:flex-start;background:#eef5ff;border:1px solid #c9dcff;border-radius:8px;padding:7px 11px;margin:0 0 10px;font-size:12px;font-weight:600;color:#245fd9}
+.am-scope-resolved{justify-content:flex-start}
+.am-scope-fixed{display:inline-flex;align-items:center;min-height:38px;border:1px dashed #ccd8ea;border-radius:8px;background:#f4f7fb;padding:8px 10px;font-size:13px;color:#3d4a5f}
+.am-drawer-multi{position:relative}
+.am-drawer-multi>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:40px;padding:8px 11px;border:1px solid #d5deea;border-radius:8px;background:#fff;color:#17233a;cursor:pointer;list-style:none}
+.am-drawer-multi>summary::-webkit-details-marker{display:none}
+.am-drawer-multi>summary svg{width:17px;color:#667585;transition:transform .16s}
+.am-drawer-multi[open]>summary{border-color:#3478f6;box-shadow:0 0 0 3px #3478f61c}
+.am-drawer-multi[open]>summary svg{transform:rotate(180deg)}
+.am-drawer-multi-trigger>span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}
+.am-drawer-multi-placeholder{color:#8a97a8}
+.am-drawer-multi-menu{position:absolute;z-index:40;top:calc(100% + 6px);left:0;width:100%;max-height:230px;overflow-y:auto;padding:6px;border:1px solid #d8e0ec;border-radius:10px;background:#fff;box-shadow:0 14px 34px rgba(21,35,60,.18)}
+.am-drawer-multi-option{display:flex;align-items:center;gap:10px;padding:8px 9px;border-radius:8px;cursor:pointer}
+.am-drawer-multi-option:hover{background:#f2f6ff}
+.am-drawer-multi-option input{width:16px!important;height:16px!important;min-height:16px!important;padding:0!important;margin:0;accent-color:#3478f6}
+.am-drawer-multi-option span{display:flex;min-width:0;flex-direction:column}
+.am-drawer-multi-option b{font-size:13px;font-weight:600;color:#344054}
+.am-drawer-multi-option small{color:#7a8799;font-size:12px;margin-top:1px}
+.am-context-warning{margin:0;padding:10px 12px;border:1px solid #f2d18b;border-radius:8px;background:#fffaeb;color:#8a5a00;font-size:12px}
+.am-create-drawer-footer{flex:0 0 auto;display:flex;justify-content:flex-end;gap:10px;padding:14px 20px;border-top:1px solid #e6ecf4;background:#fff;box-shadow:0 -8px 24px rgba(23,35,58,.05)}
+.am-create-drawer-footer button{min-width:104px;height:40px;min-height:40px}
+.am-create-drawer-footer .am-drawer-cancel{background:#fff;border:1px solid #d5deea;color:#42536b}
+.am-create-drawer-footer .am-drawer-cancel:hover{background:#f3f6fc;border-color:#b8c9e9}
+.am-create-drawer-footer .primary{min-width:138px}
+
+/* Compact Chart of Accounts surface while the drawer stays open. */
+.am-coa-page:has(.am-create-drawer-layer){padding-right:0}
+.am-coa-page:has(.am-create-drawer-layer) .am-account-grid th,
+.am-coa-page:has(.am-create-drawer-layer) .am-account-grid td{padding-top:9px;padding-bottom:9px}
+
+@media(max-width:900px){
+  .am-create-drawer{width:min(88vw,560px)}
+}
+@media(max-width:640px){
+  .am-create-drawer{width:100vw}
+  .am-create-drawer-header,.am-create-drawer-body,.am-create-drawer-footer{padding-left:16px;padding-right:16px}
+  .am-create-drawer-body{padding-top:16px}
+  .am-drawer-grid{grid-template-columns:1fr}
+  .am-accounting-card{grid-template-columns:1fr 1fr}
+}

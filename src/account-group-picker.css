@@ -1,0 +1,32 @@
+/* Account Group searchable picker (src/AccountGroupPicker.jsx).
+
+   Same interaction and visual language as the Journal lines account picker
+   (.je-account-* in journal-form.css): a combobox trigger that opens a
+   searchable listbox grouped by account type. The !important flags mirror that
+   stylesheet because the Create Account drawer styles every input inside
+   .am-field (.am-create-drawer .am-field input{width:100%;min-height:40px;
+   padding:9px 11px;border:1px solid #d5deea}), which would otherwise restyle
+   the search box and its focus ring. */
+.agp{position:relative!important;width:100%!important}
+.agp-field{display:flex!important;align-items:center!important;gap:6px!important;width:100%!important;min-height:40px!important;padding:0 30px 0 11px!important;border:1px solid #d5deea!important;border-radius:8px!important;background:#fff!important;color:#17233a!important;text-align:left!important;cursor:pointer!important}
+.agp-field:focus-visible{border-color:#91b2ee!important;box-shadow:0 0 0 3px rgba(52,120,246,.14)!important;outline:none!important}
+.agp-field:disabled{background:#f6f8fb!important;color:#7a8799!important;cursor:not-allowed!important}
+.agp-value{display:flex!important;min-width:0!important;flex-direction:column!important;gap:0!important}
+.agp-value b{overflow:hidden!important;color:#17233a!important;font-size:13px!important;font-weight:600!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+.agp-meta{color:#667085!important;font-size:12px!important;font-weight:400!important}
+.agp-placeholder{flex:1 1 auto!important;color:#98a2b3!important;font-size:13px!important}
+.agp-field>svg{flex:0 0 auto!important;margin-left:auto!important;color:#667085!important}
+.agp-pop{position:absolute!important;top:calc(100% + 6px)!important;left:0!important;z-index:24!important;width:min(360px,92vw)!important;padding:8px!important;border:1px solid #e1e6ed!important;border-radius:9px!important;background:#fff!important;box-shadow:0 16px 34px rgba(16,24,40,.18)!important}
+.agp-search{display:flex!important;align-items:center!important;gap:7px!important;padding:0 9px!important;border:1px solid #d8dee8!important;border-radius:7px!important;background:#fff!important}
+.agp-search>svg{flex:0 0 auto!important;color:#667085!important}
+.agp-search input{flex:1 1 auto!important;width:auto!important;min-width:0!important;height:34px!important;min-height:34px!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;color:#344054!important;font-size:13px!important;outline:none!important}
+.agp-list{max-height:min(264px,44vh)!important;margin-top:6px!important;overflow:auto!important}
+.agp-section{margin:8px 0 4px!important;padding:0 6px!important;color:#98a2b3!important;font-size:12px!important;font-weight:700!important;letter-spacing:.04em!important;text-transform:uppercase!important}
+.agp-option{display:flex!important;align-items:center!important;gap:8px!important;padding:7px 8px!important;border-radius:7px!important;cursor:pointer!important}
+.agp-option.active,.agp-option:hover{background:#f2f6ff!important}
+.agp-option.selected{background:#e8f1ff!important}
+.agp-option-copy{display:flex!important;min-width:0!important;flex-direction:column!important;gap:0!important}
+.agp-option-copy b{overflow:hidden!important;color:#1d2939!important;font-size:13px!important;font-weight:600!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+.agp-check{margin-left:auto!important;color:#3478f6!important}
+.agp-empty{margin:10px 6px!important;color:#667085!important;font-size:12px!important}
+@media(max-width:1180px){.agp-pop{right:0!important;left:0!important;width:auto!important}}

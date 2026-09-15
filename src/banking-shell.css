@@ -1,0 +1,811 @@
+.welcome:has(+ .bankPage) {
+  display: none;
+}
+
+/* Saved bank-reconciliation workflow */
+.bankBack{display:inline-flex;align-items:center;gap:8px;border:0;background:transparent;color:#52647e;font-weight:650;padding:4px 0;margin:0 0 12px}.bankBack svg{width:18px}.bankRecon .bankHead>div:last-child,.reconActions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.reconSetup{max-width:980px;margin:0 auto;padding:28px}.reconSetup footer,.reconComplete{display:flex;align-items:center;justify-content:space-between;gap:16px;border-top:1px solid #e4eaf2;margin-top:24px;padding-top:20px}.reconStep{display:flex;gap:14px;align-items:flex-start;margin-bottom:24px}.reconStep>b,.reconProgress b{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#e9f1ff;color:#2467de}.reconStep h2,.reconComplete h2{margin:0 0 4px}.reconStep p,.reconComplete p{margin:0;color:#6b7b93}.reconProgress{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;background:#fff;border:1px solid #dfe6ef;border-radius:12px;padding:14px;margin-bottom:16px}.reconProgress span{display:flex;align-items:center;gap:8px;color:#8491a5;font-weight:650}.reconProgress span.active{color:#172b4d}.reconProgress span.active b{background:#3478f6;color:#fff}.reconMetrics{grid-template-columns:repeat(6,minmax(145px,1fr))}.reconWarning{display:flex;justify-content:space-between;gap:12px;align-items:center;border:1px solid #ffd49a;background:#fff8ec;color:#8a4a00;border-radius:10px;padding:13px 16px;margin-bottom:16px}.reconActions .bankSearch{min-width:220px}.bankStatus.draft{background:#edf1f6;color:#53637a}.bankStatus.inprogress{background:#e8f1ff;color:#215fb8}.bankStatus.readytocomplete,.bankStatus.completed,.bankStatus.locked,.bankStatus.categorized{background:#e4f7ed;color:#18794e}.bankStatus.partiallymatched{background:#fff2d8;color:#9a5b00}.bankDrawerBackdrop{position:fixed;inset:0;background:rgba(14,28,49,.38);z-index:80;display:flex;justify-content:flex-end}.bankMatchDrawer{width:min(460px,100%);height:100%;overflow:auto;background:#fff;padding:24px;box-shadow:-16px 0 40px rgba(15,31,56,.14)}.bankMatchDrawer header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid #e3e9f1;padding-bottom:18px}.bankMatchDrawer header span{color:#3478f6;text-transform:uppercase;font-size:12px;font-weight:750}.bankMatchDrawer header h2{margin:4px 0}.bankMatchDrawer header button{border:0;background:transparent}.bankMatchDrawer dl{display:grid;grid-template-columns:110px 1fr;gap:10px;margin:22px 0}.bankMatchDrawer dt{color:#718096}.bankMatchDrawer dd{margin:0;font-weight:650}.matchCandidate{width:100%;display:flex;justify-content:space-between;gap:12px;text-align:left;border:1px solid #dfe6ef;background:#fff;border-radius:10px;padding:14px;margin:8px 0}.matchCandidate:hover{border-color:#3478f6;background:#f7faff}.matchCandidate span{display:flex;flex-direction:column;gap:3px}.matchCandidate small{color:#718096}.unlockDialog{margin:auto;height:auto}.unlockDialog textarea{min-height:110px;width:100%;border:1px solid #cfd8e6;border-radius:8px;padding:10px}.bankHistory .bankTable table{min-width:1180px}
+@media(max-width:1100px){.reconMetrics{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.reconProgress{grid-template-columns:1fr 1fr}.reconMetrics{grid-template-columns:1fr 1fr}.reconWarning,.reconComplete{align-items:flex-start;flex-direction:column}.reconSetup{padding:18px}.bankMatchDrawer{padding:18px}}
+
+.bankPage {
+  width: 100%;
+  max-width: 1540px;
+  margin: 0 auto;
+}
+
+.bankAccountGrid dt,
+.bankAccountGrid dd {
+  min-width: 0;
+}
+
+.bankPage > .bankHead {
+  position: static !important;
+  inset: auto !important;
+  width: 100%;
+  height: auto !important;
+  min-height: 76px;
+  margin: 0;
+  padding: 14px 18px;
+  border: 1px solid #e4e9f0;
+  border-top: 3px solid #3478f6;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(16, 24, 40, .05);
+}
+
+.bankPage > .bankHead h1 {
+  margin: 2px 0 3px;
+  color: #172033;
+  font-size: 22px;
+  line-height: 1.25;
+}
+
+.bankPage > .bankHead p {
+  margin: 0;
+  color: #667085;
+  font-size: 13px;
+}
+
+.bankHead > div:first-child > span {
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.bankHead button,
+.bankImport,
+.bankFeedTabs button,
+.bankTable button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 0 13px;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  background: #fff;
+  color: #344054;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bankHead button svg,
+.bankImport svg,
+.bankTable button svg,
+.bankAccountGrid footer button svg {
+  width: 17px;
+  height: 17px;
+  flex: none;
+}
+
+.bankPage > .bankHead .primary {
+  min-width: 170px;
+  height: 42px;
+  border-radius: 7px;
+  box-shadow: 0 2px 6px rgba(52, 120, 246, .22);
+}
+
+.bankPage > .bankHead button:not(.primary),
+.bankPage > .bankHead .bankImport {
+  min-width: 146px;
+  height: 42px;
+  transition: background .15s, border-color .15s, box-shadow .15s;
+}
+
+.bankPage > .bankHead button:not(.primary):hover,
+.bankPage > .bankHead .bankImport:hover {
+  border-color: #b9c6d8;
+  background: #f8faff;
+}
+
+.bankImport {
+  position: relative;
+  padding: 0 13px;
+}
+
+.bankImport input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.bankTools {
+  padding: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.bankCard {
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 3px 12px rgba(16, 24, 40, .04);
+}
+
+.bankHistory {
+  margin-top: 16px;
+}
+
+.bankHistory td small {
+  display: block;
+  margin-top: 3px;
+  color: #667085;
+  font-size: 12px;
+}
+
+.bankSectionTitle {
+  min-height: 68px;
+  gap: 16px;
+  padding: 13px 16px;
+}
+
+.bankSectionTitle h2 {
+  margin: 0 0 4px;
+  color: #172033;
+  font-size: 16px;
+}
+
+.bankSectionTitle p {
+  margin: 0;
+  font-size: 12px;
+}
+
+.bankSearch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: min(340px, 100%);
+  height: 40px;
+  padding: 0 11px;
+  border: 1px solid #d0d5dd;
+  border-radius: 7px;
+  background: #fff;
+  color: #667085;
+}
+
+.bankSearch:focus-within {
+  border-color: #3478f6;
+  box-shadow: 0 0 0 3px rgba(52, 120, 246, .12);
+}
+
+.bankSearch svg {
+  width: 17px;
+  height: 17px;
+  flex: none;
+}
+
+.bankSearch input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #172033;
+  font: inherit;
+}
+
+.bankAccountGrid {
+  grid-template-columns: repeat(auto-fit, minmax(360px, 540px));
+  align-items: start;
+  justify-content: start;
+  padding: 18px;
+}
+
+.bankAccountGrid article {
+  overflow: hidden;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 2px 7px rgba(16, 24, 40, .04);
+  transition: border-color .15s, box-shadow .15s, transform .15s;
+}
+
+.bankAccountGrid article:hover {
+  border-color: #b9cef5;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .08);
+  transform: translateY(-1px);
+}
+
+.bankAccountName > span {
+  color: #667085;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.bankAccountName h3 {
+  color: #172033;
+  font-size: 16px;
+}
+
+.bankAccountIcon {
+  border: 1px solid #dbe8ff;
+}
+
+.bankAccountGrid dl {
+  padding: 13px 0;
+  border-top: 1px solid #edf0f4;
+}
+
+.bankAccountGrid dt,
+.bankAccountGrid dd {
+  padding: 3px 0;
+}
+
+.bankAccountGrid footer {
+  gap: 8px;
+  padding-top: 12px;
+}
+
+.bankAccountGrid footer button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid #d0d5dd;
+  border-radius: 7px;
+  background: #fff;
+  color: #344054;
+  font: inherit;
+  font-weight: 600;
+  transition: background .15s, border-color .15s, color .15s;
+}
+
+.bankAccountGrid footer button:hover {
+  border-color: #a9c2ee;
+  background: #f5f8ff;
+  color: #175cd3;
+}
+
+.bankAccountGrid footer button:first-child {
+  border-color: #bfd1f5;
+  color: #175cd3;
+}
+
+.bankStatus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 26px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.bankTools > select {
+  min-width: 240px;
+  height: 42px;
+  padding: 0 36px 0 12px;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  background: #fff;
+  color: #1d2939;
+  font: inherit;
+  font-weight: 600;
+}
+
+.bankTools > label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 220px;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  color: #667085;
+}
+
+.bankTools > label input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  font: inherit;
+}
+
+.bankMetrics article {
+  min-width: 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.bankMetrics article.warning {
+  border-top: 3px solid #f59e0b;
+}
+
+.bankMetrics small {
+  display: block;
+  margin-top: 5px;
+  color: #667085;
+  font-size: 12px;
+}
+
+.bankFeedTabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 9px;
+  background: #f2f4f7;
+}
+
+.bankFeedTabs button {
+  min-height: 32px;
+  padding: 0 10px;
+  border: 0;
+  background: transparent;
+  color: #667085;
+  font-size: 13px;
+}
+
+.bankFeedTabs button.active {
+  background: #fff;
+  color: #175cd3;
+  box-shadow: 0 1px 3px rgba(16,24,40,.12);
+}
+
+.bankFeedTabs button span,
+.bankBookRegister summary span {
+  min-width: 21px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: #e8eef8;
+  font-size: 12px;
+  text-align: center;
+}
+
+.bankBookRegister summary {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 16px 18px;
+  cursor: pointer;
+  font-weight: 700;
+  list-style: none;
+}
+
+.bankRegisterNote {
+  padding: 12px 18px;
+  border-top: 1px solid #e7edf5;
+  background: #f8fafc;
+  color: #667085;
+  font-size: 13px;
+}
+
+.bankReconcileBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 20px;
+  border: 1px solid #dbe7fb;
+  border-radius: 10px;
+  background: #f5f8ff;
+}
+
+.bankReconcileBanner > div > span {
+  color: #667085;
+  font-size: 12px;
+}
+
+.bankReconcileBanner strong {
+  display: block;
+  margin-top: 3px;
+  font-size: 18px;
+}
+
+.bankReconcileBanner p {
+  margin: 4px 0 0;
+  color: #667085;
+}
+
+.bankReconcileBanner > span,
+.bankCompletion {
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: #fff3df;
+  color: #9a5b13;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.bankReconcileBanner > span.ready {
+  background: #e8f7ef;
+  color: #18794e;
+}
+
+.bankOverlay {
+  z-index: 80;
+  padding: 24px;
+  background: rgba(16, 24, 40, .56);
+  backdrop-filter: blur(2px);
+}
+
+.bankDialog {
+  display: flex;
+  flex-direction: column;
+  width: min(760px, calc(100vw - 32px));
+  max-height: calc(100vh - 48px);
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #e4e9f0;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 24px 64px rgba(16, 24, 40, .24);
+}
+
+.bankDialog.small {
+  width: min(660px, calc(100vw - 32px));
+}
+
+.bankOverlay .bankDialog > header {
+  position: static;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+  height: auto !important;
+  min-height: 106px;
+  margin: 0 !important;
+  padding: 20px 22px;
+  border: 0;
+  border-bottom: 1px solid #e7ebf1;
+  background: #fff;
+  box-shadow: none;
+  inset: auto;
+}
+
+.bankDialog > header > div > span {
+  display: block;
+  margin-bottom: 4px;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.bankDialog > header h2 {
+  margin: 0;
+  color: #172033;
+  font-size: 20px;
+  line-height: 1.3;
+}
+
+.bankDialog > header p {
+  margin: 5px 0 0;
+  color: #667085;
+  font-size: 13px;
+}
+
+.bankDialog .bankClose {
+  display: grid;
+  place-items: center;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #667085;
+}
+
+.bankDialog .bankClose:hover {
+  background: #f2f4f7;
+  color: #172033;
+}
+
+.bankDialog .bankClose svg {
+  width: 19px;
+  height: 19px;
+}
+
+.bankDialogBody {
+  padding: 0 22px;
+  overflow-y: auto;
+}
+
+.bankDialogBody section {
+  padding: 20px 0;
+  border-bottom: 1px solid #edf0f4;
+}
+
+.bankDialogBody section:last-of-type {
+  border-bottom: 0;
+}
+
+.bankDialogBody h3 {
+  margin: 0 0 15px;
+  color: #1d2939;
+  font-size: 14px;
+}
+
+.bankFormGrid {
+  gap: 16px;
+}
+
+.bankFormGrid label {
+  min-width: 0;
+  color: #344054;
+  font-size: 13px;
+}
+
+.bankFormGrid label > span {
+  min-height: 17px;
+}
+
+.bankFormGrid input,
+.bankFormGrid select,
+.bankFormGrid textarea {
+  height: 42px;
+  min-height: 42px;
+  border-color: #d0d5dd;
+  border-radius: 7px;
+  color: #1d2939;
+  transition: border-color .15s, box-shadow .15s;
+}
+
+.bankFormGrid input:focus,
+.bankFormGrid select:focus,
+.bankFormGrid textarea:focus {
+  outline: 0;
+  border-color: #3478f6;
+  box-shadow: 0 0 0 3px rgba(52, 120, 246, .12);
+}
+
+.bankFormGrid .wide {
+  grid-column: 1 / -1;
+}
+
+.bankFormGrid small {
+  color: #667085;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.bankDialog > footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 0;
+  padding: 14px 22px;
+  border-top: 1px solid #e7ebf1;
+  background: #fcfcfd;
+}
+
+.bankDialog > footer button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 112px;
+  height: 40px;
+  padding: 0 15px;
+  border-radius: 7px;
+  font-weight: 600;
+}
+
+.bankDialog > footer .bankSecondary {
+  border: 1px solid #d0d5dd;
+  background: #fff;
+  color: #344054;
+}
+
+.bankDialog > footer .bankSecondary:hover {
+  background: #f8fafc;
+}
+
+.bankDialog > footer .primary svg {
+  width: 17px;
+}
+
+.bankFormError {
+  margin: 0 0 18px;
+  border: 1px solid #fecaca;
+}
+
+.bankHead button:focus-visible,
+.bankTable button:focus-visible,
+.bankDialog button:focus-visible,
+.bankFormGrid input:focus-visible,
+.bankFormGrid select:focus-visible {
+  outline: 3px solid rgba(52, 120, 246, .2);
+  outline-offset: 2px;
+}
+
+.bankAccountGrid dd {
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+
+@media (max-width: 700px) {
+  .bankHead,
+  .bankSectionTitle {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .bankPage > .bankHead {
+    padding: 13px 14px;
+  }
+
+  .bankPage > .bankHead .primary,
+  .bankPage > .bankHead button:not(.primary),
+  .bankPage > .bankHead .bankImport {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .bankHead > div:last-child {
+    display: grid;
+    gap: 8px;
+    grid-template-columns: 1fr;
+  }
+
+  .bankHead > div:last-child > *,
+  .bankSearch {
+    width: 100%;
+  }
+
+  .bankTools > select,
+  .bankTools > label {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .bankTransactionMetrics {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .bankFeedTabs {
+    overflow-x: auto;
+  }
+
+  .bankFeedTabs button {
+    flex: none;
+  }
+
+  .bankReconcileBanner {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .bankOverlay {
+    align-items: end;
+    padding: 0;
+  }
+
+  .bankDialog,
+  .bankDialog.small {
+    width: 100%;
+    max-height: calc(100vh - 24px);
+    border-radius: 14px 14px 0 0;
+  }
+
+  .bankDialog > header,
+  .bankDialogBody,
+  .bankDialog > footer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .bankFormGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .bankFormGrid .wide {
+    grid-column: auto;
+  }
+
+  .bankDialog > footer button {
+    flex: 1;
+    min-width: 0;
+    padding: 0 10px;
+    white-space: nowrap;
+  }
+
+  .bankDialog > footer .primary {
+    flex: 1.35;
+  }
+
+  .bankAccountGrid article {
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    padding: 14px;
+  }
+
+  .bankAccountGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .bankAccountGrid dl {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .bankAccountGrid footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .bankAccountGrid footer button {
+    justify-content: center;
+  }
+
+  .bankAccountGrid footer button:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .bankTable {
+    overflow: visible;
+    padding: 10px;
+  }
+
+  .bankTable table,
+  .bankTable tbody {
+    display: block;
+    min-width: 0;
+  }
+
+  .bankTable thead {
+    display: none;
+  }
+
+  .bankTable tbody {
+    display: grid;
+    gap: 10px;
+  }
+
+  .bankTable tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 9px;
+    background: #fff;
+  }
+
+  .bankTable td {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    min-width: 0;
+    padding: 7px 5px;
+    border: 0;
+    overflow-wrap: anywhere;
+    text-align: right;
+    white-space: normal;
+  }
+
+  .bankTable td::before {
+    content: attr(data-label);
+    flex: none;
+    color: #667085;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: left;
+  }
+
+  .bankTable td[data-label="Description"],
+  .bankTable td[data-label="Actions"] {
+    grid-column: 1 / -1;
+  }
+
+  .bankRowActions {
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+}
+/* Side-detail convention: banking match drawers open from the left. */
+.bankDrawerBackdrop{justify-content:flex-start}.bankMatchDrawer{position:relative!important;inset:auto!important;margin:0!important;border-right:1px solid #dfe6ef;box-shadow:16px 0 40px rgba(15,31,56,.14)}
+.bankDrawerBackdrop{justify-content:flex-end}.bankMatchDrawer{border-left:1px solid #dfe6ef;border-right:0;box-shadow:-16px 0 40px rgba(15,31,56,.14)}

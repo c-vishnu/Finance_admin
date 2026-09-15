@@ -1,0 +1,14 @@
+/* Shared typography floor, including native controls and chart text. */
+body, button, input, select, textarea, code, svg text {
+  font-family: 'Instrument Sans', Arial, sans-serif;
+}
+small, svg text { font-size: 12px; }
+.accountHero dl { grid-template-columns: 1fr; }
+.accountHero dl div { grid-template-columns: 112px 1fr; }
+.recentHead, .recentRow { grid-template-columns: 80px minmax(100px, 1fr) 65px 65px; }
+.recentBox { overflow-x: auto; }
+.recentHead, .recentRow { min-width: 350px; }
+.accountHero h2 small { display: inline-block; margin-top: 4px; }
+.coaSimpleTools { grid-template-columns: minmax(180px,1fr) 112px 88px 125px; }
+@media(max-width:1100px) { .coaSimpleTools { grid-template-columns: minmax(150px,1fr) 110px 125px; } }
+@media(max-width:850px) { .coaSimpleTools { grid-template-columns: minmax(0,1fr) 125px; } }

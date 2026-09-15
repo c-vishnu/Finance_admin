@@ -1,0 +1,12 @@
+node_modules/
+dist/
+tmp/
+.edge-cdp-profile/
+.tmp-edge-profile/
+.pnpm-store/
+qa-evidence/
+.DS_Store
+*.log
+.vite/
+const a = `x`;
+Wayvida-Books-Page-Screenshots.zip

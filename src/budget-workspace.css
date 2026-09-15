@@ -1,0 +1,414 @@
+.budgetV3{--budget-blue:#326df4;--budget-text:#172033;--budget-muted:#667085;--budget-border:#dfe6ef;max-width:1680px;margin:0 auto;padding:18px 24px 36px;color:var(--budget-text);font:14px/1.5 'Instrument Sans',sans-serif}.budgetV3 *{box-sizing:border-box}.budgetV3 h1,.budgetV3 h2,.budgetV3 p{margin:0}.budgetV3 button,.budgetV3 input,.budgetV3 select{font:inherit}.budgetV3 button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:8px 12px;border:1px solid var(--budget-border);border-radius:7px;background:#fff;color:#344054;cursor:pointer}.budgetV3 button.primary{border-color:var(--budget-blue);background:var(--budget-blue);color:#fff;box-shadow:0 3px 10px #326df433}.budgetV3 button:disabled{opacity:.55;cursor:not-allowed}.budgetV3Head{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:76px;margin-bottom:18px}.budgetV3Head h1{font-size:26px;letter-spacing:-.6px}.budgetV3Head p{margin-top:5px;color:var(--budget-muted)}.budgetListCard,.budgetSetup,.budgetSelect,.budgetAllocation,.budgetReview,.budgetDetailBody{background:#fff;border:1px solid var(--budget-border);border-radius:10px;overflow:hidden}.budgetFilters{display:flex;align-items:center;gap:10px;padding:13px;border-bottom:1px solid #e8edf3}.budgetFilters label,.budgetSelectionTools label{display:flex;align-items:center;gap:8px;flex:1;min-width:240px;min-height:40px;padding:0 11px;border:1px solid #d9e1eb;border-radius:7px;color:#667085}.budgetFilters input,.budgetSelectionTools input{width:100%;border:0;outline:0}.budgetFilters select{min-height:40px;padding:0 26px 0 10px;border:1px solid #d9e1eb;border-radius:7px;background:#fff;color:#344054}.budgetListCard table,.budgetAllocationGrid table{width:100%;border-collapse:collapse}.budgetListCard th,.budgetAllocationGrid th{padding:12px 16px;background:#f6f8fb;color:#667085;font-size:12px;text-align:left}.budgetListCard td{padding:14px 16px;border-top:1px solid #edf1f6}.budgetTextAction,.budgetIconAction{border:0!important;background:transparent!important;color:#2463d4!important}.budgetIconAction{color:#b42318!important;padding:6px!important;min-height:30px!important}.budgetEmpty{text-align:center!important;padding:42px!important;color:#667085}.budgetStatus{display:inline-flex;align-items:center;padding:4px 9px;border-radius:999px;background:#edf1f5;color:#536176;font-size:12px;font-weight:650}.budgetStatus.active{background:#e4f5ec;color:#19734c}.budgetStatus.draft{background:#fff2db;color:#99600e}.budgetStatus.closed{background:#edf1f5;color:#536176}.budgetSetup,.budgetSelect,.budgetAllocation,.budgetReview{padding:20px}.budgetSetup h2{margin:0 0 11px;font-size:16px}.budgetSetup h2:not(:first-child){margin-top:22px}.budgetSetup h2 small{color:#7a8799;font-size:11px;font-weight:500}.budgetPurposeCards,.budgetTemplateCards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.budgetTemplateCards{grid-template-columns:repeat(3,minmax(0,1fr))}.budgetPurposeCards button,.budgetTemplateCards button{min-height:84px;align-items:flex-start;justify-content:flex-start;flex-direction:column;gap:4px;padding:13px;text-align:left}.budgetPurposeCards button.active,.budgetTemplateCards button.active{border-color:var(--budget-blue);background:#f3f7ff;box-shadow:0 0 0 1px var(--budget-blue)}.budgetPurposeCards small,.budgetTemplateCards small{color:#667085;font-size:12px;font-weight:400;line-height:1.35}.budgetSetupFields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:20px;padding-top:20px;border-top:1px solid #edf1f6}.budgetSetupFields label{display:flex;flex-direction:column;gap:6px;color:#344054;font-weight:600}.budgetSetupFields input,.budgetSetupFields select{min-height:40px;padding:8px 10px;border:1px solid #d9e1eb;border-radius:7px;background:#fff;color:#344054}.budgetSelectHead{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:14px}.budgetSelectHead h2,.budgetReview h2{font-size:18px}.budgetSelectHead p{margin-top:4px;color:#667085}.budgetSelectHead>span{padding:4px 9px;border-radius:99px;background:#edf4ff;color:#2463d4;font-size:12px;font-weight:650}.budgetAccountTabs{display:flex;gap:0;border-bottom:1px solid var(--budget-border);overflow:auto}.budgetAccountTabs button{flex:0 0 auto;border:0;border-bottom:3px solid transparent;border-radius:0;background:transparent;color:#667085;font-weight:650}.budgetAccountTabs button.active{border-bottom-color:var(--budget-blue);color:#2463d4;background:#f6f9ff}.budgetSelectionTools{display:flex;gap:9px;margin:14px 0}.budgetSelectionTools label{max-width:380px}.budgetTreeV3{max-height:380px;overflow:auto;border:1px solid #e1e8f2;border-radius:8px}.budgetTreeV3 label{display:flex;align-items:center;gap:10px;min-height:44px;padding:8px 12px;border-bottom:1px solid #edf1f6;cursor:pointer}.budgetTreeV3 label:hover{background:#f8fbff}.budgetTreeV3 input{width:16px;height:16px;accent-color:var(--budget-blue)}.budgetTreeV3 span{display:flex;flex-direction:column}.budgetTreeV3 small,.budgetAllocationGrid small{color:#7a8799;font-size:11px}.budgetTreeV3 p{padding:24px;text-align:center;color:#667085}.budgetAllocationActions{display:flex;gap:8px;flex-wrap:wrap}.budgetAllocationActions button{min-height:34px;padding:6px 10px;font-size:12px}.budgetAllocationGrid{overflow:auto;border:1px solid #e1e8f2;border-radius:8px}.budgetAllocationGrid table{min-width:920px}.budgetAllocationGrid th{border-right:1px solid #e9edf3;white-space:nowrap}.budgetAllocationGrid td{padding:0;border-top:1px solid #edf1f6;border-right:1px solid #edf1f6}.budgetAllocationGrid td:first-child{position:sticky;left:0;z-index:1;min-width:240px;padding:10px 12px;background:#fff}.budgetAllocationGrid td input{width:100%;min-width:76px;min-height:42px;padding:7px;border:0;background:transparent;text-align:right}.budgetAllocationGrid td input:focus{outline:2px solid #9cbbff;outline-offset:-2px;background:#f5f8ff}.budgetAllocationGrid td:last-child{padding:0 12px;text-align:right;white-space:nowrap}.budgetReview dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px}.budgetReview dl>div{padding:12px 0;border-bottom:1px solid #edf1f6}.budgetReview dt{color:#667085;font-size:12px}.budgetReview dd{margin:3px 0 0;font-weight:650}.budgetReviewTotals,.budgetSummaryCards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:20px}.budgetReviewTotals{grid-template-columns:repeat(3,minmax(0,1fr))}.budgetReviewTotals article,.budgetSummaryCards article{display:flex;flex-direction:column;gap:4px;padding:14px;border:1px solid #e1e8f2;border-radius:8px;background:#f8fafc}.budgetReviewTotals span,.budgetSummaryCards span{color:#667085;font-size:12px}.budgetReviewTotals b,.budgetSummaryCards b{font-size:18px}.budgetWizardActions{display:flex;justify-content:flex-end;gap:9px;margin-top:16px}.budgetDetailBody{margin-top:14px;padding:18px}.budgetActivity article{display:flex;flex-direction:column;gap:3px;padding:13px 0;border-bottom:1px solid #edf1f6}.budgetActivity span{color:#667085;font-size:12px}.budgetUnder{color:#19734c}.budgetOver{color:#b42318}.budgetError{margin:12px 0 0;padding:10px 12px;border:1px solid #fecaca;border-radius:7px;background:#fff1f2;color:#b42318}@media(max-width:900px){.budgetFilters{flex-wrap:wrap}.budgetFilters label{flex-basis:100%}.budgetPurposeCards,.budgetTemplateCards{grid-template-columns:repeat(2,minmax(0,1fr))}.budgetSummaryCards{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:700px){.budgetV3{padding:14px 16px 24px}.budgetV3Head{align-items:flex-start;flex-direction:column}.budgetV3Head .primary{width:100%}.budgetSetup,.budgetSelect,.budgetAllocation,.budgetReview{padding:15px}.budgetPurposeCards,.budgetTemplateCards,.budgetSetupFields,.budgetReview dl,.budgetReviewTotals,.budgetSummaryCards{grid-template-columns:1fr}.budgetSelectionTools{align-items:stretch;flex-direction:column}.budgetSelectionTools label{max-width:none}.budgetSelectHead{flex-direction:column}.budgetAllocationActions{width:100%}.budgetAllocationActions button{flex:1}.budgetWizardActions button{flex:1}}
+/* Prevent global shell header/welcome rules from affecting Budget content. */
+.welcome:has(+.budgetV3){display:none!important}.app main>.budgetV3{position:static!important;inset:auto!important;z-index:auto!important;width:100%!important;min-height:0!important;margin:0 auto!important;padding:14px 18px 28px!important;overflow:visible!important;background:transparent!important}.app main>.budgetV3>.budgetV3Head{position:static!important;inset:auto!important;display:flex!important;width:auto!important;height:auto!important;min-height:64px!important;margin:0 0 14px!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}.budgetWizard .budgetSteps{margin-bottom:14px!important}.budgetWizard .budgetSetup,.budgetWizard .budgetSelect,.budgetWizard .budgetAllocation,.budgetWizard .budgetReview{margin:0!important}.budgetWizardActions{position:static!important;margin:14px 0 0!important;padding:0!important}.budgetSelect{min-height:0!important}.budgetTreeV3{max-height:360px!important}.budgetAllocationGrid{max-height:calc(100dvh - 360px);overflow:auto!important}@media(max-width:760px){.app main>.budgetV3{padding:12px 14px 22px!important}.app main>.budgetV3>.budgetV3Head{min-height:auto!important;margin-bottom:12px!important}}
+
+/* Budget creation must use a compact, ordinary document flow.  This protects
+   the wizard from legacy full-page/flex rules used by other workspaces. */
+.app main>.budgetV3.budgetWizard{display:block!important;height:auto!important;min-height:0!important;align-content:start!important;justify-content:flex-start!important}
+.app main>.budgetV3.budgetWizard>:is(.budgetV3Head,.budgetSteps,.budgetSetup,.budgetSelect,.budgetAllocation,.budgetReview,.budgetError,.budgetWizardActions){position:static!important;inset:auto!important;transform:none!important;float:none!important;clear:both!important;width:auto!important;height:auto!important;min-height:0!important;max-height:none!important;margin-top:0!important}
+.app main>.budgetV3.budgetWizard>.budgetV3Head{margin-bottom:10px!important}
+.app main>.budgetV3.budgetWizard>.budgetSteps{margin:0 0 12px!important}
+.app main>.budgetV3.budgetWizard>:is(.budgetSetup,.budgetSelect,.budgetAllocation,.budgetReview){margin-bottom:0!important}
+.app main>.budgetV3.budgetWizard>.budgetWizardActions{margin:12px 0 0!important}
+.app main>.budgetV3.budgetWizard .budgetSetup,.app main>.budgetV3.budgetWizard .budgetSelect,.app main>.budgetV3.budgetWizard .budgetAllocation,.app main>.budgetV3.budgetWizard .budgetReview{scroll-margin-top:12px!important}
+
+/* Account types stay inside the Select accounts card.  On narrow workspaces
+   they scroll horizontally instead of being cut off or expanding the page. */
+.budgetSelect{display:block!important;height:auto!important;min-height:0!important;padding:20px!important}
+.budgetSelect>:is(.budgetSelectHead,.budgetAccountTabs,.budgetSelectionTools,.budgetTreeV3){position:static!important;inset:auto!important;transform:none!important;height:auto!important;min-height:0!important;margin-top:0!important}
+.budgetSelect .budgetAccountTabs{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))!important;align-items:stretch!important;gap:0!important;width:100%!important;max-width:100%!important;min-width:0!important;overflow:visible!important;border:1px solid #e1e8f2!important;border-radius:8px!important;background:#f8fafc!important}
+.budgetSelect .budgetAccountTabs button{display:flex!important;flex:initial!important;min-width:0!important;min-height:42px!important;justify-content:center!important;white-space:nowrap!important;margin:0!important;padding:9px 14px!important;border:0!important;border-right:1px solid #e1e8f2!important;border-bottom:3px solid transparent!important;border-radius:0!important;background:transparent!important}
+.budgetSelect .budgetAccountTabs button:last-child{border-right:0!important}
+.budgetSelect .budgetAccountTabs button.active{border-bottom-color:var(--budget-blue)!important;background:#f0f5ff!important}
+.budgetSelect .budgetSelectionTools{margin:12px 0!important}
+.budgetSelect .budgetTreeV3{height:auto!important;max-height:360px!important;margin:0!important}
+@media(max-width:700px){.budgetSelect{padding:15px!important}.budgetSelect .budgetAccountTabs{grid-template-columns:repeat(2,minmax(0,1fr))!important}.budgetSelect .budgetAccountTabs button:nth-child(2n){border-right:0!important}}
+
+/* Keep the budget detail view compact as the user changes its tabs. */
+.app main>.budgetV3.budgetDetailV3{display:block!important;height:auto!important;min-height:0!important}
+.app main>.budgetV3.budgetDetailV3>:is(.budgetV3Head,.budgetSummaryCards,.budgetAccountTabs,.budgetDetailBody){position:static!important;inset:auto!important;transform:none!important;float:none!important;clear:both!important;width:auto!important;height:auto!important;min-height:0!important;max-height:none!important;margin-top:0!important}
+.budgetDetailV3>.budgetV3Head{margin-bottom:12px!important}
+.budgetDetailV3>.budgetSummaryCards{margin:0 0 12px!important}
+.budgetDetailV3>.budgetAccountTabs{display:grid!important;grid-template-columns:repeat(8,minmax(0,1fr))!important;gap:0!important;width:100%!important;overflow:visible!important;border:1px solid #e1e8f2!important;border-radius:8px!important;background:#f8fafc!important}
+.budgetDetailV3>.budgetAccountTabs button{display:flex!important;min-width:0!important;min-height:42px!important;justify-content:center!important;margin:0!important;padding:9px 12px!important;border:0!important;border-right:1px solid #e1e8f2!important;border-bottom:3px solid transparent!important;border-radius:0!important;background:transparent!important;white-space:nowrap!important}
+.budgetDetailV3>.budgetAccountTabs button:last-child{border-right:0!important}
+.budgetDetailV3>.budgetAccountTabs button.active{border-bottom-color:var(--budget-blue)!important;background:#f0f5ff!important;color:#2463d4!important}
+.budgetDetailV3>.budgetDetailBody{margin:12px 0 0!important;padding:16px!important}
+@media(max-width:700px){.budgetDetailV3>.budgetSummaryCards{grid-template-columns:repeat(2,minmax(0,1fr))!important}.budgetDetailV3>.budgetAccountTabs{grid-template-columns:repeat(2,minmax(0,1fr))!important}.budgetDetailV3>.budgetAccountTabs button:nth-child(2n){border-right:0!important}.budgetDetailV3>.budgetDetailBody{padding:12px!important}}
+
+/* Budget management rebuild additions */
+.budgetHeadActions{display:flex;align-items:center;justify-content:flex-end;gap:9px;flex-wrap:wrap}
+.budgetHeadActions input[type=file]{display:none}
+.budgetActionsCell{white-space:nowrap;text-align:right}
+.budgetRowActions{display:flex;align-items:center;gap:8px}
+.budgetActionsCell .budgetRowView{min-height:34px;padding:0 11px;gap:7px;font-size:13px;font-weight:650;color:#245fd9}
+.budgetActionsCell .budgetRowView:hover{border-color:#b8c9e9;background:#f4f7ff;color:#245fd9}
+/* Row action menu: the canonical 3-dot kebab geometry shared with Period
+   Closing, the Journal Entries register and the Chart of Accounts table.
+   The register card keeps overflow visible so an open menu is never clipped,
+   and the header cells carry the card radius the clipped overflow used to give. */
+.budgetListCard{overflow:visible}
+.budgetKebab{position:relative;display:inline-block}
+.budgetKebab>summary{display:grid;place-items:center;width:32px;height:32px;padding:0;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#475467;cursor:pointer;list-style:none}
+.budgetKebab>summary::-webkit-details-marker{display:none}
+.budgetKebab[open]>summary{border-color:#3478f6;color:#245fd9}
+.budgetKebab>div{position:absolute;right:0;top:calc(100% + 6px);z-index:20;display:flex;flex-direction:column;min-width:196px;padding:6px;border:1px solid #e1e6ed;border-radius:9px;background:#fff;box-shadow:0 12px 30px #1018281f}
+.budgetKebab>div button{display:flex;align-items:center;gap:9px;min-height:36px;padding:0 10px;border:0;border-radius:6px;background:transparent;color:#344054;font-size:13px;text-align:left}
+.budgetKebab>div button:hover{background:#f4f7ff;color:#245fd9}
+.budgetKebab>div button.budgetKebabDanger{color:#b42318}
+.budgetKebab>div button.budgetKebabDanger:hover{background:#fff5f6;color:#b42318}
+.budgetDetailActions{display:flex;align-items:center;justify-content:flex-end;gap:9px;flex-wrap:wrap}
+.budgetAlerts{display:grid;gap:8px;margin:0 0 12px}
+.budgetAlerts p{display:flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid #fedf89;border-radius:8px;background:#fffaeb;color:#93370d;font-size:13px}
+.budgetAlerts p.info{border-color:#b2ddff;background:#f0f9ff;color:#175cd3}
+.budgetTreeGroup{padding:10px 12px 4px;border-bottom:1px solid #edf1f6}
+.budgetTreeGroup>b{display:block;margin:0 0 6px;color:#344054;font-size:12px;font-weight:750}
+.budgetTreeGroup label{border-bottom:0;border-top:1px solid #f2f5f9}
+.budgetForecastCards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.budgetForecastCards article{display:flex;flex-direction:column;gap:4px;padding:14px;border:1px solid #e1e8f2;border-radius:8px;background:#f8fafc}
+.budgetForecastCards span{color:#667085;font-size:12px}
+.budgetForecastCards b{font-size:18px}
+.budgetRevisions{display:grid;gap:10px}
+.budgetRevisions>button{justify-self:start}
+.budgetRevisions article{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px;border:1px solid #e1e8f2;border-radius:8px;background:#fff}
+.budgetRevisions article div{display:flex;flex-direction:column;gap:3px}
+.budgetRevisions article span{color:#667085;font-size:12px}
+@media(max-width:900px){.budgetForecastCards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.budgetHeadActions{width:100%;flex-wrap:wrap}.budgetHeadActions button{flex:1}.budgetForecastCards{grid-template-columns:1fr}}
+.budgetStatus.pending-approval{background:#fff2db;color:#99600e}
+.budgetStatus.approved{background:#e4f5ec;color:#19734c}
+.budgetStatus.completed{background:#eef2f6;color:#344054}
+.budgetStatus.archived{background:#f2f4f7;color:#667085}
+
+
+/* Budget register bar and grid. The geometry is copied from the Period Closing
+   register (.pc-filters, .pc-filter-search, .pc-filters-more, .pc-filters-panel
+   and .pc th / .pc td) so the Budgets grid reads exactly like the Period Closing
+   and Journal Entries registers: one toolbar row inside the card - search box,
+   financial year select and one Filters disclosure holding every other filter -
+   above the table. */
+.budgetRegisterBar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:14px 20px 16px;border-bottom:1px solid #eef1f6}
+.budgetFilterSearch{display:flex;align-items:center;gap:8px;flex:1 1 260px;min-width:200px;min-height:38px;padding:0 10px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#8fa0b7}
+.budgetFilterSearch input{width:100%;min-width:0;padding:0;border:0;outline:0;background:transparent;color:#172033}
+.budgetFilterSearch:focus-within{border-color:#9fbdf0;box-shadow:0 0 0 3px #eaf1ff}
+.budgetRegisterBar .budgetFilterYear{flex:0 1 190px;min-width:150px;min-height:38px;padding:0 26px 0 10px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#1d293d}
+.budgetFiltersMore{position:relative;flex:none}
+.budgetFiltersMore>summary{display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:0 14px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#1d293d;font-weight:600;cursor:pointer;list-style:none}
+.budgetFiltersMore>summary::-webkit-details-marker{display:none}
+.budgetFiltersMore[open]>summary{border-color:#9fbdf0;box-shadow:0 0 0 3px #eaf1ff}
+.budgetFiltersPanel{position:absolute;right:0;top:44px;z-index:30;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;min-width:min(440px,90vw);padding:14px;border:1px solid #e1e6ed;border-radius:10px;background:#fff;box-shadow:0 14px 30px #0f172a1f}
+.budgetFilterField{display:flex;flex-direction:column;gap:5px;min-width:0}
+.budgetFilterField span{color:#667085;font-size:12px;font-weight:650}
+.budgetFilterField select{min-height:38px;width:100%;padding:0 10px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#172033}
+.budgetFiltersPanelActions{grid-column:1/-1;display:flex;justify-content:flex-end}
+.budgetFiltersPanelActions button{min-height:34px;padding:0 12px;font-size:12px;font-weight:600;color:#33415c}
+.budgetFilterBadge{flex:none;margin-left:auto;display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:#fff2db;color:#99600e;font-size:12px;font-weight:700;font-style:normal}
+.budgetListCard .budgetTable{width:100%;border-collapse:collapse}
+.budgetListCard .budgetTable th{padding:12px 14px;background:#f5f7fb;color:#68768b;font-size:12px;font-weight:600;text-align:left;white-space:nowrap}
+.budgetListCard .budgetTable td{padding:13px 14px;border-top:1px solid #edf1f6;vertical-align:middle}
+.budgetListCard .budgetTable tbody tr:hover td{background:#fafcff}
+.budgetListCard .budgetTable th:last-child,.budgetListCard .budgetTable td:last-child{width:1%;text-align:right;white-space:nowrap}
+.budgetListCard .budgetTable td:first-child b{color:#172033;font-weight:650}
+.budgetActionsCell .budgetRowActions{justify-content:flex-end}
+@media(max-width:1100px){.budgetFiltersPanel{grid-template-columns:minmax(0,1fr);min-width:min(320px,92vw)}}
+@media(max-width:760px){.budgetRegisterBar .budgetFilterSearch{flex:1 1 100%}.budgetRegisterBar .budgetFilterYear{flex:1 1 100%;min-width:0}}
+
+
+/* Create Budget: the scope row, the template switch, the shared account
+   selection grid and the wizard footer. Scoped to .budgetWizard so the register
+   and the detail screen keep their own rules. The organisation/branch control is
+   the shared OrganisationBranchScope, so only its control skin is restated here
+   with the budget palette (the .pc page scope does not reach this page). */
+.budgetWizard .budgetSetup>.budgetSetupFields{margin-top:0;padding-top:0;border-top:0}
+/* The details step is one three-column field grid, so the budget name sits
+   beside the organisation and the branch the plan covers, and the financial
+   year, the budget period and the duration those two imply share the line
+   beneath, instead of each fact picking its own widths. */
+.budgetWizard .budgetSetupFields{grid-template-columns:repeat(3,minmax(0,1fr))}
+.budgetScopeRow .pc-scope-picker{gap:9px;margin-bottom:0}
+.budgetScopeRow .pc-fields{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.budgetScopeRow .pc-multi-field{gap:7px}
+.budgetScopeRow .pc-field{gap:7px;margin-top:0;color:#344054;font-weight:600}
+.budgetScopeRow .pc-field select{min-height:40px;padding:8px 10px;border:1px solid #d9e1eb;border-radius:7px;background:#fff;color:#344054}
+.budgetTemplateSwitch{display:flex!important;flex-direction:row!important;align-items:center!important;gap:11px!important;margin-top:18px;padding:12px 14px;border:1px solid #e1e8f2;border-radius:9px;background:#f8fafc;cursor:pointer}
+.budgetTemplateSwitch input{flex:none;width:34px;height:19px;accent-color:var(--budget-blue)}
+.budgetTemplateSwitch>span{display:flex;flex-direction:column;gap:2px}
+.budgetTemplateSwitch b{font-size:13px}
+.budgetTemplateSwitch small{color:#667085;font-size:12px;font-weight:400}
+.budgetTemplateCards{margin-top:12px}
+.budgetAccountGrid{max-height:440px;overflow:auto;border:1px solid #e8edf3;border-radius:9px}
+.budgetAccountGrid table{width:100%;border-collapse:collapse}
+.budgetAccountGrid thead th{position:sticky;top:0;z-index:1;padding:12px 14px;background:#f6f8fb;color:#667085;font-size:12px;text-align:left}
+.budgetAccountGrid td{padding:11px 14px;border-top:1px solid #edf1f6;font-size:13px}
+.budgetAccountGrid tbody tr:hover{background:#fafcff}
+.budgetAccountGrid tbody tr:focus-within{background:#f4f7ff}
+.budgetAccountGrid tr.budgetRowChosen{background:#f4f7ff}
+.budgetAccountGrid tr.budgetGroupRow>*{padding:9px 14px;border-top:1px solid #e8edf3;background:#f1f5fb;color:#344054;font-size:12px;text-align:left}
+.budgetAccountGrid .budgetGroupCell{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.budgetAccountGrid .budgetGroupCell b{font-weight:700}
+.budgetAccountGrid .budgetGroupCell span{color:#667085;font-size:12px;font-weight:600}
+.budgetAccountGrid .budgetChooseCell{width:56px;text-align:center}
+.budgetAccountGrid .budgetChooseCell input{width:18px;height:18px;accent-color:var(--budget-blue);cursor:pointer}
+.budgetAccountGrid .budgetChooseCell input:focus-visible{outline:2px solid #245fd9;outline-offset:2px}
+.budgetAccountGrid .budgetAccountCell{padding:0}
+.budgetAccountGrid .budgetAccountCell label{display:flex;flex-direction:column;gap:2px;padding:11px 14px;cursor:pointer}
+.budgetAccountGrid .budgetAccountCell b{font-weight:650}
+.budgetAccountGrid .budgetAccountCell small{color:#667085;font-size:12px}
+.budgetSrOnly{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.budgetWizard .budgetReviewTotals{grid-template-columns:repeat(4,minmax(0,1fr));margin-top:14px}
+.budgetWizardActions{display:flex;align-items:center;justify-content:flex-end;gap:9px}
+.budgetWizardActions button{min-height:40px;padding:0 16px;white-space:nowrap}
+@media(max-width:700px){.budgetScopeRow .pc-fields{grid-template-columns:1fr}.budgetWizard .budgetReviewTotals{grid-template-columns:repeat(2,minmax(0,1fr))}.budgetWizardActions{flex-wrap:wrap}.budgetWizardActions button{flex:1}}
+
+
+/* Create Budget: its head is the page header, exactly like the Create Journal
+   Entry page. The wizard gives up the shell padding so that head can span the
+   full width of the application header and line up directly beneath the
+   working-context organisation and branch bar above it, then hands the gutter
+   back to every other child. The step position sits on the stepper card, and
+   the three steps render as a numbered progress stepper - a finished step shows
+   a tick and the connector turns blue - instead of the earlier underline tab
+   row, and the connector is painted behind every label so no line can cross the
+   text. */
+.app main:has(>.budgetV3.budgetWizard){max-width:none!important;padding:0!important}
+.app main>.budgetV3.budgetWizard{max-width:none!important;margin:0!important;padding:0 0 28px!important}
+.app main>.budgetV3.budgetWizard>:not(.budgetV3Head){margin-left:clamp(16px,2.2vw,32px)!important;margin-right:clamp(16px,2.2vw,32px)!important}
+.app main>.budgetV3.budgetWizard>.budgetV3Head.budgetWizardHead{display:grid!important;grid-template-columns:40px minmax(0,1fr)!important;align-items:center!important;gap:14px!important;width:100%!important;max-width:none!important;min-height:56px!important;margin:0 0 16px!important;padding:8px 24px!important;border:1px solid var(--budget-border)!important;border-left:0!important;border-right:0!important;border-radius:0!important;background:#fff!important;box-shadow:none!important}
+.budgetV3 .budgetHeadBack{display:inline-grid;place-items:center;width:40px;height:40px;min-height:40px;min-width:40px;padding:0;border:1px solid #d7e0eb;border-radius:8px;background:#fff;color:#475467}
+.budgetV3 .budgetHeadBack:hover{border-color:#bcd0f5;background:#eef4ff;color:#2463d4}
+.budgetHeadText{display:flex;flex-direction:column;gap:1px;min-width:0;overflow:hidden}
+.budgetHeadTitle{overflow:hidden;color:#172033;font-size:16px;font-weight:650;line-height:1.25;text-overflow:ellipsis;white-space:nowrap}
+.budgetHeadHint{overflow:hidden;color:#667085;font-size:12px;text-overflow:ellipsis;white-space:nowrap}
+.budgetHeadHint b{color:#475467}
+.budgetV3 .budgetStepCount{display:inline-flex;align-items:center;justify-self:end;min-height:28px;padding:4px 10px;border-radius:999px;background:#eef2f7;color:#475467;font-size:12px;font-weight:600;white-space:nowrap}
+.budgetSteps{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:16px;width:100%;margin:0 0 14px;padding:12px 16px;border:1px solid var(--budget-border);border-radius:10px;background:#fff}
+.budgetSteps>ol{display:flex;align-items:center;gap:0;margin:0;padding:0;list-style:none}
+.budgetSteps>ol>li{position:relative;display:flex;flex:1 1 170px;min-width:0}
+.budgetSteps>ol>li:not(:last-child)::after{content:"";position:absolute;z-index:0;top:12px;left:36px;right:12px;height:2px;border-radius:2px;background:#e1e6ed}
+.budgetSteps>ol>li.complete:not(:last-child)::after{background:var(--budget-blue)}
+.budgetSteps>ol>li.active:not(:last-child)::after{background:linear-gradient(90deg,var(--budget-blue) 0,var(--budget-blue) 50%,#e1e6ed 50%,#e1e6ed 100%)}
+.budgetSteps>ol>li.upcoming:not(:last-child)::after{background:#e8edf3}
+.budgetV3 .budgetSteps button{position:relative;z-index:1;display:flex;align-items:center;justify-content:flex-start;gap:10px;min-width:0;min-height:0;padding:0 12px 0 0;border:0;border-radius:6px;background:#fff;color:#667085;font-weight:600;text-align:left}
+.budgetV3 .budgetSteps button i{display:grid;place-items:center;flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:2px solid #e1e6ed;background:#fff;color:#667085;font-size:12px;font-weight:700;font-style:normal}
+.budgetV3 .budgetSteps button span{min-width:0;font-size:13px;font-weight:600;white-space:nowrap}
+.budgetV3 .budgetSteps button.active{color:#245fd9}
+.budgetV3 .budgetSteps button.active i{border-color:var(--budget-blue);background:var(--budget-blue);color:#fff}
+.budgetV3 .budgetSteps button.complete{color:#1d293d}
+.budgetV3 .budgetSteps button.complete i{border-color:#bcd0f5;background:#eaf1ff;color:#245fd9}
+.budgetV3 .budgetSteps button:not(:disabled):hover{color:#245fd9}
+.budgetV3 .budgetSteps button:not(:disabled):hover i{border-color:#9fbdf0}
+.budgetV3 .budgetSteps button:disabled{opacity:1;cursor:default}
+@media(max-width:760px){.app main>.budgetV3.budgetWizard>.budgetV3Head.budgetWizardHead{grid-template-columns:36px minmax(0,1fr)!important;padding:8px 12px!important}.budgetV3 .budgetHeadBack{width:36px;height:36px;min-height:36px;min-width:36px}.budgetSteps{grid-template-columns:minmax(0,1fr)}.budgetV3 .budgetSteps>ol{flex-direction:column;align-items:flex-start;gap:10px}.budgetSteps>ol>li:not(:last-child)::after{display:none}.budgetV3 .budgetSteps button span{white-space:normal}}
+
+
+
+/* Create Budget: the field grid folds back as the page narrows, so no field is
+   ever squeezed into a sliver or pushed into a sideways scroll. Below 1100px the
+   details grid is two columns and the scope row and the duration each take the
+   whole width; below 700px every field is a single column. */
+@media(max-width:1100px){.budgetWizard .budgetSetupFields,.budgetScopeRow .pc-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.budgetWizard .budgetSetupFields .budgetDuration{grid-column:span 2}.budgetWizard .budgetSetupFields .budgetDurationDates{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.budgetWizard .budgetSetupFields,.budgetScopeRow .pc-fields{grid-template-columns:1fr}.budgetWizard .budgetSetupFields .budgetDuration{grid-column:auto}.budgetWizard .budgetSetupFields .budgetDurationDates{grid-template-columns:1fr}}
+
+
+/* The scope picker opens its checkbox list over the template switch below it, so
+   the details card must not clip it. This is the same fix the journal lines card
+   uses for the account combobox it holds. */
+.budgetWizard .budgetSetup{overflow:visible}
+/* Create Budget: the allocation step closes with the statement totals the
+   standard budget sheets show under the allocation grid - one total per
+   accounting type, the profit and loss total with its margin, and the
+   liabilities and equities total with the balancing mismatch adjustment.
+   Every figure is computed from the allocation cells above and nothing is
+   stored, so a total can never drift from the allocations it summarises. */
+.budgetTotals{margin-top:18px;padding:16px;border:1px solid #e1e8f2;border-radius:10px;background:#fbfcfe}
+.budgetTotalsHead h2{font-size:16px}
+.budgetTotalsHead p{margin-top:4px;color:#667085;font-size:13px}
+.budgetTotalsGrid{margin-top:12px;overflow:auto;-webkit-overflow-scrolling:touch}
+.budgetTotalsGrid table{width:100%;min-width:680px;border-collapse:collapse}
+.budgetTotalsGrid thead th{padding:10px 12px;background:#f6f8fb;color:#667085;font-size:12px;font-weight:600;text-align:right;white-space:nowrap}
+.budgetTotalsGrid tbody th,.budgetTotalsGrid tbody td{padding:11px 12px;border-top:1px solid #edf1f6;font-size:13px;text-align:right;white-space:nowrap}
+.budgetTotalsGrid thead th:first-child,.budgetTotalsGrid tbody th{min-width:230px;text-align:left;white-space:normal}
+.budgetTotalsGrid tbody th{font-weight:650;color:#344054}
+.budgetTotalsGrid tbody th small{display:block;margin-top:2px;color:#667085;font-size:12px;font-weight:400}
+.budgetTotalsGrid tr.budgetTotalsDerived>*{background:#f1f5fb;font-weight:700}
+
+
+.budgetTotalsGrid td.budgetTotalsNegative{color:#b42318}
+@media(max-width:700px){.budgetTotals{padding:14px}.budgetTotalsGrid table{min-width:560px}}
+
+/* The three budget statements. The bands name the statement, the accounting
+   type and the chart of accounts group; the account rows carry the planned
+   amounts the allocation step collected; the total rows close each group, each
+   type and the statement. The balance sheet mismatch is tinted amber and every
+   figure that moves value out is printed negative. */
+.budgetStatement>.budgetAllocationGrid{max-height:calc(100dvh - 320px)}
+.budgetStatement table{min-width:760px}
+.budgetStatement th,.budgetStatement td{padding:10px 14px;border-top:1px solid #edf1f6;font-size:13px;text-align:right;white-space:nowrap;vertical-align:middle}
+.budgetStatement thead th{background:#f6f8fb;color:#667085;font-size:12px;font-weight:600}
+.budgetStatement thead th:first-child{text-align:left}
+.budgetStatement tbody th{min-width:250px;text-align:left;white-space:normal;color:#344054;font-weight:650}
+.budgetStatement tbody td{color:#344054}
+.budgetStatement tbody th small{display:block;margin-top:2px;color:#667085;font-size:12px;font-weight:400}
+.budgetStatementRow td:first-child{padding-left:30px;font-weight:600}
+.budgetStatementRow td:first-child small{display:inline-block;margin-left:8px;font-weight:400}
+.budgetStatementSection>th,.budgetStatementType>th,.budgetStatementGroup>th{text-align:left;white-space:normal;border-top:1px solid #e4eaf2}
+.budgetStatementSection>th{padding:12px 14px;background:#f4f7fc;color:#172033;font-size:13px;font-weight:700}
+.budgetStatementType>th{padding:11px 14px;background:#fbfcfe;color:#172033;font-size:13px;font-weight:700}
+.budgetStatementGroup>th{padding:10px 14px 10px 26px;background:#fff;color:#536176;font-size:12px;font-weight:650}
+.budgetStatementTotal>*{background:#f8fafd;font-weight:700}
+.budgetStatementTotal>th small{display:block;margin-top:2px;font-size:12px;font-weight:400;color:#667085}
+.budgetStatementTotal.budgetStatementDerived>*{background:#f1f5fb}
+.budgetStatementTotal.budgetStatementMismatch>*{background:#fff6ec;color:#8a4b09}
+.budgetStatementTotal.budgetStatementMismatch th small{color:#8a4b09}
+.budgetStatementNegative{color:#b42318}
+@media(max-width:700px){.budgetStatement th,.budgetStatement td{padding:9px 11px}.budgetStatement tbody th{min-width:190px}}
+
+/* The budget detail screen reads top to bottom: the plan's own figures, the
+   health bars, then the alerts the engine raised. Everything here is read only,
+   so no panel carries a control that could change a stored budget. */
+.budgetOverview{display:flex;flex-direction:column;gap:16px}
+.budgetOverview>.budgetSummaryCards{margin-top:0}
+.budgetPanel,.budgetDetailsPanel,.budgetBalanceCheck{border:1px solid #e1e8f2;border-radius:10px;background:#fff;padding:16px}
+.budgetPanelHead{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:12px}
+.budgetPanelHead h2{font-size:15px}
+.budgetPanelHead>span{color:#667085;font-size:12px;font-weight:600}
+.budgetHealthBars{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.budgetHealthBars article{display:flex;flex-direction:column;gap:8px}
+.budgetHealthBars article>div{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.budgetHealthBars b{font-size:13px}
+.budgetHealthBars span{color:#667085;font-size:12px}
+.budgetHealthTrack{height:8px;border-radius:999px;background:#eef2f8;overflow:hidden}
+.budgetHealthTrack i{display:block;height:100%;border-radius:999px;background:var(--budget-blue)}
+.budgetHealthBars em{color:#475467;font-size:12px;font-style:normal;font-weight:650}
+.budgetHealthResult{display:flex;align-items:baseline;justify-content:space-between;gap:14px;margin-top:14px;padding-top:12px;border-top:1px solid #edf1f6}
+.budgetHealthResult>div{display:flex;align-items:baseline;gap:10px}
+.budgetHealthResult span{color:#667085;font-size:12px;font-weight:600}
+.budgetHealthResult b{font-size:18px}
+.budgetHealthResult small{color:#667085;font-size:12px}
+.budgetAlerts{display:flex;flex-direction:column;gap:8px}
+.budgetAlerts p{display:flex;align-items:flex-start;gap:8px;padding:10px 12px;border:1px solid #ffe4c4;border-radius:8px;background:#fff8f0;color:#8a4b09;font-size:12px}
+.budgetAlerts p.info{border-color:#dbe7ff;background:#f4f8ff;color:#245fd9}
+.budgetAlerts p.critical{border-color:#fecaca;background:#fff1f2;color:#b42318}
+.budgetDetailsFacts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 24px;margin:0}
+.budgetDetailsFacts>div{padding:11px 0;border-bottom:1px solid #edf1f6}
+.budgetDetailsFacts dt{color:#667085;font-size:12px}
+.budgetDetailsFacts dd{margin:3px 0 0;font-weight:650}
+.budgetDetailsFacts .budgetDetailsWide{grid-column:1/-1}
+.budgetDetailsAccounts{margin-top:14px}
+.budgetDetailsAccounts>b{display:block;margin-bottom:8px;font-size:13px}
+.budgetDetailsGroup{display:grid;grid-template-columns:200px minmax(0,1fr);gap:12px;padding:9px 0;border-top:1px solid #edf1f6}
+.budgetDetailsGroup>span{color:#667085;font-size:12px;font-weight:600}
+.budgetDetailsGroup ul{display:flex;flex-wrap:wrap;gap:6px 10px;margin:0;padding:0;list-style:none}
+.budgetDetailsGroup li{display:flex;align-items:center;gap:6px;padding:3px 9px;border:1px solid #e1e8f2;border-radius:999px;background:#f8fafc;font-size:12px}
+.budgetDetailsGroup code{color:#667085;font-size:12px}
+.budgetAccountsView{display:flex;flex-direction:column;gap:12px}
+.budgetAccountFilters{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.budgetAccountFilters select{min-height:38px;padding:0 26px 0 10px;border:1px solid #d9e1eb;border-radius:7px;background:#fff;color:#344054}
+.budgetAccountFilters>span{margin-left:auto;color:#667085;font-size:12px;font-weight:600}
+.budgetFilterSearch{display:flex;align-items:center;gap:8px;flex:1;min-width:240px;min-height:38px;padding:0 11px;border:1px solid #d9e1eb;border-radius:7px;color:#667085}
+.budgetFilterSearch input{width:100%;border:0;outline:0;background:transparent}
+.budgetVariance.favourable{color:#19734c}
+.budgetVariance.unfavourable{color:#b42318}
+.budgetVariance.neutral{color:#475467}
+.budgetVarianceGrid tbody td,.budgetAccountsView .budgetAllocationGrid tbody td{padding:11px 14px;text-align:right;white-space:nowrap}
+.budgetVarianceGrid tbody td:first-child,.budgetAccountsView .budgetAllocationGrid tbody td:first-child{text-align:left;white-space:normal}
+.budgetVarianceGrid tfoot th,.budgetVarianceGrid tfoot td{padding:11px 14px;border-top:1px solid #e1e8f2;background:#f6f8fb;font-weight:700;text-align:right;white-space:nowrap}
+.budgetVarianceGrid tfoot th:first-child{text-align:left}
+.budgetStatementCheck>*{background:#fff6ec;color:#8a4b09;font-weight:700}
+.budgetStatementCheck>th small{color:#8a4b09}
+.budgetAllocationGrid thead th{position:sticky;top:0;z-index:3;background:#f6f8fb}
+.budgetAllocationGrid thead th:first-child{left:0;z-index:4}
+.budgetAllocationGrid tbody .budgetStickyCol{position:sticky;left:0;z-index:1;min-width:240px;padding:10px 12px;background:#fff}
+.budgetAllocationGrid small{font-size:12px}
+.budgetAllocBand>th{padding:9px 12px;border-top:1px solid #dfe6ef;background:#eef2f8;color:#172033;font-size:12px;font-weight:700;text-align:left;white-space:normal}
+.budgetAllocGroup>th{padding:0;border-top:1px solid #e8edf3;background:#f1f5fb;white-space:normal}
+.budgetAllocGroup>th>button{display:flex;align-items:center;gap:9px;width:100%;min-height:40px;padding:9px 12px;border:0;border-radius:0;background:transparent;color:#344054;font-size:13px;font-weight:650;text-align:left}
+.budgetAllocGroup>th>button:hover{background:#e8effa}
+.budgetAllocGroup>th>button span{margin-left:auto;color:#667085;font-size:12px;font-weight:600}
+.budgetGrowthField{display:flex;align-items:center;gap:7px;min-height:34px;padding:0 10px;border:1px solid #d9e1eb;border-radius:7px;background:#fff;color:#475467;font-size:12px;font-weight:600}
+.budgetGrowthField input{width:64px;min-height:28px;padding:2px 6px;border:1px solid #e1e8f2;border-radius:6px;background:#fff;color:#344054;text-align:right}
+.budgetImportButton{position:relative;display:inline-flex;align-items:center;gap:7px;min-height:34px;padding:6px 10px;border:1px solid var(--budget-border);border-radius:7px;background:#fff;color:#344054;font-size:12px;font-weight:650;cursor:pointer}
+.budgetImportButton:hover{border-color:#3478f6;color:#245fd9}
+.budgetImportButton input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.budgetClearAll{color:#b42318!important}
+.budgetBalanceCheck dl{margin:0;padding:0}
+.budgetBalanceCheck dl>div{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid #edf1f6}
+.budgetBalanceCheck dt{color:#667085;font-size:12px}
+.budgetBalanceCheck dd{margin:0;font-weight:650}
+.budgetBalanceCheck .budgetBalanceDifference{border-bottom:0;border-top:1px solid #dfe6ef}
+.budgetBalanceCheck .budgetBalanceDifference dd{font-size:16px}
+.budgetBalanceNote{margin-top:12px;padding:10px 12px;border-radius:8px;font-size:12px;font-weight:600}
+.budgetBalanceCheck.balanced .budgetBalanceNote{border:1px solid #cdeadd;background:#f1faf5;color:#19734c}
+.budgetBalanceCheck.unbalanced .budgetBalanceNote{border:1px solid #ffe4c4;background:#fff8f0;color:#8a4b09}
+.budgetBalanceCheck.balanced .budgetPanelHead>span{color:#19734c}
+.budgetBalanceCheck.unbalanced .budgetPanelHead>span{color:#8a4b09}
+.budgetScopeSummary,.budgetSelectedCount{white-space:nowrap}
+.budgetSelectionTools .budgetTypeFilter{min-height:40px;padding:0 26px 0 10px;border:1px solid #d9e1eb;border-radius:7px;background:#fff;color:#344054}
+.budgetAccountGrid .budgetGroupCell{width:100%;min-height:0;padding:0;border:0;border-radius:0;background:transparent;color:inherit;font-weight:400;cursor:pointer}
+.budgetSetupFields textarea{min-height:64px;padding:8px 10px;border:1px solid #d9e1eb;border-radius:7px;background:#fff;color:#344054;font:inherit;resize:vertical}
+@media(max-width:1200px){.budgetDetailV3>.budgetAccountTabs{grid-template-columns:none!important;grid-auto-flow:column!important;grid-auto-columns:max-content!important;overflow-x:auto!important}}
+@media(max-width:900px){.budgetHealthBars,.budgetDetailsFacts{grid-template-columns:1fr}.budgetDetailsGroup{grid-template-columns:1fr}}
+
+/* The budget detail page repeats the create page's full-bleed arrow-led back
+   head, so its back control lines up directly beneath the organisation and
+   branch bar and the page keeps the application header width rather than the
+   old inline text link. The identity row below it holds the budget name with
+   its status beside it, and the right side carries the one mode-aware status
+   action plus the shared More actions menu. */
+.app main:has(>.budgetV3.budgetDetailV3){max-width:none!important;padding:0!important}
+.app main>.budgetV3.budgetDetailV3{max-width:none!important;margin:0!important;padding:0 0 28px!important}
+.app main>.budgetV3.budgetDetailV3>:not(.budgetV3Head){margin-left:clamp(16px,2.2vw,32px)!important;margin-right:clamp(16px,2.2vw,32px)!important}
+.app main>.budgetV3.budgetDetailV3>.budgetV3Head.budgetDetailHead{display:grid!important;grid-template-columns:40px minmax(0,1fr)!important;align-items:center!important;gap:14px!important;width:100%!important;max-width:none!important;min-height:56px!important;margin:0 0 16px!important;padding:8px 24px!important;border:1px solid var(--budget-border)!important;border-left:0!important;border-right:0!important;border-radius:0!important;background:#fff!important;box-shadow:none!important}
+.budgetDetailIdentityRow{display:flex;align-items:flex-start;justify-content:space-between;gap:14px 20px;flex-wrap:wrap;margin:0 0 12px}
+.budgetDetailIdentity{min-width:0}
+.budgetDetailName{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.budgetDetailName h1{font-size:26px;letter-spacing:-.6px}
+.budgetDetailMeta{margin-top:6px;color:var(--budget-muted)}
+.budgetDetailMore{position:relative;display:flex;min-width:0}
+.budgetDetailMore>summary{display:inline-flex;flex:1 1 auto;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:0 15px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#1d293d;font-size:14px;font-weight:600;white-space:nowrap;cursor:pointer;list-style:none}
+.budgetDetailMore>summary::-webkit-details-marker{display:none}
+.budgetDetailMore>summary:hover{border-color:#b9c9e3;background:#f8faff}
+.budgetDetailMore>summary:focus-visible{outline:3px solid #a8c2ff;outline-offset:2px}
+.budgetDetailMoreCaret{flex:none;color:#98a6bb;transition:transform .15s ease,color .15s ease}
+.budgetDetailMore[open]>summary{border-color:#3478f6;background:#f2f7ff;color:#245fd9}
+.budgetDetailMore[open] .budgetDetailMoreCaret{color:#245fd9;transform:rotate(180deg)}
+.budgetDetailMoreMenu{position:absolute;right:0;top:calc(100% + 6px);z-index:30;display:flex;flex-direction:column;gap:2px;min-width:216px;padding:6px;border:1px solid #e1e6ed;border-radius:10px;background:#fff;box-shadow:0 18px 40px #0f172a24}
+.budgetDetailMoreMenu button{display:flex;align-items:center;gap:9px;width:100%;min-height:36px;padding:0 10px;border:0;border-radius:7px;background:transparent;color:#344054;font-size:13px;text-align:left}
+.budgetDetailMoreMenu button:hover{background:#f4f7ff;color:#245fd9}
+.budgetDetailMoreMenu button:focus-visible{outline:3px solid #a8c2ff;outline-offset:-2px}
+.budgetDetailMoreMenu button.budgetKebabDanger{color:#b42318}
+.budgetDetailMoreMenu button.budgetKebabDanger:hover{background:#fff5f6;color:#b42318}
+@media(max-width:760px){.app main>.budgetV3.budgetDetailV3>.budgetV3Head.budgetDetailHead{grid-template-columns:36px minmax(0,1fr)!important;padding:8px 12px!important}.budgetDetailIdentityRow{flex-direction:column;align-items:stretch}.budgetDetailActions{justify-content:flex-start}.budgetDetailMore,.budgetDetailMore>summary{width:100%}}
+
+/* The Budget duration reading. A Monthly, Quarterly, Half-Yearly or Yearly plan
+   takes its range from the chosen financial year, so the range prints in a muted
+   read-only field and no date picker is rendered at all; only a Custom period
+   opens the two date inputs, and that is the only range a planner can type, so
+   it is the only one that can be invalid. */
+.budgetDuration{margin-top:18px;padding:14px 16px;border:1px solid #e1e8f2;border-radius:9px;background:#f8fafc}
+.budgetDurationLabel{display:block;color:#344054;font-size:13px;font-weight:600}
+.budgetV3 .budgetDurationRange{display:flex;align-items:center;min-height:38px;margin:7px 0 0;padding:8px 11px;border:1px solid #e4eaf3;border-radius:7px;background:#fff;color:#172033;font-size:14px;font-weight:650}
+.budgetV3 .budgetDurationMeta{margin:7px 0 0;color:#667085;font-size:12px}
+.budgetV3 .budgetDurationHint{display:flex;align-items:center;gap:6px;margin:7px 0 0;color:#667085;font-size:12px}
+.budgetV3 .budgetDurationHint svg{flex:none;color:#98a6bb}
+.budgetDurationDates{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:12px}
+.budgetDurationDates label{display:flex;flex-direction:column;gap:6px;color:#344054;font-size:12px;font-weight:600}
+.budgetDurationDates input{min-height:40px;padding:8px 10px;border:1px solid #d9e1eb;border-radius:7px;background:#fff;color:#344054}
+.budgetV3 .budgetDurationError{display:flex;align-items:center;gap:6px;margin:9px 0 0;padding:9px 11px;border:1px solid #ffd9c2;border-radius:7px;background:#fff6ec;color:#8a4b09;font-size:12px;font-weight:600}
+.budgetV3 .budgetDurationError svg{flex:none}
+
+@media(max-width:700px){.budgetDurationDates{grid-template-columns:1fr}}
+/* Create Budget: the details step is one three-column field grid, so the budget
+   name sits beside the organisation and the branch the plan covers, and the
+   financial year, the budget period and the duration those two imply share the
+   line beneath. The duration is a read-only value, so it is the one field in the
+   grid with no chevron and a quiet fill. */
+.budgetWizard .budgetSetupFields .budgetScopeRow{grid-column:span 2;min-width:0}
+.budgetWizard .budgetSetupFields .budgetDuration{margin:0;padding:0;border:0;background:transparent}
+.budgetV3 .budgetSetupFields .budgetDurationRange{min-height:40px;padding:8px 10px;border:1px solid #d9e1eb;border-radius:7px;background:#f7f9fc;font-size:13px;font-weight:600}
+.budgetV3 .budgetSetupFields .budgetDurationMeta{margin:6px 0 0;font-size:12px}
+.budgetV3 .budgetSetupFields .budgetDurationHint{margin:4px 0 0;font-size:12px}
+.budgetWizard .budgetSetupFields .budgetDurationDates{grid-template-columns:1fr;min-width:0}
+.budgetWizard .budgetSetupFields .budgetDurationDates label{min-width:0}
+.budgetWizard .budgetSetupFields .budgetDurationDates input{min-width:0;width:100%}
+@media(max-width:700px){.budgetWizard .budgetSetupFields .budgetScopeRow .pc-fields{grid-template-columns:1fr}}

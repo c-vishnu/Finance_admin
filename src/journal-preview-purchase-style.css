@@ -1,0 +1,28 @@
+/* Journal preview uses the same embedded document workspace as purchase bills. */
+.app main .jp-overlay.dpEmbedded {
+  position: relative !important;
+  inset: auto !important;
+  z-index: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  height: calc(100dvh - 112px) !important;
+  min-height: 540px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid #dfe5ed !important;
+  border-radius: 10px !important;
+  background: #edf1f6 !important;
+}
+.app main .jp-overlay .jp-shell { display: contents !important; }
+.app main .jp-overlay .jp-toolbar.dpPreviewBar { position: static !important; flex: 0 0 auto !important; min-height: 62px !important; padding: 10px 16px !important; }
+.app main .jp-overlay .jp-toolbar > div { flex-direction: row !important; align-items: center !important; gap: 14px !important; }
+.app main .jp-overlay .jp-toolbar > div strong { font-size: 15px !important; }
+.app main .jp-overlay .jp-preview-body.dpPreviewBody { display: flex !important; flex: 1 1 auto !important; min-height: 0 !important; overflow: hidden !important; }
+.app main .jp-overlay .jp-canvas.dpCleanCanvas { flex: 1 1 auto !important; min-width: 0 !important; min-height: 0 !important; padding: 24px !important; overflow: auto !important; background: #edf1f6 !important; }
+.app main .jp-overlay .jp-paper.dpPaper { width: 210mm !important; max-width: 100% !important; min-height: 280mm !important; margin: 0 auto !important; padding: 13mm !important; overflow: visible !important; background: #fff !important; box-shadow: 0 4px 18px #20324d12 !important; }
+.app main .jp-overlay .jp-paper > header { padding-bottom: 24px !important; border-bottom: 3px solid var(--jp-accent,#3478f6) !important; }
+.app main .jp-overlay .jp-logo { display: block !important; width: 64px !important; height: 64px !important; margin: 0 0 10px !important; object-fit: contain !important; }
+.app main .jp-overlay .jp-customize.dpRightDrawer { position: relative !important; inset: auto !important; flex: 0 0 340px !important; width: 340px !important; height: 100% !important; border-left: 1px solid #dce3ed !important; box-shadow: -8px 0 24px #2136530a !important; }
+@media(max-width:700px){.app main .jp-overlay.dpEmbedded{height:calc(100dvh - 100px)!important}.app main .jp-overlay .jp-toolbar.dpPreviewBar{align-items:flex-start!important;flex-wrap:wrap!important}.app main .jp-overlay .jp-toolbar nav{display:grid!important;grid-template-columns:repeat(5,1fr)!important;width:100%!important}.app main .jp-overlay .jp-canvas.dpCleanCanvas{padding:12px!important}.app main .jp-overlay .jp-paper.dpPaper{width:680px!important;max-width:none!important;padding:30px!important}.app main .jp-overlay .jp-customize.dpRightDrawer{position:absolute!important;right:0!important;top:0!important;bottom:0!important;width:min(340px,100%)!important}}
+@media print{.app main .jp-overlay.dpEmbedded{display:block!important;position:static!important;width:100%!important;height:auto!important;min-height:0!important;border:0!important}.app main .jp-overlay .jp-preview-body,.app main .jp-overlay .jp-canvas{display:block!important;overflow:visible!important;height:auto!important;padding:0!important}.app main .jp-overlay .jp-paper.dpPaper{width:100%!important;max-width:none!important;min-width:0!important;min-height:0!important;padding:0!important;box-shadow:none!important}.app main .jp-overlay .jp-toolbar,.app main .jp-overlay .jp-customize{display:none!important}}

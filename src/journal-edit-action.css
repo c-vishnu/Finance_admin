@@ -1,0 +1,18 @@
+.je-page .je-row-actions > button.je-edit-journal {
+  width: auto !important;
+  height: 36px !important;
+  padding: 0 10px !important;
+  gap: 5px !important;
+  border-color: #d4dce8 !important;
+  background: #fff !important;
+  color: #344054 !important;
+  font-size: 12px !important;
+  font-weight: 650 !important;
+  white-space: nowrap !important;
+}
+
+.je-page .je-row-actions > button.je-edit-journal:hover {
+  border-color: #aac4ef !important;
+  background: #f2f6ff !important;
+  color: #245fc5 !important;
+}

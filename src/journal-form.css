@@ -1,0 +1,1019 @@
+/* Manual journal workspace aligned with the Chart of Accounts design language. */
+.je-create {
+  --je-blue: #3478f6;
+  --je-border: #dfe6ef;
+  --je-muted: #667085;
+  display: grid !important;
+  gap: 16px !important;
+  width: 100% !important;
+  max-width: 1500px !important;
+  margin: 0 auto !important;
+  color: #172033 !important;
+  font: 14px/1.45 "Instrument Sans", Arial, sans-serif !important;
+}
+.je-create * { box-sizing: border-box; }
+.app main:has(> .je-create) { padding-top: 0 !important; }
+.app main:has(> .je-create) { max-width: none !important; padding-left: 0 !important; padding-right: 0 !important; }
+.app main:has(> .je-create) .je-create { max-width: none !important; }
+.app main:has(> .je-create) .je-create > header { border-radius: 0 !important; border-left: 0 !important; border-right: 0 !important; box-shadow: none !important; }
+.je-create > header {
+  position: static !important;
+  inset: auto !important;
+  z-index: auto !important;
+  display: grid !important;
+  grid-template-columns: 42px minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 14px !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 78px !important;
+  margin: 0 !important;
+  padding: 14px 18px !important;
+  background: #fff !important;
+  border: 1px solid var(--je-border) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 3px 14px rgba(16, 24, 40, .05) !important;
+}
+.je-create > header > button {
+  display: inline-grid !important;
+  place-items: center !important;
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  padding: 0 !important;
+  border: 1px solid #d7e0eb !important;
+  border-radius: 8px !important;
+  background: #fff !important;
+  color: #475467 !important;
+}
+.je-create > header > button:hover { background: #eef4ff !important; border-color: #bcd0f5 !important; color: #2463d4 !important; }
+.je-create > header > div { min-width: 0 !important; }
+.je-create > header h2 { margin: 0 !important; font-size: 22px !important; line-height: 1.25 !important; letter-spacing: -.35px !important; }
+.je-create > header p { margin: 4px 0 0 !important; color: var(--je-muted) !important; font-size: 13px !important; }
+.je-create > header.je-header-compact { min-height: 56px !important; padding: 8px 12px !important; }
+.je-create > header .je-header-spacer { min-width: 0 !important; }
+.je-create > header .je-compact-title { color: #172033 !important; font-size: 16px !important; font-weight: 650 !important; line-height: 1.25 !important; }
+.je-status {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-height: 28px !important;
+  padding: 4px 10px !important;
+  border-radius: 999px !important;
+  background: #eef2f7 !important;
+  color: #475467 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+}
+.je-status>i {
+  width: 7px !important;
+  height: 7px !important;
+  margin-right: 6px !important;
+  border-radius: 50% !important;
+  background: #98a2b3 !important;
+  flex: 0 0 7px !important;
+}
+.je-status.posted, .je-status.approved { background: #e7f6ed !important; color: #22734a !important; }
+.je-status.posted>i, .je-status.approved>i { background: #28a26b !important; }
+.je-status.pending-approval { background: #fff4df !important; color: #8a5d08 !important; }
+.je-status.pending-approval>i { background: #e6a117 !important; }
+.je-status.waiting-for-approval { background: #fff4df !important; color: #8a5d08 !important; }
+.je-status.waiting-for-approval>i { background: #e6a117 !important; }
+.je-status.completed { background: #e7f6ed !important; color: #22734a !important; }
+.je-status.completed>i { background: #28a26b !important; }
+.je-status.draft>i { background: #98a2b3 !important; }
+.je-status.rejected { background: #fff0f1 !important; color: #ad3542 !important; }
+.je-status.rejected>i, .je-status.reversed>i { background: #d65261 !important; }
+.je-status.cancelled { background: #fff0f1 !important; color: #ad3542 !important; }
+.je-status.cancelled>i { background: #d65261 !important; }
+.je-status.reversed { background: #fff0f1 !important; color: #ad3542 !important; }
+
+.je-create .je-form-card,
+.je-create .je-lines-card {
+  display: block !important;
+  margin: 0 !important;
+  padding: 22px !important;
+  overflow: hidden !important;
+  background: #fff !important;
+  border: 1px solid var(--je-border) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 3px 14px rgba(16, 24, 40, .045) !important;
+}
+.je-create .je-form-card { padding: 14px 16px !important; }
+.je-create .je-form-card::before {
+  content: "Journal information";
+  display: block;
+  margin: 0 0 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #edf0f4;
+  color: #172033;
+  font-size: 16px;
+  font-weight: 700;
+}
+.je-create .je-form-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 10px 14px !important;
+}
+.je-create .je-form-grid > label {
+  display: flex !important;
+  flex-direction: column !important;
+  position: relative !important;
+  gap: 7px !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  color: #344054 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+.je-create .je-form-grid > label.wide { grid-column: span 2 !important; }
+.je-create .je-form-grid > .wide { grid-column: span 2 !important; }
+.je-create .je-journal-number {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  gap: 7px !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+.je-create .je-journal-number span { color: #344054 !important; font-size: 12px !important; font-weight: 600 !important; }
+.je-create .je-journal-number strong {
+  display: flex !important;
+  align-items: center !important;
+  min-height: 38px !important;
+  margin: 0 !important;
+  padding: 7px 10px !important;
+  border: 1px solid #e0e6ee !important;
+  border-radius: 7px !important;
+  background: #f6f8fb !important;
+  color: #475467 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+.je-create .je-journal-number small,
+.je-create .je-date-field small { margin-top: 0 !important; color: #667085 !important; font-size: 11px !important; font-weight: 400 !important; }
+.je-create .je-date-field small strong { color: #475467 !important; font-weight: 600 !important; }
+.je-create .je-date-field small.je-date-locked { display: flex !important; align-items: center !important; gap: 5px !important; color: #8a5d08 !important; font-weight: 600 !important; }
+.je-create .je-date-field small.je-date-locked > svg { flex: 0 0 auto !important; }
+.je-create .je-inline-action { padding: 0 !important; border: 0 !important; background: none !important; color: #2463d4 !important; font-size: 11px !important; font-weight: 650 !important; text-decoration: underline !important; cursor: pointer !important; }
+.je-create .je-optional {
+  position: absolute !important;
+  top: 0 !important;
+  left: 108px !important;
+  color: #98a2b3 !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+}
+.je-create .je-form-grid input,
+.je-create .je-form-grid select,
+.je-create .je-form-grid textarea {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 38px !important;
+  margin: 0 !important;
+  padding: 7px 10px !important;
+  border: 1px solid #d7e0eb !important;
+  border-radius: 7px !important;
+  background: #fff !important;
+  color: #26354b !important;
+  font: 13px "Instrument Sans", Arial, sans-serif !important;
+}
+.je-create .je-form-grid input:disabled { background: #f5f7fa !important; color: #667085 !important; }
+.je-create .je-form-grid textarea { min-height: 48px !important; max-height: 82px !important; resize: vertical !important; }
+.je-create .je-attachments {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 10px 14px !important;
+  min-height: 48px !important;
+  padding: 7px 10px !important;
+  border: 1px dashed #c8d5e6 !important;
+  border-radius: 8px !important;
+  background: #fbfcfe !important;
+}
+.je-create .je-attach-note { color: #667085 !important; font-size: 12px !important; }
+.je-create .je-attach-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+  gap: 6px !important;
+  min-height: 36px !important;
+  padding: 0 14px !important;
+  border: 1px solid #bcd0f5 !important;
+  border-radius: 7px !important;
+  background: #fff !important;
+  color: #2463d4 !important;
+  font-size: 12px !important;
+  font-weight: 650 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  cursor: pointer !important;
+}
+.je-create .je-period-warning { margin-top: 10px !important; padding: 9px 11px !important; }
+.je-create .je-attach-button:hover { background: #f2f6ff !important; border-color: #91b2ee !important; }
+.je-create .je-attach-button input { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; opacity: 0 !important; cursor: pointer !important; }
+.je-create .je-selected-files { grid-column: 1 / -1 !important; display: flex !important; flex-wrap: wrap !important; gap: 6px !important; }
+.je-create .je-selected-files > span { display: inline-flex !important; align-items: center !important; gap: 6px !important; max-width: 100% !important; padding: 4px 8px !important; border-radius: 999px !important; background: #eef4ff !important; color: #344054 !important; font-size: 11px !important; }
+.je-create .je-selected-files button { padding: 0 !important; border: 0 !important; background: transparent !important; color: #667085 !important; font-size: 15px !important; line-height: 1 !important; cursor: pointer !important; }
+
+.je-create .je-lines-card { padding: 0 !important; }
+.je-create .je-lines-title {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  min-height: 72px !important;
+  padding: 14px 20px !important;
+  background: #f8fafc !important;
+  border-bottom: 1px solid #e7ebf1 !important;
+}
+.je-create .je-lines-title h3 { margin: 0 !important; font-size: 16px !important; }
+.je-create .je-lines-title p { margin: 4px 0 0 !important; color: var(--je-muted) !important; font-size: 12px !important; }
+.je-create .je-lines-title > button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  min-height: 38px !important;
+  padding: 0 13px !important;
+  border: 1px solid #bcd0f5 !important;
+  border-radius: 7px !important;
+  background: #fff !important;
+  color: #2463d4 !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+}
+.je-create .je-lines { display: block !important; width: 100% !important; overflow-x: auto !important; padding: 0 !important; }
+.je-create .je-line {
+  display: grid !important;
+  grid-template-columns: minmax(230px, 1.35fr) 130px 130px 160px 150px minmax(190px, 1fr) 42px !important;
+  gap: 10px !important;
+  align-items: center !important;
+  min-width: 1160px !important;
+  min-height: 60px !important;
+  margin: 0 !important;
+  padding: 9px 16px !important;
+  border-bottom: 1px solid #edf0f4 !important;
+}
+.je-create .je-line.head {
+  min-height: 42px !important;
+  padding-block: 7px !important;
+  background: #fbfcfe !important;
+  color: #667085 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+.je-create .je-line input,
+.je-create .je-line select {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 40px !important;
+  margin: 0 !important;
+  padding: 0 10px !important;
+  border: 1px solid #d7e0eb !important;
+  border-radius: 7px !important;
+  background: #fff !important;
+  color: #26354b !important;
+  font: 13px "Instrument Sans", Arial, sans-serif !important;
+}
+.je-create .je-line > button {
+  display: grid !important;
+  place-items: center !important;
+  width: 36px !important;
+  height: 36px !important;
+  padding: 0 !important;
+  border: 1px solid #eadde0 !important;
+  border-radius: 7px !important;
+  background: #fff !important;
+  color: #c14252 !important;
+}
+.je-create .je-line > button:disabled { opacity: .42 !important; cursor: not-allowed !important; }
+/* The totals and the posting condition share the right end of the single footer row,
+   stacked so the condition reads directly beneath the amounts it describes. */
+.je-create .je-lines-footer .je-balance {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+  justify-content: center !important;
+  gap: 2px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+.je-create .je-balance-totals {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: baseline !important;
+  justify-content: flex-end !important;
+  gap: 4px 10px !important;
+}
+.je-create .je-balance-totals > span { color: #667085 !important; font-size: 12px !important; font-weight: 600 !important; }
+.je-create .je-balance-totals > b { color: #1d2939 !important; font-size: 13.5px !important; font-weight: 650 !important; font-variant-numeric: tabular-nums !important; }
+.je-create .je-balance-status {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 12.5px !important;
+  font-weight: 650 !important;
+  text-align: right !important;
+}
+.je-create .je-balance-status.ok { color: #23734d !important; }
+.je-create .je-balance-status.bad { color: #c0394b !important; }
+.je-create .je-error { display: flex !important; align-items: center !important; gap: 8px !important; margin: 12px 16px 16px !important; padding: 11px 13px !important; border: 1px solid #ffd4d9 !important; border-radius: 7px !important; background: #fff1f2 !important; color: #a93040 !important; }
+
+.je-create > footer {
+  position: sticky !important;
+  z-index: 8 !important;
+  bottom: 10px !important;
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 9px !important;
+  min-height: 62px !important;
+  margin: 0 !important;
+  padding: 11px 14px !important;
+  border: 1px solid var(--je-border) !important;
+  border-radius: 10px !important;
+  background: rgba(255, 255, 255, .96) !important;
+  box-shadow: 0 10px 28px rgba(16, 24, 40, .12) !important;
+  backdrop-filter: blur(8px) !important;
+}
+.je-create > footer button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 40px !important;
+  padding: 0 15px !important;
+  border: 1px solid #d0d8e3 !important;
+  border-radius: 7px !important;
+  background: #fff !important;
+  color: #344054 !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+}
+.je-create > footer button:hover { background: #f5f8fc !important; }
+.je-create > footer button.primary { background: var(--je-blue) !important; border-color: var(--je-blue) !important; color: #fff !important; }
+.je-create > footer button:disabled { opacity: .48 !important; cursor: not-allowed !important; }
+
+.app main:has(> .je-create) .je-create > :not(header):not(footer) {
+  margin-left: 22px !important;
+  margin-right: 22px !important;
+}
+.je-create .je-notes-card {
+  display: block !important;
+  margin: 0 !important;
+  padding: 18px 20px !important;
+  overflow: hidden !important;
+  background: #fff !important;
+  border: 1px solid var(--je-border) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 3px 14px rgba(16, 24, 40, .045) !important;
+}
+.je-create .je-notes-card-head {
+  margin: 0 0 14px !important;
+  padding: 0 0 10px !important;
+  border-bottom: 1px solid #edf0f4 !important;
+}
+.je-create .je-notes-card-head h3 {
+  margin: 0 !important;
+  color: #172033 !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+}
+.je-create .je-notes-card-head p {
+  margin: 3px 0 0 !important;
+  color: var(--je-muted) !important;
+  font-size: 12px !important;
+}
+.je-create .je-notes-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px 14px !important;
+}
+.je-create .je-notes-grid > label {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 7px !important;
+  min-width: 0 !important;
+  color: #344054 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+.je-create .je-notes-grid textarea {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 64px !important;
+  max-height: 82px !important;
+  margin: 0 !important;
+  padding: 8px 10px !important;
+  border: 1px solid #d7e0eb !important;
+  border-radius: 7px !important;
+  background: #fff !important;
+  color: #26354b !important;
+  font: 13px "Instrument Sans", Arial, sans-serif !important;
+  resize: vertical !important;
+}
+.je-create .je-notes-grid > .je-attachments {
+  min-height: 64px !important;
+}
+@media (max-width: 1050px) {
+  .je-create .je-form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .je-create .je-form-grid > .wide { grid-column: 1 / -1 !important; }
+}
+@media (max-width: 650px) {
+  .je-create { gap: 12px !important; }
+  .je-create > header { grid-template-columns: 40px minmax(0, 1fr) auto !important; padding: 12px !important; }
+  .je-create > header > .je-status { grid-column: 3 !important; grid-row: 1 !important; align-self: start !important; }
+  .je-create > header h2 { font-size: 19px !important; }
+  .je-create .je-form-card { padding: 14px !important; }
+  .je-create .je-form-grid { grid-template-columns: minmax(0, 1fr) !important; gap: 14px !important; }
+  .je-create .je-form-grid > .wide { grid-column: auto !important; }
+  .je-create .je-lines-footer .je-attachments { width: 100% !important; justify-content: center !important; }
+  .je-create .je-lines-title { align-items: flex-start !important; flex-direction: column !important; }
+  .je-create .je-lines-title > button { width: 100% !important; }
+  .je-create > footer { position: static !important; flex-wrap: wrap !important; }
+  .je-create > footer button { flex: 1 1 135px !important; }
+  .app main:has(> .je-create) .je-create > :not(header):not(footer) {
+    margin-left: 12px !important;
+    margin-right: 12px !important;
+  }
+  .je-create .je-notes-card {
+    padding: 14px !important;
+  }
+  .je-create .je-notes-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+/* No-page-scroll journal workspace */
+.app:has(> main > .je-create:not(.je-business)) {
+  padding-bottom: 0 !important;
+}
+.app main:has(> .je-create:not(.je-business)) {
+  height: calc(100vh - 59px) !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+.app main:has(> .je-create:not(.je-business)) .je-create {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.08fr) minmax(340px, .92fr) !important;
+  grid-template-rows: auto auto minmax(0, 1fr) auto !important;
+  grid-template-areas:
+    "header header"
+    "info notes"
+    "lines lines"
+    "footer footer" !important;
+  gap: 12px !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-width: none !important;
+  padding: 0 20px 14px !important;
+  overflow: hidden !important;
+}
+.app main:has(> .je-create:not(.je-business)) .je-create > header { grid-area: header !important; }
+.app main:has(> .je-create:not(.je-business)) .je-create .je-form-card {
+  grid-area: info !important;
+  margin: 0 !important;
+  padding: 14px 16px !important;
+}
+.app main:has(> .je-create:not(.je-business)) .je-create .je-notes-card {
+  grid-area: notes !important;
+  margin: 0 !important;
+  padding: 14px 16px !important;
+}
+.app main:has(> .je-create:not(.je-business)) .je-create .je-lines-card {
+  grid-area: lines !important;
+  margin: 0 !important;
+  min-height: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+.app main:has(> .je-create:not(.je-business)) .je-create > footer {
+  grid-area: footer !important;
+  position: relative !important;
+  bottom: auto !important;
+  z-index: 1 !important;
+  min-height: 58px !important;
+  padding: 9px 14px !important;
+}
+.app main:has(> .je-create:not(.je-business)) .je-create .je-form-card .je-form-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 10px 14px !important;
+}
+.app main:has(> .je-create:not(.je-business)) .je-create .je-notes-grid {
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 12px !important;
+}
+.app main:has(> .je-create:not(.je-business)) .je-create .je-lines-title {
+  flex: 0 0 auto !important;
+  min-height: 54px !important;
+  padding: 10px 16px !important;
+}
+.app main:has(> .je-create:not(.je-business)) .je-create .je-lines {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow: auto !important;
+}
+.app main:has(> .je-create:not(.je-business)) .je-create .je-lines-footer {
+  flex: 0 0 auto !important;
+  min-height: 0 !important;
+}
+.app main:has(> .je-create:not(.je-business)) .je-create .je-lines-card .je-error {
+  flex: 0 0 auto !important;
+  margin: 10px 16px 12px !important;
+}
+@media (max-width: 1100px) {
+  .app main:has(> .je-create:not(.je-business)) .je-create {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: auto auto auto minmax(0, 1fr) auto !important;
+    grid-template-areas:
+      "header"
+      "info"
+      "notes"
+      "lines"
+      "footer" !important;
+    overflow: auto !important;
+  }
+}
+@media (max-width: 650px) {
+  .app main:has(> .je-create:not(.je-business)) .je-create {
+    padding: 0 12px 12px !important;
+  }
+}
+
+/* Remove decorative section headings on Create New Journal */
+.app main:has(> .je-create:not(.je-business)) .je-create .je-form-card::before {
+  display: none !important;
+}
+.je-create .je-notes-card-head {
+  display: none !important;
+}
+
+/* Let the page grow with journal lines; no internal vertical scrolling */
+.app:has(> main > .je-create:not(.je-business)) {
+  padding-bottom: 20px !important;
+}
+.app main:has(> .je-create:not(.je-business)) {
+  height: auto !important;
+  overflow: visible !important;
+}
+.app main:has(> .je-create:not(.je-business)) .je-create {
+  height: auto !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+  grid-template-rows: auto auto auto auto !important;
+}
+.app main:has(> .je-create:not(.je-business)) .je-create .je-lines-card {
+  display: block !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+}
+.app main:has(> .je-create:not(.je-business)) .je-create .je-lines {
+  flex: none !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+}
+
+
+/* Ensure the page itself scrolls when journal lines grow */
+body:has(.je-create:not(.je-business)) {
+  overflow-y: auto !important;
+}
+.app main:has(> .je-create:not(.je-business)) .je-lines-card {
+  overflow: visible !important;
+}
+.app main:has(> .je-create:not(.je-business)) .je-lines {
+  overflow: visible !important;
+}
+
+/* Final fallback: restore normal document scrolling for Create New Journal */
+html:has(.je-create:not(.je-business)),
+body:has(.je-create:not(.je-business)) {
+  height: auto !important;
+  min-height: 100% !important;
+  overflow-y: auto !important;
+}
+.app:has(> main > .je-create:not(.je-business)) {
+  height: auto !important;
+  min-height: 100vh !important;
+  overflow: visible !important;
+}
+.app main:has(> .je-create:not(.je-business)) {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+.app main:has(> .je-create:not(.je-business)) .je-create {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+.app main:has(> .je-create:not(.je-business)) .je-lines-card {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+.app main:has(> .je-create:not(.je-business)) .je-lines {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+}
+
+/* Full-width Create New Journal header title/back navigation area */
+.je-create > header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+.je-create > header > button {
+  flex: 0 0 auto !important;
+}
+.je-create > header > div,
+.je-create > header .je-header-spacer {
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+.je-create > header > .je-status {
+  flex: 0 0 auto !important;
+  margin-left: auto !important;
+}
+
+/* Make Create New Journal header full-bleed to match the top app header */
+.app main:has(> .je-create:not(.je-business)) .je-create > header {
+  margin-left: -20px !important;
+  margin-right: -20px !important;
+  width: calc(100% + 40px) !important;
+}
+@media (max-width: 650px) {
+  .app main:has(> .je-create:not(.je-business)) .je-create > header {
+    margin-left: -12px !important;
+    margin-right: -12px !important;
+    width: calc(100% + 24px) !important;
+  }
+}
+
+/* ==========================================================================
+   Create Journal Entry redesign - 2026-09-12
+   Compact header, single-column workflow, five-column lines grid, collapsible
+   additional details, sticky action bar and mobile card rows.
+   Appended last so it wins over the earlier layered overrides above.
+   ========================================================================== */
+
+.app main:has(> .je-create:not(.je-business)) .je-create {
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-rows: auto auto auto auto auto !important;
+  grid-template-areas:
+    "header"
+    "info"
+    "lines"
+    "details"
+    "footer" !important;
+  gap: 12px !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+.app main:has(> .je-create:not(.je-business)) .je-create > header { grid-area: header !important; }
+.app main:has(> .je-create:not(.je-business)) .je-create .je-form-card { grid-area: info !important; }
+.app main:has(> .je-create:not(.je-business)) .je-create .je-lines-card { grid-area: lines !important; }
+.app main:has(> .je-create:not(.je-business)) .je-create .je-details { grid-area: details !important; }
+.app main:has(> .je-create:not(.je-business)) .je-create > footer { grid-area: footer !important; }
+
+.je-create > header .je-header-hint { margin-top: 2px !important; color: #667085 !important; font-size: 11px !important; }
+.je-create > header .je-header-hint b { color: #344054 !important; font-weight: 600 !important; }
+
+.je-create .je-lines-actions { position: relative !important; display: flex !important; flex: 0 0 auto !important; flex-wrap: wrap !important; align-items: center !important; justify-content: flex-end !important; gap: 8px !important; }
+.je-create .je-template-menu { position: relative !important; }
+.je-create .je-template-menu > summary {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  min-height: 36px !important;
+  padding: 0 12px !important;
+  border: 1px solid #d8dee8 !important;
+  border-radius: 7px !important;
+  background: #fff !important;
+  color: #344054 !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  list-style: none !important;
+}
+.je-create .je-template-menu > summary::-webkit-details-marker { display: none !important; }
+.je-create .je-template-menu[open] > summary { border-color: #bcd0f5 !important; background: #eef4ff !important; color: #2463d4 !important; }
+.je-create .je-template-menu > div {
+  position: absolute !important;
+  top: calc(100% + 6px) !important;
+  right: 0 !important;
+  z-index: 20 !important;
+  display: block !important;
+  width: 320px !important;
+  max-width: min(320px, 90vw) !important;
+  padding: 10px !important;
+  border: 1px solid #e1e6ed !important;
+  border-radius: 9px !important;
+  background: #fff !important;
+  box-shadow: 0 14px 32px rgba(16, 24, 40, .16) !important;
+}
+.je-create .je-template-menu > div > p { margin: 0 0 8px !important; color: #667085 !important; font-size: 11.5px !important; }
+.je-create .je-template-menu > div > button {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  width: 100% !important;
+  margin-bottom: 4px !important;
+  padding: 8px 10px !important;
+  border: 1px solid transparent !important;
+  border-radius: 7px !important;
+  background: #f8fafc !important;
+  text-align: left !important;
+  cursor: pointer !important;
+}
+.je-create .je-template-menu > div > button:hover { border-color: #bcd0f5 !important; background: #eef4ff !important; }
+.je-create .je-template-menu > div > button b { color: #1d2939 !important; font-size: 12.5px !important; }
+.je-create .je-template-menu > div > button small { color: #667085 !important; font-size: 11px !important; }
+.je-create .je-template-save {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 112px auto !important;
+  gap: 6px !important;
+  margin-top: 8px !important;
+  padding-top: 8px !important;
+  border-top: 1px solid #edf0f4 !important;
+}
+.je-create .je-template-save input, .je-create .je-template-save select {
+  width: 100% !important;
+  height: 34px !important;
+  padding: 0 9px !important;
+  border: 1px solid #d8dee8 !important;
+  border-radius: 6px !important;
+  background: #fff !important;
+  color: #344054 !important;
+  font-size: 12px !important;
+}
+.je-create .je-template-save button {
+  height: 34px !important;
+  padding: 0 10px !important;
+  border: 1px solid #d8dee8 !important;
+  border-radius: 6px !important;
+  background: #fff !important;
+  color: #344054 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+}
+.je-create .je-template-note { display: block !important; margin-top: 6px !important; color: #98a2b3 !important; font-size: 10.5px !important; }
+.je-create .je-template-hints { display: grid !important; gap: 4px !important; margin: 8px 16px 0 !important; padding: 0 !important; list-style: none !important; }
+.je-create .je-template-hints li { display: flex !important; align-items: center !important; gap: 6px !important; color: #8a5d08 !important; font-size: 11.5px !important; }
+
+.je-create .je-lines { overflow-x: auto !important; overflow-y: visible !important; }
+.je-create .je-line {
+  grid-template-columns: minmax(210px, 1.4fr) 170px 150px 130px 130px minmax(150px, 1fr) 42px !important;
+  min-width: 1120px !important;
+}
+.je-create .je-line > .je-cell { display: block !important; min-width: 0 !important; }
+.je-create .je-line.head > .je-head-amount { text-align: right !important; }
+.je-create .je-line .je-cell input, .je-create .je-line .je-cell select {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 40px !important;
+  padding: 0 10px !important;
+  border: 1px solid #d8dee8 !important;
+  border-radius: 6px !important;
+  background: #fff !important;
+  color: #344054 !important;
+  font: 12.5px 'Instrument Sans', sans-serif !important;
+}
+.je-create .je-line .je-cell select { padding: 0 6px !important; }
+.je-create .je-line .je-cell input:disabled { background: #f5f7fa !important; color: #98a2b3 !important; cursor: not-allowed !important; }
+.je-create .je-line > .je-cell-amount input {
+  text-align: right !important;
+  font-variant-numeric: tabular-nums !important;
+}
+.je-create .je-line > .je-cell-action { display: flex !important; justify-content: flex-end !important; }
+.je-create .je-line-remove {
+  display: grid !important;
+  place-items: center !important;
+  width: 34px !important;
+  height: 34px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 6px !important;
+  background: transparent !important;
+  color: #c95c68 !important;
+  cursor: pointer !important;
+}
+.je-create .je-line-remove:hover { background: #fff1f2 !important; }
+.je-create .je-line-remove:disabled { opacity: .35 !important; cursor: not-allowed !important; }
+
+/* One compact footer row under the grid: the attach control keeps the left edge of
+   the account column above, while the optional cleanup action and the posting totals
+   stay right, so the tools row and the balance no longer stack into two rows. */
+.je-create .je-lines-footer { display: flex !important; align-items: center !important; flex-wrap: wrap !important; justify-content: flex-end !important; gap: 8px 14px !important; min-height: 0 !important; padding: 9px 16px !important; border-top: 1px solid #edf0f4 !important; }
+.je-create .je-lines-footer .je-attachments { display: flex !important; flex-wrap: wrap !important; align-items: center !important; justify-content: flex-start !important; gap: 8px !important; min-height: 0 !important; margin-right: auto !important; padding: 0 !important; border: 0 !important; background: none !important; }
+.je-create .je-lines-footer .je-attachments .je-selected-files { justify-content: flex-start !important; }
+.je-create .je-add-line {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  min-height: 36px !important;
+  padding: 0 12px !important;
+  border: 1px solid #bcd0f5 !important;
+  border-radius: 7px !important;
+  background: #eef4ff !important;
+  color: #2463d4 !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+}
+.je-create .je-add-line:hover { border-color: #91b2ee !important; background: #e2ecff !important; }
+.je-create .je-clear-empty {
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #667085 !important;
+  font-size: 11.5px !important;
+  text-decoration: underline !important;
+  cursor: pointer !important;
+}
+
+.je-create .je-approval-comments { display: grid !important; gap: 6px !important; margin: 0 !important; padding: 0 !important; list-style: none !important; }
+.je-create .je-approval-comments li { display: flex !important; flex-direction: column !important; gap: 2px !important; padding: 8px 10px !important; border: 1px solid #e7ebf1 !important; border-radius: 7px !important; background: #f8fafc !important; color: #344054 !important; font-size: 12px !important; font-weight: 500 !important; }
+.je-create .je-approval-comments li b { color: #1d2939 !important; font-weight: 650 !important; }
+.je-create .je-approval-comments li small { color: #667085 !important; font-size: 11.5px !important; }
+
+.je-create .je-details {
+  margin: 0 !important;
+  border: 1px solid var(--je-border) !important;
+  border-radius: 10px !important;
+  background: #fff !important;
+  box-shadow: 0 3px 14px rgba(16, 24, 40, .045) !important;
+  overflow: hidden !important;
+}
+.je-create .je-details > summary { display: flex !important; align-items: center !important; gap: 10px !important; min-height: 52px !important; padding: 12px 16px !important; cursor: pointer !important; list-style: none !important; }
+.je-create .je-details > summary::-webkit-details-marker { display: none !important; }
+.je-create .je-details > summary > span { color: #1d2939 !important; font-size: 14px !important; font-weight: 650 !important; }
+.je-create .je-details > summary > small { margin-left: auto !important; color: #8a5d08 !important; font-size: 11.5px !important; }
+.je-create .je-details > summary > svg { color: #667085 !important; transition: transform .15s ease !important; }
+.je-create .je-details[open] > summary { border-bottom: 1px solid #e7ebf1 !important; background: #f8fafc !important; }
+.je-create .je-details[open] > summary > svg { transform: rotate(180deg) !important; }
+.je-create .je-details-body { display: grid !important; gap: 12px !important; padding: 14px 16px !important; }
+.je-create .je-details-field { display: flex !important; flex-direction: column !important; gap: 6px !important; color: #344054 !important; font-size: 12px !important; font-weight: 600 !important; }
+.je-create .je-details-field textarea {
+  width: 100% !important;
+  min-height: 64px !important;
+  padding: 9px 11px !important;
+  border: 1px solid #d8dee8 !important;
+  border-radius: 7px !important;
+  background: #fff !important;
+  color: #344054 !important;
+  font: 13px 'Instrument Sans', sans-serif !important;
+  resize: vertical !important;
+}
+
+.je-create > footer { align-items: center !important; }
+/* The journal footer keeps only the save action and the primary Post journal button. */
+
+.je-account-picker { position: relative !important; width: 100% !important; }
+.je-account-field {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  width: 100% !important;
+  min-height: 40px !important;
+  padding: 0 26px 0 10px !important;
+  border: 1px solid #d8dee8 !important;
+  border-radius: 6px !important;
+  background: #fff !important;
+  color: #344054 !important;
+  text-align: left !important;
+  cursor: pointer !important;
+}
+.je-account-field:focus-visible { border-color: #91b2ee !important; box-shadow: 0 0 0 3px rgba(52, 120, 246, .14) !important; outline: none !important; }
+.je-account-value { display: flex !important; flex-direction: column !important; gap: 0 !important; min-width: 0 !important; }
+.je-account-value b { overflow: hidden !important; color: #1d2939 !important; font-size: 12.5px !important; font-weight: 600 !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
+.je-account-value small { color: #667085 !important; font-size: 10.5px !important; }
+.je-account-placeholder { flex: 1 1 auto !important; color: #98a2b3 !important; font-size: 12.5px !important; }
+.je-account-field > svg { flex: 0 0 auto !important; margin-left: auto !important; color: #667085 !important; }
+.je-account-clear-button {
+  position: absolute !important;
+  top: 50% !important;
+  right: 24px !important;
+  transform: translateY(-50%) !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 20px !important;
+  height: 20px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: #eef1f5 !important;
+  color: #475467 !important;
+  cursor: pointer !important;
+}
+.je-account-pop {
+  position: absolute !important;
+  top: calc(100% + 6px) !important;
+  left: 0 !important;
+  z-index: 24 !important;
+  width: min(360px, 92vw) !important;
+  padding: 8px !important;
+  border: 1px solid #e1e6ed !important;
+  border-radius: 9px !important;
+  background: #fff !important;
+  box-shadow: 0 16px 34px rgba(16, 24, 40, .18) !important;
+}
+.je-account-search { display: flex !important; align-items: center !important; gap: 7px !important; padding: 0 9px !important; border: 1px solid #d8dee8 !important; border-radius: 7px !important; background: #fff !important; }
+.je-account-search > svg { flex: 0 0 auto !important; color: #667085 !important; }
+.je-account-search input { flex: 1 1 auto !important; min-width: 0 !important; height: 34px !important; border: 0 !important; background: transparent !important; color: #344054 !important; font-size: 12.5px !important; outline: none !important; }
+.je-account-list { max-height: 264px !important; margin-top: 6px !important; overflow: auto !important; }
+.je-account-section { margin: 8px 0 4px !important; padding: 0 6px !important; color: #98a2b3 !important; font-size: 10.5px !important; font-weight: 700 !important; letter-spacing: .04em !important; text-transform: uppercase !important; }
+.je-account-option { display: flex !important; align-items: center !important; gap: 8px !important; padding: 7px 8px !important; border-radius: 7px !important; cursor: pointer !important; }
+.je-account-option.active, .je-account-option:hover { background: #f2f6ff !important; }
+.je-account-option.selected { background: #e8f1ff !important; }
+.je-account-option-copy { display: flex !important; flex-direction: column !important; gap: 0 !important; min-width: 0 !important; }
+.je-account-option-copy b { overflow: hidden !important; color: #1d2939 !important; font-size: 12.5px !important; font-weight: 600 !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
+.je-account-option-copy small { color: #667085 !important; font-size: 10.5px !important; }
+.je-account-star { display: grid !important; place-items: center !important; width: 26px !important; height: 26px !important; margin-left: auto !important; padding: 0 !important; border: 0 !important; border-radius: 6px !important; background: transparent !important; color: #98a2b3 !important; cursor: pointer !important; }
+.je-account-star:hover { background: #eef1f5 !important; }
+.je-account-star.on { color: #e6a117 !important; }
+.je-account-empty { margin: 10px 6px !important; color: #667085 !important; font-size: 12px !important; }
+
+@media (max-width: 1180px) {
+  .app main:has(> .je-create:not(.je-business)) .je-create .je-form-card .je-form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .je-create .je-line { grid-template-columns: minmax(190px, 1.4fr) 150px 130px 112px 112px minmax(130px, 1fr) 40px !important; }
+  .je-create .je-line.head { font-size: 11.5px !important; }
+}
+
+@media (max-width: 760px) {
+  .app main:has(> .je-create:not(.je-business)) .je-create .je-form-card .je-form-grid { grid-template-columns: minmax(0, 1fr) !important; }
+  .je-create .je-line.head { display: none !important; }
+  .je-create .je-lines { display: grid !important; gap: 10px !important; padding: 12px !important; overflow: visible !important; }
+  .je-create .je-line {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 9px !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    padding: 12px !important;
+    border: 1px solid #e7ebf1 !important;
+    border-radius: 9px !important;
+    background: #fff !important;
+  }
+  .je-create .je-line > .je-cell::before {
+    content: attr(data-label) !important;
+    display: block !important;
+    margin-bottom: 4px !important;
+    color: #667085 !important;
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+    letter-spacing: .03em !important;
+    text-transform: uppercase !important;
+  }
+  .je-create .je-line > .je-cell-action { justify-content: flex-end !important; }
+  .je-create .je-line > .je-cell-action::before { display: none !important; }
+  .je-create .je-lines-title { align-items: flex-start !important; flex-direction: column !important; }
+  .je-create .je-lines-actions { width: 100% !important; }
+  .je-create .je-template-menu { display: block !important; width: 100% !important; }
+  .je-create .je-template-menu > summary { justify-content: center !important; width: 100% !important; }
+  .je-create .je-template-menu > div { position: static !important; width: 100% !important; max-width: none !important; box-shadow: none !important; }
+  .je-create .je-template-save { grid-template-columns: minmax(0, 1fr) !important; }
+  .je-account-pop { right: 0 !important; left: 0 !important; width: auto !important; }
+  .je-create .je-lines-footer { gap: 8px !important; padding: 10px 12px !important; }
+  .je-create .je-lines-footer .je-attachments { width: 100% !important; margin-right: 0 !important; }
+  .je-create .je-lines-footer .je-balance { align-items: flex-start !important; }
+  .je-create .je-balance-status { padding: 0 !important; }
+  .je-create .je-add-line { justify-content: center !important; width: 100% !important; }
+  .je-create > footer { flex-wrap: wrap !important; }
+}
+
+/* The Journal lines grid drops the Organisation and/or Branch column whenever the
+   working context makes that choice implicit: one accessible organisation hides
+   Organisation, and a single branch under it hides Branch as well. The variant
+   templates keep the Debit, Credit, Description and row action columns sized the
+   same as the seven-column grid, and the mobile card layout is untouched because
+   every variant collapses to one column at the same breakpoint. */
+@media (min-width: 761px) {
+  .je-create .je-line.no-organization { grid-template-columns: minmax(210px, 1.4fr) 150px 130px 130px minmax(150px, 1fr) 42px !important; min-width: 980px !important; }
+  .je-create .je-line.no-branch { grid-template-columns: minmax(210px, 1.4fr) 170px 130px 130px minmax(150px, 1fr) 42px !important; min-width: 990px !important; }
+  .je-create .je-line.no-organization.no-branch { grid-template-columns: minmax(210px, 1.4fr) 130px 130px minmax(150px, 1fr) 42px !important; min-width: 850px !important; }
+}
+@media (min-width: 761px) and (max-width: 1180px) {
+  .je-create .je-line.no-organization { grid-template-columns: minmax(190px, 1.4fr) 130px 112px 112px minmax(130px, 1fr) 40px !important; }
+  .je-create .je-line.no-branch { grid-template-columns: minmax(190px, 1.4fr) 150px 112px 112px minmax(130px, 1fr) 40px !important; }
+  .je-create .je-line.no-organization.no-branch { grid-template-columns: minmax(190px, 1.4fr) 112px 112px minmax(130px, 1fr) 40px !important; }
+}

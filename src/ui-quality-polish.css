@@ -1,0 +1,207 @@
+/* Cross-module visual QA layer. UI only: no workflow, data, route, or accounting changes. */
+:root{--wvb-control-h:40px;--wvb-focus:0 0 0 3px rgba(52,120,246,.22);--wvb-hover:#f4f7fb;--wvb-danger:#b42318;--wvb-danger-bg:#fff5f5;--wvb-success:#18794e;--wvb-warning:#9a610f}
+
+/* Predictable sizing and reflow. */
+*,*::before,*::after{box-sizing:border-box}
+html,body,#root{max-width:100%;min-height:100%}
+.app>main{overflow-x:clip}
+.app>main>*{max-width:100%}
+:where(.purchaseWorkspace,.invoiceWorkspace,.salesOrdersPage,.itemsPage,.vendorPage,.bankPage,.opsPage,.gl,.je,.day,.pc,.hc,.sw,.auditPage){min-width:0}
+:where(.purchaseWorkspace,.invoiceWorkspace,.salesOrdersPage,.itemsPage,.vendorPage,.bankPage,.opsPage,.gl,.je,.day,.auditPage) :where(section,article,form,fieldset,header,footer,nav,div,label){min-width:0}
+
+/* One interaction language for application controls. */
+:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) button:not(:disabled){cursor:pointer}
+:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) button{transition:background-color .16s ease,border-color .16s ease,color .16s ease,box-shadow .16s ease,transform .08s ease}
+:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) button:not(:disabled):active{transform:translateY(1px)}
+:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) button:disabled{cursor:not-allowed;opacity:.52;box-shadow:none}
+:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) button:focus-visible,
+:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) :is(input,select,textarea,summary,a):focus-visible{outline:0;box-shadow:var(--wvb-focus)}
+:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) button.primary:not(:disabled):hover{filter:brightness(.96);box-shadow:0 4px 12px rgba(52,120,246,.18)}
+:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) button.danger:not(:disabled):hover{background:var(--wvb-danger-bg);border-color:#f3b6b2;color:var(--wvb-danger)}
+:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) button svg{flex:0 0 auto}
+
+/* Forms share height, legibility, error and disabled treatment. */
+:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) :is(input:not([type=checkbox]):not([type=radio]):not([type=file]),select){min-height:var(--wvb-control-h)}
+:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) :is(input,select,textarea){color:#25324a}
+:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) :is(input,select,textarea)::placeholder{color:#98a2b3;opacity:1}
+:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) :is(input,select,textarea):disabled{background:#f2f4f7;color:#667085;cursor:not-allowed}
+:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) :is([role=alert],.purchaseError,.bankError,.bankFormError,.opsError,.opsFormError,.vendorError,.ivError){overflow-wrap:anywhere}
+
+/* Dense tables remain readable; only their own wrapper may scroll. */
+:where(.purchaseTableWrap,.vendorTableWrap,.bankTable,.opsTable,.itemsTableWrap,.ivScroll,.je-table-wrap,.day-table-scroll,.auditTable){max-width:100%;overscroll-behavior-inline:contain}
+:where(.purchaseTableWrap,.bankTable,.opsTable,.itemsTableWrap,.ivScroll,.je-table-wrap,.day-table-scroll,.auditTable) table{width:100%;border-spacing:0}
+:where(.purchaseTableWrap,.vendorTableWrap,.bankTable,.opsTable,.itemsTableWrap,.ivScroll,.je-table-wrap,.day-table-scroll,.auditTable) :is(th,td){line-height:1.4}
+:where(.purchaseTableWrap,.vendorTableWrap,.bankTable,.opsTable,.itemsTableWrap,.ivScroll,.je-table-wrap,.day-table-scroll,.auditTable) th{height:46px;vertical-align:middle}
+:where(.purchaseTableWrap,.vendorTableWrap,.bankTable,.opsTable,.itemsTableWrap,.ivScroll,.je-table-wrap,.day-table-scroll,.auditTable) tbody tr{transition:background-color .15s ease}
+:where(.purchaseTableWrap,.vendorTableWrap,.bankTable,.opsTable,.itemsTableWrap,.ivScroll,.je-table-wrap,.day-table-scroll,.auditTable) tbody tr:hover{background:#fafcff}
+
+/* Status semantics remain consistent across modules. */
+:where(.purchaseStatus,.bankStatus,.vendorStatus,.opsBadge,.ivStatus,.receiptStatus,.pc-badge){font-weight:650;line-height:1.2;white-space:nowrap}
+:where(.purchaseStatus,.bankStatus,.vendorStatus,.opsBadge,.ivStatus,.receiptStatus,.pc-badge).draft{background:#f2f4f7;color:#475467}
+:where(.purchaseStatus,.bankStatus,.vendorStatus,.opsBadge,.ivStatus,.receiptStatus,.pc-badge):is(.approved,.posted,.paid,.completed,.active,.open,.reconciled){background:#e8f7ef;color:var(--wvb-success)}
+:where(.purchaseStatus,.bankStatus,.vendorStatus,.opsBadge,.ivStatus,.receiptStatus,.pc-badge):is(.pending,.submitted,.closing,.partiallypaid,.unreconciled){background:#fff3df;color:var(--wvb-warning)}
+:where(.purchaseStatus,.bankStatus,.vendorStatus,.opsBadge,.ivStatus,.receiptStatus,.pc-badge):is(.cancelled,.failed,.blocked,.locked,.removed){background:#fdecee;color:var(--wvb-danger)}
+
+/* Overlay content stays within the viewport and keeps actions reachable. */
+:where(.bankOverlay,.opsOverlay,.soActionOverlay,.coaModal,.pc-modal,.pc-scrim){padding:max(12px,2vw)}
+:where(.bankDialog,.opsDrawer,.soConfirm,.soDocument,.coaModal form,.pc-modal>section){max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px)}
+:where(.bankDialog,.opsDrawer,.soConfirm,.soDocument,.coaModal form,.pc-modal>section)>footer{position:sticky;bottom:0;z-index:2;background:#fff}
+
+/* Portal workspaces use the same dashboard geometry. */
+:where(.auditPortal,.vendorPortal,.settingsPortal,.helpPortal,.purchasePortal,.pc){left:270px;top:58px;right:0;bottom:0}
+.auditPortal{padding:24px}
+
+/* Toolbars wrap before controls collide. */
+:where(.purchaseTools,.bankTools,.opsTools,.itemsTools,.ivTools,.am-toolbar,.je-tools,.day-filter-row,.auditTools){display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+:where(.purchaseTools,.bankTools,.opsTools,.itemsTools,.ivTools,.am-toolbar,.je-tools,.day-filter-row,.auditTools)>label{flex:1 1 260px}
+:where(.purchaseTools,.bankTools,.opsTools,.itemsTools,.ivTools,.am-toolbar,.je-tools,.day-filter-row,.auditTools)>select{flex:0 1 190px}
+
+/* Empty states read as deliberate product states. */
+:where(.purchaseEmpty,.bankEmpty,.bankBlank,.bankTableEmpty,.opsEmpty,.vendorEmpty,.auditEmpty,.ivEmpty,.itemsEmpty){min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:36px 20px;text-align:center}
+:where(.purchaseEmpty,.bankEmpty,.bankBlank,.bankTableEmpty,.opsEmpty,.vendorEmpty,.auditEmpty,.ivEmpty,.itemsEmpty)>svg{width:32px;height:32px;color:#7d91ad}
+
+@media(max-width:1280px){
+  :where(.auditPortal,.vendorPortal,.settingsPortal,.helpPortal,.purchasePortal,.pc){padding-left:20px;padding-right:20px}
+  :where(.bankAccountGrid,.opsSummary,.purchaseSummary){gap:10px}
+}
+@media(max-width:1024px){
+  :where(.purchaseHeading,.bankHead,.opsHead,.ivHeading,.itemsHeading,.je-heading,.gl-heading,.auditPage>header){align-items:flex-start;flex-wrap:wrap}
+  :where(.purchaseHeading,.bankHead,.opsHead,.ivHeading,.itemsHeading,.je-heading,.gl-heading,.auditPage>header)>:last-child{max-width:100%;flex-wrap:wrap}
+  :where(.bankAccountGrid,.opsSummary,.purchaseSummary,.cnApplySummary){grid-template-columns:repeat(2,minmax(0,1fr))}
+  :where(.bankFormGrid,.vendorGrid,.purchaseFields,.opsFormGrid){grid-template-columns:minmax(0,1fr)}
+  :where(.auditPortal,.vendorPortal,.settingsPortal,.helpPortal,.purchasePortal,.pc){left:270px}
+}
+@media(max-width:760px){
+  :where(.auditPortal,.vendorPortal,.settingsPortal,.helpPortal,.purchasePortal,.pc){left:0;top:58px;padding:14px}
+  :where(.bankAccountGrid,.opsSummary,.purchaseSummary,.cnApplySummary){grid-template-columns:minmax(0,1fr)}
+  :where(.purchaseHeading,.bankHead,.opsHead,.ivHeading,.itemsHeading,.je-heading,.gl-heading,.auditPage>header) button.primary{width:100%;justify-content:center}
+  :where(.purchaseTools,.bankTools,.opsTools,.itemsTools,.ivTools,.am-toolbar,.je-tools,.day-filter-row,.auditTools)>:is(label,select,button){width:100%;flex:1 1 100%}
+  :where(.bankDialog,.opsDrawer,.soConfirm,.soDocument,.coaModal form,.pc-modal>section){max-width:calc(100vw - 16px);max-height:calc(100dvh - 16px)}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* Canonical side-drawer placement. This file loads last, so older module-level
+   positioning cannot move a detail, help, match, or form drawer back to the left. */
+:where(.trOverlay,.guideBackdrop,.bankDrawerBackdrop,.opsOverlay){
+  justify-content:flex-end!important;
+}
+:where(.trOverlay>aside,.guideDrawer,.bankMatchDrawer,.opsDrawer){
+  margin-left:auto!important;
+  margin-right:0!important;
+  border-left:1px solid #dfe6ef!important;
+  border-right:0!important;
+  box-shadow:-18px 0 48px #10182826!important;
+}
+:where(.gl-drawer,.drawer){
+  left:auto!important;
+  right:0!important;
+  border-left:1px solid #dfe6ef!important;
+  border-right:0!important;
+  box-shadow:-18px 0 48px #10182826!important;
+}
+.dpPreviewBody .dpRightDrawer{
+  order:initial!important;
+  margin-left:auto!important;
+  margin-right:0!important;
+  border-left:1px solid #dfe6ef!important;
+  border-right:0!important;
+  box-shadow:-18px 0 48px #10182826!important;
+}
+
+/* Purchase Reports uses a semantic header inside a portal. Reset the legacy
+   global app-header rule so the title and export action stay in normal flow. */
+.purchaseReportPage>.purchaseReportHead{
+  position:static!important;
+  inset:auto!important;
+  z-index:auto!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  margin:0 0 18px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  align-items:flex-start!important;
+}
+.purchaseReportHead>div{min-width:0}
+.purchaseReportHead h1{line-height:1.25}
+.purchaseReportHead p{line-height:1.45}
+.purchaseReportHead>button{flex:0 0 auto;justify-content:center;white-space:nowrap}
+@media(max-width:700px){
+  .purchaseReportPage>.purchaseReportHead{gap:12px}
+  .purchaseReportHead>button{width:100%}
+}
+
+/* Organization context has its own row below the primary application header. */
+.headerActions>:is(.companySelect,.branchSelect,.yearSelect){display:none!important}
+.orgContextBar{
+  position:fixed;
+  z-index:44;
+  top:59px;
+  right:0;
+  left:270px;
+  height:46px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  padding:8px 24px;
+  border-bottom:1px solid #e2e8f0;
+  background:#fff;
+  box-shadow:0 2px 8px #1018280a;
+}
+.app>main{margin-top:46px}
+
+/* Stable ERP shell: only the working content scrolls. */
+html,body,#root{height:100%;overflow:hidden}
+.app{height:100dvh;overflow:hidden}
+.app>aside{height:100dvh;overflow:hidden}
+.app>main{height:calc(100dvh - 105px);overflow-x:clip;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
+:where(.transactionPortal,.auditPortal,.helpPortal,.settingsPortal,.vendorPortal,.purchasePortal,.pc,.budgetPage){top:105px!important}
+@media(max-width:760px){
+  .orgContextBar{left:0;height:46px;padding:0 12px}
+  .app>main{margin-top:46px}
+  :where(.transactionPortal,.auditPortal,.helpPortal,.settingsPortal,.vendorPortal,.purchasePortal,.pc,.budgetPage){top:105px!important}
+}
+
+.am-coa-heading{margin-bottom:14px}
+.am-heading-count{font:inherit;color:inherit}
+.am-summary-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:0 0 14px}
+.am-summary-strip>button{min-width:0;display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto;gap:3px 10px;padding:12px 14px;border:1px solid #dfe6ef;border-radius:9px;background:#fff;color:#182230;text-align:left}
+.am-summary-strip>button:hover{border-color:#a9c6fb;background:#f8fbff}.am-summary-strip>button.active{border-color:#74a5fa;box-shadow:0 0 0 1px #74a5fa;background:#f5f8ff}
+.am-summary-strip span{align-self:center;color:#667085;font-size:12px;font-weight:650}.am-summary-strip b{grid-row:1/3;grid-column:2;font-size:22px;line-height:1}.am-summary-strip small{overflow:hidden;color:#344054;font-size:12px;font-weight:650;text-overflow:ellipsis;white-space:nowrap}
+.am-coa-grid{min-width:1020px}.am-coa-grid th:first-child,.am-coa-grid td:first-child{width:auto;text-align:left}.am-table .am-group-row th{padding:0;background:#f4f7fb;border-top:1px solid #dfe7f2}.am-group-toggle{width:100%;min-height:48px!important;padding:9px 14px!important;border:0!important;border-radius:0!important;background:linear-gradient(90deg,#eef4ff 0,#f7f9fc 56%,#f7f9fc 100%)!important;color:#253550!important;justify-content:flex-start!important;text-align:left}.am-group-toggle:hover{background:linear-gradient(90deg,#e5efff 0,#f3f6fb 60%,#f3f6fb 100%)!important}.am-group-toggle>svg{flex:0 0 auto;color:#4874cc;transition:transform .16s ease}.am-group-toggle>svg.rotated{transform:rotate(90deg)}.am-group-toggle>span{float:none;display:flex;flex-direction:column;gap:0;line-height:1.25}.am-group-toggle strong{font-size:13px}.am-group-toggle small{color:#77859a;font-size:11px;font-weight:450}
+.am-coa-grid .am-icon-hint{width:20px;height:20px;border-radius:4px;background:#f2f4f7;color:#98a2b3;cursor:help}.am-coa-grid .am-icon-hint svg{width:14px;height:14px;stroke-width:1.7}
+.am-working-context{
+  margin:0 0 18px;
+  padding:16px 18px;
+  border-top:1px solid #dfe6ef;
+  border-bottom:1px solid #dfe6ef;
+  background:#fff;
+}
+.am-working-context h2{margin:0 0 12px;font-size:14px;line-height:1.3}
+.am-working-context dl{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,260px));
+  gap:24px;
+  margin:0;
+}
+.am-working-context dl>div{display:flex;min-width:0;flex-direction:column;gap:4px}
+.am-working-context dt{color:#667085;font-size:12px;font-weight:600}
+.am-working-context dd{margin:0;overflow-wrap:anywhere;color:#182230;font-weight:650}
+@media(max-width:700px){
+  .am-working-context dl{grid-template-columns:1fr;gap:12px}
+  .am-summary-strip{display:flex;overflow-x:auto;padding-bottom:3px}.am-summary-strip>button{min-width:150px}
+}
+
+/* Enterprise COA metadata remains readable without changing the existing table shell. */
+.am-enterprise-grid{min-width:1380px}
+.am-enterprise-grid th,.am-enterprise-grid td{vertical-align:middle;white-space:nowrap}
+.am-enterprise-grid td:first-child{min-width:220px;white-space:normal}
+.am-enterprise-grid td:nth-child(4),.am-enterprise-grid td:nth-child(5){min-width:145px;white-space:normal}
+.am-control-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0;padding:18px 24px 22px}
+.am-entry-grid>.wide{grid-column:1/-1}
+@media(max-width:760px){.am-control-grid{grid-template-columns:1fr}}
+.am-coa-grid{min-width:1120px}
+.am-system-label{display:inline-flex!important;align-items:center;gap:3px;margin-left:3px;padding:2px 6px;border-radius:999px;background:#f1f3f6;color:#667085!important;font-size:10px!important;font-weight:600;white-space:nowrap}.am-system-label svg{color:#98a2b3!important}.am-protection{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:999px;background:#f2f4f7;color:#667085;font-size:11px;font-weight:650}.am-protection.system{background:#eef1f5;color:#475467}.am-used-in dd{display:flex;flex-wrap:wrap;gap:6px}.am-used-in dd span{display:inline-flex;align-items:center;gap:4px;padding:4px 7px;border-radius:6px;background:#f2f4f7;color:#475467;font-size:11px}.am-used-in dd svg{color:#667085}.am-system-note{display:flex;align-items:flex-start;gap:8px;margin:14px 0!important;padding:11px;border:1px solid #e3e8ef;border-radius:8px;background:#f8fafc;color:#475467!important}.am-system-note span{display:flex;flex-direction:column}.am-system-note small{color:#667085}.am-report-link>span{display:flex;flex:1;flex-direction:column;align-items:flex-start}.am-report-link>span small{color:#667085;font-weight:400}

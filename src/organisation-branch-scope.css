@@ -1,0 +1,24 @@
+/* The multi-select half of the shared organisation/branch control
+   (src/OrganisationBranchScope.jsx, multiple). It renders the same fields the
+   single-select variant does - .pc-scope-picker > .pc-fields - so the two read
+   as one control, and every rule is scoped to .pc-scope-picker so it outranks
+   the page button defaults (.budgetV3 button, .pc button) on its own. */
+.pc-scope-picker .pc-multi-field{position:relative;display:flex;flex-direction:column;gap:8px;min-width:0}
+.pc-scope-picker .pc-multi-label{color:#344054;font-size:13px;font-weight:600}
+.pc-scope-picker .pc-multi-trigger{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:40px;padding:8px 10px;border:1px solid #d9e1eb;border-radius:7px;background:#fff;color:#172033;font-size:13px;font-weight:600;text-align:left;cursor:pointer}
+.pc-scope-picker .pc-multi-trigger:hover{border-color:#b9c6d8;background:#f8faff}
+.pc-scope-picker .pc-multi-field.open .pc-multi-trigger{border-color:#3478f6;box-shadow:0 0 0 3px #3478f61a}
+.pc-scope-picker .pc-multi-trigger>svg{flex:none;color:#667085}
+.pc-scope-picker .pc-multi-value{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pc-scope-picker .pc-multi-panel{position:absolute;z-index:60;top:calc(100% + 6px);left:0;display:flex;flex-direction:column;gap:2px;width:max(100%,270px);max-height:286px;overflow:auto;padding:8px;border:1px solid #e1e6ed;border-radius:9px;background:#fff;box-shadow:0 12px 30px #1018281f}
+.pc-scope-picker .pc-multi-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 8px 6px;color:#667085;font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase}
+.pc-scope-picker .pc-multi-option{display:flex;align-items:center;justify-content:flex-start;gap:9px;width:100%;min-height:36px;padding:6px 8px;border:0;border-radius:6px;background:transparent;color:#344054;text-align:left;cursor:pointer}
+.pc-scope-picker .pc-multi-option:hover{background:#f4f7ff}
+.pc-scope-picker .pc-multi-option.checked{color:#245fd9}
+.pc-scope-picker .pc-multi-box{display:grid;place-items:center;flex:none;width:18px;height:18px;border:1px solid #cfd8e3;border-radius:5px;background:#fff;color:#fff}
+.pc-scope-picker .pc-multi-option.checked .pc-multi-box{border-color:#3478f6;background:#3478f6}
+.pc-scope-picker .pc-multi-text{display:flex;flex-direction:column;gap:1px;min-width:0}
+.pc-scope-picker .pc-multi-text b{font-size:13px;font-weight:600}
+.pc-scope-picker .pc-multi-text small{color:#667085;font-size:12px}
+.pc-scope-picker .pc-multi-empty{margin:0;padding:10px 8px;color:#667085;font-size:12px}
+@media(max-width:760px){.pc-scope-picker .pc-multi-panel{position:static;width:100%;max-height:none}}

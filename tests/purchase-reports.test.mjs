@@ -1,0 +1,16 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {purchaseReportCsv,purchaseReportRows,purchaseReportSummary} from '../src/purchase-reports.js';
+
+const bills=[
+ {id:'1',number:'BILL-00001',date:'2026-09-01',vendorId:'v1',vendorName:'Alpha Supplies',vendorInvoice:'A-1',status:'Unpaid',total:118000,paidAmount:0,totals:{tax:18000,cess:0}},
+ {id:'2',number:'BILL-00002',date:'2026-09-03',vendorId:'v1',vendorName:'Alpha Supplies',vendorInvoice:'A-2',status:'Partially Paid',total:59000,paidAmount:9000,totals:{tax:9000,cess:0}},
+ {id:'3',number:'BILL-00003',date:'2026-08-10',vendorId:'v2',vendorName:'Beta Services',vendorInvoice:'B-1',status:'Cancelled',total:25000,paidAmount:0,totals:{tax:0,cess:0}}
+];
+
+test('purchase report filters bills and excludes cancelled values from totals',()=>{const rows=purchaseReportRows(bills,{from:'2026-08-01',to:'2026-09-30'}),summary=purchaseReportSummary(rows);assert.equal(rows.length,3);assert.equal(summary.billCount,2);assert.equal(summary.total,177000);assert.equal(summary.paid,9000);assert.equal(summary.outstanding,168000);assert.equal(summary.inputTax,27000);assert.equal(summary.vendors.length,1)});
+test('purchase report supports vendor, status, query and date filters',()=>{assert.deepEqual(purchaseReportRows(bills,{vendor:'v1',status:'Unpaid',query:'a-1',from:'2026-09-01',to:'2026-09-02'}).map(x=>x.id),['1']);assert.equal(purchaseReportRows(bills,{query:'missing'}).length,0)});
+test('purchase report CSV uses rupee major values and escapes data',()=>{const csv=purchaseReportCsv(purchaseReportRows(bills,{vendor:'v1'}));assert.ok(csv.includes('"1180.00"'));assert.ok(csv.includes('"Alpha Supplies"'));assert.equal(csv.split('\n').length,3)});
+test('Purchase Reports navigation mounts the reporting workspace',()=>{const navigation=readFileSync('src/Navigation.jsx','utf8'),page=readFileSync('src/PurchaseReports.jsx','utf8');assert.ok(navigation.includes("active==='Purchase Reports'"));for(const text of ['Purchase Reports','Vendor summary','Purchase bill details','Export CSV'])assert.ok(page.includes(text),text)});
+test('Purchase Reports header is isolated from the fixed application header',()=>{const css=readFileSync('src/ui-quality-polish.css','utf8');for(const token of ['.purchaseReportPage>.purchaseReportHead','position:static!important','inset:auto!important','height:auto!important','background:transparent!important'])assert.ok(css.includes(token),token)});
