@@ -1,6 +1,14 @@
 # Testing and QA
 
 **Last verified:** 2026-09-15
+## Docker VM port 4002 checkpoint - 2026-09-15
+
+- The user instruction: change Docker to port 4002.
+- `docker-compose.yml` now maps `${WAYVIDA_PORT:-4002}:80`, so `docker compose up --build -d` publishes `http://<host>:4002/`.
+- `tests/docker-vm.test.mjs` pins `WAYVIDA_PORT:-4002`. Local Vite remains on 4001.
+- No image, nginx, Sites, storage, or accounting behaviour changed.
+- Validation actually executed: `node --test tests/docker-vm.test.mjs tests/vite-port.test.mjs` 4/4; `npm run docs:check` passed.
+
 ## Local Vite port 4001 checkpoint - 2026-09-15
 
 - The user instruction: run this project on port 4001 by default locally.

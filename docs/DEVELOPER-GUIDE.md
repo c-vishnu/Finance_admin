@@ -18,7 +18,7 @@ node --test tests/*.test.mjs
 
 `npm run dev` and `npm run preview` bind to host `0.0.0.0` on port 4001 with `strictPort`, so they fail instead of moving to another port. Open `http://localhost:4001/`.
 
-On a VM, serve the built client with Docker. The image builds the Vite client and nginx serves `dist/client` on host port 4001. This is static prototype hosting only; it does not add a database or authenticated API.
+On a VM, serve the built client with Docker. The image builds the Vite client and nginx serves `dist/client` on host port 4002. This is static prototype hosting only; it does not add a database or authenticated API.
 
 ```bash
 docker compose up --build -d
@@ -26,7 +26,7 @@ docker compose up --build -d
 # optional: WAYVIDA_PORT=80 docker compose up --build -d
 ```
 
-Open `http://<vm-host>:4001/`. Stop with `docker compose down` or `npm run docker:down`. Keep `Dockerfile`, `docker-compose.yml`, `docker/nginx.conf`, and `.dockerignore`. Do not replace the Sites worker files with this path.
+Open `http://<vm-host>:4002/`. Stop with `docker compose down` or `npm run docker:down`. Keep `Dockerfile`, `docker-compose.yml`, `docker/nginx.conf`, and `.dockerignore`. Do not replace the Sites worker files with this path.
 
 The broad test command is not defined as a package script; invoke Node's test runner directly. On shells that do not expand globs, pass explicit test files or enumerate them safely.
 

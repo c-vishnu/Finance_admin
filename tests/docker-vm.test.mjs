@@ -18,7 +18,7 @@ test('the VM image builds the Vite client and serves it with nginx',()=>{
 });
 
 test('compose publishes the prototype on a VM host port',()=>{
-  assert.match(compose,/WAYVIDA_PORT:-4001/);
+  assert.match(compose,/WAYVIDA_PORT:-4002/);
   assert.match(compose,/container_name: wayvida-books/);
   assert.match(compose,/restart: unless-stopped/);
   assert.match(pkg,/"docker:up": "docker compose up --build -d"/);

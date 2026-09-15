@@ -6,7 +6,7 @@ services:
     image: wayvida-books:local
     container_name: wayvida-books
     ports:
-      - "${WAYVIDA_PORT:-4001}:80"
+      - "${WAYVIDA_PORT:-4002}:80"
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1/"]

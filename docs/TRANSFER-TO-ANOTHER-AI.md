@@ -17,6 +17,8 @@ This is the starting point for continuing the project in another AI account or t
 
 ## 2. Latest completed feature
 
+Newest change (2026-09-15): the Docker VM host port is 4002. `docker-compose.yml` maps `${WAYVIDA_PORT:-4002}:80`, so `docker compose up --build -d` is available at `http://<host>:4002/`. Local Vite stays on 4001. `tests/docker-vm.test.mjs` pins the Docker default. No image, nginx, Sites, storage, or accounting behaviour changed.
+
 Newest change (2026-09-15): local Vite now defaults to port 4001 as well. `vite.config.mjs` sets `server.port` and `preview.port` to 4001 with `strictPort`, and `package.json` `dev` / `preview` scripts pass `--port 4001 --strictPort`, so `npm run dev` opens `http://localhost:4001/` instead of 5173. Docker Compose already used 4001. `tests/vite-port.test.mjs` pins the local default. No routing, storage, or accounting behaviour changed.
 
 Newest change (2026-09-15): the Docker VM host port is 4001. `docker-compose.yml` maps `${WAYVIDA_PORT:-4001}:80`, so `docker compose up --build -d` is available at `http://<host>:4001/` without an env override. `tests/docker-vm.test.mjs` pins the new default. No image, nginx, Sites, storage, or accounting behaviour changed.
