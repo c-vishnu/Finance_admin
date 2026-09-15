@@ -1,7 +1,7 @@
 # Developer Guide
 
-**Last verified:** 2026-09-05  
-**Primary sources:** `package.json`, `vite.config.mjs`, `AGENTS.md`.
+**Last verified:** 2026-09-15  
+**Primary sources:** `package.json`, `vite.config.mjs`, `Dockerfile`, `docker-compose.yml`, `AGENTS.md`.
 
 ## Requirements and commands
 
@@ -9,12 +9,24 @@ Use a supported Node.js runtime and install dependencies from the checked-in loc
 
 ```bash
 npm install
-npm run dev -- --host 0.0.0.0 --port 4173 --strictPort
+npm run dev
 npm run build
 npm run test:sites
 npm run docs:check
 node --test tests/*.test.mjs
 ```
+
+`npm run dev` and `npm run preview` bind to host `0.0.0.0` on port 4001 with `strictPort`, so they fail instead of moving to another port. Open `http://localhost:4001/`.
+
+On a VM, serve the built client with Docker. The image builds the Vite client and nginx serves `dist/client` on host port 4001. This is static prototype hosting only; it does not add a database or authenticated API.
+
+```bash
+docker compose up --build -d
+# or: npm run docker:up
+# optional: WAYVIDA_PORT=80 docker compose up --build -d
+```
+
+Open `http://<vm-host>:4001/`. Stop with `docker compose down` or `npm run docker:down`. Keep `Dockerfile`, `docker-compose.yml`, `docker/nginx.conf`, and `.dockerignore`. Do not replace the Sites worker files with this path.
 
 The broad test command is not defined as a package script; invoke Node's test runner directly. On shells that do not expand globs, pass explicit test files or enumerate them safely.
 

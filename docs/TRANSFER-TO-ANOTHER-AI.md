@@ -17,6 +17,12 @@ This is the starting point for continuing the project in another AI account or t
 
 ## 2. Latest completed feature
 
+Newest change (2026-09-15): local Vite now defaults to port 4001 as well. `vite.config.mjs` sets `server.port` and `preview.port` to 4001 with `strictPort`, and `package.json` `dev` / `preview` scripts pass `--port 4001 --strictPort`, so `npm run dev` opens `http://localhost:4001/` instead of 5173. Docker Compose already used 4001. `tests/vite-port.test.mjs` pins the local default. No routing, storage, or accounting behaviour changed.
+
+Newest change (2026-09-15): the Docker VM host port is 4001. `docker-compose.yml` maps `${WAYVIDA_PORT:-4001}:80`, so `docker compose up --build -d` is available at `http://<host>:4001/` without an env override. `tests/docker-vm.test.mjs` pins the new default. No image, nginx, Sites, storage, or accounting behaviour changed.
+
+Newest change (2026-09-15): the prototype can run on a VM through Docker Compose. `Dockerfile` is a two-stage image (Node 22 Alpine build, nginx 1.27 Alpine serve of `dist/client`), `docker-compose.yml` publishes host port 4001 (`WAYVIDA_PORT` overrides it), and `docker/nginx.conf` keeps the Sites SPA `try_files` fallback while `/api/` stays 404. `npm run docker:up` / `docker:down` wrap compose. `react-is` was added so `recharts` can complete `vite build` inside the image. This is static prototype hosting only: browser `localStorage` stays in the client, and the container is not a production accounting backend. Sites files are unchanged. `tests/docker-vm.test.mjs` pins the image, compose port, nginx fallback and ignore list.
+
 Newest change (2026-09-15): unused local junk was removed from the workspace. The scan found every `src/` module still referenced, so no product source, test, or required knowledge document was deleted. Removed: `tmp/` scratch appliers, browser profiles (`.edge-cdp-profile/`, `.tmp-edge-profile/`), `.pnpm-store/`, empty `qa-evidence/`, generated `dist/`, unused page-screenshot folder and zip, leftover QA PNGs, the accidental `const a = \`x\`;` file, historical `design-qa.md`, unused `vite.sandbox.config.mjs`, and leftover `pnpm-lock.yaml` / `pnpm-workspace.yaml` (this project installs with npm and `package-lock.json`). `.gitignore` now keeps those artifacts out. No routing, storage, accounting, or UI behaviour changed.
 
 Newest change (2026-09-15): the Budget section is now a single `Budgets` destination inside Accounting. On the user instruction Budget Reports, Budget Settings and the Budget sub-group left the Accounting section, so `src/Navigation.jsx` declares `{label:'Accounting',icon:IconBook,children:[leaf('Chart of Accounts'),leaf('Journal Entries'),leaf('Budgets'),leaf('Period Closing')]}` and drops the now-unused `IconChartBar` import. `src/BudgetWorkspace.jsx` deleted the `BudgetReports` and `BudgetSettings` components, their two `page` routes and the `IconFilter` / `BUDGET_PERMISSIONS` / `emptyBudgetState` imports they alone used, and reworded the plan Overview alert hint from `Alerts follow the thresholds in Budget Settings.` to `Alerts follow the saved alert thresholds.`. `src/budget-workspace.css` deleted the 24 rules those screens owned and trimmed the two media queries that named them, and `src/App.jsx` now routes the page with `a==='Budgets'` alone because the two extra names can never be active. The register, the create wizard, the plan detail tabs, the store, the storage keys and every budget calculation are untouched. `tests/navigation-structure.test.mjs` (2/2) and `tests/budget-navigation-ui.test.mjs` (3/3) were re-pointed, `tests/budget-register-ui.test.mjs` stays 7/7, `tmp/budget-nav-ssr.mjs` proves the rendered sidebar has no Budget group, and the sweep stays `FILES=72 green=58 red=10 tests=414 passed=403 failed=11` with the same ten pre-existing failures and the same four esbuild-blocked suites. Not verified here and not claimed: no painted browser pass and no production build (`npm` and `npx` are absent and esbuild cannot spawn, so `vite build` fails with `spawn EPERM`).
@@ -485,6 +491,10 @@ package.json
 package-lock.json
 vite.config.mjs
 index.html
+Dockerfile
+docker-compose.yml
+docker/
+.dockerignore
 root feature specifications (*.md)
 ```
 

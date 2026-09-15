@@ -1,6 +1,31 @@
 # Testing and QA
 
 **Last verified:** 2026-09-15
+## Local Vite port 4001 checkpoint - 2026-09-15
+
+- The user instruction: run this project on port 4001 by default locally.
+- `vite.config.mjs` now sets `server.port` and `preview.port` to 4001 with `strictPort: true`, and `package.json` `dev` / `preview` pass `--port 4001 --strictPort`, so `npm run dev` is `http://localhost:4001/` instead of 5173.
+- `tests/vite-port.test.mjs` pins those defaults. Docker Compose already used 4001. No routing, storage, or accounting behaviour changed.
+- Validation actually executed: `node --test tests/vite-port.test.mjs tests/docker-vm.test.mjs` 4/4; `npm run docs:check` passed; `npm run dev` is listening at `http://localhost:4001/` (HTTP 200, `Wayvida Books` title, `#root`, `/src/main.jsx`).
+
+## Docker VM port checkpoint - 2026-09-15
+
+- The user instruction: run the Docker VM host on port 4001.
+- `docker-compose.yml` now maps `${WAYVIDA_PORT:-4001}:80`, so `docker compose up --build -d` publishes `http://<host>:4001/` without an env override.
+- `tests/docker-vm.test.mjs` pins `WAYVIDA_PORT:-4001`. Transfer docs, the handbook, the developer guide, the architecture note, `AGENTS.md`, and the handoff invariant now state 4001 as the default.
+- No image, nginx, Sites, storage, or accounting behaviour changed.
+- Validation actually executed: `node --test tests/docker-vm.test.mjs` 3/3; `npm run docs:check` passed. Docker Engine is still absent here, so a live container on 4001 is not claimed.
+
+## Docker VM hosting checkpoint - 2026-09-15
+
+- The user instruction: add Docker so the prototype can run on a VM.
+- Added `Dockerfile` (Node 22 Alpine `npm ci` / `npm run build`, then nginx 1.27 Alpine serving `dist/client`), `docker-compose.yml` (host port 4001, `WAYVIDA_PORT` override, `unless-stopped`), `docker/nginx.conf` (`try_files` SPA fallback, `/api/` 404), and `.dockerignore`.
+- `package.json` gained `docker:up` / `docker:down` and a direct `react-is` dependency so Recharts can complete `vite build` inside the image.
+- New `tests/docker-vm.test.mjs` pins the two-stage image, compose port, nginx fallback and ignore list.
+- This path is static prototype hosting only. Browser `localStorage` stays in the client. Sites files are unchanged and must not be replaced by the container.
+- Docker Engine is not installed in this environment, so an image build and a live container HTTP pass are not claimed here.
+- Validation actually executed: `node --test tests/docker-vm.test.mjs` 3/3; `npm run docs:check` passed; `npm run build` succeeded after adding `react-is` (Vite large-chunk advisory remains); `npm run test:sites` 4/4.
+
 ## Unused-file cleanup checkpoint - 2026-09-15
 
 - The user instruction: remove all unused and unwanted files. A reference scan of `src/`, `tests/`, `docs/`, `scripts/`, `worker/`, and config found every `src/` module still imported or asserted, so no application source was deleted.

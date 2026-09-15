@@ -1,7 +1,7 @@
 # Technical Architecture
 
-**Last verified:** 2026-09-05  
-**Primary sources:** `package.json`, `vite.config.mjs`, `src/App.jsx`, `src/main.jsx`, service modules under `src/`.
+**Last verified:** 2026-09-15  
+**Primary sources:** `package.json`, `vite.config.mjs`, `Dockerfile`, `docker-compose.yml`, `src/App.jsx`, `src/main.jsx`, service modules under `src/`.
 
 ## Current runtime
 
@@ -78,4 +78,6 @@ Recommended API pattern:
 ## Hosting
 
 `npm run build` builds the Vite client and prepares Sites artifacts. Preserve `.openai/hosting.json`, `worker/index.js`, `scripts/prepare-sites-build.mjs`, and `tests/sites-worker.test.mjs`. The current output is a static prototype; production hosting requires API configuration, secrets management, observability, and deployment migrations.
+
+A VM can run the same static client through Docker Compose. `Dockerfile` is a two-stage image: Node 22 Alpine runs `npm ci` and `npm run build`, then nginx 1.27 Alpine serves `dist/client` on container port 80. `docker-compose.yml` publishes host port 4001 by default (`WAYVIDA_PORT` overrides it) and restarts unless stopped. `docker/nginx.conf` uses `try_files` for the SPA shell and returns 404 for `/api/` so missing write/API requests are not rewritten into `index.html`. This container is not a production accounting backend and does not persist company data; browser `localStorage` remains the prototype store. Keep this path beside Sites, never instead of it.
 

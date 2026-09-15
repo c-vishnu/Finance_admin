@@ -1,0 +1,15 @@
+services:
+  wayvida-books:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: wayvida-books:local
+    container_name: wayvida-books
+    ports:
+      - "${WAYVIDA_PORT:-4001}:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/"]
+      interval: 15s
+      timeout: 3s
+      retries: 5

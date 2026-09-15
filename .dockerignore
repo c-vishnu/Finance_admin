@@ -1,0 +1,23 @@
+.git
+.gitignore
+.cursor
+.edge-cdp-profile
+.tmp-edge-profile
+.pnpm-store
+.vite
+node_modules
+dist
+tmp
+qa-evidence
+screenshots
+docs
+tests
+*.md
+*.log
+*.zip
+.DS_Store
+const a = `x`
+pnpm-lock.yaml
+pnpm-workspace.yaml
+vite.sandbox.config.mjs
+design-qa.md
