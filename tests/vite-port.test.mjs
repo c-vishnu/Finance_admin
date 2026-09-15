@@ -12,3 +12,8 @@ test('local Vite defaults to port 4001 and does not silently move',()=>{
   assert.equal(pkg.scripts.dev,'vite --port 4001 --strictPort');
   assert.equal(pkg.scripts.preview,'vite preview --port 4001 --strictPort');
 });
+
+test('Vite accepts the VM hostname instead of only terminal.local',()=>{
+  assert.match(vite,/allowedHosts:\s*true/);
+  assert.doesNotMatch(vite,/terminal\.local/);
+});

@@ -12,15 +12,30 @@ import {bootstrapDemoData} from './demo-data.js';
 import {TerminologyProvider} from './terminology.jsx';
 import WayvidaDatePicker from './WayvidaDatePicker.jsx';
 
-installAuditLog();
-bootstrapDemoData();
+const root=document.getElementById("root");
+class StartError extends React.Component{
+  constructor(props){super(props);this.state={error:null}}
+  static getDerivedStateFromError(error){return {error}}
+  render(){
+    if(!this.state.error)return this.props.children;
+    return <p style={{margin:24,font:"16px/1.45 Instrument Sans,Arial,sans-serif"}}>Wayvida Books could not start. {String(this.state.error.message||this.state.error)}</p>;
+  }
+}
 
-createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <TerminologyProvider>
-      <App />
-      <HeaderOrgSelectors />
-      <WayvidaDatePicker />
-    </TerminologyProvider>
-  </React.StrictMode>,
-);
+try{
+  installAuditLog();
+  bootstrapDemoData();
+  createRoot(root).render(
+    <React.StrictMode>
+      <StartError>
+        <TerminologyProvider>
+          <App />
+          <HeaderOrgSelectors />
+          <WayvidaDatePicker />
+        </TerminologyProvider>
+      </StartError>
+    </React.StrictMode>,
+  );
+}catch(error){
+  root.textContent="Wayvida Books could not start. "+(error?.message||error);
+}

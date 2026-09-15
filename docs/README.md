@@ -1,6 +1,6 @@
 # Wayvida Books Knowledge Base
 
-**Last verified:** 2026-09-14  
+**Last verified:** 2026-09-15  
 **Source truth:** `src/`, `tests/`, `package.json`, `vite.config.mjs`, and root domain specifications.
 
 This folder is the portable knowledge-transfer package for Wayvida Books. It is designed for engineers and AI coding tools that have no access to earlier conversations.

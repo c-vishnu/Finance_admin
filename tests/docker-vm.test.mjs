@@ -32,3 +32,10 @@ test('nginx keeps the Sites SPA fallback and does not rewrite API requests',()=>
   assert.match(dockerignore,/^node_modules$/m);
   assert.match(dockerignore,/^dist$/m);
 });
+
+test('nginx never serves the HTML shell as a JavaScript module',()=>{
+  assert.match(nginx,/location \/assets\//);
+  assert.match(nginx,/try_files \$uri =404/);
+  assert.match(nginx,/application\/javascript js mjs/);
+  assert.match(nginx,/location = \/index.html/);
+});

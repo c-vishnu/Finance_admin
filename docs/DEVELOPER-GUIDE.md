@@ -16,9 +16,9 @@ npm run docs:check
 node --test tests/*.test.mjs
 ```
 
-`npm run dev` and `npm run preview` bind to host `0.0.0.0` on port 4001 with `strictPort`, so they fail instead of moving to another port. Open `http://localhost:4001/`.
+`npm run dev` and `npm run preview` bind to host `0.0.0.0` on port 4001 with `strictPort`, so they fail instead of moving to another port. Both servers set `allowedHosts: true` so a VM IP or hostname is accepted. Open `http://localhost:4001/` or `http://<vm-host>:4001/`.
 
-On a VM, serve the built client with Docker. The image builds the Vite client and nginx serves `dist/client` on host port 4002. This is static prototype hosting only; it does not add a database or authenticated API.
+On a VM, serve the built client with Docker. The image builds the Vite client and nginx serves `dist/client` on host port 4002. Missing `/assets/` files must 404 rather than fall back to `index.html`, or the module script fails and the UI stays blank. This is static prototype hosting only; it does not add a database or authenticated API.
 
 ```bash
 docker compose up --build -d

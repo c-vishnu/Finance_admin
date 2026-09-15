@@ -1,6 +1,13 @@
 # Testing and QA
 
 **Last verified:** 2026-09-15
+## Deployed UI visibility checkpoint - 2026-09-15
+
+- The user report: after deployment the UI is not visible.
+- Cause: Vite 6 `allowedHosts: ["terminal.local"]` blocks every VM IP and hostname with a host-not-allowed page, and nginx `try_files` could return `index.html` for a missing hashed `/assets/*.js` file, which browsers refuse to execute as a module so `#root` stays empty.
+- `vite.config.mjs` now sets `allowedHosts: true` on both `server` and `preview`. `docker/nginx.conf` 404s `/assets/` misses, pins JS MIME types, and sends `Cache-Control: no-cache` for `index.html`. Instrument Sans loads from `index.html` instead of a blocking CSS `@import`. `src/main.jsx` reports a start failure instead of a silent blank root.
+- Validation actually executed: `node --test tests/vite-port.test.mjs tests/docker-vm.test.mjs tests/ui-quality.test.mjs` 11/11; `npm run docs:check` passed; `npm run build` succeeded (existing large-chunk advisory remains); `npm run test:sites` 4/4. Production preview at `http://127.0.0.1:4003/` returned HTTP 200 HTML titled `Wayvida Books` with `#root` and `/assets/index-C7y23PRo.js` (`Content-Type: text/javascript`); the matching CSS returned `text/css`. Docker Engine is still absent here, so a live container on 4002 is not claimed. The running local Vite on 4001 still served HTTP 200.
+
 ## Docker VM port 4002 checkpoint - 2026-09-15
 
 - The user instruction: change Docker to port 4002.

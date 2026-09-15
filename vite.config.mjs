@@ -12,7 +12,7 @@ export default defineConfig({
     host: "0.0.0.0",
     port: 4001,
     strictPort: true,
-    allowedHosts: ["terminal.local"],
+    allowedHosts: true,
     warmup: {
       clientFiles: ["./src/main.jsx"],
     },
@@ -21,6 +21,7 @@ export default defineConfig({
     host: "0.0.0.0",
     port: 4001,
     strictPort: true,
+    allowedHosts: true,
   },
   plugins: [react()],
 });
