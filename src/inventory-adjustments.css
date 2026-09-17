@@ -30,6 +30,17 @@
 .iaBanner{display:flex;align-items:center;gap:8px;margin:0;padding:11px 14px;border:1px solid #c7e7d5;border-radius:9px;background:#e8f7ef;color:#18794e;font-size:13px;font-weight:650}
 .iaBanner svg{color:#18794e}
 
+/* The create screen is a document workflow, so its header sits flush beneath
+   the working-context bar and aligns with that bar's 24px content gutter. */
+.app main:has(>.iaPage.iaCreatePage){max-width:none!important;padding:0!important}
+.app main>.iaPage.iaCreatePage{max-width:none;margin:0;padding:0 0 32px;gap:16px}
+.app main>.iaPage.iaCreatePage>:not(.iaCreateHead){margin-left:clamp(16px,2.2vw,32px);margin-right:clamp(16px,2.2vw,32px)}
+.iaCreateHead{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:16px;width:100%;min-height:56px;padding:8px 24px;border-top:1px solid #dfe6ef;border-bottom:1px solid #dfe6ef;background:#fff}
+.iaCreateHead .iaHeadIdentity{display:grid;grid-template-columns:40px minmax(0,1fr);align-items:center;gap:14px}
+.iaCreateTitle h1{margin:0;color:#172033;font-size:18px;line-height:1.25;letter-spacing:-.2px}
+.iaCreateHead .iaHeadSide{justify-content:flex-end}
+.iaCreateHead .iaBack{margin:0}
+
 /* ---------- register toolbar ---------- */
 /* One search box and one Filters disclosure, the way Journal Entries and Budgets
    group theirs: every dropdown lives inside the panel, and the row count stays
@@ -85,7 +96,6 @@ th.iaActionsCell,td.iaActionsCell{text-align:right;white-space:nowrap}
 .iaCardHead{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid var(--line)}
 .iaCardHead h2{margin:0 0 3px;font-size:16px}
 .iaCardHead p{margin:0;color:#667085;font-size:12px}
-.iaRefChip{display:inline-flex;align-items:center;height:30px;padding:0 11px;border:1px solid #dfe6ef;border-radius:999px;background:#f7f9fc;color:#475467;font-size:12px;font-weight:650;white-space:nowrap}
 .iaFields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 16px;padding:16px}
 .iaField{display:flex;flex-direction:column;gap:6px;min-width:0;color:#344054;font-size:13px;font-weight:600}
 .iaFieldWide{grid-column:1/-1}
@@ -101,9 +111,27 @@ th.iaActionsCell,td.iaActionsCell{text-align:right;white-space:nowrap}
 .iaSegmented button{min-height:32px;padding:5px 13px;border:0;border-radius:7px;background:transparent;color:#475467;font-size:13px;font-weight:600}
 .opsPage .iaSegmented button:hover{border-color:transparent;background:#eaf0fb;color:#245fd9}
 .iaSegmented button.active{background:#fff;color:#245fd9;box-shadow:0 1px 3px #1018281f}
+.iaTypeField{align-items:flex-start}
+.iaTypeToggle{width:min(100%,390px)}
+.iaTypeToggle button{flex:1 1 0}
 .iaSrOnly{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 /* ---------- item tables: sticky header, sticky Item column, scrollable ---------- */
-.iaItemsTools{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-end}
+.iaItemsHead{align-items:center}
+.iaItemsControlBar{display:flex;justify-content:flex-end;padding:14px 16px;border-bottom:1px solid var(--line)}
+.iaItemsIntro{display:flex;flex-direction:column;gap:7px;min-width:0}
+.iaItemsIntro h2{margin:0}
+.iaItemsGuide{display:flex;align-items:flex-start;gap:7px;max-width:680px;color:#667085}
+.iaItemsGuide svg{width:16px;height:16px;margin-top:1px;color:#3478f6}
+.iaItemsGuide p{margin:0;font-size:12px;line-height:1.45}
+.iaItemsTools{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.iaModeField{display:flex;flex-direction:column;gap:5px}
+.iaModeField>span{color:#667085;font-size:12px;font-weight:650}
+.iaAddItem{min-width:108px;white-space:nowrap}
+.iaItemsEmptyAlert{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;margin:14px 16px 0;padding:12px 14px;border:1px solid #f0cf9b;border-radius:9px;background:#fff9ef;color:#7a4608}
+.iaItemsEmptyAlert>svg{align-self:start;margin-top:1px}
+.iaItemsEmptyAlert strong{display:block;font-size:13px}
+.iaItemsEmptyAlert p{margin:2px 0 0;color:#8a5a1f;font-size:12px;line-height:1.45}
+.iaItemsEmptyAlert button{min-height:36px;border-color:#e7bd7a;background:#fff;color:#7a4608;white-space:nowrap}
 .iaItemsScroll{overflow:auto;max-height:min(60vh,560px);overscroll-behavior:contain}
 .iaItemTable{width:100%;min-width:940px;border-collapse:separate;border-spacing:0}
 .opsTable .iaItemTable{min-width:940px;border-collapse:separate;border-spacing:0}
@@ -134,8 +162,8 @@ th.iaActionsCell,td.iaActionsCell{text-align:right;white-space:nowrap}
 /* ---------- the compact inventory impact summary ---------- */
 .iaImpact{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:12px 16px;border-top:1px solid var(--line);background:#fbfcfe}
 .iaImpact h3{margin:0;color:#667085;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
-.iaImpact dl{display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;margin:0}
-.iaImpact dl>div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.iaImpact dl{display:grid;grid-template-columns:repeat(5,minmax(120px,1fr));flex:1 1 640px;gap:0;margin:0}
+.iaImpact dl>div{display:flex;flex-direction:column;gap:2px;min-width:0;padding:0 16px;border-left:1px solid #e5eaf1}
 .iaImpact dt{color:#667085;font-size:12px}
 .iaImpact dd{margin:0;font-size:14px;font-weight:650}
 
@@ -144,6 +172,8 @@ th.iaActionsCell,td.iaActionsCell{text-align:right;white-space:nowrap}
 .iaAccounting>summary{display:flex;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;color:#172033;font-size:14px;font-weight:650;list-style:none}
 .iaAccounting>summary::-webkit-details-marker{display:none}
 .iaAccounting>summary>svg{color:#2563eb}
+.iaAccountingChevron{flex:0 0 auto;transition:transform .18s ease}
+.iaAccounting[open] .iaAccountingChevron{transform:rotate(180deg)}
 .iaBalanceChip{margin-left:auto;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:650;white-space:nowrap}
 .iaBalanceChip.balanced{background:#e8f7ef;color:#18794e}
 .iaBalanceChip.unbalanced{background:#fff6ec;color:#8a4b09}
@@ -182,6 +212,7 @@ th.iaActionsCell,td.iaActionsCell{text-align:right;white-space:nowrap}
 
 /* ---------- footers and the confirmation dialog ---------- */
 .iaFooter{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fff;box-shadow:0 3px 12px #1018280a}
+.iaCreatePage .iaFooter{position:sticky;bottom:10px;z-index:20;box-shadow:0 10px 28px #1018281f}
 .iaFooterNote{flex:1 1 320px;margin:0;color:#667085;font-size:12px}
 .iaFooterActions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-end}
 .iaScrim{position:fixed;inset:0;z-index:1300;display:flex;align-items:center;justify-content:center;padding:20px;background:#10182873}
@@ -198,6 +229,12 @@ th.iaActionsCell,td.iaActionsCell{text-align:right;white-space:nowrap}
 @media(max-width:1180px){.iaFields{grid-template-columns:1fr}}
 @media(max-width:900px){.iaFacts{grid-template-columns:1fr}.iaFacts>div:nth-last-child(-n+2){border-bottom:1px solid #edf1f6}.iaFacts>div:last-child{border-bottom:0}.iaSummary{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){
+ .app main>.iaPage.iaCreatePage>:not(.iaCreateHead){margin-left:12px;margin-right:12px}
+ .iaCreateHead{grid-template-columns:minmax(0,1fr);gap:7px;min-height:0;padding:9px 12px 10px}
+ .iaCreateHead .iaHeadIdentity{grid-template-columns:36px minmax(0,1fr);gap:10px}
+ .iaCreateHead .iaBack{width:36px;height:36px;min-height:36px}
+ .iaCreateTitle h1{font-size:16px}
+ .iaCreateHead .iaHeadSide{padding-left:46px;justify-content:flex-start}
  .iaHeadIdentity,.iaHeadSide{width:100%}
  .iaHeadSide{justify-content:flex-start}
  .iaHeading{align-items:flex-start;flex-direction:column;gap:14px}
@@ -208,7 +245,18 @@ th.iaActionsCell,td.iaActionsCell{text-align:right;white-space:nowrap}
  .iaFooterActions button{flex:1 1 auto}
  .iaItemsScroll{max-height:none}
  .iaItemTable{min-width:720px}
+ .iaItemsHead{align-items:stretch}
+ .iaItemsTools{width:100%;justify-content:space-between}
+ .iaModeField{flex:1 1 210px}
+ .iaModeToggle{width:100%}
+ .iaModeToggle button{flex:1 1 0}
+ .iaAddItem{align-self:flex-end}
+ .iaItemsEmptyAlert{grid-template-columns:auto minmax(0,1fr);margin:12px 12px 0}
+ .iaItemsEmptyAlert button{grid-column:1/-1;width:100%}
  .iaImpact{gap:12px}
+ .iaImpact dl{grid-template-columns:repeat(2,minmax(120px,1fr))}
+ .iaImpact dl>div{padding:8px 10px}
+ .iaCreatePage .iaFooter{bottom:0;border-radius:10px 10px 0 0}
  .iaSummary{grid-template-columns:1fr}
 }
 @media(max-width:420px){.iaSummary{grid-template-columns:1fr}.iaFooterActions button{flex:1 1 100%}}

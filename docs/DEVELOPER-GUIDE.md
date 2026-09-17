@@ -1,6 +1,6 @@
 # Developer Guide
 
-**Last verified:** 2026-09-16  
+**Last verified:** 2026-09-17
 **Primary sources:** `package.json`, `vite.config.mjs`, `Dockerfile`, `docker-compose.yml`, `AGENTS.md`.
 
 ## Requirements and commands
@@ -43,6 +43,21 @@ Every completed feature includes its documentation delta. Update the relevant mo
 - Read `AGENTS.md` before changing domain behavior or visual conventions.
 - For accounting work, read `invoice-engine.js` and the feature service before editing UI.
 - For established module requirements, read the corresponding root specification and this knowledge base.
+
+## Project structure for a receiving engineer or AI
+
+| Area | Files | Responsibility |
+|---|---|---|
+| Bootstrap and shell | `index.html`, `src/main.jsx`, `src/App.jsx`, `src/Navigation.jsx` | Mounting, global providers, dashboard chrome and state-driven navigation. |
+| Feature UI | `src/*Workspace.jsx`, named feature `.jsx` files and adjacent CSS | Register/create/detail screens and interaction wiring. |
+| Accounting/domain rules | `src/invoice-engine.js`, `src/receipt-engine.js`, `src/*-service.js`, `src/period-locking.js`, `src/inventory-adjustments.js`, `src/budget-statements.js` | Pure validation, calculation, lifecycle, posting, reversal and report derivation. |
+| Prototype persistence | `src/account-store.js`, feature `*-store.js`, documented browser keys | Backward-compatible browser reads/writes; never production durability. |
+| Shared scope and terminology | `src/organisation-context.js`, `src/organisation-scope.js`, `src/OrganisationBranchScope.jsx`, `src/terminology.jsx` | Organisation/branch visibility, working context and display vocabulary. |
+| Tests | `tests/*.test.mjs` | Node domain tests plus source/UI contract tests. |
+| Hosting | `vite.config.mjs`, `Dockerfile`, `docker/`, `worker/`, `.openai/`, `scripts/prepare-sites-build.mjs` | Vite, nginx/VM and Sites static delivery. |
+| Knowledge transfer | `AGENTS.md`, `docs/`, `docs/project-manifest.json` | Required clean-context continuation contract. |
+
+Before editing an existing module, follow component → service/engine → store/key → reports → tests. UI-only terminology changes must preserve the stored field and service contract unless the task explicitly changes domain behavior.
 
 ## Adding or extending a module
 

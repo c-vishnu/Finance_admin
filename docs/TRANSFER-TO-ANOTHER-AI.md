@@ -1,6 +1,55 @@
 # Wayvida Books — Transfer to Another AI
 
-**Last verified:** 2026-09-16  
+**Last verified:** 2026-09-17
+
+## Resume checkpoint — 2026-09-17
+
+This repository is a browser-based React/Vite accounting prototype, not a production backend. Start from the repository root and inspect `git status` before changing anything. The current branch is `main`; the last committed baseline is `632e747 Add inventory adjustments and shared empty states`. The field-first Inventory Adjustment UI and the Items multi-scope/register/detail work are intentional working-tree changes, so preserve them unless the user explicitly asks to discard or replace them. Item Details now has a full-width back header beneath Working Context, an identity/action card and Basic Data, Transactions and History tabs. The unrelated untracked `.codex-item.patch` is a scratch artifact, not application source.
+
+Current verified runtime and architecture:
+
+```text
+index.html
+└─ src/main.jsx                     application bootstrap and global providers
+   └─ src/App.jsx                  shell, active-page routing, notifications, shared state
+      ├─ src/Navigation.jsx        sidebar hierarchy and page labels
+      ├─ src/*Workspace.jsx        accounting workspaces and register/detail/create screens
+      ├─ src/*.{jsx,css}           operational modules and scoped presentation
+      ├─ src/*-service.js          workflow/domain commands
+      ├─ src/*-engine.js           posting, calculation and document rules
+      ├─ src/*-store.js            prototype persistence adapters
+      └─ localStorage/sessionStorage browser-only prototype state
+```
+
+Important boundaries:
+
+- `App.jsx` and `Navigation.jsx` use state-driven routing; there is no React Router.
+- JSX renders workflows; accounting, validation and lifecycle rules belong in pure service/engine modules.
+- Accounting amounts are integer paise. Journals must balance before persistence. Posted records are corrected through reversal or adjustment.
+- Working organisation/branch scope comes from `organisation-context.js`, `organisation-scope.js` and `OrganisationBranchScope.jsx`; do not create private scope readers.
+- The main accounting aggregate is handled through `account-store.js`; feature-specific prototype records also use documented browser-storage keys. Browser storage is not secure, transactional or shared.
+- Reports consume posted journals. Budgets are a planning layer and never post. Orders do not post. Inventory Adjustments post only after reaching `Adjusted`.
+- UI roles and the Business owner / Head of Accountant terminology switch are simulations, never authenticated authorization.
+
+Latest Inventory Adjustment contract:
+
+- Navigation is `Inventory > Inventory Adjustments`.
+- The register supports search, one Filters disclosure, pagination, detail opening and status-aware row actions.
+- Create/Edit is field-first with no Step labels or Adjustment details / Items heading copy.
+- Field order and labels: Mode of adjustment; Quantity Adjustment / Value Adjustment; Reference Number; Date; Adjustment location; Account; Reason; Description.
+- Quantity grid labels: Item Details; Location; Quantity Available; New Quantity on hand; Quantity Adjusted. The editable and derived cells swap when Entry mode changes so the column meaning remains truthful.
+- A missing stock-item dependency shows one Create Item recovery action, disables Add Item and final posting/submission, and leaves Save as Draft available.
+- Draft/Cancelled records do not move stock or post. Adjusted records update the derived inventory position and create one balanced journal. Posted corrections use reversal.
+
+Validation at this checkpoint: `node --test --test-isolation=none tests/inventory-adjustments.test.mjs` passed 25/25; `node scripts/validate-knowledge-docs.mjs` passed; the Vite production build passed with 6,959 modules and the existing bundle-size advisory; `scripts/prepare-sites-build.mjs` refreshed Sites artifacts; the running page at port 4001 was inspected without submitting a transaction.
+
+Newest feature (2026-09-17): Items supports multi-organisation and multi-branch availability with the shared `OrganisationBranchScope multiple` control. Stored items add `organizationIds`, `branchIds`, `active` and `auditTrail` while preserving the legacy primary `organizationId` and `warehouseId`. The register shows Item name + SKU + HSN/SAC and uses View Details plus a three-dot Edit Item / Enable or Disable Item / Duplicate Item / Delete menu. The details page shows the complete stored master, linked journals/invoices/purchases/inventory adjustments, and local audit history. Opening-stock accounting is unchanged. Tests: the focused Items set is 22 tests after this feature's new suite; final totals are recorded in QA.
+
+Newest change (2026-09-17): the Item Details page had a spacing and tab-strip pass. `src/items.css` now keeps one 14px rhythm between the identity card, the tab strip and the section cards, 16px of padding inside each card, a 48px identity tile, 36px Edit Item and More-actions controls, and no duplicated body bottom margin, so the page ends on the existing 32px bottom padding. The `.itemDetailTabs` bar is now one full-width segmented strip - `gap:0;padding:0;overflow:hidden`, equal `flex:1 1 0` tabs, 1px separators, a `#3478f6` active bottom border and 12px/`0 8px` tab padding below 520px - so there is no space between the tabs and the row never scrolls sideways, while `flex:0 0 auto` plus the explicit `height:46px` still stops any ancestor from stretching it into a tall empty box. `src/Items.jsx` adds the saved SKU to the identity meta line. Reported by the user as a screenshot showing a large empty grey block above the tabs; that exact geometry is not reproducible from this working tree's cascade or from the matching built CSS, so treat a stale page or a cached stylesheet as the likely cause and measure the live page before changing anything else. No storage, posting, validation or routing contract changed.
+
+Newest change (2026-09-17): New / Edit Inventory Adjustment is now field-first. The Step 1 / Step 2 / Step 3 labels, Adjustment details and Items headings, and their explanatory copy are removed. The form labels and order are Mode of adjustment (Quantity Adjustment / Value Adjustment), Reference Number, Date, Adjustment location, Account, Reason and Description. The item grid reads Item Details, Location, Quantity Available, New Quantity on hand and Quantity Adjusted, with the input/derived cells swapping correctly for Set New Quantity. The existing no-item recovery, accounting disclosure and sticky footer remain. No stored field or accounting behavior changed.
+
+Previous checkpoint, superseded in part by the field-first layout above (2026-09-17): New / Edit Inventory Adjustment introduced `div.iaCreateHead`, a full-width document header flush beneath Working Context. The header geometry, responsive gutter and scroll reset remain current; the former `iaItemsGuide`, Items heading and step copy were subsequently removed.
 
 Newest change (2026-09-16): Create Item renders Inventory Asset Account first and Cost of Goods Sold Account second in the same responsive Track inventory row. Advanced settings contains the single Opening stock disclosure, Tax settings and the minimal Item image attachment row, in that order. Opening-stock calculations, validation and posting are unchanged. Item image remains directly below its label and retains the native input, MIME validation, 2 MB limit, FileReader, preview and removal contracts. Create Item uses one scoped document-level vertical scroll surface: `html`, `body` and `#root` become auto-height/scrollable while `.app` and `main` release the shell height/overflow locks, so wheel, trackpad, touch and scrollbar input act on the page instead of competing with a nested main scroller. Fixed actions retain bottom clearance.
 
@@ -16,12 +65,12 @@ This is the starting point for continuing the project in another AI account or t
 ## 1. Current project state
 
 - Product: Wayvida Books accounting ERP browser prototype.
-- Location in the current environment: `C:\Users\asus\Documents\ChatGPT\Account\finance-erp-prototype`.
+- Repository location is environment-specific. Work from the root containing `package.json`, `AGENTS.md`, `src/`, `tests/` and `docs/`; never hard-code a previous machine path.
 - Stack: React 19.2, JavaScript ES modules, Vite 6.4, Tabler icons, and Recharts.
 - Persistence: browser `localStorage` and `sessionStorage`; there is no production database or authenticated backend.
 - Navigation: state-driven navigation in `src/App.jsx` and `src/Navigation.jsx`; React Router is not used.
 - Accounting engine: operational documents use domain services to create balanced journals. Amounts in accounting engines are integer paise.
-- Current build: the last successful production build was 2026-09-10, and Vite reports the existing non-blocking large-chunk advisory. `vite build` could not be re-run on 2026-09-14 during the Period Closing restructure because it needs the esbuild binary that sandbox cannot spawn (`spawn EPERM`).
+- Current build: production build verified 2026-09-17 with 6,959 modules transformed. Vite reports the existing non-blocking large-chunk advisory.
 
 ## 2. Latest completed feature
 
@@ -489,7 +538,7 @@ npm run build
 npm run test:sites
 ```
 
-The current environment used Node.js 24.19.0. The application normally runs at `http://127.0.0.1:5173/` during local development.
+The application runs at `http://localhost:4001/` during local development and preview. Docker/nginx static hosting uses port 4002 unless `WAYVIDA_PORT` overrides it.
 
 Sandbox note (2026-09-14, superseded 2026-09-15): a restricted Windows workspace once used local `tmp/` esbuild shims to start Vite when the sandbox denied child processes. Those `tmp/` files were scratch workarounds, not product code, and they are no longer in the repository. Use `npm install` and `npm run dev` in a normal environment.
 

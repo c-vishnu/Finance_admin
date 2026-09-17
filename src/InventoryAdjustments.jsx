@@ -13,7 +13,7 @@
    a cash or bank account, which is why an inventory adjustment can never create
    a cash movement of its own. */
 import {useEffect,useMemo,useRef,useState} from 'react';
-import {IconAlertTriangle,IconArrowBackUp,IconArrowLeft,IconBan,IconCheck,IconCopy,IconDotsVertical,IconEdit,IconEye,IconFileDownload,IconFilter,IconHistory,IconInfoCircle,IconPlus,IconSearch,IconTrash,IconX} from '@tabler/icons-react';
+import {IconAlertTriangle,IconArrowBackUp,IconArrowLeft,IconBan,IconCheck,IconChevronDown,IconCopy,IconDotsVertical,IconEdit,IconEye,IconFileDownload,IconFilter,IconHistory,IconInfoCircle,IconPlus,IconSearch,IconTrash,IconX} from '@tabler/icons-react';
 import {money,today} from './invoice-engine.js';
 import {readAccounts,writeAccounts} from './account-store.js';
 import {findOrganisation,getBranchesForOrganisation,organisationBranches,scopePickerState} from './organisation-scope.js';
@@ -85,6 +85,9 @@ export default function InventoryAdjustments({seed,notify=()=>{},onNavigate=()=>
     document.addEventListener('keydown',escape);
     return()=>{document.removeEventListener('pointerdown',away);document.removeEventListener('keydown',escape)};
   },[]);
+  useEffect(()=>{
+    document.querySelector('.app>main')?.scrollTo({top:0,left:0,behavior:'auto'});
+  },[view]);
 
   const branches=useMemo(()=>organisationBranches(organisations),[organisations]);
   const items=useMemo(()=>canonicalItems(inventoryItems,branches),[inventoryItems,branches]);
@@ -139,9 +142,9 @@ export default function InventoryAdjustments({seed,notify=()=>{},onNavigate=()=>
 
   if(!db)return <section className="opsPage iaPage"><div className="opsCard iaCard"><Empty title="Inventory adjustments are unavailable" text="Stored accounting data could not be read, so nothing was changed. Reload the workspace to try again."/></div></section>;
 
-  return <section className="opsPage iaPage">
+  return <section className={`opsPage iaPage ${view==='create'?'iaCreatePage':view==='detail'?'iaDetailPage':'iaRegisterPage'}`}>
     {view==='list'&&<RegisterPage rows={rows} role={role} banner={banner} branchNameOf={branchLabel} accountNameOf={accountNameOf} onNew={()=>openCreate()} onOpen={openDetail} onEdit={openEdit} onDuplicate={duplicateRow} onExport={exportRow} onCancel={row=>setDialog({kind:'cancel',id:row.id,reason:''})} onReverse={row=>setDialog({kind:'reverse',id:row.id,date:today(),reason:''})}/>}
-    {view==='create'&&form&&<CreatePage db={db} form={form} setForm={setForm} touched={touched} setTouched={setTouched} role={role} settings={settings} items={items} organisations={organisations} postingAccounts={postingAccounts} organisationOf={organisationOf} branchesOf={branchesOf} onBack={backToList} onSaveDraft={saveDraft} onSaveAndAdjust={saveAndAdjust} onSubmit={submitForApproval}/>}
+    {view==='create'&&form&&<CreatePage db={db} form={form} setForm={setForm} touched={touched} setTouched={setTouched} role={role} settings={settings} items={items} organisations={organisations} postingAccounts={postingAccounts} organisationOf={organisationOf} branchesOf={branchesOf} onBack={backToList} onCreateItem={()=>onNavigate('Items')} onSaveDraft={saveDraft} onSaveAndAdjust={saveAndAdjust} onSubmit={submitForApproval}/>}
     {view==='detail'&&(selected?<DetailPage row={selected} db={db} items={items} settings={settings} role={role} branchNameOf={branchLabel} accountNameOf={accountNameOf} onBack={backToList} onOpen={openDetail} onEdit={openEdit} onDuplicate={duplicateRow} onExport={exportRow} onCancel={row=>setDialog({kind:'cancel',id:row.id,reason:''})} onReverse={row=>setDialog({kind:'reverse',id:row.id,date:today(),reason:''})} onAdjust={adjustRow} onSubmit={submitRow} onNavigate={onNavigate}/>:<div className="opsCard iaCard"><Empty title="Adjustment not found" text="This adjustment is no longer in the register."/></div>)}
     {dialog&&<AdjustmentDialog dialog={dialog} setDialog={setDialog} onConfirm={confirmDialog}/>}
     {error&&<p role="alert" className="opsError"><IconAlertTriangle/>{error}<button type="button" aria-label="Dismiss message" onClick={()=>setError('')}><IconX/></button></p>}
@@ -231,13 +234,14 @@ const toneOf=value=>value<0?'iaDown':value>0?'iaUp':'';
 /* The create page: adjustment details, the item table that differs by adjustment
    type, the compact inventory impact summary and the collapsible accounting
    preview. Nothing is posted until the document becomes Adjusted. */
-function CreatePage({db,form,setForm,touched,setTouched,role,settings,items,organisations,postingAccounts,organisationOf,branchesOf,onBack,onSaveDraft,onSaveAndAdjust,onSubmit}){
+function CreatePage({db,form,setForm,touched,setTouched,role,settings,items,organisations,postingAccounts,organisationOf,branchesOf,onBack,onCreateItem,onSaveDraft,onSaveAndAdjust,onSubmit}){
   const valueType=form.type===VALUE_TYPE;
   const approval=settings.approvals?.inventoryAdjustments!==false;
   const canPost=adjustmentAllowed(role,'post');
   const referenceEditable=settings.transactions?.reference!==false;
   const organisation=organisationOf(form.companyId);
   const stockItems=itemsForOrganisation(items,organisation?.id||'');
+  const blockedByItems=!stockItems.length;
   const locationOptions=branchesOf(form.companyId);
   const scopeState=scopePickerState({organisations,companyIds:[form.companyId],branchIds:[form.branchId],label:'Adjustment scope'});
   const impact=useMemo(()=>adjustmentImpact(db,items,form),[db,items,form]);
@@ -268,63 +272,69 @@ function CreatePage({db,form,setForm,touched,setTouched,role,settings,items,orga
   const derivedText=line=>{const row=computed.get(line.id);if(!row)return '—';if(valueType)return entryMode==='Adjust By'?money(row.newValue):signedMoney(row.valueDelta);return entryMode==='Adjust By'?formatQuantity(row.newQty)+(row.unit?' '+row.unit:''):(row.qtyDelta>0?'+':'')+formatQuantity(row.qtyDelta)+(row.unit?' '+row.unit:'')};
   const derivedTone=line=>{const row=computed.get(line.id);if(!row)return '';return entryMode==='Adjust By'?'':toneOf(valueType?row.valueDelta:row.qtyDelta)};
   return <>
-    <header className="opsHead">
+    <div className="iaCreateHead">
       <div className="iaHeadIdentity">
         <button type="button" className="iaBack" aria-label="Back to inventory adjustments" onClick={onBack}><IconArrowLeft/></button>
-        <div><span>Inventory</span><h1>{form.id?'Edit Inventory Adjustment':'New Inventory Adjustment'}</h1><p>Correct inventory quantities or values without creating a purchase or sales transaction.</p></div>
+        <div className="iaCreateTitle"><h1>{form.id?'Edit Inventory Adjustment':'New Inventory Adjustment'}</h1></div>
       </div>
       <div className="iaHeadSide"><Badge value={form.status||'Draft'}/></div>
-    </header>
+    </div>
     <div className="opsCard iaCard">
-      <header className="iaCardHead"><div><h2>Adjustment details</h2><p>Choose what is being corrected and where it is accounted for.</p></div><span className="iaRefChip">{form.number||'Reference assigned on save'}</span></header>
       <div className="iaFields">
-        <div className="iaField iaFieldWide">
-          <span className="iaLabel">Adjustment type *</span>
-          <div className="iaSegmented" role="group" aria-label="Adjustment type">
+        <div className="iaField iaFieldWide iaTypeField">
+          <span className="iaLabel">Mode of adjustment *</span>
+          <div className="iaSegmented iaTypeToggle" role="group" aria-label="Mode of adjustment">
             {ADJUSTMENT_TYPES.map(option=><button type="button" key={option} aria-pressed={form.type===option} className={form.type===option?'active':''} onClick={()=>changeType(option)}>{option}</button>)}
           </div>
           <small className="iaHelp">{valueType?'Correct the financial value without changing the quantity.':'Correct the physical quantity of an item.'}</small>
           {showError('type')&&<small className="iaError">{showError('type')}</small>}
         </div>
+        <label className="iaField">Reference Number<input value={form.number||''} readOnly={!referenceEditable} onChange={event=>set('number',event.target.value)}/>{referenceEditable?<small className="iaHelp">Auto-generated. Edit only when numbering settings allow it.</small>:<small className="iaHelp">Reference editing is switched off in accounting settings.</small>}</label>
         <label className="iaField">Date *<input type="date" value={form.date||''} onChange={event=>set('date',event.target.value)}/>{showError('date')&&<small className="iaError">{showError('date')}</small>}</label>
-        <label className="iaField">Reference number<input value={form.number||''} readOnly={!referenceEditable} onChange={event=>set('number',event.target.value)}/>{referenceEditable?<small className="iaHelp">Generated automatically · edit only if the organisation numbering policy allows it.</small>:<small className="iaHelp">Reference editing is switched off in accounting settings.</small>}</label>
         <div className="iaField iaFieldWide">
-          <span className="iaLabel">Organisation and branch / location *</span>
+          <span className="iaLabel">Adjustment location *</span>
           {scopeState.showOrganisation||scopeState.showBranch
             ?<OrganisationBranchScope organisations={organisations} companyIds={[form.companyId]} branchIds={[form.branchId]} onChange={changeScope} label="Adjustment scope" showLine={false} strip={form.companyName+' · '+form.branchName}/>
             :<output className="iaScopeStatic">{form.companyName||'No organisation'} · {form.branchName||'No branch'}</output>}
-          <small className="iaHelp">Branches are filtered by the selected organisation, and every item line is keyed to its own location.</small>
+          <small className="iaHelp">Branches follow the selected organisation. Each item can use its own location.</small>
           {(showError('companyId')||showError('branchId'))&&<small className="iaError">{showError('companyId')||showError('branchId')}</small>}
         </div>
         <div className="iaField">
-          <span className="iaLabel">Adjustment account *</span>
+          <span className="iaLabel">Account *</span>
           <JournalAccountPicker value={form.account||''} accounts={postingAccounts} onChange={code=>set('account',code)}/>
-          <small className="iaHelp">The account the gain or loss is posted to. Configured in accounting settings and always chosen from the Chart of Accounts.</small>
+          <small className="iaHelp">Used automatically for the inventory gain or loss.</small>
           {showError('account')&&<small className="iaError">{showError('account')}</small>}
         </div>
         <label className="iaField">Reason *<select value={form.reason||''} onChange={event=>set('reason',event.target.value)}><option value="">Select a reason</option>{ADJUSTMENT_REASONS.map(reason=><option key={reason}>{reason}</option>)}</select>{showError('reason')&&<small className="iaError">{showError('reason')}</small>}</label>
-        <label className="iaField iaFieldWide">Notes<textarea rows={2} value={form.notes||''} placeholder="Explain the adjustment for the approval trail (optional)" onChange={event=>set('notes',event.target.value)}/></label>
+        <label className="iaField iaFieldWide">Description<textarea rows={2} value={form.notes||''} placeholder="Describe why this adjustment is required (optional)" onChange={event=>set('notes',event.target.value)}/></label>
       </div>
     </div>
     <div className="opsCard iaCard iaItemsCard">
-      <header className="iaCardHead">
-        <div><h2>Items</h2><p>{valueType?'Current quantity stays unchanged: only the stock value moves.':'Stock value follows the item rate, so a quantity correction is always valued. '}At least one item is required.</p></div>
+      <div className="iaItemsControlBar">
         <div className="iaItemsTools">
-          <div className="iaSegmented iaModeToggle" role="group" aria-label="Entry mode">
-            {ADJUSTMENT_ENTRY_MODES.map(mode=><button type="button" key={mode} aria-pressed={entryMode===mode} className={entryMode===mode?'active':''} onClick={()=>set('entryMode',mode)}>{mode==='Adjust By'?'Adjust By':(valueType?'Set New Value':'Set New Quantity')}</button>)}
+          <div className="iaModeField">
+            <span>Entry mode</span>
+            <div className="iaSegmented iaModeToggle" role="group" aria-label="Entry mode">
+              {ADJUSTMENT_ENTRY_MODES.map(mode=><button type="button" key={mode} aria-pressed={entryMode===mode} className={entryMode===mode?'active':''} onClick={()=>set('entryMode',mode)}>{mode==='Adjust By'?'Adjust By':(valueType?'Set New Value':'Set New Quantity')}</button>)}
+            </div>
           </div>
-          <button type="button" onClick={addLine}><IconPlus/>Add Item</button>
+          <button type="button" className="primary iaAddItem" disabled={blockedByItems} title={blockedByItems?'Create a stock item before adding another line.':''} onClick={addLine}><IconPlus/>Add Item</button>
         </div>
-      </header>
+      </div>
+      {blockedByItems&&<div className="iaItemsEmptyAlert" role="status">
+        <IconAlertTriangle size={20}/>
+        <div><strong>No stock items available</strong><p>Create a tracked inventory item for {form.companyName||'this organisation'} before submitting this adjustment.</p></div>
+        <button type="button" onClick={onCreateItem}>Create Item</button>
+      </div>}
       <div className="iaItemsScroll">
         <table className="iaItemTable">
           <thead><tr>
-            <th scope="col" className="iaStickyCol">Item</th>
+            <th scope="col" className="iaStickyCol">Item Details</th>
             <th scope="col">Location</th>
-            <th scope="col" className="iaNum">Current quantity</th>
+            <th scope="col" className="iaNum">Quantity Available</th>
             {valueType&&<th scope="col" className="iaNum">Current value</th>}
-            <th scope="col" className="iaNum">{entryLabel}</th>
-            <th scope="col" className="iaNum">{derivedLabel}</th>
+            <th scope="col" className="iaNum">{valueType?'New Value on hand':'New Quantity on hand'}</th>
+            <th scope="col" className="iaNum">{valueType?'Value Adjusted':'Quantity Adjusted'}</th>
             <th scope="col" className="iaActionsCell"><span className="iaSrOnly">Remove</span></th>
           </tr></thead>
           <tbody>
@@ -332,18 +342,22 @@ function CreatePage({db,form,setForm,touched,setTouched,role,settings,items,orga
               const row=computed.get(line.id),message=lineMessage(line);
               return <tr key={line.id} className={message?'iaRowInvalid':''}>
                 <td className="iaStickyCol">
-                  <select aria-label={'Item for line '+(index+1)} value={line.itemId||''} onChange={event=>setLine(line.id,'itemId',event.target.value)}>
+                  <select aria-label={'Item for line '+(index+1)} disabled={blockedByItems} value={line.itemId||''} onChange={event=>setLine(line.id,'itemId',event.target.value)}>
                     <option value="">Select item</option>
                     {stockItems.map(item=><option key={item.id} value={item.id}>{item.name}{item.sku?' · '+item.sku:''}</option>)}
                   </select>
                   {message?<small className="iaError">{message}</small>:row?<small className="iaMuted">Priced at {money(row.rate)} per unit</small>:null}
-                  {!stockItems.length&&<small className="iaHelp">No stock item belongs to this organisation yet. Create one under Inventory → Items.</small>}
                 </td>
                 <td><select aria-label={'Location for line '+(index+1)} value={line.locationId||''} onChange={event=>setLine(line.id,'locationId',event.target.value)}><option value="">Select location</option>{locationOptions.map(branch=><option key={branch.id} value={branch.id}>{branch.name}</option>)}</select></td>
                 <td className="iaNum">{row?formatQuantity(row.currentQty)+(row.unit?' '+row.unit:''):'—'}</td>
                 {valueType&&<td className="iaNum">{row?money(row.currentValue):'—'}</td>}
-                <td className="iaNum"><input className="iaEntry" type="text" inputMode="decimal" aria-label={entryLabel+' for line '+(index+1)} placeholder={valueType?(entryMode==='Adjust By'?'-5000 or 5000':'45000'):(entryMode==='Adjust By'?'-3 or 5':'97')} value={line[entryKey]||''} onChange={event=>setLine(line.id,entryKey,event.target.value)}/></td>
-                <td className={'iaNum iaDerived '+derivedTone(line)}>{derivedText(line)}</td>
+                {entryMode==='Adjust By'?<>
+                  <td className={'iaNum iaDerived '+derivedTone(line)}>{derivedText(line)}</td>
+                  <td className="iaNum"><input className="iaEntry" type="text" inputMode="decimal" aria-label={entryLabel+' for line '+(index+1)} placeholder={valueType?'e.g. -5000 or 5000':'e.g. -3 or 5'} value={line[entryKey]||''} onChange={event=>setLine(line.id,entryKey,event.target.value)}/></td>
+                </>:<>
+                  <td className="iaNum"><input className="iaEntry" type="text" inputMode="decimal" aria-label={entryLabel+' for line '+(index+1)} placeholder={valueType?'e.g. 45000':'e.g. 97'} value={line[entryKey]||''} onChange={event=>setLine(line.id,entryKey,event.target.value)}/></td>
+                  <td className={'iaNum iaDerived '+derivedTone(line)}>{derivedText(line)}</td>
+                </>}
                 <td className="iaActionsCell"><button type="button" className="iaRemove" aria-label={'Remove line '+(index+1)} disabled={form.lines.length<2} onClick={()=>removeLine(line.id)}><IconTrash size={16}/></button></td>
               </tr>;
             })}
@@ -368,7 +382,7 @@ function CreatePage({db,form,setForm,touched,setTouched,role,settings,items,orga
       </section>
     </div>
     <details className="iaAccounting">
-      <summary><IconInfoCircle size={16}/><span>Accounting impact</span><span className={'iaBalanceChip '+(preview.balanced?'balanced':'unbalanced')}>{preview.balanced?'Debit equals credit':'Out of balance'}</span></summary>
+      <summary><IconInfoCircle size={16}/><span>Preview accounting entry</span><span className={'iaBalanceChip '+(preview.balanced?'balanced':'unbalanced')}>{preview.balanced?'Debit equals credit':'Out of balance'}</span><IconChevronDown className="iaAccountingChevron" size={17}/></summary>
       <div className="iaAccountingBody">
         {preview.lines.length
           ?<table className="iaEntryTable">
@@ -381,13 +395,13 @@ function CreatePage({db,form,setForm,touched,setTouched,role,settings,items,orga
       </div>
     </details>
     <footer className="iaFooter">
-      <p className="iaFooterNote">{approval?'Approval is required for inventory adjustments: save the draft, submit it, and a finance manager or administrator approves it to update inventory and post the entry.':'Approval is switched off in settings, so Save & Adjust updates inventory and posts the entry immediately.'}</p>
+      <p className="iaFooterNote">{approval?'Save a draft at any time. Submission sends this adjustment for finance approval; inventory and accounting update only after approval.':'Approval is off. Save & Adjust updates inventory and accounting immediately.'}</p>
       <div className="iaFooterActions">
         <button type="button" onClick={onBack}>Cancel</button>
         <button type="button" onClick={()=>{if(!onSaveDraft())setTouched(true)}}>Save as Draft</button>
         {approval
-          ?<button type="button" className="primary" onClick={()=>{if(!onSubmit())setTouched(true)}}>Submit for Approval</button>
-          :<button type="button" className="primary" disabled={!canPost} title={canPost?'':'Your adjustment role ('+role+') cannot post an adjustment. A finance manager or administrator posts it.'} onClick={()=>{if(!onSaveAndAdjust())setTouched(true)}}>Save &amp; Adjust</button>}
+          ?<button type="button" className="primary" disabled={blockedByItems} title={blockedByItems?'Create a stock item before submitting this adjustment.':''} onClick={()=>{if(!onSubmit())setTouched(true)}}>Submit for Approval</button>
+          :<button type="button" className="primary" disabled={!canPost||blockedByItems} title={blockedByItems?'Create a stock item before posting this adjustment.':(canPost?'':'Your adjustment role ('+role+') cannot post an adjustment. A finance manager or administrator posts it.')} onClick={()=>{if(!onSaveAndAdjust())setTouched(true)}}>Save &amp; Adjust</button>}
       </div>
     </footer>
   </>;

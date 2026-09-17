@@ -1,6 +1,27 @@
 # UI Design System
 
-**Last verified:** 2026-09-16
+**Last verified:** 2026-09-17
+
+## Item Details document page
+
+- Place the full-width `itemDetailHead` directly beneath Working Context. It contains only the 40px back button and the `Item Details` title; restore the standard responsive gutter through `itemDetailBody` below it.
+- Keep item identity and actions in one responsive card: image/icon, name and `Goods/Service · unit · HSN/SAC` on the left; lifecycle status, Edit Item and the canonical More actions menu on the right. Stack the actions below identity at narrow widths without hiding them.
+- Use one tab row for Basic Data, Transactions and History. Show transaction/history counts as a pill inside their labels, identify the selected tab with `aria-current="page"`, and render only the active information card to reduce page length and scanning effort. The row is full width and every tab is an equal cell, so all three labels and their count pills stay visible without a horizontal scrollbar.
+- Keep one 14px vertical rhythm between the identity card, the tab strip and the section cards, and 16px of padding inside every card. `itemDetailBody` is `display:flex;flex-direction:column;gap:14px;margin:16px clamp(16px,2.2vw,28px) 0`, `itemDetailFacts` is `padding:16px` over a `16px 22px` grid gap, table cells are `10px/11px 16px`, and the page ends with the existing 32px `.itemDetailPage` bottom padding. Never re-add a second body bottom margin: it doubled the space under the last card and left the dead band that used to sit between the identity card and the first section card.
+- Keep the tab strip one full-width segmented bar with no gap and no scroll. `.itemDetailTabs` is `display:flex;align-items:center;flex:0 0 auto;gap:0;height:46px;padding:0;border:1px solid #e6ebf2;border-radius:10px;background:#f7f9fc;overflow:hidden`, and every tab is `flex:1 1 0;min-width:0;height:100%` with a `border-right:1px solid #e6ebf2` separator (none on the last child), a transparent 2px bottom border that turns `#3478f6` on `.active`, and `white-space:nowrap`; below 520px the tab padding drops to `0 8px` and the label to 12px. `gap:0`, `padding:0` and `overflow:hidden` are what remove the space between the tabs and stop the row ever scrolling sideways, and the equal `flex:1 1 0` cells are what keep all three labels and their count pills on one line. The explicit height plus `flex:0 0 auto` is still the guard that stops an ancestor from stretching the bar into a tall empty box; never fall back to a `min-height`-only shape, never restore the old `padding:4px;gap:4px;overflow-x:auto` pill strip, and never give a tab a content-sized `flex:0 0 auto` width.
+- Keep the identity card a 48px icon or image tile beside the name, print the saved SKU in the meta line (`No SKU · Goods/Service · unit · HSN/SAC code`), and keep the Edit Item button and the More-actions trigger both 36px tall.
+- Do not repeat `Item Details` as another body heading. Working Context, the document header, item identity and task content are separate visual levels.
+
+## Inventory Adjustment create header
+
+- Place `div.iaCreateHead` directly beneath the Working Context bar; remove the shell main padding only while `section.iaPage` has `iaCreatePage`.
+- Keep the back button in the first title row, 40px on desktop and 36px below 700px, followed directly by the New/Edit Inventory Adjustment title. Do not restore the redundant Inventory eyebrow or descriptive subtitle.
+- Keep lifecycle status visible without competing with the title: right-aligned on desktop and beneath the title gutter on narrow screens.
+- Restore the standard responsive gutter on every create-screen block after the header and reset the main scroll port to the top when changing Inventory Adjustment screens.
+- Keep the create page field-first: do not render Step labels, the Adjustment details or Items headings, or the removed explanatory section copy. `iaItemsControlBar` contains only Entry mode and Add Item.
+- Label the compact type selector `Mode of adjustment`, show Reference Number before Date, use Account and Description, and label the quantity grid Item Details, Quantity Available, New Quantity on hand and Quantity Adjusted. Keep Location because posting is branch/location keyed.
+- A missing stock-item dependency is an actionable amber `iaItemsEmptyAlert`, not repeated helper copy inside every row. Its Create Item button navigates to Items; Add Item and the final posting/submission action remain disabled until the dependency exists. Keep Save as Draft available.
+- Keep the create footer sticky inside the main scroll port and let the inventory-impact definition list form separated responsive value cells rather than one compressed run of labels.
 
 ## Chart of Accounts header
 

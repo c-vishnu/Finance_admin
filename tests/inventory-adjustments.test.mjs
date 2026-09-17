@@ -250,10 +250,53 @@ test('the sidebar and the route expose Inventory > Inventory Adjustments',()=>{
 });
 
 test('the screens keep the wording an accountant and a storekeeper both need',()=>{
-  for(const text of ['Inventory Adjustments','New Inventory Adjustment','Adjust inventory quantities or values and keep your accounting records accurate.','Correct inventory quantities or values without creating a purchase or sales transaction.','Adjustment type','Adjustment account','Inventory impact','Accounting impact','Activity history','Current quantity','Quantity adjusted','Value adjusted','New quantity','New value','Adjust By','Set New Value','Add Item','Save as Draft','Submit for Approval','Save &amp; Adjust','View Journal Entry','Create Reversal / Correcting Adjustment']){
+  for(const text of ['Inventory Adjustments','New Inventory Adjustment','Adjust inventory quantities or values and keep your accounting records accurate.','Adjustment type','Adjustment account','Inventory impact','Accounting impact','Activity history','Quantity Available','Quantity Adjusted','Value Adjusted','New Quantity on hand','New Value on hand','Adjust By','Set New Value','Add Item','Save as Draft','Submit for Approval','Save &amp; Adjust','View Journal Entry','Create Reversal / Correcting Adjustment']){
     assert.ok(screen.includes(text),text);
   }
   assert.match(screen,/import '\.\/inventory-adjustments\.css'/);
+});
+
+test('the create screen uses the full-width document header below working context',()=>{
+  assert.match(screen,/className=\{`opsPage iaPage \$\{view==='create'\?'iaCreatePage'/);
+  assert.match(screen,/<div className="iaCreateHead">/);
+  assert.match(screen,/className="iaBack" aria-label="Back to inventory adjustments"/);
+  assert.match(screen,/document\.querySelector\('\.app>main'\)\?\.scrollTo\(\{top:0,left:0,behavior:'auto'\}\)/);
+  assert.match(styles,/\.app main:has\(>\.iaPage\.iaCreatePage\)\{max-width:none!important;padding:0!important\}/);
+  assert.match(styles,/\.iaCreateHead\{display:grid;grid-template-columns:minmax\(0,1fr\) auto/);
+  assert.match(styles,/\.iaCreateHead \.iaHeadIdentity\{display:grid;grid-template-columns:40px minmax\(0,1fr\)/);
+  assert.doesNotMatch(screen,/<div className="iaCreateTitle"><span/);
+  assert.doesNotMatch(screen,/Correct inventory quantities or values without creating a purchase or sales transaction\./);
+  assert.doesNotMatch(screen,/<header className="opsHead">\s*<div className="iaHeadIdentity">\s*<button[^>]+Back to inventory adjustments[^]*?New Inventory Adjustment/);
+});
+
+test('the Items card presents the entry controls without redundant section copy',()=>{
+  assert.match(screen,/<div className="iaItemsControlBar">/);
+  assert.doesNotMatch(screen,/<header className="iaCardHead"><div><h2>Adjustment details/,'the create details bar must not inherit the fixed dashboard header rules');
+  assert.doesNotMatch(screen,/<header className="iaCardHead iaItemsHead">/,'the create Items bar must not inherit the fixed dashboard header rules');
+  assert.doesNotMatch(screen,/Step 1|Step 2|Choose what is being corrected and where it is accounted for\./);
+  assert.doesNotMatch(screen,/Stock value follows the item rate, so a quantity correction is always valued\./);
+  assert.match(screen,/className="iaModeField">\s*<span>Entry mode<\/span>/);
+  assert.match(screen,/className="primary iaAddItem" disabled=\{blockedByItems\}[^>]+onClick=\{addLine\}><IconPlus\/>Add Item/);
+  assert.match(styles,/\.iaItemsTools\{display:flex;align-items:flex-end/);
+});
+
+test('the create form uses the requested field and item-column labels',()=>{
+  for(const label of ['Mode of adjustment','Reference Number','Date *','Account *','Reason *','Description','Item Details','Quantity Available','New Quantity on hand','Quantity Adjusted'])assert.ok(screen.includes(label),label);
+  assert.match(engine,/ADJUSTMENT_TYPES=\['Quantity Adjustment','Value Adjustment'\]/);
+  assert.ok(screen.indexOf('Reference Number')<screen.indexOf('Date *'),'reference is placed before date');
+  assert.doesNotMatch(screen,/className="iaStepLabel"/);
+});
+
+test('the create workflow gives an empty organisation a clear recovery path',()=>{
+  assert.match(screen,/const blockedByItems=!stockItems\.length/);
+  assert.match(screen,/onCreateItem=\{\(\)=>onNavigate\('Items'\)\}/);
+  assert.match(screen,/No stock items available/);
+  assert.match(screen,/<button type="button" onClick=\{onCreateItem\}>Create Item<\/button>/);
+  assert.match(screen,/className="primary" disabled=\{blockedByItems\} title=\{blockedByItems\?'Create a stock item before submitting this adjustment\.'/);
+  assert.match(screen,/placeholder=\{valueType\?'e\.g\. -5000 or 5000':'e\.g\. -3 or 5'\}/);
+  assert.match(screen,/Preview accounting entry/);
+  assert.match(styles,/\.iaCreatePage \.iaFooter\{position:sticky;bottom:10px/);
+  assert.doesNotMatch(screen,/className="iaRefChip"/);
 });
 
 test('the register follows the accounting register structure of Journal Entries and Budgets',()=>{

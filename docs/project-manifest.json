@@ -4,7 +4,7 @@
     "product": "Wayvida Books",
     "package": "finance-erp-prototype",
     "version": "0.0.0",
-    "lastVerified": "2026-09-16",
+    "lastVerified": "2026-09-17",
     "purpose": "Portable implementation and product-architecture inventory for engineers and AI tools"
   },
   "runtime": {
@@ -38,6 +38,37 @@
       "react-is"
     ],
     "finalUiCompatibilityLayer": "src/ui-quality-polish.css"
+  },
+  "handover": {
+    "branch": "main",
+    "committedBaseline": "632e747 Add inventory adjustments and shared empty states",
+    "workingTreeCheckpoint": "Items multi-organisation master, register actions and full-width tabbed Item Details page with the 14px section rhythm and a gap-free 46px segmented tab strip that never scrolls, following the field-first Inventory Adjustment UI checkpoint",
+    "entryDocuments": [
+      "AGENTS.md",
+      "docs/README.md",
+      "docs/TRANSFER-TO-ANOTHER-AI.md",
+      "docs/WAYVIDA-BOOKS-HANDBOOK.md",
+      "docs/AI-HANDOFF-PROMPT.md"
+    ],
+    "sourceOfTruth": [
+      "src/",
+      "tests/",
+      "package.json",
+      "vite.config.mjs"
+    ],
+    "latestValidation": {
+      "inventoryAdjustments": "25/25 passed",
+      "itemsFocusedSuites": "24/24 passed across multi-scope master, create-page, tax and workspace UI suites; the workspace UI suite also asserts the gap-free segmented Item Details tab bar",
+      "documentation": "15 required files, valid manifest, metadata and local links",
+      "productionBuild": "Passed; 6959 modules transformed; existing large-chunk advisory only",
+      "livePage": "Inspected at port 4001 without submitting transaction data"
+    },
+    "prototypeLimits": [
+      "Browser storage only",
+      "No authenticated backend",
+      "Role controls are simulations",
+      "Static hosting is not production accounting infrastructure"
+    ]
   },
   "modules": [
     {
@@ -173,9 +204,14 @@
       "label": "Items",
       "component": "src/Items.jsx",
       "status": "Prototype only",
-      "accountingImpact": "Stores revenue/purchase mappings plus the sales-document tax and price defaults: taxRate is the intra-state GST total that a sales or purchase line splits into CGST + SGST, interStateTaxRate is the IGST rate of an inter-state supply, and a non-taxable item stores taxApplicable:false with a Non-taxable, Exempt, Zero Rated or Non-GST treatment and zero rates; neither rate is posted by the item itself",
+      "accountingImpact": "Multi-organisation/branch item master with backward-compatible organizationIds/branchIds plus primary organizationId/warehouseId, active state and local auditTrail. The register shows name with SKU and HSN/SAC, View Details and a 3-dot Edit/Enable-disable/Duplicate/Delete menu. The in-dashboard detail uses a full-width back header beneath Working Context, an identity/action card and Basic Data, Transactions and History tabs; it exposes all saved master fields plus linked journals, invoices, purchases and inventory adjustments without changing them. Stores revenue/purchase mappings plus tax and price defaults; assignment, toggling, duplication and deletion do not post. Only the existing opening-stock path may create a balanced journal.",
       "services": [
-        "src/item-master.js"
+        "src/item-master.js",
+        "src/organisation-context.js",
+        "src/organisation-scope.js"
+      ],
+      "components": [
+        "src/OrganisationBranchScope.jsx"
       ],
       "styles": [
         "src/items.css"
@@ -858,6 +894,7 @@
     "VM hosting is Docker Compose serving the static Vite client from nginx on host port 4002 (WAYVIDA_PORT override); local Vite stays on 4001 with allowedHosts: true on server and preview (never restore terminal.local); nginx must 404 missing /assets/ files instead of rewriting them to index.html; keep Dockerfile, docker-compose.yml, docker/nginx.conf and .dockerignore; do not treat the container as a production accounting backend or replace Sites files"
   ],
   "implementationStatus": {
+    "inventoryAdjustmentsCreateHeader": "Implemented - full-width document header below Working Context, field-first create layout without section headings or step labels, requested field/table terminology, actionable no-stock-item recovery, accounting preview and sticky actions",
     "tableEmptyStates": "Prototype only - shared presentation component with no accounting impact",
     "overall": "Prototype only",
     "verifiedImplementation": "See source, tests and modular documents",

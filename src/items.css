@@ -68,8 +68,9 @@ body:has(.itemCreatePage) .app>main{height:auto;max-height:none;overflow:visible
 .itemCreatePage .itemDialogHead h2{margin:0;color:var(--ui-text);font-size:16px;font-weight:650;line-height:1.25;letter-spacing:0}
 .itemCreatePage .itemHeadHint{color:var(--ui-muted);font-size:12px;font-weight:400}
 .itemCreatePage .itemHeadHint b{color:#475467;font-weight:600}
-.itemCreatePage .itemBack{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;padding:0;border:1px solid #d7e0eb;border-radius:8px;background:#fff;color:#475467}
-.itemCreatePage .itemBack:hover{background:#eef4ff;border-color:#bcd0f5;color:#2463d4}
+.itemCreatePage .itemBack{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;padding:0;border:1px solid #d7e0eb;border-radius:8px;background:#fff;color:#475467;cursor:pointer;transition:all .15s ease}
+.itemBack,.itemDetailPage .itemBack{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;padding:0;border:1px solid #d7e0eb;border-radius:8px;background:#fff;color:#475467;cursor:pointer;transition:all .15s ease}
+.itemBack:hover,.itemCreatePage .itemBack:hover,.itemDetailPage .itemBack:hover{background:#eef4ff;border-color:#bcd0f5;color:#2463d4}.itemBack:focus-visible,.itemCreatePage .itemBack:focus-visible,.itemDetailPage .itemBack:focus-visible{outline:2px solid #245fd9;outline-offset:2px}
 .itemCreatePage .itemDialogBody{width:auto;margin-top:12px;padding:0;overflow:hidden;background:#fff;border:1px solid var(--ui-border);border-radius:var(--ui-radius);box-shadow:var(--ui-shadow)}
 .itemSection{padding:16px 20px;border-bottom:1px solid #edf0f4}
 /* The form has no section headings on the user instruction of 2026-09-16. Every group of
@@ -164,3 +165,62 @@ body:has(.itemCreatePage) .app>main{height:auto;max-height:none;overflow:visible
  .itemCreatePage .itemDialogFooter{left:0;right:0;bottom:0;padding:10px 12px;border-right:0;border-bottom:0;border-left:0;border-radius:0}
  .itemCreatePage .itemDialogFooter button{flex:1 1 120px}
 }
+
+/* Item register master-data actions and detail page. */
+.itemsPage .itemsCard{overflow:visible}
+.itemIdentityCopy{display:flex!important;flex-direction:column;align-items:flex-start!important;justify-content:center;width:auto!important;height:auto!important;border-radius:0!important;background:transparent!important;color:#172033!important}
+.itemIdentityCopy small{margin-top:3px;color:#667085;font-size:12px;font-weight:400}
+.itemDisabledBadge{display:block;width:max-content;margin-top:5px;padding:2px 7px;border-radius:999px;background:#f2f4f7;color:#667085;font-size:12px}
+.itemRowActions{display:flex;align-items:center;justify-content:flex-end;gap:8px}.itemView{display:inline-flex;align-items:center;gap:7px;min-height:34px;padding:0 11px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;font-weight:600;white-space:nowrap}.itemMore{position:relative}.itemMore>summary{display:grid;place-items:center;width:34px;height:34px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#475467;cursor:pointer;list-style:none}.itemMore>summary::-webkit-details-marker{display:none}.itemMore[open]>summary{border-color:#3478f6;color:#245fd9}.itemMoreMenu{position:absolute;right:0;top:calc(100% + 6px);z-index:80;display:flex;flex-direction:column;min-width:196px;padding:6px;border:1px solid #e1e6ed;border-radius:9px;background:#fff;box-shadow:0 12px 30px #1018281f}.itemMoreMenu button{display:flex;align-items:center;gap:9px;min-height:36px;padding:0 10px;border:0;border-radius:6px;background:transparent;color:#344054;text-align:left;white-space:nowrap}.itemMoreMenu button:hover{background:#f4f7ff;color:#245fd9}.itemMoreMenu button.itemDanger{color:#b42318}.itemMoreMenu button.itemDanger:hover{background:#fff5f6;color:#b42318}
+.itemScopeField{display:flex;flex-direction:column;gap:7px;margin-top:14px;color:#344054;font-size:12px;font-weight:600}.itemScopeField .pc-scope-picker,.itemScopeField .pc-fields{margin:0}.itemScopeField .pc-multi-field{min-width:0}
+.itemStatus{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:650;line-height:1.2}.itemStatus.active{background:#ecfdf3;color:#027a48;border:1px solid #a6f4c5}.itemStatus.disabled{background:#f2f4f7;color:#667085;border:1px solid #e4e7ec}
+/* ---- Item Details sections: one 14px rhythm, 16px card padding, no stray rules. ---- */
+.itemDetailCardsGrid{display:flex;flex-direction:column;gap:14px}
+.itemDetailCard{overflow:hidden;border:1px solid #e6ebf2;border-radius:10px;background:#fff}
+.itemDetailSectionTitle{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid #eef1f6;background:#f9fbfd}
+.itemDetailSectionTitle h2{margin:0;font-size:13.5px;font-weight:650;color:#172033}
+.itemDetailSectionTitle svg{color:#245fd9;flex:none}
+.itemDetailSectionTitle>span{margin-left:auto;padding:2px 8px;border-radius:999px;background:#eef2f7;color:#475467;font-size:12px;font-weight:600}
+.itemDetailFacts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:0;padding:16px;gap:16px 22px}
+.itemDetailFacts>div{min-width:0}
+.itemDetailFacts dt{color:#6b7789;font-size:12px;font-weight:500;line-height:1.3}
+.itemDetailFacts dd{margin:4px 0 0;color:#172033;font-size:13px;font-weight:600;line-height:1.45;overflow-wrap:anywhere}
+.itemDetailTableWrap{overflow-x:auto}
+.itemDetailTableWrap table{width:100%;border-collapse:collapse;text-align:left}
+.itemDetailTableWrap th{padding:10px 16px;background:#f9fbfd;border-bottom:1px solid #eef1f6;color:#5c6b80;font-size:12px;font-weight:600;white-space:nowrap}
+.itemDetailTableWrap td{padding:11px 16px;border-bottom:1px solid #f1f4f9;color:#1d2939;font-size:13px}
+.itemDetailTableWrap tr:last-child td{border-bottom:0}
+.itemDetailTableWrap tr:hover td{background:#fcfdfe}
+.itemDetailEmpty{margin:0;padding:28px 16px;color:#667085;font-size:13px;text-align:center}
+.itemHistory{list-style:none;margin:0;padding:16px}
+.itemHistory li{position:relative;display:grid;grid-template-columns:14px minmax(0,1fr);gap:12px;padding-bottom:14px}
+.itemHistory li:not(:last-child)::before{content:'';position:absolute;left:4px;top:14px;bottom:0;width:2px;background:#e4e9f0}
+.itemHistory li>span{width:10px;height:10px;margin-top:4px;border-radius:50%;background:#3478f6;box-shadow:0 0 0 3px #eaf1ff;z-index:1}
+.itemHistory b{font-size:13px;font-weight:600;color:#101828}
+.itemHistory p{margin:2px 0 4px;color:#475467;font-size:12px}
+.itemHistory small{display:block;color:#667085;font-size:12px}
+@media(max-width:800px){.itemDetailFacts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.itemDetailFacts{grid-template-columns:minmax(0,1fr)}.itemRowActions{justify-content:flex-start}.itemDetailTabs button{padding:0 8px;gap:5px;font-size:12px}}
+
+/* Full-width Item Details document header beneath Working Context. */
+.app main:has(>.itemsPage.itemDetailPage){max-width:none!important;padding:0!important}
+.app main>.itemsPage.itemDetailPage{display:block;max-width:none;margin:0;padding:0 0 32px}
+.itemDetailPage .itemDetailHead{display:grid;grid-template-columns:40px minmax(0,1fr);align-items:center;gap:14px;width:100%;min-height:56px;padding:8px 24px;border-top:1px solid #dfe6ef;border-bottom:1px solid #dfe6ef;background:#fff}
+.itemDetailPage .itemDetailHead h1{margin:0;color:#172033;font-size:18px;line-height:1.25}
+.itemDetailPage .itemDetailBody{display:flex;flex-direction:column;gap:14px;margin:16px clamp(16px,2.2vw,28px) 0}
+.itemDetailPage .itemDetailIdentity{display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:16px;padding:14px 16px;border:1px solid #e6ebf2;border-radius:10px;background:#fff}
+.itemDetailPage .itemDetailIdentity>img,.itemDetailPage .itemDetailIdentity>span{width:48px;height:48px;border-radius:10px;object-fit:cover;background:#eef4ff;color:#245fd9;display:grid;place-items:center}
+.itemDetailName{min-width:0}.itemDetailName h2{margin:0;color:#172033;font-size:17px;font-weight:700;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.itemDetailName p{margin:5px 0 0;color:#667085;font-size:12px;font-weight:500}
+.itemDetailActions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.itemDetailEdit{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 14px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s ease}
+.itemDetailEdit:hover{background:#f8fafc;border-color:#b8c2d3;color:#1d2939}
+.itemDetailMore{flex:none}.itemDetailMore>summary{width:36px;height:36px}.itemDetailMore .itemMoreMenu{z-index:90}
+/* Item Details tab row: one full-width segmented strip. gap:0 and padding:0 remove every gap between the tabs, equal flex cells keep all three labels on one line, and overflow:hidden means the row never scrolls. flex:0 0 auto plus the explicit height still stops an ancestor from stretching the bar into a tall empty box. */
+.itemDetailTabs{display:flex;align-items:center;flex:0 0 auto;gap:0;height:46px;padding:0;border:1px solid #e6ebf2;border-radius:10px;background:#f7f9fc;overflow:hidden}
+.itemDetailTabs button{display:flex;flex:1 1 0;min-width:0;align-items:center;justify-content:center;gap:7px;height:100%;padding:0 12px;border:0;border-right:1px solid #e6ebf2;border-bottom:2px solid transparent;border-radius:0;background:transparent;color:#5c6b80;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer;transition:background-color .15s ease,color .15s ease,border-color .15s ease}
+.itemDetailTabs button:last-child{border-right:0}
+.itemDetailTabs button:hover{background:#eef3fb;color:#245fd9}
+.itemDetailTabs button.active{background:#fff;color:#245fd9;border-bottom-color:#3478f6}
+.itemDetailTabs button span{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#e7ecf4;color:#5c6b80;font-size:12px;font-weight:600}
+.itemDetailTabs button.active span{background:#eaf1ff;color:#245fd9}
+@media(max-width:700px){.itemDetailPage .itemDetailHead{grid-template-columns:36px minmax(0,1fr);gap:10px;padding:8px 12px}.itemDetailPage .itemDetailHead .itemBack{width:36px;height:36px}.itemDetailPage .itemDetailBody{margin:12px 12px 0;gap:12px}.itemDetailPage .itemDetailIdentity{grid-template-columns:44px minmax(0,1fr);padding:12px}.itemDetailPage .itemDetailIdentity>img,.itemDetailPage .itemDetailIdentity>span{width:44px;height:44px}.itemDetailActions{grid-column:1/-1;justify-content:flex-start}.itemDetailFacts{padding:14px}}
