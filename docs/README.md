@@ -7,11 +7,11 @@ This folder is the portable knowledge-transfer package for Wayvida Books. It is 
 
 ## Current handover snapshot
 
-- Repository branch: `main`; current committed baseline: `632e747 Add inventory adjustments and shared empty states`.
-- The working tree intentionally contains the latest New / Edit Inventory Adjustment UI work in `src/InventoryAdjustments.jsx`, `src/inventory-adjustments.css`, `tests/inventory-adjustments.test.mjs` and the synchronized documents. These changes are not represented by the baseline commit until the user explicitly commits them.
-- Latest verified behavior: Items supports multi-organisation/branch availability, an enriched name/SKU/HSN-SAC register identity and standard master actions. Item Details now uses a full-width back header directly beneath Working Context, a focused identity/action card, and separate Basic Data, Transactions and History tabs. The field-first Inventory Adjustment create page remains the preceding checkpoint.
-- Latest validation: Inventory Adjustment tests **25/25**, knowledge documents valid, Vite production build successful with 6,959 modules transformed, and the live page verified at local port 4001. The existing large-chunk advisory is non-blocking.
-- Do not treat `.codex-item.patch`, `dist/`, browser storage, screenshots or machine-specific paths as product source. Preserve unrelated working-tree changes and inspect `git status` before editing.
+- Repository branch: `main`; current committed baseline: `9052841 Rework the Item Details header: merge the tab row into the item panel`, already pushed to `origin/main`.
+- The Items multi-organisation master, the register actions, the field-first Inventory Adjustment create page and the merged Item Details header panel are committed on top of `7b5ae78`. The working tree is clean apart from the local scratch file `.codex-item.patch`, which `.gitignore` now excludes so it is never a commit candidate.
+- Latest verified behavior: Items supports multi-organisation/branch availability, an enriched name/SKU/HSN-SAC register identity and standard master actions. Item Details renders one full-width back header beneath Working Context and then one `section.itemDetailPanel` that holds both the identity row and the Basic Data, Transactions and History tab row, so the card edge and the tab strip share a single container. The field-first Inventory Adjustment create page remains the preceding checkpoint.
+- Latest validation: Items-focused suites **24/24** and Inventory Adjustment tests **25/25** pass, the knowledge documents validate, and the served Item Details source was inspected at local port 4001 without changing data. The Vite production build was last confirmed before the header merge (6,959 modules; existing large-chunk advisory only) and has not been re-run since, and no painted browser check of the merged panel has been possible in the current environment.
+- Do not treat `.codex-item.patch`, `dist/`, browser storage, screenshots or machine-specific paths as product source. Inspect `git status` before editing.
 
 The fastest clean-context route is: read `AGENTS.md`, then this file, then `TRANSFER-TO-ANOTHER-AI.md`, `WAYVIDA-BOOKS-HANDBOOK.md`, `AI-HANDOFF-PROMPT.md`, `project-manifest.json`, and the source/tests for the requested module.
 

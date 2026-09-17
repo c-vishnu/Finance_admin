@@ -4,7 +4,7 @@
 
 ## Resume checkpoint — 2026-09-17
 
-This repository is a browser-based React/Vite accounting prototype, not a production backend. Start from the repository root and inspect `git status` before changing anything. The current branch is `main`; the last committed baseline is `632e747 Add inventory adjustments and shared empty states`. The field-first Inventory Adjustment UI and the Items multi-scope/register/detail work are intentional working-tree changes, so preserve them unless the user explicitly asks to discard or replace them. Item Details now has a full-width back header beneath Working Context, an identity/action card and Basic Data, Transactions and History tabs. The unrelated untracked `.codex-item.patch` is a scratch artifact, not application source.
+This repository is a browser-based React/Vite accounting prototype, not a production backend. Start from the repository root and inspect `git status` before changing anything. The current branch is `main`; the last committed baseline is `9052841 Rework the Item Details header: merge the tab row into the item panel`, already pushed to `origin/main`. The field-first Inventory Adjustment UI, the Items multi-scope/register work and the merged Item Details header panel are all committed in that baseline, so the working tree is clean. Item Details now has a full-width back header beneath Working Context, then one `section.itemDetailPanel` holding both the identity row and the Basic Data, Transactions and History tab row. The untracked `.codex-item.patch` is a local scratch artifact that `.gitignore` excludes; it is not application source and must never be committed.
 
 Current verified runtime and architecture:
 

@@ -15,3 +15,4 @@ pnpm-lock.yaml
 pnpm-workspace.yaml
 vite.sandbox.config.mjs
 design-qa.md
+.codex-item.patch
