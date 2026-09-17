@@ -1,0 +1,229 @@
+/* Inventory Adjustments - the register, the create page and the detail page.
+
+   Only what the shared operational design system does not already provide lives
+   here: src/operational-modules.css still owns .opsPage, .opsHead, .opsCard,
+   .opsTable, .opsBadge, .opsEmpty and .opsError, and the row action menu below
+   reuses the exact geometry of .pc-kebab in src/period-closing.css. The register
+   heading is a plain title row and its toolbar is a search box beside one Filters
+   disclosure, which is the structure the Journal Entries and Budgets registers
+   use, so the page opens on the table instead of a row of loose dropdowns.
+   Every figure is right aligned and tabular, every text size stays at 12px or
+   above, and the item tables pin their header row and Item column so a wide
+   adjustment still reads as one table. */
+
+/* ---------- page and header ---------- */
+/* The dashboard welcome block is suppressed the way every other module does it,
+   because this page prints its own header with its own subtitle. */
+.welcome:has(+.iaPage){display:none}
+.iaPage button:disabled{opacity:.55;cursor:not-allowed}
+.iaHeadIdentity{display:flex;align-items:center;gap:13px;min-width:0}
+.iaHeadIdentity>div{min-width:0}
+.iaHeadSide{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-end}
+.iaHeadSide .iaBadge{text-transform:none;letter-spacing:normal}
+.iaHeadSide .iaKebabMenu span{color:#344054;font-size:13px;font-weight:500;letter-spacing:normal;text-transform:none}
+.iaBack{flex:0 0 40px;width:40px;height:40px;padding:0;border:1px solid #d7e0eb;border-radius:8px;background:#fff;color:#344054}
+.iaBack:hover{background:#eef4ff;border-color:#bcd0f5;color:#2463d4}
+.iaHeading{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:76px}
+.iaHeading h1{margin:0;font-size:26px;letter-spacing:-.6px;color:#172033}
+.iaHeading p{margin:5px 0 0;color:#667085}
+.iaHeadActions{display:flex;align-items:center;justify-content:flex-end;gap:9px;flex-wrap:wrap}
+.iaBanner{display:flex;align-items:center;gap:8px;margin:0;padding:11px 14px;border:1px solid #c7e7d5;border-radius:9px;background:#e8f7ef;color:#18794e;font-size:13px;font-weight:650}
+.iaBanner svg{color:#18794e}
+
+/* ---------- register toolbar ---------- */
+/* One search box and one Filters disclosure, the way Journal Entries and Budgets
+   group theirs: every dropdown lives inside the panel, and the row count stays
+   on the right of the bar. */
+.iaRegisterCard{overflow:visible}
+.iaRegisterBar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid #eef1f6}
+.iaSearch{display:flex;align-items:center;gap:8px;flex:1 1 260px;min-width:220px;min-height:38px;padding:0 10px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#8fa0b7}
+.iaSearch input{width:100%;min-width:0;padding:0;border:0;outline:0;background:transparent;color:#172033}
+.iaSearch:focus-within{border-color:#9fbdf0;box-shadow:0 0 0 3px #eaf1ff}
+.iaFilters{position:relative;flex:none}
+.iaFilters>summary{display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:0 14px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#1d293d;font-weight:600;cursor:pointer;list-style:none}
+.iaFilters>summary::-webkit-details-marker{display:none}
+.iaFilters>summary svg{width:16px;height:16px;flex:none}
+.iaFilters[open]>summary,.iaFilters>summary:hover{border-color:#9fbdf0;box-shadow:0 0 0 3px #eaf1ff;color:#245fd9}
+.iaFilterBadge{flex:none;margin-left:2px;display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:#fff2db;color:#99600e;font-size:12px;font-weight:700;font-style:normal}
+.iaFiltersPanel{position:absolute;right:0;top:calc(100% + 8px);z-index:80;display:grid;grid-template-columns:repeat(2,minmax(180px,1fr));gap:12px;min-width:min(440px,90vw);padding:14px;border:1px solid #e1e6ed;border-radius:10px;background:#fff;box-shadow:0 14px 30px #0f172a1f}
+.iaFilterField{display:flex;flex-direction:column;gap:5px;min-width:0;color:#667085;font-size:12px;font-weight:650}
+.iaFilterField select,.iaFilterField input{width:100%;min-height:38px;padding:0 10px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#172033;font-size:13px;font-weight:400}
+.iaFiltersPanelActions{grid-column:1/-1;display:flex;justify-content:flex-end}
+.iaFiltersPanelActions button{min-height:34px;padding:0 12px;font-size:12px;font-weight:600}
+
+/* ---------- register table ---------- */
+th.iaNum,td.iaNum{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+th.iaActionsCell,td.iaActionsCell{text-align:right;white-space:nowrap}
+.iaActionsCell>button{margin-right:7px}
+.iaRow{cursor:pointer}
+.iaRow:hover td{background:#f8faff}
+.iaLink{min-height:0;padding:0;border:0;border-radius:0;background:transparent;color:#245fd9;font-size:13px;font-weight:650;text-align:left}
+.opsPage .iaLink:hover{border-color:transparent;background:transparent;text-decoration:underline}
+.iaPager{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 14px;border-top:1px solid var(--line);color:#667085;font-size:12px}
+.iaPager>div{display:flex;align-items:center;gap:9px}
+.iaPager>span{font-weight:600}
+.iaPager>div>span{font-weight:600}
+
+/* ---------- status badges ---------- */
+.iaBadge.draft{background:#eef2f7;color:#59677a}
+.iaBadge.pending-approval{background:#fff3df;color:#99600e}
+.iaBadge.adjusted{background:#e8f7ef;color:#18794e}
+.iaBadge.cancelled{background:#ffe9ec;color:#b7374b}
+
+/* ---------- row action menu (the .pc-kebab geometry) ---------- */
+.iaKebab{position:relative;display:inline-block;vertical-align:middle}
+.iaKebab>summary{display:grid;place-items:center;width:32px;height:32px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#475467;cursor:pointer;list-style:none}
+.iaKebab>summary::-webkit-details-marker{display:none}
+.iaKebab[open]>summary{border-color:#3478f6;color:#245fd9}
+.iaKebabMenu{position:absolute;right:0;top:38px;z-index:80;display:flex;flex-direction:column;min-width:196px;padding:6px;border:1px solid #e1e6ed;border-radius:9px;background:#fff;box-shadow:0 12px 30px #1018281f}
+.iaKebabMenu button{display:flex;align-items:center;gap:9px;min-height:36px;padding:0 10px;border:0;border-radius:6px;background:transparent;color:#344054;font-size:13px;font-weight:500;text-align:left}
+.opsPage .iaKebabMenu button:hover{border-color:transparent;background:#f4f7ff;color:#245fd9}
+.opsPage .iaKebabMenu button.iaDanger{color:#b42318}
+.opsPage .iaKebabMenu button.iaDanger:hover{background:#fff5f6;color:#b42318}
+
+/* ---------- cards, fields and the segmented control ---------- */
+.iaCardHead{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid var(--line)}
+.iaCardHead h2{margin:0 0 3px;font-size:16px}
+.iaCardHead p{margin:0;color:#667085;font-size:12px}
+.iaRefChip{display:inline-flex;align-items:center;height:30px;padding:0 11px;border:1px solid #dfe6ef;border-radius:999px;background:#f7f9fc;color:#475467;font-size:12px;font-weight:650;white-space:nowrap}
+.iaFields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 16px;padding:16px}
+.iaField{display:flex;flex-direction:column;gap:6px;min-width:0;color:#344054;font-size:13px;font-weight:600}
+.iaFieldWide{grid-column:1/-1}
+.iaField input,.iaField select,.iaField textarea{width:100%;min-height:40px;padding:9px 11px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#172033;font-size:13px;font-weight:400}
+.iaField textarea{min-height:64px;resize:vertical}
+.iaField input:focus,.iaField select:focus,.iaField textarea:focus{outline:0;border-color:#3478f6;box-shadow:0 0 0 3px #3478f61f}
+.iaLabel{color:#344054;font-size:13px;font-weight:600}
+.iaHelp{color:#667085;font-size:12px;font-weight:400}
+.iaError{color:#b42318;font-size:12px;font-weight:600}
+.iaMuted{color:#667085;font-size:12px}
+.iaScopeStatic{display:flex;align-items:center;min-height:40px;padding:9px 11px;border:1px solid #d9e1eb;border-radius:7px;background:#f7f9fc;color:#344054;font-size:13px;font-weight:400}
+.iaSegmented{display:inline-flex;align-items:center;gap:3px;padding:3px;border:1px solid #dfe6ef;border-radius:9px;background:#f5f7fb}
+.iaSegmented button{min-height:32px;padding:5px 13px;border:0;border-radius:7px;background:transparent;color:#475467;font-size:13px;font-weight:600}
+.opsPage .iaSegmented button:hover{border-color:transparent;background:#eaf0fb;color:#245fd9}
+.iaSegmented button.active{background:#fff;color:#245fd9;box-shadow:0 1px 3px #1018281f}
+.iaSrOnly{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+/* ---------- item tables: sticky header, sticky Item column, scrollable ---------- */
+.iaItemsTools{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-end}
+.iaItemsScroll{overflow:auto;max-height:min(60vh,560px);overscroll-behavior:contain}
+.iaItemTable{width:100%;min-width:940px;border-collapse:separate;border-spacing:0}
+.opsTable .iaItemTable{min-width:940px;border-collapse:separate;border-spacing:0}
+.iaItemTable th,.iaItemTable td{padding:10px 12px;border-bottom:1px solid #edf1f6;font-size:13px;text-align:left;vertical-align:middle}
+.opsTable .iaItemTable th,.opsTable .iaItemTable td{padding:10px 12px;border-bottom:1px solid #edf1f6;font-size:13px}
+.iaItemTable thead th{position:sticky;top:0;z-index:3;background:#f5f7fb;color:#68768b;font-size:12px;font-weight:600;white-space:nowrap}
+.iaItemTable .iaStickyCol{position:sticky;left:0;z-index:2;background:#fff;box-shadow:1px 0 0 #e8edf4}
+.iaItemTable thead .iaStickyCol{z-index:4;background:#f5f7fb}
+.iaItemTable tbody tr:hover td{background:#f8faff}
+.iaItemTable tbody tr:hover .iaStickyCol{background:#f8faff}
+.iaItemTable tfoot th,.iaItemTable tfoot td{border-top:1px solid #e2e8f0;background:#f8fafd;font-weight:650}
+.iaItemTable tfoot .iaStickyCol{background:#f8fafd}
+.iaItemTable .iaNum>small{display:block;color:#667085;font-size:12px;font-weight:400}
+.iaItemTable select{width:100%;min-width:150px;min-height:36px;padding:6px 28px 6px 9px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#172033;font-size:13px}
+.iaItemTable td>select{min-width:132px}
+.iaItemTable .iaStickyCol>select{min-width:190px}
+.iaEntry{width:118px;min-height:36px;padding:7px 9px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#172033;font-size:13px;text-align:right}
+.iaEntry:focus{outline:0;border-color:#3478f6;box-shadow:0 0 0 3px #3478f61f}
+.iaDerived{color:#475467;font-weight:650}
+.iaUp{color:#18794e}
+.iaDown{color:#b42318}
+.iaRowInvalid td{background:#fff8f8}
+.iaRowInvalid .iaStickyCol{background:#fff8f8}
+.iaRowInvalid .iaEntry{border-color:#f0a9a2}
+.iaRemove{min-height:34px;padding:0 10px;border:1px solid #e3e8ef;border-radius:7px;background:#fff;color:#b42318}
+.opsPage .iaRemove:hover:not(:disabled){border-color:#f2c9cd;background:#fff5f6;color:#b42318}
+
+/* ---------- the compact inventory impact summary ---------- */
+.iaImpact{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:12px 16px;border-top:1px solid var(--line);background:#fbfcfe}
+.iaImpact h3{margin:0;color:#667085;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.iaImpact dl{display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;margin:0}
+.iaImpact dl>div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.iaImpact dt{color:#667085;font-size:12px}
+.iaImpact dd{margin:0;font-size:14px;font-weight:650}
+
+/* ---------- the collapsible accounting impact ---------- */
+.iaAccounting{overflow:hidden;border:1px solid var(--line);border-radius:10px;background:#fff;box-shadow:0 3px 12px #1018280a}
+.iaAccounting>summary{display:flex;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;color:#172033;font-size:14px;font-weight:650;list-style:none}
+.iaAccounting>summary::-webkit-details-marker{display:none}
+.iaAccounting>summary>svg{color:#2563eb}
+.iaBalanceChip{margin-left:auto;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:650;white-space:nowrap}
+.iaBalanceChip.balanced{background:#e8f7ef;color:#18794e}
+.iaBalanceChip.unbalanced{background:#fff6ec;color:#8a4b09}
+.iaAccountingBody{padding:0 16px 16px;border-top:1px solid #edf1f6}
+.iaEntryTable{width:100%;border-collapse:collapse;margin-top:12px}
+.iaEntryTable th,.iaEntryTable td{padding:10px 12px;border-bottom:1px solid #edf1f6;font-size:13px;text-align:left;vertical-align:middle}
+.iaEntryTable thead th{background:#f5f7fb;color:#68768b;font-size:12px;font-weight:600}
+.iaEntryTable th.iaNum,.iaEntryTable td.iaNum{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.iaEntryTable td small{display:block;margin-top:2px;color:#667085;font-size:12px}
+.iaEntryTable tfoot th,.iaEntryTable tfoot td{border-top:1px solid #e2e8f0;border-bottom:0;background:#f8fafd;font-weight:650}
+.iaNote{margin:12px 0 0;color:#667085;font-size:12px}
+.iaAccountingActions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:13px}
+.iaNotice{margin:0;padding:11px 14px;border:1px solid #dfe6ef;border-radius:9px;background:#f7f9fc;color:#475467;font-size:13px}
+.iaNotice .iaLink{font-weight:650}
+
+/* ---------- detail facts, summary and activity ---------- */
+.iaFacts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;margin:0;padding:4px 16px 16px}
+.iaFacts>div{display:flex;flex-direction:column;gap:3px;min-width:0;padding:12px 0;border-bottom:1px solid #edf1f6}
+.iaFacts>div:nth-last-child(-n+2){border-bottom:0}
+.iaFacts dt{color:#667085;font-size:12px;font-weight:600}
+.iaFacts dd{margin:0;font-size:13px;overflow-wrap:anywhere}
+.iaFacts dd small{display:block;margin-top:2px;color:#667085;font-size:12px}
+.iaWide{grid-column:1/-1}
+.iaSummary{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;padding:16px;border-bottom:1px solid var(--line)}
+.iaSummary article{min-width:0;padding:14px 15px;border:1px solid var(--line);border-radius:10px;background:#fbfcfe}
+.iaSummary span,.iaSummary small{display:block;color:#667085;font-size:12px}
+.iaSummary strong{display:block;margin:6px 0 3px;font-size:20px;overflow-wrap:anywhere}
+.iaTimeline{list-style:none;margin:0;padding:16px}
+.iaTimeline li{position:relative;margin-left:5px;padding:0 0 16px 23px;border-left:2px solid #e8edf4}
+.iaTimeline li:last-child{padding-bottom:2px;border-left-color:transparent}
+.iaTimeline li:before{content:'';position:absolute;left:-6px;top:4px;width:10px;height:10px;border-radius:50%;background:#3478f6;box-shadow:0 0 0 3px #3478f61f}
+.iaTimeline time{display:block;color:#667085;font-size:12px}
+.iaTimeline b{display:block;margin-top:2px;font-size:13px}
+.iaTimeline small{display:block;color:#667085;font-size:12px}
+.iaTimeline p{margin:4px 0 0;color:#475467;font-size:12px}
+
+/* ---------- footers and the confirmation dialog ---------- */
+.iaFooter{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fff;box-shadow:0 3px 12px #1018280a}
+.iaFooterNote{flex:1 1 320px;margin:0;color:#667085;font-size:12px}
+.iaFooterActions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-end}
+.iaScrim{position:fixed;inset:0;z-index:1300;display:flex;align-items:center;justify-content:center;padding:20px;background:#10182873}
+.iaModal{display:flex;flex-direction:column;width:min(520px,100%);max-height:calc(100vh - 40px);overflow:hidden;border:1px solid #dfe6ef;border-radius:12px;background:#fff;box-shadow:0 24px 60px #10182833}
+.iaModal>header{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:17px 19px;border-bottom:1px solid var(--line)}
+.iaModal>header span{color:#2563eb;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.iaModal>header h2{margin:3px 0 4px;font-size:19px}
+.iaModal>header p{margin:0;color:#667085;font-size:13px}
+.iaModal>header>button{flex:0 0 34px;width:34px;min-height:34px;padding:0;border:0}
+.iaModalBody{display:flex;flex-direction:column;gap:14px;padding:18px 19px;overflow-y:auto}
+.iaModal>footer{display:flex;justify-content:flex-end;gap:9px;padding:14px 19px;border-top:1px solid var(--line);background:#fcfcfd}
+
+/* ---------- narrow dashboard shell ---------- */
+@media(max-width:1180px){.iaFields{grid-template-columns:1fr}}
+@media(max-width:900px){.iaFacts{grid-template-columns:1fr}.iaFacts>div:nth-last-child(-n+2){border-bottom:1px solid #edf1f6}.iaFacts>div:last-child{border-bottom:0}.iaSummary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){
+ .iaHeadIdentity,.iaHeadSide{width:100%}
+ .iaHeadSide{justify-content:flex-start}
+ .iaHeading{align-items:flex-start;flex-direction:column;gap:14px}
+ .iaHeadActions{width:100%;justify-content:flex-start}
+ .iaFiltersPanel{left:0;right:auto;min-width:0;width:min(440px,calc(100vw - 48px));grid-template-columns:1fr}
+ .iaFooter{align-items:stretch;flex-direction:column}
+ .iaFooterActions{justify-content:flex-start}
+ .iaFooterActions button{flex:1 1 auto}
+ .iaItemsScroll{max-height:none}
+ .iaItemTable{min-width:720px}
+ .iaImpact{gap:12px}
+ .iaSummary{grid-template-columns:1fr}
+}
+@media(max-width:420px){.iaSummary{grid-template-columns:1fr}.iaFooterActions button{flex:1 1 100%}}
+/* .iaCard sits on .opsCard, .iaTable on .opsTable, .iaModeToggle on .iaSegmented
+   and .iaItemsCard on .opsCard, so those four are deliberate hooks with nothing
+   of their own to state. The register card is the one card that must not clip its
+   own toolbar, because the Filters panel opens inside it. */
+/* The shared organisation/branch control and the shared account picker keep the
+   geometry they have everywhere else: the .pc-field defaults carry a top margin
+   and a 42px control (they are built for a drawer), so both are reset inside the
+   adjustment field grid, and the picker's own icons are left at the size it sets
+   rather than the page-wide .opsPage svg size. */
+.iaField .pc-scope-picker{margin-bottom:0}
+.iaField .pc-scope-picker .pc-fields{gap:14px;margin:0}
+.iaField .pc-scope-picker .pc-field{gap:6px;margin-top:0;color:#344054;font-size:13px;font-weight:600}
+.iaField .pc-scope-picker .pc-field select{width:100%;min-height:40px;padding:9px 32px 9px 11px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#172033;font-size:13px;font-weight:400}
+.iaField .je-account-picker svg{width:auto;height:auto}
+@media(max-width:700px){.iaField .pc-scope-picker .pc-fields{grid-template-columns:minmax(0,1fr)}}

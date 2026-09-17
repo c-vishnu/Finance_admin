@@ -43,8 +43,8 @@ test('the locked periods register is the page body with a locked periods / reque
 test('the register lists past locks in automatic mode and only locks created here in manual mode',()=>{
  assert.match(jsx,/const manual=lockingOn&&settings\.lockingMode==='Manual'/);
  assert.match(jsx,/const createdLockIds=useMemo\(\(\)=>\[\.\.\.new Set\(\(data\.audit\|\|\[\]\)\.filter\(entry=>entry\.periodId&&\['Lock period created','Period closed'\]\.includes\(entry\.action\)\)\.map\(entry=>entry\.periodId\)\)/,'a period counts as created here once its lock action reaches the audit trail');
- assert.match(jsx,/const emptyText=mode==='Manual'&&!isRequests\?'No locks created yet\. Use Create Lock \/ Close to lock a period for every module\.':'No periods match these filters\.'/);
- assert.ok(jsx.includes('{emptyText}'),'both register layouts use the mode aware empty message');
+ assert.ok(jsx.includes('<EmptyState variant="lock" title="No locks created yet" description="Create a lock to close a period across your modules." actionLabel={onCreate?\'Create Lock\':null} onAction={onCreate}/>'),'the locks register shows the shared empty state with a Create Lock action');
+ assert.ok(!jsx.includes('{emptyText}'),'the mode aware plain-text lock message is gone');
  assert.match(service,/export function lockRegisterRows\(periods=\[\],\{mode='Manual',today='',createdIds=\[\]\}=\{\}\)/);
  assert.match(service,/if\(mode==='Automatic'\)return rows\.filter\(period=>period\.end<today&&closingStatus\(period\)==='Closed'\)/,'automatic mode keeps only locks whose period has already ended');
  assert.match(service,/if\(mode==='Manual'\)return rows\.filter\(period=>createdIds\.includes\(period\.id\)\)/,'manual mode keeps only locks created here');

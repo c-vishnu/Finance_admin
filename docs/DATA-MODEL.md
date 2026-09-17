@@ -1,6 +1,6 @@
 # Data Model
 
-**Last verified:** 2026-09-15  
+**Last verified:** 2026-09-16  
 **Primary sources:** `invoice-engine.js`, `account-master.js`, `receipt-engine.js`, `credit-note-service.js`, `period-locking.js`, `organisation-scope.js`, `organisation-context.js`.
 
 ### Additive account-master fields
@@ -39,6 +39,10 @@ Two presentation-only keys support the Create Journal Entry page and are never r
 
 `wayvida-banking-v1` stores `bankAccounts`, imported `bankTransactions`, `bankMatches`, saved `reconciliations`, `matchingRules`, and Banking audit events. Reconciliations store bank/period identity, ledger-derived opening balance, optional statement balances, lifecycle status, ownership/completion/unlock metadata and final difference. Statement rows may carry a `reconciliationId`, category and match display reference. Each bank account's `accountCode` is a one-to-one reference to a posting Assets account. Book balances remain projections of posted `wayvida-accounting-v1.journals`; statement balances never overwrite accounting. Source: `src/banking-service.js`.
 
+### Inventory Adjustments
+
+`src/inventory-adjustments.js` keeps its documents inside the shared accounting aggregate rather than a store of its own: `state.inventoryAdjustments[]` plus the matching `state.audit[]` events in `wayvida-accounting-v1`, written through `adjustmentCommand` and the same `readAccounts`/`writeAccounts` pair every other accounting screen uses, so an adjustment can never land in a different store from the journal it posts. An adjustment carries `id`, `number` (`ADJ-00001`, and a stored reference is never reused), `date`, `type`, `entryMode`, `companyId`/`companyName`, `branchId`/`branchName`, `account`, `reason`, `notes`, `lines[]`, `status`, `posted`, `journalId`, the lifecycle actors and timestamps (`createdAt`/`createdBy`, `updatedAt`/`updatedBy`, `submittedAt`/`submittedBy`, `cancelledAt`/`cancelledBy`/`cancellationReason`, `postedAt`/`postedBy`), the correction links (`reversalOf`, `reversedBy`, `reversedAt`) and an `activity[]` trail. A line keeps the item, its location and the figures the document was posted with, so a reversal mirrors it exactly: `itemId`, `locationId`, the item snapshot (`name`, `sku`, `unit`, `inventoryAccount`), `rate`, `currentQty`/`previousQty`, `currentValue`/`previousValue`, `qtyDelta`, `valueDelta`, `newQty`, `newValue` and `valueImpact`, every money figure in integer paise. The item master is not this module's to write: `finance-erp-items` is read only, and the `Current quantity` a line starts from is derived at view time from each item's `openingQuantity × openingRate` plus every posted adjustment line, keyed on `itemId::locationId`.
+
 ### Period locking
 
 `wayvida-period-control-v1` stores `periods[]`, `requests[]`, `audit[]` and `overrides[]`; `wayvida-period-settings-v1` stores the single locking policy record. A period carries its scope (`companyId`, `organisationName`, `scopeType`, `branchIds[]`, `branchNames[]`, `modules[]`), its range (`start`, `end`, `frequency`), its lifecycle (`status`, `lockType`, `lockedBy`, `lockedAt`, `reason`, `approvalStatus`, `lastAction`, `version`) and, while temporarily unlocked, `lockTypeBeforeUnlock`, `unlockScope`, `unlockStartDate`, `unlockEndDate`, `unlockExpiresAt` and `unlockManual`.
@@ -58,6 +62,8 @@ An unlock request records the lock it targets, the requested `unlockScope` with 
 | Credit application | credit-note ID, invoice ID, amount, date, token, void metadata |
 | Receipt | customer, amount, bank, mode, reference, type, accounts, planned allocations, reconciliation, lifecycle/audit fields |
 | Receipt allocation | receipt/invoice IDs, amount, date, token, optional journal, void metadata |
+| Inventory adjustment | `id`, `number` (`ADJ-00001`), date, type, entry mode, organisation/branch, adjustment account, reason, notes, lines, status, posted, `journalId`, lifecycle actors and timestamps, reversal links, activity trail |
+| Inventory adjustment line | `itemId`, `locationId`, item snapshot (name/SKU/unit/inventory account), rate, previous/current quantity and value, quantity and value deltas, derived new quantity and value, value impact in paise |
 | Period | company/year/name/date range/status/lock type/actor/date/reason — partial module |
 | Unlock request | period/requester/reason/status/approver/timestamps — partial module |
 
@@ -90,5 +96,5 @@ Required properties:
 - Foreign keys prevent orphaned master/source references.
 - Optimistic concurrency uses a revision/version column.
 - Period status validation and journal creation occur in the same database transaction.
-Item records may include `taxApplicable`, `taxRate`, `cessRate`, and `priceTaxMode` (`exclusive` or `inclusive`). These are defaults copied into a sales-order or invoice line and may be overridden on that document. Item creation no longer collects a preferred vendor; production vendor relationships belong to purchasing/vendor-price agreements rather than the item’s core sales tax configuration.
+Item records may include `taxApplicable`, `taxRate`, `interStateTaxRate`, `cessRate`, `taxPreference` and `priceTaxMode` (`exclusive` or `inclusive`). `taxRate` is the total GST of an intra-state supply and is what a sales or purchase line splits into CGST + SGST, while `interStateTaxRate` is the IGST rate of an inter-state supply; both are stored as strings and both are zeroed when the item is not taxable, which is recorded as `taxApplicable:false` with a `taxPreference` of `Non-taxable`, `Exempt`, `Zero Rated` or `Non-GST`. The selectable rates and treatments come from the shared `src/item-master.js` masters (`ITEM_TAX_RATES`, `ITEM_CESS_RATES`, `ITEM_TAX_TREATMENTS`) rather than a second tax-rate source. These are defaults copied into a sales-order or invoice line and may be overridden on that document. Item creation no longer collects a preferred vendor; production vendor relationships belong to purchasing/vendor-price agreements rather than the item’s core sales tax configuration.
 

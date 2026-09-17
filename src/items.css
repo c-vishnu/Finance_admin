@@ -1,4 +1,4 @@
-.welcome:has(+.itemsPage){display:none}.itemsPage{font-size:13px}.itemsHeading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}.itemsHeading h1{margin:0;font-size:22px}.itemsHeading p{margin:6px 0 0;color:#667085}.itemsPage button,.itemsPage input,.itemsPage select{font:inherit}.itemsHeading button{height:40px;border-radius:7px;white-space:nowrap}.itemsCard{background:white;border:1px solid #e4e9f0;border-radius:10px;overflow:hidden}.itemsTools{display:flex;gap:12px;align-items:center;padding:16px;border-bottom:1px solid #e4e9f0}.itemsTools label{display:flex;gap:8px;align-items:center;border:1px solid #d0d5dd;border-radius:6px;padding:0 10px;width:340px;max-width:100%;color:#667085}.itemsTools input{height:36px;border:0;outline:0;width:100%}.itemsTools select{height:38px;border:1px solid #d0d5dd;border-radius:6px;background:white;padding:0 10px}.itemsTools>span{margin-left:auto;color:#667085;white-space:nowrap}.itemsTableWrap{overflow:auto}.itemsPage table{width:100%;border-collapse:collapse;min-width:800px;text-align:left}.itemsPage th{padding:13px 16px;background:#f8fafc;color:#667085;font-size:12px;font-weight:600}.itemsPage td{padding:16px;border-top:1px solid #edf0f4;white-space:nowrap}.itemsPage tbody tr:hover{background:#fafcff}.itemIdentity{display:flex;gap:12px;align-items:center}.itemIdentity img,.itemIdentity>span{width:36px;height:36px;border-radius:7px;object-fit:cover;background:#edf4ff;color:#3478f6;display:grid;place-items:center}.itemType{background:#f2f4f7;border-radius:12px;padding:4px 8px;font-size:12px}.itemEdit{display:flex;align-items:center;gap:6px;border:1px solid #d0d5dd;border-radius:6px;background:#fff;padding:7px 10px;color:#344054}.itemsEmpty{text-align:center;padding:50px 20px;color:#667085}.itemOverlay{position:fixed;inset:0;z-index:80;background:#10182870;display:flex;align-items:center;justify-content:center;padding:24px}.itemDialog{width:760px;max-width:100%;max-height:calc(100dvh - 48px);display:flex;flex-direction:column;background:white;border-radius:12px;box-shadow:0 20px 60px #10182830;overflow:hidden}.itemDialogHead{padding:20px 24px;border-bottom:1px solid #e4e9f0;display:flex;align-items:start;justify-content:space-between;gap:16px}.itemDialogHead h2{font-size:20px;margin:0}.itemDialogHead p{margin:6px 0 0;color:#667085}.itemDialogHead>button{background:none;border:0;padding:4px;color:#667085}.itemDialogBody{overflow-y:auto;padding:20px 24px}.itemDialogBody h3{margin:0 0 16px;font-size:15px}.itemFormGrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.itemFormGrid label{display:flex;flex-direction:column;gap:7px;font-weight:500;min-width:0}.itemFormGrid input:not([type=file]),.itemFormGrid select{width:100%;height:40px;border:1px solid #d0d5dd;border-radius:6px;background:white;padding:0 10px;color:#344054}.itemFormGrid input:focus,.itemFormGrid select:focus{outline:2px solid #b2ccff;outline-offset:1px}.itemFormGrid small,.itemCheck small,.itemImageField>small{font-size:12px;color:#667085;font-weight:400}.itemFormGrid input[aria-invalid=true],.itemFormGrid select[aria-invalid=true]{border-color:#d92d20}.itemPage .itemError,.itemError{color:#b42318!important;font-size:12px}.itemImageField input{max-width:100%;font-size:12px}.itemImageField>small{display:block;margin-top:8px}.itemPreview{display:flex;align-items:center;gap:12px;margin-top:10px}.itemPreview img{width:64px;height:64px;object-fit:cover;border-radius:6px}.itemPreview button{border:0;background:none;color:#b42318;font-size:12px}.itemInformation{border-top:1px solid #e4e9f0;margin-top:24px;padding-top:20px}.itemCheck{display:flex;align-items:start;gap:10px;margin-bottom:18px}.itemCheck input{width:17px;height:17px;accent-color:#3478f6}.itemCheck span{display:flex;flex-direction:column;gap:4px}.itemCheck b{font-size:14px}.itemDialogFooter{padding:16px 24px;display:flex;justify-content:flex-end;gap:10px;border-top:1px solid #e4e9f0;background:#fcfcfd}.itemDialogFooter button{height:40px;padding:0 18px;border:1px solid #d0d5dd;background:white;border-radius:6px;font-weight:600}.itemDialogFooter button:disabled{opacity:.6;cursor:wait}@media(max-width:600px){.itemsHeading{align-items:start;flex-direction:column}.itemsTools{flex-wrap:wrap}.itemsTools label{width:100%}.itemOverlay{padding:10px}.itemDialog{max-height:calc(100dvh - 20px)}.itemDialogHead,.itemDialogBody,.itemDialogFooter{padding:16px}.itemFormGrid{grid-template-columns:1fr}}
+.welcome:has(+.itemsPage){display:none}.itemsPage{font-size:13px}.itemsHeading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}.itemsHeading h1{margin:0;font-size:22px}.itemsHeading p{margin:6px 0 0;color:#667085}.itemsPage button,.itemsPage input,.itemsPage select{font:inherit}.itemsHeading button{height:40px;border-radius:7px;white-space:nowrap}.itemsCard{background:white;border:1px solid #e4e9f0;border-radius:10px;overflow:hidden}.itemsTools{display:flex;gap:12px;align-items:center;padding:16px;border-bottom:1px solid #e4e9f0}.itemsTools label{display:flex;gap:8px;align-items:center;border:1px solid #d0d5dd;border-radius:6px;padding:0 10px;width:340px;max-width:100%;color:#667085}.itemsTools input{height:36px;border:0;outline:0;width:100%}.itemsTools select{height:38px;border:1px solid #d0d5dd;border-radius:6px;background:white;padding:0 10px}.itemsTools>span{margin-left:auto;color:#667085;white-space:nowrap}.itemsTableWrap{overflow:auto}.itemsPage table{width:100%;border-collapse:collapse;min-width:800px;text-align:left}.itemsPage th{padding:13px 16px;background:#f8fafc;color:#667085;font-size:12px;font-weight:600}.itemsPage td{padding:16px;border-top:1px solid #edf0f4;white-space:nowrap}.itemsPage tbody tr:hover{background:#fafcff}.itemIdentity{display:flex;gap:12px;align-items:center}.itemIdentity img,.itemIdentity>span{width:36px;height:36px;border-radius:7px;object-fit:cover;background:#edf4ff;color:#3478f6;display:grid;place-items:center}.itemType{background:#f2f4f7;border-radius:12px;padding:4px 8px;font-size:12px}.itemEdit{display:flex;align-items:center;gap:6px;border:1px solid #d0d5dd;border-radius:6px;background:#fff;padding:7px 10px;color:#344054}.itemsEmpty{text-align:center;padding:50px 20px;color:#667085}.itemOverlay{position:fixed;inset:0;z-index:80;background:#10182870;display:flex;align-items:center;justify-content:center;padding:24px}.itemDialog{width:760px;max-width:100%;max-height:calc(100dvh - 48px);display:flex;flex-direction:column;background:white;border-radius:12px;box-shadow:0 20px 60px #10182830;overflow:hidden}.itemDialogHead{padding:20px 24px;border-bottom:1px solid #e4e9f0;display:flex;align-items:start;justify-content:space-between;gap:16px}.itemDialogHead h2{font-size:20px;margin:0}.itemDialogHead p{margin:6px 0 0;color:#667085}.itemDialogHead>button{background:none;border:0;padding:4px;color:#667085}.itemDialogBody{overflow-y:auto;padding:20px 24px}.itemDialogBody h3{margin:0 0 16px;font-size:15px}.itemFormGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.itemFormGrid label{display:flex;flex-direction:column;gap:6px;font-weight:500;min-width:0}.itemFormGrid input:not([type=file]),.itemFormGrid select{width:100%;height:40px;border:1px solid #d0d5dd;border-radius:6px;background:white;padding:0 10px;color:#344054}.itemFormGrid input:focus,.itemFormGrid select:focus{outline:2px solid #b2ccff;outline-offset:1px}.itemFormGrid small,.itemCheck small,.itemImageField>small{font-size:12px;color:#667085;font-weight:400}.itemFormGrid input[aria-invalid=true],.itemFormGrid select[aria-invalid=true]{border-color:#d92d20}.itemPage .itemError,.itemError{color:#b42318!important;font-size:12px}.itemImageField input{max-width:100%;font-size:12px}.itemImageField>small{display:block;margin-top:8px}.itemPreview{display:flex;align-items:center;gap:12px;margin-top:10px}.itemPreview img{width:64px;height:64px;object-fit:cover;border-radius:6px}.itemPreview button{border:0;background:none;color:#b42318;font-size:12px}.itemInformation{border-top:1px solid #e4e9f0;margin-top:24px;padding-top:20px}.itemCheck{display:flex;align-items:start;gap:10px;margin-bottom:18px}.itemCheck input{width:17px;height:17px;accent-color:#3478f6}.itemCheck span{display:flex;flex-direction:column;gap:4px}.itemCheck b{font-size:14px}.itemDialogFooter{padding:16px 24px;display:flex;justify-content:flex-end;gap:10px;border-top:1px solid #e4e9f0;background:#fcfcfd}.itemDialogFooter button{height:40px;padding:0 18px;border:1px solid #d0d5dd;background:white;border-radius:6px;font-weight:600}.itemDialogFooter button:disabled{opacity:.6;cursor:wait}@media(max-width:600px){.itemsHeading{align-items:start;flex-direction:column}.itemsTools{flex-wrap:wrap}.itemsTools label{width:100%}.itemOverlay{padding:10px}.itemDialog{max-height:calc(100dvh - 20px)}.itemDialogHead,.itemDialogBody,.itemDialogFooter{padding:16px}.itemFormGrid{grid-template-columns:1fr}}
 .itemFormGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.itemImageField{min-width:0}.itemDialogBody{min-height:0;overflow-x:hidden}.itemFormGrid input[type=file]{width:100%}@media(max-width:600px){.itemFormGrid{grid-template-columns:minmax(0,1fr)}}
 .itemCheck{cursor:pointer;align-items:center;gap:12px}
 .itemTax{background:#f8faff;border:1px solid #dfe8f6;border-radius:9px;padding:18px;margin-top:20px}.itemTax .itemCheck{margin-bottom:16px}.itemTax .itemFormGrid{grid-template-columns:repeat(3,minmax(0,1fr))}@media(max-width:700px){.itemTax .itemFormGrid{grid-template-columns:1fr}}
@@ -7,6 +7,160 @@
 .itemCheck input[role=switch]:checked{background:#3478f6;border-color:#3478f6}
 .itemCheck input[role=switch]:checked::before{transform:translateX(16px)}
 .itemCheck input[role=switch]:focus-visible{outline:3px solid #b2ccff;outline-offset:3px}
-@media(prefers-reduced-motion:reduce){.itemCheck input[role=switch],.itemCheck input[role=switch]::before{transition:none}}
-.itemsPage:has(.itemCreatePage){margin:-24px;width:calc(100% + 48px);min-height:calc(100vh - 62px);background:#f6f8fb}.itemsPage:has(.itemCreatePage)>.itemsHeading,.itemsPage:has(.itemCreatePage)>.itemsCard{display:none}.itemCreatePage{min-height:calc(100vh - 62px);display:flex;flex-direction:column;color:#1d293d}.itemCreatePage .itemDialogHead{display:flex;align-items:center;justify-content:flex-start;padding:22px 32px;background:#fff;border-bottom:1px solid #e3e9f2}.itemCreatePage .itemDialogHead h2{font-size:24px;letter-spacing:-.5px}.itemCreatePage .itemDialogHead p{margin-top:4px}.itemCreatePage .itemBack{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;padding:0;border:1px solid #e3e9f2;border-radius:8px;background:#fff;color:#42536b}.itemCreatePage .itemBack:hover{background:#f1f5fb;border-color:#b8c9e9;color:#245fcb}.itemCreatePage .itemDialogBody{width:calc(100% - 64px);margin:24px 32px 0;background:#fff;border:1px solid #e3e9f2;border-radius:12px;box-shadow:0 4px 18px #2032500a;overflow:visible}.itemCreatePage .itemSection:first-child{border-radius:12px 12px 0 0}.itemCreatePage .itemSection{padding:20px 24px}.itemCreatePage .itemAdvanced{margin:16px 24px}.itemCreatePage .itemDialogFooter{margin-top:auto;padding:14px 32px;background:#fff;border-top:1px solid #e3e9f2;box-shadow:0 -8px 24px #2638540a}.itemCreatePage .itemDialogFooter button{min-width:120px}.itemCreatePage .itemDialogFooter .primary{min-width:160px}@media(max-width:900px){.itemsPage:has(.itemCreatePage){margin:-18px;width:calc(100% + 36px)}.itemCreatePage .itemDialogHead{padding:18px 20px}.itemCreatePage .itemDialogBody{width:calc(100% - 40px);margin:20px 20px 0}.itemCreatePage .itemDialogFooter{padding:14px 20px}}@media(max-width:600px){.itemCreatePage .itemDialogHead{padding:16px}.itemCreatePage .itemDialogHead h2{font-size:21px}.itemCreatePage .itemDialogBody{width:calc(100% - 28px);margin:14px 14px 0}.itemCreatePage .itemDialogFooter{padding:12px 14px}.itemCreatePage .itemDialogFooter button{min-width:0;flex:1}}
-.itemDialog{width:880px}.itemDialogBody{padding:0}.itemSection{padding:18px 24px;border-bottom:1px solid #e4e9f0}.itemSection>header{margin-bottom:16px}.itemSection>header h3{margin:0;font-size:15px}.itemSection>header p{margin:4px 0 0;color:#667085;font-size:12px}.itemSection .itemCheck{margin-bottom:0}.itemSection .itemCheck+.itemFormGrid{margin-top:16px}.itemInputAction{display:flex}.itemInputAction input{border-radius:6px 0 0 6px!important}.itemInputAction button{border:1px solid #d0d5dd;border-left:0;border-radius:0 6px 6px 0;background:#f8fafc;color:#175cd3;padding:0 12px;font-weight:600}.itemSubDetails,.itemAdvanced{border:1px solid #dfe4ec;border-radius:8px;margin-top:16px;background:#fbfcfe}.itemSubDetails summary,.itemAdvanced summary{cursor:pointer;list-style:none;padding:13px 14px;font-weight:600;display:flex;justify-content:space-between}.itemSubDetails summary span,.itemAdvanced summary span{color:#667085;font-size:12px;font-weight:400}.itemSubDetails[open] summary,.itemAdvanced[open] summary{border-bottom:1px solid #e4e9f0}.itemSubDetails>.itemFormGrid,.itemAdvanced>.itemImageField{padding:16px}.itemFormGrid output{height:40px;display:flex;align-items:center;padding:0 10px;border:1px solid #e4e9f0;border-radius:6px;background:#f8fafc;font-weight:600}.itemNotice{display:flex;gap:7px;align-items:center;margin:0 16px 16px;color:#667085;font-size:12px}.itemAdvanced{margin:16px 24px}.itemSaveError{margin:0 24px 16px;padding:10px;border-radius:6px;background:#fef3f2}.itemDialogFooter{position:sticky;bottom:0;z-index:2}@media(max-width:600px){.itemSection{padding:16px}.itemAdvanced{margin:12px 16px}}
+@media(prefers-reduced-motion:reduce){.itemCheck input[role=switch],.itemCheck input[role=switch]::before{transition:none}}.itemsPage:has(.itemCreatePage)>.itemsHeading,.itemsPage:has(.itemCreatePage)>.itemsCard{display:none}
+.itemDialog{width:880px}.itemSection{padding:18px 24px;border-bottom:1px solid #e4e9f0}itemSection .itemCheck{margin-bottom:0}.itemSection .itemCheck+.itemFormGrid{margin-top:12px}.itemInputAction{display:flex}.itemInputAction button{border:1px solid #d0d5dd;border-left:0;border-radius:0 6px 6px 0;background:#f8fafc;color:#175cd3;padding:0 12px;font-weight:600}.itemSubDetails,.itemAdvanced{border:1px solid #dfe4ec;border-radius:8px;margin-top:16px;background:#fbfcfe}.itemSubDetails summary,.itemAdvanced summary{cursor:pointer;list-style:none;padding:13px 14px;font-weight:600;display:flex;justify-content:space-between}.itemSubDetails summary span,.itemAdvanced summary span{color:#667085;font-size:12px;font-weight:400}.itemSubDetails[open] summary,.itemAdvanced[open] summary{border-bottom:1px solid #e4e9f0}.itemSubDetails>.itemFormGrid,.itemAdvanced>.itemImageField{padding:16px}.itemFormGrid output{height:40px;display:flex;align-items:center;padding:0 10px;border:1px solid #e4e9f0;border-radius:6px;background:#f8fafc;font-weight:600}.itemNotice{display:flex;gap:7px;align-items:center;margin:0 16px 16px;color:#667085;font-size:12px}.itemAdvanced{margin:16px 24px}.itemSaveError{margin:0 24px 16px;padding:10px;border-radius:6px;background:#fef3f2}.itemDialogFooter{position:sticky;bottom:0;z-index:2}@media(max-width:600px){.itemSection{padding:16px}.itemAdvanced{margin:12px 16px}}
+
+/* Item form: the three-across SKU / HSN-SAC / Unit row, the Taxable control and the
+   GST split preview. The split is derived, never typed: the Intra-State rate is the
+   total GST of an intra-state supply (CGST + SGST) and the Inter-State rate is IGST. */
+.itemFormGrid3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.itemTaxFormGrid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.itemTaxHead{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.itemTaxLabel{font-weight:600}
+.itemTaxHint{color:#667085;font-size:12px}
+.itemSegmented{display:inline-flex;align-items:center;gap:3px;padding:3px;border:1px solid #dfe6ef;border-radius:9px;background:#f5f7fb}
+.itemSegmented button{min-height:32px;padding:5px 14px;border:0;border-radius:7px;background:transparent;color:#475467;font-size:13px;font-weight:600;cursor:pointer}
+.itemsPage .itemSegmented button:hover{background:#eaf0fb;color:#245fd9}
+.itemSegmented button.active{background:#fff;color:#245fd9;box-shadow:0 1px 3px #1018281f}
+.itemSegmented button:focus-visible{outline:3px solid #b2ccff;outline-offset:2px}
+.itemTaxHead+.itemFormGrid,.itemTaxPreview+.itemFormGrid{margin-top:14px}
+.itemTaxNote{margin:10px 0 0;color:#667085;font-size:12px}
+.itemTaxPreview{display:flex;flex-wrap:wrap;gap:6px 22px;margin:8px 0 0;padding:0}
+.itemTaxPreview>div{display:flex;align-items:baseline;gap:7px}
+.itemTaxPreview dt{color:#667085;font-size:12px;font-weight:500}
+.itemTaxPreview dd{margin:0;color:#1d293d;font-size:13px;font-weight:600}
+@media(max-width:700px){.itemFormGrid3{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:1100px){.itemTaxFormGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.itemTaxFormGrid{grid-template-columns:minmax(0,1fr)}}
+
+/* ==========================================================================
+   Create Item page - aligned with the Create Journal Entry page (2026-09-16).
+   A 56px full-bleed white head bar sits flush under the working-context
+   organisation and branch bar at that bar's width, every other child keeps its own
+   clamp(16px,2.2vw,24px) gutter, and the fields, labels, grids, disclosures and the
+   static action card use the Create Journal Entry geometry. Every rule is scoped to the
+   .itemCreatePage class so the dialog classes the Customers page still shares stay
+   untouched, and .itemDialogBody no longer loses its own padding through this page.
+   ========================================================================== */
+/* The head bar has to sit flush under the working-context Organisation / Branch bar at that
+   bar's own width, so main gives up the 22px gap and the clamp(16px,2.2vw,32px) side padding
+   the shell puts on it. Every selector below uses a SINGLE top-level :has pseudo-class. One
+   :has pseudo-class nested inside another is invalid CSS (Selectors Level 4 forbids it), and
+   a single invalid selector invalidates its whole rule, so the earlier direct-child selector
+   that nested the pseudo-class was dropped by the browser and the shell padding stayed on
+   main. That is why the head bar was still inset by the clamp(16px,2.2vw,32px) gutter on both
+   sides and sat 22px under the Organisation / Branch bar. The direct-child shape and a
+   descendant-only body shape are both kept so the rule still lands if the page nesting is
+   ever rewritten. */
+.app main:has(>.itemsPage .itemCreatePage),
+body:has(.itemCreatePage) .app main{max-width:none!important;padding:0!important}
+/* Create Item is taller than the shell viewport. Give this create flow one document-level
+   scroll surface so wheel, trackpad, touch and scrollbar input all move the same page. */
+html:has(.itemCreatePage),body:has(.itemCreatePage),body:has(.itemCreatePage) #root{height:auto;min-height:100%;overflow-y:auto}
+body:has(.itemCreatePage) .app{height:auto;min-height:100vh;overflow:visible}
+.app main:has(>.itemsPage .itemCreatePage),
+body:has(.itemCreatePage) .app>main{height:auto;max-height:none;overflow:visible;scrollbar-gutter:auto}
+.itemsPage:has(.itemCreatePage){background:#f6f8fb;min-height:100%}
+.itemCreatePage{display:block;padding-bottom:88px;color:var(--ui-text)}
+.itemCreatePage>*:not(.itemDialogHead){margin-left:clamp(16px,2.2vw,24px);margin-right:clamp(16px,2.2vw,24px)}
+.itemCreatePage .itemDialogHead{display:grid;grid-template-columns:42px minmax(0,1fr);align-items:center;gap:14px;min-height:56px;margin:0;padding:8px 24px;background:#fff;border:1px solid var(--ui-border);border-left:0;border-right:0;border-radius:0;box-shadow:none}
+.itemCreatePage .itemHeadText{display:flex;align-items:baseline;gap:8px;min-width:0}
+.itemCreatePage .itemDialogHead h2{margin:0;color:var(--ui-text);font-size:16px;font-weight:650;line-height:1.25;letter-spacing:0}
+.itemCreatePage .itemHeadHint{color:var(--ui-muted);font-size:12px;font-weight:400}
+.itemCreatePage .itemHeadHint b{color:#475467;font-weight:600}
+.itemCreatePage .itemBack{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;padding:0;border:1px solid #d7e0eb;border-radius:8px;background:#fff;color:#475467}
+.itemCreatePage .itemBack:hover{background:#eef4ff;border-color:#bcd0f5;color:#2463d4}
+.itemCreatePage .itemDialogBody{width:auto;margin-top:12px;padding:0;overflow:hidden;background:#fff;border:1px solid var(--ui-border);border-radius:var(--ui-radius);box-shadow:var(--ui-shadow)}
+.itemSection{padding:16px 20px;border-bottom:1px solid #edf0f4}
+/* The form has no section headings on the user instruction of 2026-09-16. Every group of
+   fields is still its own .itemSection, separated by the hairline below, but nothing
+   inside it is a <header> element: src/styles.css styles a bare <header> as the 58px
+   fixed application bar (header{position:fixed;...}) and .app header adds
+   border-top:3px solid #1f5fae, and both files load after this one, so an in-form
+   <header> heading was painted as a white app-bar-like block with the dark blue line on
+   top. Only the section container remains. */
+.itemCreatePage .itemDialogBody>:last-child{border-bottom:0}
+.itemCreatePage .itemAdvanced{margin:14px 20px}
+.itemCreatePage .itemSaveError{margin:0 20px 14px}
+.itemCreatePage .itemFormGrid{gap:10px 14px}
+.itemCreatePage .itemFormGrid+.itemFormGrid{margin-top:10px}
+.itemCreatePage .itemSectionTitle{margin:0 0 12px;color:#1d2939;font-size:14px;font-weight:650}
+.itemCreatePage .itemFormGrid label{gap:7px;color:#344054;font-size:12px;font-weight:600}
+.itemCreatePage .itemFormGrid input:not([type=file]),.itemCreatePage .itemFormGrid select,.itemCreatePage .itemFormGrid textarea{width:100%;height:auto;min-height:40px;padding:7px 10px;border:1px solid #d7e0eb;border-radius:7px;background:#fff;color:#26354b;font:13px "Instrument Sans",Arial,sans-serif}
+.itemCreatePage .itemFormGrid textarea{min-height:72px;resize:vertical}
+.itemCreatePage .itemFormGrid input:focus,.itemCreatePage .itemFormGrid select:focus,.itemCreatePage .itemFormGrid textarea:focus{outline:0;border-color:var(--ui-primary);box-shadow:0 0 0 3px rgba(52,120,246,.12)}
+.itemCreatePage .itemFormGrid input[aria-invalid=true],.itemCreatePage .itemFormGrid select[aria-invalid=true]{border-color:#d92d20}
+.itemCreatePage .itemFormGrid small,.itemCreatePage .itemCheck small,.itemCreatePage .itemImageField>small{font-size:12px;color:var(--ui-muted);font-weight:400}
+.itemCreatePage .itemFormGrid output{display:flex;align-items:center;height:auto;min-height:40px;padding:7px 10px;border:1px solid #dfe6ef;border-radius:7px;background:#f6f8fb;color:#475467;font-size:13px;font-weight:600}
+.itemCreatePage .itemInputAction input{border-top-right-radius:0;border-bottom-right-radius:0}
+.itemCreatePage .itemInputAction button{min-height:40px;padding:0 12px;border:1px solid #d7e0eb;border-left:0;border-radius:0 7px 7px 0;background:#f8fafc;color:#2463d4;font-size:12px;font-weight:600}
+.itemCreatePage .itemInputAction button:hover{background:#eef4ff;border-color:#bcd0f5}
+.itemCreatePage .itemTypeField{min-width:0;margin:0;padding:0;border:0}
+.itemCreatePage .itemTypeField legend{margin:0 0 7px;padding:0;color:#344054;font-size:12px;font-weight:600}
+.itemCreatePage .itemRadioGroup{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:center;gap:8px;min-height:40px;max-width:360px}
+.itemCreatePage .itemRadioGroup label{display:flex;flex-direction:row;align-items:center;gap:9px;min-height:40px;padding:8px 12px;border:1px solid #d7e0eb;border-radius:8px;background:#fff;color:#344054;font-size:13px;font-weight:600;cursor:pointer;transition:border-color .16s,background .16s,box-shadow .16s,color .16s}
+.itemCreatePage .itemRadioGroup label:hover{border-color:#bcd0f5;background:#f8faff;color:#245fd9}
+.itemCreatePage .itemRadioGroup label:has(input:checked){border-color:#7aa7f8;background:#eef4ff;color:#245fd9;box-shadow:0 0 0 2px rgba(52,120,246,.08)}
+.itemCreatePage .itemFormGrid .itemRadioGroup input{appearance:none;-webkit-appearance:none;display:grid;place-items:center;flex:0 0 18px;width:18px;min-width:18px;height:18px;min-height:18px;margin:0;padding:0;border:1.5px solid #98a2b3;border-radius:50%;background:#fff;box-shadow:none}
+.itemCreatePage .itemRadioGroup input::before{content:'';width:8px;height:8px;border-radius:50%;background:#fff;transform:scale(0);transition:transform .14s}
+.itemCreatePage .itemRadioGroup input:checked{border-color:var(--ui-primary);background:var(--ui-primary)}
+.itemCreatePage .itemRadioGroup input:checked::before{transform:scale(1)}
+.itemCreatePage .itemRadioGroup input:focus-visible{outline:3px solid #b2ccff;outline-offset:2px}
+.itemCreatePage .itemSubDetails,.itemCreatePage .itemAdvanced{margin-top:14px;border:1px solid #dfe6ef;border-radius:10px;background:#fbfcfe}
+.itemCreatePage .itemSubDetails summary,.itemCreatePage .itemAdvanced summary{padding:12px 16px;color:#1d2939;font-size:14px;font-weight:650}
+.itemCreatePage .itemSubDetails>.itemFormGrid,.itemCreatePage .itemAdvanced>.itemImageField{padding:14px 16px}
+.itemCreatePage .itemSingleField{grid-template-columns:minmax(0,1fr)}
+.itemCreatePage .itemAdvancedGroup{padding:14px 16px;border-bottom:1px solid #e8edf4}
+.itemCreatePage .itemAdvancedGroup:last-child{border-bottom:0}
+.itemCreatePage .itemOpeningStockGroup>.itemSubDetails{margin:0}
+.itemCreatePage .itemAdvancedTitle{margin:0 0 10px;color:#26354b;font-size:13px;font-weight:650}
+.itemCreatePage .itemImageField{display:grid;gap:8px}
+.itemCreatePage .itemImageUpload{position:relative;display:grid;grid-template-columns:36px minmax(0,1fr) auto;align-items:center;gap:10px;min-height:58px;padding:10px 12px;border:1px solid #d7e0eb;border-radius:8px;background:#fff;cursor:pointer;transition:border-color .16s,background .16s,box-shadow .16s}
+.itemCreatePage .itemImageUpload:hover{border-color:#7aa7f8;background:#f8faff}
+.itemCreatePage .itemImageUpload:focus-within{border-color:var(--ui-primary);box-shadow:0 0 0 3px rgba(52,120,246,.12)}
+.itemCreatePage .itemImageUpload input{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.itemCreatePage .itemImageIcon{display:grid;place-items:center;width:36px;height:36px;border-radius:8px;background:#eef4ff;color:#2463d4}
+.itemCreatePage .itemImageCopy{display:grid;gap:3px;min-width:0}
+.itemCreatePage .itemImageCopy b{color:#26354b;font-size:13px;font-weight:650}
+.itemCreatePage .itemImageCopy small{color:#667085;font-size:12px;font-weight:400}
+.itemCreatePage .itemImageChoose{display:inline-flex;align-items:center;justify-content:center;min-height:32px;padding:0 11px;border:1px solid #cfd8e5;border-radius:7px;background:#fff;color:#245fd9;font-size:12px;font-weight:650;white-space:nowrap}
+.itemCreatePage .itemPreview{display:grid;grid-template-columns:52px minmax(0,1fr) auto;align-items:center;gap:12px;margin:4px 0 0;padding:10px;border:1px solid #dfe6ef;border-radius:8px;background:#fff}
+.itemCreatePage .itemPreview img{width:52px;height:52px;border-radius:7px}
+.itemCreatePage .itemPreview>span{display:grid;gap:3px;min-width:0}
+.itemCreatePage .itemPreview b{color:#26354b;font-size:13px}
+.itemCreatePage .itemPreview small{color:#667085;font-size:12px}
+.itemCreatePage .itemPreview button{padding:7px 9px;border:1px solid #f0c7c3;border-radius:7px;background:#fff;color:#b42318;font-weight:600}
+.itemCreatePage .itemNotice{margin:0 16px 14px}
+.itemCreatePage .itemCheck{gap:12px;margin-bottom:0}
+.itemCreatePage .itemTaxHead+.itemFormGrid,.itemCreatePage .itemTaxPreview+.itemFormGrid{margin-top:10px}
+.itemCreatePage .itemTaxNote{margin:8px 0 0}
+.itemCreatePage .itemTaxPreview{margin:6px 0 0}
+.itemCreatePage .itemDialogFooter{position:fixed;left:calc(270px + clamp(16px,2.2vw,24px));right:clamp(16px,2.2vw,24px);bottom:10px;z-index:18;display:flex;justify-content:flex-end;gap:9px;min-height:62px;margin:0;padding:11px 14px;border:1px solid var(--ui-border);border-radius:var(--ui-radius);background:rgba(255,255,255,.96);box-shadow:0 8px 26px rgba(16,24,40,.14);backdrop-filter:blur(8px)}
+.itemCreatePage .itemDialogFooter button{flex:none;min-width:0;min-height:40px;padding:0 15px;border:1px solid #d0d8e3;border-radius:7px;background:#fff;color:#344054;font-weight:600}
+.itemCreatePage .itemDialogFooter button:hover{background:#f5f8fc}
+.itemCreatePage .itemDialogFooter .primary{min-width:150px}
+@media(max-width:900px){
+ .itemCreatePage>*:not(.itemDialogHead){margin-left:16px;margin-right:16px}
+ .itemCreatePage .itemFormGrid3{grid-template-columns:minmax(0,1fr)}
+}
+/* The 24px head gutter is the Organisation / Branch bar's own padding, so the back button
+   lines up with its building icon; both bars narrow to 12px at the same 760px breakpoint
+   (.orgContextBar is fixed at 270px left / 24px padding above it in src/ui-quality-polish.css). */
+@media(max-width:760px){
+ .itemCreatePage .itemDialogHead{padding:8px 12px}
+ .itemCreatePage .itemDialogFooter{left:12px;right:12px}
+}
+@media(max-width:600px){
+ .itemCreatePage>*:not(.itemDialogHead){margin-left:12px;margin-right:12px}
+ .itemCreatePage .itemSection{padding:14px 16px}
+ .itemCreatePage .itemAdvanced,.itemCreatePage .itemSubDetails{margin:12px 16px}
+ .itemCreatePage .itemSaveError{margin:0 16px 14px}
+ .itemCreatePage .itemRadioGroup{max-width:none}
+ .itemCreatePage .itemImageUpload{grid-template-columns:42px minmax(0,1fr)}
+ .itemCreatePage .itemImageChoose{grid-column:1/-1;width:100%}
+ .itemCreatePage .itemPreview{grid-template-columns:46px minmax(0,1fr)}
+ .itemCreatePage .itemPreview img{width:46px;height:46px}
+ .itemCreatePage .itemPreview button{grid-column:1/-1;width:100%}
+ .itemCreatePage .itemDialogFooter{left:0;right:0;bottom:0;padding:10px 12px;border-right:0;border-bottom:0;border-left:0;border-radius:0}
+ .itemCreatePage .itemDialogFooter button{flex:1 1 120px}
+}

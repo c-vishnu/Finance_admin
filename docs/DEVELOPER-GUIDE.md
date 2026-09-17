@@ -1,6 +1,6 @@
 # Developer Guide
 
-**Last verified:** 2026-09-15  
+**Last verified:** 2026-09-16  
 **Primary sources:** `package.json`, `vite.config.mjs`, `Dockerfile`, `docker-compose.yml`, `AGENTS.md`.
 
 ## Requirements and commands
@@ -17,6 +17,8 @@ node --test tests/*.test.mjs
 ```
 
 `npm run dev` and `npm run preview` bind to host `0.0.0.0` on port 4001 with `strictPort`, so they fail instead of moving to another port. Both servers set `allowedHosts: true` so a VM IP or hostname is accepted. Open `http://localhost:4001/` or `http://<vm-host>:4001/`.
+
+If the machine has no system Node/npm, or the sandbox denies child-process spawn so Vite cannot start its esbuild helper, use the spawn-free static preview instead. `scripts/preview-server.mjs` serves the same origin on port 4001, transforms JSX in-process with the vendored Babel, and rewrites Vite's pre-bundled CommonJS dependencies (React, React DOM) into browser-legal default imports, and caches every transform in memory. It pre-transforms all source modules before it starts listening (87 modules in about 3.5 s), so the first page load is fast; touching a file invalidates just that module. Run `npm run preview:static`, or on Windows double-click `preview.cmd`, which finds Node on `PATH` or falls back to the bundled runtime. It is a local development and preview aid only; it is not the production build and does not run in Docker or Sites.
 
 On a VM, serve the built client with Docker. The image builds the Vite client and nginx serves `dist/client` on host port 4002. Missing `/assets/` files must 404 rather than fall back to `index.html`, or the module script fails and the UI stays blank. This is static prototype hosting only; it does not add a database or authenticated API.
 

@@ -2,13 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
-const workspace=readFileSync(new URL('../src/BudgetWorkspace.jsx',import.meta.url),'utf8');
+const workspace=readFileSync(new URL('../src/BudgetWorkspace.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
 const css=readFileSync(new URL('../src/budget-workspace.css',import.meta.url),'utf8');
 
 test('the Budgets register is a grid of Budget Name, Financial Year, Budget Period and Actions',()=>{
   assert.ok(workspace.includes('<th scope="col">Budget Name</th><th scope="col">Financial Year</th><th scope="col">Budget Period</th><th scope="col">Actions</th>'),'the four columns are declared once');
   assert.ok(workspace.includes('<td><b>{budget.name}</b></td><td>{budget.financialYear}</td><td>{budget.period}</td>'),'each row states the name, the financial year and the budget period');
-  assert.ok(workspace.includes('<td colSpan="4" className="budgetEmpty">'),'the empty state spans the four columns');
+  assert.ok(workspace.includes('<td colSpan="4" className="emptyStateCell"><EmptyState variant="budget" title="No budgets found" description="No budgets match these filters. Create a budget to start planning." actionLabel="Create Budget" onAction={create}/></td>'),'the empty state spans the four columns and offers Create Budget');
   for(const gone of ["'Budget Type'","'Scope'","'Total Amount'","'Status'","'Created By'","'Last Updated'"]){
     assert.ok(!workspace.includes(gone),gone+' is no longer a register column');
   }

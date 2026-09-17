@@ -1,7 +1,11 @@
 # Known Gaps and Roadmap
 
-**Last verified:** 2026-09-05  
+**Last verified:** 2026-09-16  
 **Primary sources:** repository inspection and existing root reviews.
+
+## Prototype UI gaps - 2026-09-16
+
+- The Inventory Adjustments confirmation dialog header is still caught by the legacy global app-bar element rule. `src/inventory-adjustments.css` styles the title block as `.iaModal>header` but never resets `position`, and `src/styles.css` declares an unscoped `header{position:fixed;z-index:10;top:0;left:206px;right:0;height:58px;...}`, so that title block is pulled out of `.iaModal` and printed as a 58px fixed bar instead of sitting inside the dialog. The Create Item section cards, the Period Closing cards and the budget and account drawers already carry a scoped `header` reset; this dialog does not. Reported, not fixed - the change that found it touched only the Create Item page.
 
 ## COA production gaps after the enterprise prototype upgrade
 

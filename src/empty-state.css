@@ -1,0 +1,37 @@
+.emptyState{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:250px;padding:32px 20px;text-align:center;white-space:normal}
+.emptyState .emptyArt{display:block;width:96px;height:96px;flex:none;animation:emptyArtIn .45s cubic-bezier(.22,.9,.3,1) both}
+.emptyState .emptyArtPlate{fill:#f4f7fb;transform-box:fill-box;transform-origin:50% 50%;animation:emptyPlateIn .5s cubic-bezier(.22,.9,.3,1) both}
+.emptyState .emptyArtGlyph{fill:none;stroke:#94a3b8;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;animation:emptyBreathe 7s ease-in-out 1.6s infinite}
+.emptyState .emptyTitle{margin:2px 0 0;color:#172033;font-size:15px;font-weight:650;line-height:1.35}
+.emptyState .emptyText{margin:0;max-width:430px;color:#667085;font-size:13px;line-height:1.5}
+.emptyState .emptyAction{margin-top:6px}
+.emptyState .emptyAction button.emptyCta{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:8px 15px;border:1px solid #3478f6;border-radius:7px;background:#3478f6;color:#fff;font:650 13px/1 'Instrument Sans',sans-serif;cursor:pointer}
+.emptyState .emptyAction button.emptyCta:hover{border-color:#2563d8;background:#2563d8}
+.emptyState .emptyAction button.emptyCta:focus-visible{outline:2px solid #9cbbff;outline-offset:2px}
+/* Motion: an empty table is a resting state, so the illustration draws itself in
+   once - roughly a second, slightly staggered - and then breathes, 1.5px over
+   seven seconds. Every base rule states the finished drawing and the keyframe
+   supplies the starting point, so switching the animation off (prefers-reduced-
+   motion, or a browser without animation support) leaves complete artwork rather
+   than a half-drawn glyph. */
+@keyframes emptyArtIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@keyframes emptyPlateIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+@keyframes emptyBarIn{from{opacity:0;transform:scaleY(.3)}to{opacity:1;transform:scaleY(1)}}
+@keyframes emptyDrawIn{from{stroke-dashoffset:120}to{stroke-dashoffset:0}}
+@keyframes emptyBreathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.5px)}}
+@keyframes emptyPulse{0%,100%{opacity:1}50%{opacity:.45}}
+.emptyState .emptyArtGlyph .emptyBar{transform-box:fill-box;transform-origin:50% 100%;animation:emptyBarIn .55s cubic-bezier(.22,.9,.3,1) .15s both}
+.emptyState .emptyArtGlyph .emptyBar:nth-of-type(2){animation-delay:.27s}
+.emptyState .emptyArtGlyph .emptyBar:nth-of-type(3){animation-delay:.39s}
+.emptyState .emptyArtGlyph .emptyDraw{stroke-dasharray:120;stroke-dashoffset:0;animation:emptyDrawIn .75s cubic-bezier(.3,.8,.4,1) .2s both}
+.emptyState .emptyArtGlyph .emptyDraw:nth-of-type(2){animation-delay:.4s}
+.emptyState .emptyArtGlyph .emptyDraw:nth-of-type(3){animation-delay:.58s}
+.emptyState .emptyArtGlyph .emptyDraw:nth-of-type(4){animation-delay:.76s}
+.emptyState .emptyArtGlyph .emptyDraw.emptyDrawLate{animation-delay:.5s}
+.emptyState .emptyArtGlyph .emptyDot{animation:emptyPulse 3.6s ease-in-out 1.8s infinite}
+
+td.emptyStateCell.emptyStateCell.emptyStateCell{padding:0!important;border-top:0!important;overflow:visible!important;text-overflow:clip!important;white-space:normal!important;background:transparent!important;text-align:center!important}
+.emptyStateHost{grid-column:1/-1;width:100%}
+.emptyStateRow,.emptyStateRow:hover{background:transparent!important}
+@media(max-width:640px){.emptyState{min-height:205px;padding:26px 16px}.emptyState .emptyArt{width:82px;height:82px}}
+@media (prefers-reduced-motion: reduce){.emptyState .emptyArt,.emptyState .emptyArt *{animation:none!important}}

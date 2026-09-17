@@ -21,7 +21,7 @@ const leaf=(label,page=label)=>({label,page});
 const sections=[
   {...leaf('Dashboard'),icon:IconHome},
   {label:'Accounting',icon:IconBook,children:[leaf('Chart of Accounts'),leaf('Journal Entries'),leaf('Budgets'),leaf('Period Closing')]},
-  {label:'Inventory',icon:IconPackage,children:[leaf('Items')]},
+  {label:'Inventory',icon:IconPackage,children:[leaf('Items'),leaf('Inventory Adjustments')]},
   {label:'Sales',icon:IconShoppingCart,children:[leaf('Customers'),leaf('Sales Orders'),leaf('Invoices'),leaf('Credit Notes'),leaf('Receipts','Payments Received')]},
   {label:'Purchases',icon:IconTruck,children:[leaf('Vendors'),leaf('Purchase Orders'),leaf('Goods Receipts'),leaf('Purchase Bills'),leaf('Debit Notes'),leaf('Vendor Payments','Payments Made')]},
   {label:'Banking',icon:IconBuildingBank,children:[leaf('Bank Accounts'),leaf('Transactions','Bank Transactions'),leaf('Reconciliation','Bank Reconciliation'),leaf('Settings','Banking Settings')]},
