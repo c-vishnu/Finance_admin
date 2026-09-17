@@ -39,8 +39,9 @@
    organisation and branch bar at that bar's width, every other child keeps its own
    clamp(16px,2.2vw,24px) gutter, and the fields, labels, grids, disclosures and the
    static action card use the Create Journal Entry geometry. Every rule is scoped to the
-   .itemCreatePage class so the dialog classes the Customers page still shares stay
-   untouched, and .itemDialogBody no longer loses its own padding through this page.
+   .itemCreatePage class, which now carries the Create Item page and the Customers create
+   page, so the shared .itemDialog* classes keep their dialog meaning everywhere else and
+   .itemDialogBody keeps its own padding.
    ========================================================================== */
 /* The head bar has to sit flush under the working-context Organisation / Branch bar at that
    bar's own width, so main gives up the 22px gap and the clamp(16px,2.2vw,32px) side padding
@@ -71,7 +72,14 @@ body:has(.itemCreatePage) .app>main{height:auto;max-height:none;overflow:visible
 .itemCreatePage .itemBack{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;padding:0;border:1px solid #d7e0eb;border-radius:8px;background:#fff;color:#475467;cursor:pointer;transition:all .15s ease}
 .itemBack,.itemDetailPage .itemBack{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;padding:0;border:1px solid #d7e0eb;border-radius:8px;background:#fff;color:#475467;cursor:pointer;transition:all .15s ease}
 .itemBack:hover,.itemCreatePage .itemBack:hover,.itemDetailPage .itemBack:hover{background:#eef4ff;border-color:#bcd0f5;color:#2463d4}.itemBack:focus-visible,.itemCreatePage .itemBack:focus-visible,.itemDetailPage .itemBack:focus-visible{outline:2px solid #245fd9;outline-offset:2px}
-.itemCreatePage .itemDialogBody{width:auto;margin-top:12px;padding:0;overflow:hidden;background:#fff;border:1px solid var(--ui-border);border-radius:var(--ui-radius);box-shadow:var(--ui-shadow)}
+/* The create page body card is overflow:hidden so the section hairlines stay inside its radius, but
+   src/ui-system.css gives .itemDialogBody overscroll-behavior:contain. Together those two made the card a
+   wheel trap: the card is a scroll container that has nothing to scroll, and contain stopped the wheel
+   chaining to the document scroller, so a wheel gesture with the pointer over any field did nothing at
+   all. It only showed on the Customers create page because its form is taller than the viewport; the
+   shorter Items form has almost nothing to scroll. The page body must keep overscroll-behavior:auto so
+   the wheel chains to the document, which is the only scroll surface on a create page. */
+.itemCreatePage .itemDialogBody{width:auto;margin-top:12px;padding:0;overflow:hidden;overscroll-behavior:auto;background:#fff;border:1px solid var(--ui-border);border-radius:var(--ui-radius);box-shadow:var(--ui-shadow)}
 .itemSection{padding:16px 20px;border-bottom:1px solid #edf0f4}
 /* The form has no section headings on the user instruction of 2026-09-16. Every group of
    fields is still its own .itemSection, separated by the hairline below, but nothing

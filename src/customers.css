@@ -1,1 +1,84 @@
 .customerContact{display:flex;flex-direction:column;gap:5px}.customerContact small{font-size:12px}.customerStatus{border-radius:12px;background:#f2f4f7;color:#475467;padding:4px 9px;font-size:12px}.customerStatus.active{background:#e9f8ef;color:#187747}.customersPage .itemFormGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.customersPage textarea{font:inherit;width:100%;min-height:86px;padding:10px;border:1px solid #d0d5dd;border-radius:6px;resize:vertical}.customersPage textarea:focus{outline:2px solid #b2ccff}.customersPage .copyAddress{margin-top:12px;border:0;background:#edf4ff;color:#175cd3;border-radius:6px;padding:8px 12px;font-size:12px}.customersPage .itemFormGrid label{align-self:start}@media(max-width:600px){.customersPage .itemFormGrid{grid-template-columns:minmax(0,1fr)}}
+
+/* Customer register row actions: one View Customer button beside the canonical three-dot menu. The geometry is the
+   Period Closing / Journal Entries / Chart of Accounts kebab - a 32px square trigger on #d9e1ec with a 7px radius
+   that turns #3478f6 / #245fd9 while open, and a 196px menu with 9px radius and 36px rows - so the register reads
+   like the other registers. The menu is absolutely positioned inside .customerKebab, so the row never reflows, and
+   the card keeps overflow:visible (src/items.css .itemsPage .itemsCard) so nothing clips it. */
+.customerActionsCell{white-space:nowrap;text-align:right}
+.customerRowActions{display:flex;align-items:center;justify-content:flex-end;gap:8px}
+.customerView{display:inline-flex;align-items:center;gap:7px;min-height:32px;padding:0 12px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#344054;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer;transition:all .15s ease}
+.customerView:hover{background:#eef4ff;border-color:#bcd0f5;color:#2463d4}
+.customerView:focus-visible{outline:2px solid #245fd9;outline-offset:2px}
+.customerKebab{position:relative}
+.customerKebab>summary{display:grid;place-items:center;width:32px;height:32px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#475467;cursor:pointer;list-style:none}
+.customerKebab>summary::-webkit-details-marker{display:none}
+.customerKebab[open]>summary{border-color:#3478f6;color:#245fd9}
+.customerMoreMenu{position:absolute;right:0;top:calc(100% + 6px);z-index:80;display:flex;flex-direction:column;min-width:196px;padding:6px;border:1px solid #e1e6ed;border-radius:9px;background:#fff;box-shadow:0 12px 30px #1018281f}
+.customerMoreMenu button{display:flex;align-items:center;gap:9px;min-height:36px;padding:0 10px;border:0;border-radius:6px;background:transparent;color:#344054;font-size:13px;text-align:left;white-space:nowrap;cursor:pointer}
+.customerMoreMenu button:hover{background:#f4f7ff;color:#245fd9}
+.customerMoreMenu button.customerDanger{color:#b42318}
+.customerMoreMenu button.customerDanger:hover{background:#fff5f6;color:#b42318}
+/* Customer Details is the same full-width document screen the Item Details and Vendor profile pages use: a 56px
+   white bar flush under the Working Context bar, one card holding the identity row and the tab row, and the tab
+   content below. The panel deliberately carries no overflow:hidden - that would clip the More actions menu
+   (z-index:90) that opens from the identity row. */
+.app main:has(>.itemsPage.customerDetailPage){max-width:none!important;padding:0!important}
+.app main>.itemsPage.customerDetailPage{display:block;max-width:none;margin:0;padding:0 0 32px}
+.customerDetailPage .customerDetailHead{display:grid;grid-template-columns:40px minmax(0,1fr);align-items:center;gap:14px;width:100%;min-height:56px;padding:8px 24px;border-top:1px solid #dfe6ef;border-bottom:1px solid #dfe6ef;background:#fff}
+.customerDetailPage .customerDetailHead h1{margin:0;color:#172033;font-size:18px;line-height:1.25}
+.customerBack{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;padding:0;border:1px solid #d7e0eb;border-radius:8px;background:#fff;color:#475467;cursor:pointer;transition:all .15s ease}
+.customerBack:hover{background:#eef4ff;border-color:#bcd0f5;color:#2463d4}
+.customerBack:focus-visible{outline:2px solid #245fd9;outline-offset:2px}
+.customerDetailPage .customerDetailBody{display:flex;flex-direction:column;gap:14px;margin:16px clamp(16px,2.2vw,28px) 0}
+.customerDetailPage .customerDetailPanel{background:#fff;border:1px solid #e6ebf2;border-radius:10px}
+.customerDetailPage .customerDetailIdentity{display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:16px;padding:14px 16px}
+.customerDetailPage .customerDetailIdentity>span{width:48px;height:48px;border-radius:10px;background:#eef4ff;color:#245fd9;display:grid;place-items:center}
+.customerDetailName{min-width:0}
+.customerDetailName h2{margin:0;color:#172033;font-size:17px;font-weight:700;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.customerDetailName p{margin:5px 0 0;color:#667085;font-size:12px;font-weight:500}
+.customerDetailActions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.customerDetailEdit{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 14px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s ease}
+.customerDetailEdit:hover{background:#f8fafc;border-color:#b8c2d3;color:#1d2939}
+.customerDetailMore{flex:none}
+.customerDetailMore>summary{width:36px;height:36px}
+.customerDetailMore .customerMoreMenu{z-index:90}/* Tab row as the footer of div.customerDetailPanel. width:auto on the buttons is load-bearing: src/styles.css
+   declares a bare `nav button{width:100%}` element rule, and because flex:0 0 auto resolves flex-basis to auto that
+   width would otherwise become the flex base size and let overflow:hidden clip the later tabs off the right edge. */
+.customerDetailTabs{display:flex;align-items:center;flex:0 0 auto;gap:0;height:46px;padding:0 4px;border-top:1px solid #e6ebf2;background:transparent;overflow:hidden}
+.customerDetailTabs button{display:flex;flex:0 0 auto;width:auto;min-width:0;align-items:center;justify-content:center;gap:6px;height:100%;padding:0 12px;border:0;border-bottom:2px solid transparent;border-radius:0;background:transparent;color:#5c6b80;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer;transition:background-color .15s ease,color .15s ease,border-color .15s ease}
+.customerDetailTabs button:hover{background:#f5f8fd;color:#245fd9}
+.customerDetailTabs button.active{color:#245fd9;border-bottom-color:#3478f6}
+.customerDetailTabs button span{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#e7ecf4;color:#5c6b80;font-size:12px;font-weight:600}
+.customerDetailTabs button.active span{background:#eaf1ff;color:#245fd9}
+.customerDetailCardsGrid{display:flex;flex-direction:column;gap:14px}
+.customerDetailCard{overflow:hidden;border:1px solid #e6ebf2;border-radius:10px;background:#fff}
+.customerDetailSectionTitle{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid #eef1f6;background:#f9fbfd}
+.customerDetailSectionTitle h2{margin:0;font-size:13.5px;font-weight:650;color:#172033}
+.customerDetailSectionTitle svg{color:#245fd9;flex:none}
+.customerDetailSectionTitle>span{margin-left:auto;padding:2px 8px;border-radius:999px;background:#eef2f7;color:#475467;font-size:12px;font-weight:600}
+.customerStatementLink{margin-left:10px;min-height:32px;padding:0 12px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#344054;font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer}
+.customerStatementLink:hover{background:#eef4ff;border-color:#bcd0f5;color:#2463d4}
+.customerDetailFacts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:0;padding:16px;gap:16px 22px}
+.customerDetailFacts>div{min-width:0}
+.customerDetailFacts dt{color:#6b7789;font-size:12px;font-weight:500;line-height:1.3}
+.customerDetailFacts dd{margin:4px 0 0;color:#172033;font-size:13px;font-weight:600;line-height:1.45;overflow-wrap:anywhere}
+.customerDetailFacts dd.customerAddress{white-space:pre-line}
+.customerDetailTableWrap{overflow-x:auto}
+.customerDetailTableWrap table{width:100%;border-collapse:collapse;text-align:left}
+.customerDetailTableWrap th{padding:10px 16px;background:#f9fbfd;border-bottom:1px solid #eef1f6;color:#5c6b80;font-size:12px;font-weight:600;white-space:nowrap}
+.customerDetailTableWrap td{padding:11px 16px;border-bottom:1px solid #f1f4f9;color:#1d2939;font-size:13px;white-space:nowrap}
+.customerDetailTableWrap tr:last-child td{border-bottom:0}
+.customerDetailTableWrap tr:hover td{background:#fcfdfe}
+.customerDetailEmpty{margin:0;padding:28px 16px;color:#667085;font-size:13px;text-align:center}
+.customerDetailNote{margin:0;padding:12px 16px;border-top:1px solid #f1f4f9;color:#667085;font-size:12px}
+.customerHistory{list-style:none;margin:0;padding:16px}
+.customerHistory li{position:relative;display:grid;grid-template-columns:14px minmax(0,1fr);gap:12px;padding-bottom:14px}
+.customerHistory li:not(:last-child)::before{content:'';position:absolute;left:4px;top:14px;bottom:0;width:2px;background:#e4e9f0}
+.customerHistory li>span{width:10px;height:10px;margin-top:4px;border-radius:50%;background:#3478f6;box-shadow:0 0 0 3px #eaf1ff;z-index:1}
+.customerHistory b{font-size:13px;font-weight:600;color:#101828}
+.customerHistory p{margin:2px 0 4px;color:#475467;font-size:12px}
+.customerHistory small{display:block;color:#667085;font-size:12px}
+@media(max-width:800px){.customerDetailFacts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.customerDetailPage .customerDetailHead{grid-template-columns:36px minmax(0,1fr);gap:10px;padding:8px 12px}.customerDetailPage .customerDetailHead .customerBack{width:36px;height:36px}.customerDetailPage .customerDetailBody{margin:12px 12px 0;gap:12px}.customerDetailPage .customerDetailIdentity{grid-template-columns:44px minmax(0,1fr);padding:12px}.customerDetailPage .customerDetailIdentity>span{width:44px;height:44px}.customerDetailActions{grid-column:1/-1;justify-content:flex-start}.customerDetailSectionTitle{flex-wrap:wrap}.customerDetailFacts{padding:14px}.customerDetailTabs{padding:0}}
+@media(max-width:520px){.customerDetailTabs button{flex:1 1 0;padding:0 8px;gap:5px;font-size:12px}.customerDetailFacts{grid-template-columns:minmax(0,1fr)}.customerRowActions{justify-content:flex-start}.customerStatementLink{margin-left:0}}

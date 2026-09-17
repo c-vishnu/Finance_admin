@@ -238,8 +238,11 @@
       "id": "customers",
       "label": "Customers",
       "component": "src/Customers.jsx",
-      "status": "Prototype only",
-      "accountingImpact": "Stores receivable account mapping"
+      "styles": [
+        "src/customers.css"
+      ],
+      "status": "Implemented prototype",
+      "accountingImpact": "Stores receivable account mapping; the register and the Customer Details screen only read receivables derived by the shared credit-note service and never post, store or adjust a balance"
     },
     {
       "id": "vendors",
@@ -640,7 +643,7 @@
       {
         "key": "wayvida-customers",
         "owner": "src/Customers.jsx",
-        "content": "customer records"
+        "content": "customer records, including credit terms, receivable mapping and an optional audit trail of creation, update, status changes and duplication"
       },
       {
         "key": "wayvida-vendors-v1",
@@ -798,6 +801,7 @@
       "tests/budget-store.test.mjs",
       "tests/credit-note.test.mjs",
       "tests/crypto-uuid.test.mjs",
+      "tests/customer-register-ui.test.mjs",
       "tests/daybook.test.mjs",
       "tests/docker-vm.test.mjs",
       "tests/document-preview-ui.test.mjs",
@@ -864,6 +868,7 @@
     ]
   },
   "constraints": [
+    "Create/Edit Customer is a full-bleed create page on the Create Item shell: render `form.itemCreatePage` as a direct child of the register `section.itemsPage.customersPage` so the existing `.itemsPage:has(.itemCreatePage)>.itemsHeading,.itemsPage:has(.itemCreatePage)>.itemsCard` rule hides the register and `.itemCreatePage>*:not(.itemDialogHead)` supplies the `clamp(16px,2.2vw,24px)` gutter, keep `div.itemDialogHead` with one square `button.itemBack` beside `div.itemHeadText` (the `h2` plus, while editing, `span.itemHeadHint` naming the customer), keep the body one `div.itemDialogBody` card of `section.itemSection` blocks labelled with plain `div.itemSectionTitle` elements - never a `<header>`, which `src/styles.css` paints as the 58px application bar - and keep `footer.itemDialogFooter` as the shared fixed action bar; the Customers form must not return to a modal overlay, and every field, validation rule and stored value stays as it is. The create page body card must keep `overscroll-behavior:auto` (`src/items.css` `.itemCreatePage .itemDialogBody`): `src/ui-system.css` declares `.itemDialogBody{overscroll-behavior:contain}` and the card is `overflow:hidden`, so without it the card is a scroll container that chains nothing and a wheel over any field stops scrolling the page.",
     "Every full-bleed create page must scroll as one document rather than inside the shell scroll port: `.app>main` carries `scrollbar-gutter:stable`, so a full-bleed bar rendered inside it is about one scrollbar narrower than the fixed app header and the Organisation / Branch bar (`left:270px;right:0`). `src/items.css` therefore keeps `html:has(.itemsPage .itemCreatePage)`, `body:has(.itemsPage .itemCreatePage)` and `.app:has(>main>.itemsPage:has(.itemCreatePage))` at `height:auto; overflow:visible` with `overflow-y:auto` on html/body and `padding-bottom:20px` on `.app`, keeps `.app main:has(>.itemsPage:has(.itemCreatePage)){height:auto;min-height:0;max-height:none;overflow:visible}`, keeps `.itemsPage:has(.itemCreatePage)` at `min-height:calc(100vh - 105px)`, keeps `.itemCreatePage .itemDialogFooter` static (`position:static;bottom:auto;z-index:auto`, `background:#fff`, `box-shadow:var(--ui-shadow)`, `margin-bottom:28px`) and keeps the `clamp(16px,2.2vw,24px)` gutter that matches the Organisation / Branch bar's `padding:8px 24px`; Create Journal Entry is the reference implementation",
     "Every `<header>` inside an in-page section or dialog must be reset because `src/styles.css` declares an unscoped element rule `header{position:fixed;z-index:10;top:0;left:206px;right:0;height:58px;background:white;border-bottom:1px solid #e5eaf1;display:flex;align-items:center;gap:12px;padding:8px 16px}` that lifts any bare `<header>` to the viewport top over the app header and the 46px-tall `div.orgContextBar` below it and paints it 64px wider than the 270px app sidebar, and `.app header` then adds `border-top:3px solid #1f5fae`; a page cannot outrank that pair from `src/items.css` because `src/main.jsx` imports `./App.jsx` ahead of `./styles.css`, so `src/items.css` is injected first and loses the tie at equal specificity. The Create Item / Edit Item form therefore carries no heading element at all - `function Section({children}){return <section className=\"itemSection\">{children}</section>}` is the whole component and no call site passes a title - while `AdjustmentDialog` in `src/InventoryAdjustments.jsx` still styles a `<header>` through `.iaModal>header` with no position reset and needs the same treatment; prefer a `div` over a bare `<header>` for new in-page bars",
     "Create Item and Edit Item are full-bleed on the Create Journal Entry shell and their head bar sits flush under the working-context Organisation and Branch bar: keep `.app main:has(>.itemsPage:has(.itemCreatePage)),body:has(.itemsPage .itemCreatePage) .app main{max-width:none!important;padding:0!important}` clearing the 22px top gap and the `clamp(16px,2.2vw,32px)` side padding `src/ui-system.css` `.app main` puts on main - write the rule in both selector shapes and keep `!important` on both, because the direct-child shape alone did not reach the bar in the running app while the sibling `.itemCreatePage .itemDialogHead` rule did - keep the head a 56px white bar on the journal compact geometry (`display:grid;grid-template-columns:42px minmax(0,1fr);align-items:center;gap:14px;min-height:56px;margin:0`) at the Organisation and Branch bar's own `padding:8px 24px`, narrowing to `8px 12px` at the same 760px breakpoint, with no radius, no side borders and no shadow carrying one 40px square back button beside a 16px/650 title, keep `.itemCreatePage>*:not(.itemDialogHead)` on its `clamp(16px,2.2vw,24px)` gutter for the body, the body one `var(--ui-radius)` card, no section rendering a heading element, and the actions a static white card (`position:static`, `margin-top:12px`, `margin-bottom:28px`) rather than a sticky bar; never restore the `margin:-24px` / `calc(100% + 48px)` / `calc(100vh - 62px)` shell, keep `.itemFormGrid+.itemFormGrid{margin-top:10px}` for the adjacent name and SKU / HSN-SAC / Unit grids, keep the HSN/SAC field stripping non-digits and capped at eight, and never add a bare `.itemDialogBody{padding:0}` because the Customers dialog shares that class",
@@ -895,6 +900,7 @@
   ],
   "implementationStatus": {
     "inventoryAdjustmentsCreateHeader": "Implemented - full-width document header below Working Context, field-first create layout without section headings or step labels, requested field/table terminology, actionable no-stock-item recovery, accounting preview and sticky actions",
+    "customerRegister": "Implemented prototype - the customers register uses the shared row-action table pattern with one Customer Details column carrying the name over the customer id and a View Customer button beside the canonical three-dot menu (Edit, Activate/Deactivate, Duplicate, Delete), and Customer Details is the full-width document screen with Basic Data, Transactions and History; deletion is refused while any document references the customer, so a customer with history is retired by deactivation, and creation, update, status changes and duplication append to an optional audit trail; Create and Edit Customer render as a full-bleed page on the Create Item shell rather than a modal popup",
     "tableEmptyStates": "Prototype only - shared presentation component with no accounting impact",
     "overall": "Prototype only",
     "verifiedImplementation": "See source, tests and modular documents",

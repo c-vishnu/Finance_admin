@@ -7,7 +7,8 @@
    also held to three fixes: the Basic information block stacked two .itemFormGrid
    blocks with no gap at all, the HSN/SAC field stripped the letter D instead of every
    non-digit, and .itemDialogBody lost its own padding for every page sharing it. The
-   dialog classes the Customers page still uses must survive untouched. */
+   shared dialog classes stay declared for the create pages and for the other dialog surfaces
+   src/ui-system.css groups with them. The Customers form no longer renders a modal overlay. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -72,7 +73,7 @@ test('the HSN/SAC field keeps digits only and no other page loses its dialog pad
  assert.ok(screen.includes('<input inputMode="numeric" maxLength={8} value={form.hsnSac}'),'the code is capped at eight digits');
  assert.ok(!styles.includes('.itemDialogBody{padding:0}'),'the shared dialog body keeps its own padding');
  for(const shared of ['.itemOverlay{','.itemDialog{width:760px;','.itemDialogBody{overflow-y:auto;padding:20px 24px}','.itemDialogFooter{padding:16px 24px','.itemFormGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}'])
-  assert.ok(styles.includes(shared),'the Customers dialog still shares '+shared);
+  assert.ok(styles.includes(shared),'the shared dialog stylesheet still declares '+shared);
 });
 
 test('the title sits beside the back arrow and section titles avoid the global header element',()=>{
@@ -136,4 +137,10 @@ test('inventory accounts share one row and advanced settings owns opening stock,
  assert.ok(!screen.includes('Inventory accounting'),'the removed duplicate Advanced inventory group stays gone');
  assert.ok(screen.includes('itemAdvancedGroup itemOpeningStockGroup'),'Opening Stock is grouped inside Advanced settings');
  assert.ok(screen.indexOf('>Tax settings</div>',advanced)<screen.indexOf('>Item image</div>',advanced),'Tax settings precedes the minimal Item image field');
+});
+
+test('the create page body never traps the wheel',()=>{
+ assert.ok(styles.includes('.itemCreatePage .itemDialogBody{width:auto;margin-top:12px;padding:0;overflow:hidden;overscroll-behavior:auto;'),'the page body must chain the wheel to the document scroller');
+ assert.doesNotMatch(styles,/\.itemCreatePage \.itemDialogBody\{[^}]*overscroll-behavior:contain/,'the page body must never contain the wheel');
+ assert.ok(styles.includes('src/ui-system.css gives .itemDialogBody overscroll-behavior:contain'),'the reason is recorded beside the rule');
 });
