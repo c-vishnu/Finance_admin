@@ -200,7 +200,7 @@ body:has(.itemCreatePage) .app>main{height:auto;max-height:none;overflow:visible
 .itemHistory p{margin:2px 0 4px;color:#475467;font-size:12px}
 .itemHistory small{display:block;color:#667085;font-size:12px}
 @media(max-width:800px){.itemDetailFacts{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:520px){.itemDetailFacts{grid-template-columns:minmax(0,1fr)}.itemRowActions{justify-content:flex-start}.itemDetailTabs button{padding:0 8px;gap:5px;font-size:12px}}
+@media(max-width:520px){.itemDetailFacts{grid-template-columns:minmax(0,1fr)}.itemRowActions{justify-content:flex-start}}
 
 /* Full-width Item Details document header beneath Working Context. */
 .app main:has(>.itemsPage.itemDetailPage){max-width:none!important;padding:0!important}
@@ -208,19 +208,22 @@ body:has(.itemCreatePage) .app>main{height:auto;max-height:none;overflow:visible
 .itemDetailPage .itemDetailHead{display:grid;grid-template-columns:40px minmax(0,1fr);align-items:center;gap:14px;width:100%;min-height:56px;padding:8px 24px;border-top:1px solid #dfe6ef;border-bottom:1px solid #dfe6ef;background:#fff}
 .itemDetailPage .itemDetailHead h1{margin:0;color:#172033;font-size:18px;line-height:1.25}
 .itemDetailPage .itemDetailBody{display:flex;flex-direction:column;gap:14px;margin:16px clamp(16px,2.2vw,28px) 0}
-.itemDetailPage .itemDetailIdentity{display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:16px;padding:14px 16px;border:1px solid #e6ebf2;border-radius:10px;background:#fff}
+/* One header panel owns the card edge for both the identity row and the tab row, so the tabs read as part of the item header instead of a separate floating pill. The panel deliberately carries no overflow:hidden - that would clip the More actions menu (z-index:90) that opens from the identity row. */
+.itemDetailPage .itemDetailPanel{background:#fff;border:1px solid #e6ebf2;border-radius:10px}
+.itemDetailPage .itemDetailIdentity{display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:16px;padding:14px 16px}
 .itemDetailPage .itemDetailIdentity>img,.itemDetailPage .itemDetailIdentity>span{width:48px;height:48px;border-radius:10px;object-fit:cover;background:#eef4ff;color:#245fd9;display:grid;place-items:center}
 .itemDetailName{min-width:0}.itemDetailName h2{margin:0;color:#172033;font-size:17px;font-weight:700;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.itemDetailName p{margin:5px 0 0;color:#667085;font-size:12px;font-weight:500}
 .itemDetailActions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
 .itemDetailEdit{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 14px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s ease}
 .itemDetailEdit:hover{background:#f8fafc;border-color:#b8c2d3;color:#1d2939}
 .itemDetailMore{flex:none}.itemDetailMore>summary{width:36px;height:36px}.itemDetailMore .itemMoreMenu{z-index:90}
-/* Item Details tab row: one full-width segmented strip. gap:0 and padding:0 remove every gap between the tabs, equal flex cells keep all three labels on one line, and overflow:hidden means the row never scrolls. flex:0 0 auto plus the explicit height still stops an ancestor from stretching the bar into a tall empty box. */
-.itemDetailTabs{display:flex;align-items:center;flex:0 0 auto;gap:0;height:46px;padding:0;border:1px solid #e6ebf2;border-radius:10px;background:#f7f9fc;overflow:hidden}
-.itemDetailTabs button{display:flex;flex:1 1 0;min-width:0;align-items:center;justify-content:center;gap:7px;height:100%;padding:0 12px;border:0;border-right:1px solid #e6ebf2;border-bottom:2px solid transparent;border-radius:0;background:transparent;color:#5c6b80;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer;transition:background-color .15s ease,color .15s ease,border-color .15s ease}
-.itemDetailTabs button:last-child{border-right:0}
-.itemDetailTabs button:hover{background:#eef3fb;color:#245fd9}
-.itemDetailTabs button.active{background:#fff;color:#245fd9;border-bottom-color:#3478f6}
+/* Item Details tab row, now the footer of div.itemDetailPanel: a full-width underline tab bar whose tabs hug their own labels so they sit close together instead of being flung to the edges on a wide screen. It is transparent and borderless on its own - the panel supplies the card edge - and a 1px border-top divides it from the identity row. gap:0 keeps the tabs joined, the 0 4px bar padding lines the first label up with the 16px card gutter once the tab's own 12px padding is added, and overflow:hidden means the row never scrolls. `width:auto` on the buttons is load-bearing: src/styles.css carries a bare `nav button{width:100%}` element rule, and because `flex:0 0 auto` makes flex-basis:auto the width would otherwise feed the flex base size, give every tab the full strip width and let overflow:hidden clip Transactions and History off the right edge. The old `flex:1 1 0` hid that landmine behind flex-basis:0, so any future switch to a content-sized tab must keep width:auto. */
+.itemDetailTabs{display:flex;align-items:center;flex:0 0 auto;gap:0;height:46px;padding:0 4px;border-top:1px solid #e6ebf2;background:transparent;overflow:hidden}
+.itemDetailTabs button{display:flex;flex:0 0 auto;width:auto;min-width:0;align-items:center;justify-content:center;gap:6px;height:100%;padding:0 12px;border:0;border-bottom:2px solid transparent;border-radius:0;background:transparent;color:#5c6b80;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer;transition:background-color .15s ease,color .15s ease,border-color .15s ease}
+.itemDetailTabs button:hover{background:#f5f8fd;color:#245fd9}
+.itemDetailTabs button.active{color:#245fd9;border-bottom-color:#3478f6}
 .itemDetailTabs button span{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#e7ecf4;color:#5c6b80;font-size:12px;font-weight:600}
 .itemDetailTabs button.active span{background:#eaf1ff;color:#245fd9}
-@media(max-width:700px){.itemDetailPage .itemDetailHead{grid-template-columns:36px minmax(0,1fr);gap:10px;padding:8px 12px}.itemDetailPage .itemDetailHead .itemBack{width:36px;height:36px}.itemDetailPage .itemDetailBody{margin:12px 12px 0;gap:12px}.itemDetailPage .itemDetailIdentity{grid-template-columns:44px minmax(0,1fr);padding:12px}.itemDetailPage .itemDetailIdentity>img,.itemDetailPage .itemDetailIdentity>span{width:44px;height:44px}.itemDetailActions{grid-column:1/-1;justify-content:flex-start}.itemDetailFacts{padding:14px}}
+/* Narrow-viewport fallback, declared after the base rules so it actually wins: content-sized tabs can outgrow a small card and be clipped by the overflow:hidden above, so the tabs return to equal cells and drop the bar padding. */
+@media(max-width:520px){.itemDetailTabs{padding:0}.itemDetailTabs button{flex:1 1 0;padding:0 8px;gap:5px;font-size:12px}}
+@media(max-width:700px){.itemDetailPage .itemDetailHead{grid-template-columns:36px minmax(0,1fr);gap:10px;padding:8px 12px}.itemDetailPage .itemDetailHead .itemBack{width:36px;height:36px}.itemDetailPage .itemDetailBody{margin:12px 12px 0;gap:12px}.itemDetailPage .itemDetailIdentity{grid-template-columns:44px minmax(0,1fr);padding:12px}.itemDetailPage .itemDetailIdentity>img,.itemDetailPage .itemDetailIdentity>span{width:44px;height:44px}.itemDetailActions{grid-column:1/-1;justify-content:flex-start}.itemDetailFacts{padding:14px}.itemDetailTabs{padding:0}}

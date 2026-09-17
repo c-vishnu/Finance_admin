@@ -38,12 +38,20 @@ test('item details follows the full-width document header and tabbed information
   assert.match(styles,/\.itemDetailTabs\{display:flex;align-items:center/);
 });
 
-test('the item detail tab row is a gap-free segmented bar that never scrolls',()=>{
- assert.match(styles,/\.itemDetailTabs\{display:flex;align-items:center;flex:0 0 auto;gap:0;height:46px;padding:0;border:1px solid #e6ebf2;border-radius:10px;background:#f7f9fc;overflow:hidden\}/);
- assert.match(styles,/\.itemDetailTabs button\{display:flex;flex:1 1 0;min-width:0;align-items:center;justify-content:center;gap:7px;height:100%;padding:0 12px/);
+test('the item identity card and tab row are one header panel and the tabs never scroll',()=>{
+ assert.match(screen,/<section className="itemDetailPanel">/);
+ assert.match(screen,/<section className="itemDetailPanel">\s*<div className="itemDetailIdentity">/);
+ assert.match(screen,/<nav className="itemDetailTabs"[\s\S]*<\/nav>\s*<\/section>/);
+ assert.match(styles,/\.itemDetailPage \.itemDetailPanel\{background:#fff;border:1px solid #e6ebf2;border-radius:10px\}/);
+ assert.doesNotMatch(styles,/\.itemDetailPage \.itemDetailPanel\{[^}]*overflow:hidden/,'the panel must not clip the More actions menu');
+ assert.match(styles,/\.itemDetailPage \.itemDetailIdentity\{display:grid;grid-template-columns:48px minmax\(0,1fr\) auto;align-items:center;gap:16px;padding:14px 16px\}/);
+ assert.match(styles,/\.itemDetailTabs\{display:flex;align-items:center;flex:0 0 auto;gap:0;height:46px;padding:0 4px;border-top:1px solid #e6ebf2;background:transparent;overflow:hidden\}/);
+ assert.match(styles,/\.itemDetailTabs button\{display:flex;flex:0 0 auto;width:auto;min-width:0;align-items:center;justify-content:center;gap:6px;height:100%;padding:0 12px/);
  assert.match(styles,/\.itemDetailTabs button\{[^}]*white-space:nowrap/);
- assert.match(styles,/\.itemDetailTabs button\.active\{background:#fff;color:#245fd9;border-bottom-color:#3478f6\}/);
+ assert.match(styles,/\.itemDetailTabs button\.active\{color:#245fd9;border-bottom-color:#3478f6\}/);
  assert.match(styles,/\.itemDetailTabs button span\{[^}]*border-radius:999px/);
- assert.ok(styles.includes('.itemDetailTabs button{padding:0 8px;gap:5px;font-size:12px}'),'narrow-viewport tab padding');
+ assert.ok(styles.includes('.itemDetailTabs button{flex:1 1 0;padding:0 8px;gap:5px;font-size:12px}'),'narrow-viewport tab sizing');
+ assert.ok(styles.lastIndexOf('@media(max-width:520px){.itemDetailTabs{padding:0}')>styles.indexOf('.itemDetailTabs{display:flex'),'the narrow fallback must be declared after the base rule so it is not overridden by it');
+ assert.match(styles,/\.itemDetailTabs button\{[^}]*width:auto/,'width:auto is required because src/styles.css declares nav button{width:100%}');
  assert.doesNotMatch(styles,/\.itemDetailTabs\{[^}]*overflow-x:auto/);
 });

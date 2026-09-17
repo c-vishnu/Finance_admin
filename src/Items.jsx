@@ -56,39 +56,40 @@ export default function Items({accounts,seed:accountSeed,notify}){
       <div className="itemDetailHead"><button type="button" className="itemBack" aria-label="Back to Items" onClick={()=>{setSelectedId('');setDetailTab('Basic Data')}}>
           <IconArrowLeft size={19}/>
         </button><h1>Item Details</h1></div><div className="itemDetailBody">
-        <div className="itemDetailIdentity">
-          {selected.image?<img src={selected.image} alt=""/>:<span><IconPackage size={26}/></span>}
-          <div className="itemDetailName">
-            <h2>{selected.name}</h2>
-            <p>{selected.sku||'No SKU'} · {selected.type} · {selected.unit} · {selected.type==='Goods'?'HSN':'SAC'} {selected.hsnSac||'Not provided'}</p>
+        <section className="itemDetailPanel">
+          <div className="itemDetailIdentity">
+            {selected.image?<img src={selected.image} alt=""/>:<span><IconPackage size={26}/></span>}
+            <div className="itemDetailName">
+              <h2>{selected.name}</h2>
+              <p>{selected.sku||'No SKU'} · {selected.type} · {selected.unit} · {selected.type==='Goods'?'HSN':'SAC'} {selected.hsnSac||'Not provided'}</p>
+            </div>
+            <div className="itemDetailActions"><span className={'itemStatus '+(selected.active===false?'disabled':'active')}>{selected.active===false?'Disabled':'Active'}</span>
+              <button type="button" className="itemDetailEdit" onClick={()=>start(selected)}>
+                <IconEdit size={16}/>Edit Item
+              </button>
+              <details className="itemMore itemDetailMore"><summary aria-label="More item actions"><IconDots size={17}/></summary>
+                <div className="itemMoreMenu">
+                  <button type="button" onClick={()=>toggleItem(selected)}>
+                    {selected.active===false?<IconCircleCheck size={16}/>:<IconBan size={16}/>} {selected.active===false?'Enable Item':'Disable Item'}
+                  </button>
+                  <button type="button" onClick={()=>duplicateItem(selected)}>
+                    <IconCopy size={16}/>Duplicate Item
+                  </button>
+                  <button type="button" className="itemDanger" onClick={()=>deleteItem(selected)}>
+                    <IconTrash size={16}/>Delete
+                  </button>
+                </div>
+              </details>
+            </div>
           </div>
-          <div className="itemDetailActions"><span className={'itemStatus '+(selected.active===false?'disabled':'active')}>{selected.active===false?'Disabled':'Active'}</span>
-            <button type="button" className="itemDetailEdit" onClick={()=>start(selected)}>
-              <IconEdit size={16}/>Edit Item
-            </button>
-            <details className="itemMore itemDetailMore"><summary aria-label="More item actions"><IconDots size={17}/></summary>
-              <div className="itemMoreMenu">
-                <button type="button" onClick={()=>toggleItem(selected)}>
-                  {selected.active===false?<IconCircleCheck size={16}/>:<IconBan size={16}/>} {selected.active===false?'Enable Item':'Disable Item'}
-                </button>
-                <button type="button" onClick={()=>duplicateItem(selected)}>
-                  <IconCopy size={16}/>Duplicate Item
-                </button>
-                <button type="button" className="itemDanger" onClick={()=>deleteItem(selected)}>
-                  <IconTrash size={16}/>Delete
-                </button>
-              </div>
-            </details>
-          </div>
-        </div>
-
-        <nav className="itemDetailTabs" aria-label="Item detail sections">
-          {['Basic Data','Transactions','History'].map(tab=><button type="button" key={tab} className={detailTab===tab?'active':''} aria-current={detailTab===tab?'page':undefined} onClick={()=>setDetailTab(tab)}>
-            {tab}
-            {tab==='Transactions'&&<span>{transactions.length}</span>}
-            {tab==='History'&&<span>{history.length}</span>}
-          </button>)}
-        </nav>
+          <nav className="itemDetailTabs" aria-label="Item detail sections">
+            {['Basic Data','Transactions','History'].map(tab=><button type="button" key={tab} className={detailTab===tab?'active':''} aria-current={detailTab===tab?'page':undefined} onClick={()=>setDetailTab(tab)}>
+              {tab}
+              {tab==='Transactions'&&<span>{transactions.length}</span>}
+              {tab==='History'&&<span>{history.length}</span>}
+            </button>)}
+          </nav>
+        </section>
 
         {detailTab==='Basic Data'&&<div className="itemDetailCardsGrid">
           <section className="itemDetailCard">
