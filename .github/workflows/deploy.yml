@@ -5,9 +5,8 @@ on:
     branches:
       - main
 
-# Prevent two deployments from running at the same time
 concurrency:
-  group: finance-admin-production
+  group: finance-admin-deployment
   cancel-in-progress: false
 
 jobs:
@@ -17,134 +16,128 @@ jobs:
 
     steps:
 
-      # --------------------------------------------------
+      # ----------------------------------------
       # 1. Checkout repository
-      # --------------------------------------------------
+      # ----------------------------------------
       - name: Checkout code
         uses: actions/checkout@v4
 
 
-      # --------------------------------------------------
-      # 2. Setup SSH directory
-      # --------------------------------------------------
-      - name: Setup SSH
+      # ----------------------------------------
+      # 2. SSH + Deploy
+      # ----------------------------------------
+      - name: Connect and Deploy
         env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_PORT: ${{ secrets.SERVER_PORT }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          SSH_PASSPHRASE: ${{ secrets.SERVER_SSH_PASSPHRASE }}
+
         run: |
           set -e
+
+          echo "========================================="
+          echo "Setting up SSH"
+          echo "========================================="
 
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
 
+          # Write private key
           printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
-
           chmod 600 ~/.ssh/deploy_key
 
-          echo "SSH key prepared."
-
-
-      # --------------------------------------------------
-      # 3. Add SSH key to agent
-      #    Handles passphrase-protected PEM
-      # --------------------------------------------------
-      - name: Start SSH Agent
-        env:
-          SSH_PASSPHRASE: ${{ secrets.SERVER_SSH_PASSPHRASE }}
-        run: |
-          set -e
-
+          # Start SSH agent
           eval "$(ssh-agent -s)"
 
-          cat > ~/.ssh/ssh-askpass.sh << 'EOF'
+          # Create askpass helper for passphrase
+          cat > ~/.ssh/askpass.sh << 'EOF'
           #!/bin/sh
           printf '%s\n' "$SSH_PASSPHRASE"
           EOF
 
-          chmod 700 ~/.ssh/ssh-askpass.sh
+          chmod 700 ~/.ssh/askpass.sh
 
-          export SSH_ASKPASS="$HOME/.ssh/ssh-askpass.sh"
+          # Tell ssh-add to use askpass
+          export SSH_ASKPASS="$HOME/.ssh/askpass.sh"
           export SSH_ASKPASS_REQUIRE=force
           export DISPLAY=:0
 
+          echo "Adding private key to SSH agent..."
+
           ssh-add ~/.ssh/deploy_key
 
-          echo "SSH key successfully added to agent."
+          echo "SSH key added successfully."
 
 
-      # --------------------------------------------------
-      # 4. Add server host key
-      # --------------------------------------------------
-      - name: Add server to known hosts
-        run: |
-          set -e
+          # ----------------------------------------
+          # Add server host key
+          # ----------------------------------------
+
+          echo "Adding server to known_hosts..."
 
           ssh-keyscan \
-            -p "${{ secrets.SERVER_PORT }}" \
-            "${{ secrets.SERVER_HOST }}" \
-            >> ~/.ssh/known_hosts
+            -p "$SERVER_PORT" \
+            "$SERVER_HOST" >> ~/.ssh/known_hosts
 
           chmod 600 ~/.ssh/known_hosts
 
-          echo "Server added to known_hosts."
 
+          # ----------------------------------------
+          # Test SSH
+          # ----------------------------------------
 
-      # --------------------------------------------------
-      # 5. Test SSH connection
-      # --------------------------------------------------
-      - name: Test SSH connection
-        run: |
-          set -e
+          echo "========================================="
+          echo "Testing SSH connection"
+          echo "========================================="
 
           ssh \
             -o BatchMode=yes \
             -o ConnectTimeout=15 \
-            -p "${{ secrets.SERVER_PORT }}" \
-            "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" \
+            -p "$SERVER_PORT" \
+            "$SERVER_USER@$SERVER_HOST" \
             "echo 'SSH connection successful'"
 
 
-      # --------------------------------------------------
-      # 6. Deploy application
-      # --------------------------------------------------
-      - name: Deploy application
-        run: |
-          set -e
+          # ----------------------------------------
+          # Deploy
+          # ----------------------------------------
+
+          echo "========================================="
+          echo "Starting deployment"
+          echo "========================================="
 
           ssh \
             -o BatchMode=yes \
             -o ConnectTimeout=15 \
-            -p "${{ secrets.SERVER_PORT }}" \
-            "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" << 'EOF'
+            -p "$SERVER_PORT" \
+            "$SERVER_USER@$SERVER_HOST" << 'EOF'
 
             set -e
 
-            echo "========================================="
-            echo "Starting Finance Admin deployment"
-            echo "========================================="
-
             PROJECT_DIR="/home/devuser/projects/Finance_admin"
 
-            echo ""
-            echo "Changing directory..."
+            echo "Changing to project directory..."
             cd "$PROJECT_DIR"
 
             echo "Current directory:"
             pwd
 
             echo ""
-            echo "Current commit:"
-            git rev-parse --short HEAD || true
+            echo "Current Git commit:"
+            git rev-parse --short HEAD
 
             echo ""
             echo "Fetching latest code..."
             git fetch origin main
 
             echo ""
-            echo "Updating working tree..."
+            echo "Updating code..."
             git reset --hard origin/main
 
             echo ""
-            echo "New commit:"
+            echo "New Git commit:"
             git rev-parse --short HEAD
 
             echo ""
@@ -153,8 +146,7 @@ jobs:
             docker compose up -d --build --remove-orphans
 
             echo ""
-            echo "Checking container status..."
-
+            echo "Container status:"
             docker compose ps
 
             echo ""
@@ -164,19 +156,7 @@ jobs:
 
             echo ""
             echo "========================================="
-            echo "Deployment completed successfully"
+            echo "Deployment successful!"
             echo "========================================="
 
           EOF
-
-
-      # --------------------------------------------------
-      # 7. Deployment summary
-      # --------------------------------------------------
-      - name: Deployment completed
-        run: |
-          echo "========================================="
-          echo "Finance Admin deployment successful"
-          echo "Branch: main"
-          echo "Server: ${{ secrets.SERVER_HOST }}"
-          echo "========================================="
