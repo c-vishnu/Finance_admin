@@ -152,11 +152,12 @@ test('every account type has its own mark and tone in the type column',()=>{
   for(const token of [
     '.am-coa-page .am-coa-grid .am-type-badge{display:inline-flex;align-items:center;gap:7px;padding:2px 10px 2px 2px;border-radius:999px;background:#f1f4f8;color:#475467;font-size:12px;font-weight:600;line-height:1.6;white-space:nowrap}',
     '.am-coa-page .am-coa-grid .am-type-mark{display:inline-grid;place-items:center;flex:0 0 auto;width:20px;height:20px;border-radius:50%;background:#98a2b3;color:#fff}',
-    '.am-coa-page .am-coa-grid .am-type-assets{background:#e6f6f0;color:#1c6b52}',
+    '.am-coa-page .am-coa-grid .am-type-assets{background:#eef0fd;color:#4038a8}',
     '.am-coa-page .am-coa-grid .am-type-liabilities{background:#fbe9f4;color:#8e2f6b}',
     '.am-coa-page .am-coa-grid .am-type-equity{background:#e7f0fd;color:#1d4ed8}',
-    '.am-coa-page .am-coa-grid .am-type-income{background:#e9f7e3;color:#2f7d32}',
+    '.am-coa-page .am-coa-grid .am-type-income{background:#e2f5f9;color:#0b6477}',
     '.am-coa-page .am-coa-grid .am-type-expenses{background:#fdf0e3;color:#96540f}',
   ]) assert.ok(css.includes(token),'the type mark keeps '+token.slice(0,58));
   assert.match(css,/\.am-coa-page \.am-coa-grid \.am-type-badge\{[^}]*font-size:12px/,'the label stays at the 12px floor');
+  assert.ok(!css.includes('.am-type-assets{background:#e6f6f0')&&!css.includes('.am-type-income{background:#e9f7e3'),'and no type tone sits in a status hue: green belongs to the status pill, which is why assets are indigo and income cyan');
 });

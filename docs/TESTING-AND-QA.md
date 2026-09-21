@@ -1,5 +1,14 @@
 # Testing and QA
 
+## Chart of Accounts: the type tones leave the status palette - 2026-09-21
+
+- User report: the Assets mark reads the same as the Status column's green, so it needs a colour that cannot be confused with it.
+- Confirmed by measurement rather than by eye. The status pill is `background:#e8f6ee;color:#287a51` with a `#28a26b` dot, and the assets tone was `#e6f6f0` / `#1c6b52` with a `#2fa27f` circle - the same emerald family, which is why a type pill and the Active pill beside it looked like one thing. Income was the same defect one step removed: `#e9f7e3` / `#2f7d32` / `#5cb85c` is still a green.
+- Both moved out of the green family, and the rule behind it is now recorded in the stylesheet: **green, amber, red and grey are reserved for status**, so no type tone may sit in a status hue family. Assets take indigo - `#eef0fd` / `#4038a8` with a `#6d63d6` circle - and income takes cyan - `#e2f5f9` / `#0b6477` with a `#1b9fc0` circle. The other three were already clear of the status set: liabilities rose `#fbe9f4` / `#8e2f6b` (`#d356a4`), equity blue `#e7f0fd` / `#1d4ed8` (`#3b82f6`), expenses amber-brown `#fdf0e3` / `#96540f` (`#e08e2b`).
+- Verified live at 1440x800 with the status pills on screen: the assets badge computes `rgb(238,240,253)` / `rgb(64,56,168)` with a `rgb(109,99,214)` circle, and the Active pill beside it `rgb(232,246,238)` / `rgb(40,122,81)` - different hue, different saturation and a coloured glyph where the status pill has a dot. Income computes `rgb(226,245,249)` / `rgb(11,100,119)` with a `rgb(27,159,192)` circle. No type tone shares a hue family with a status tone any more.
+- Validation actually executed: `tests/account-sticky-grid-ui.test.mjs` was repinned for the two new tones and gained an assertion that no type tone sits in a status hue, and it passes 11/11; the full sweep is 727 tests / 716 passing / the same 11 pre-existing failures in the Accounts, Journal, Operational modules, Settings and date-picker suites; `node node_modules/vite/bin/vite.js build` passed; `node scripts/validate-knowledge-docs.mjs` passed.
+
+
 ## Chart of Accounts: one mark per account type in the type column - 2026-09-21
 
 - User request: differentiate the account types simply and visually in the Chart of Accounts grid, using the attached reference (a house for Assets, a pie for Liabilities, a chart for Equity, coins for Revenue, a coin-and-arrow for Expenses, each on its own colour) as the idea rather than the layout.

@@ -215,18 +215,21 @@
 .am-coa-page>.am-filter-toolbar .am-coa-title h1{color:#172033;font-size:24px;font-weight:700;line-height:1.25;letter-spacing:-.4px}
 .am-coa-page .am-table-wrap:has(.am-account-grid){margin-top:0;border-top:0;border-radius:0 0 10px 10px}
 /* One mark and one tone per accounting type, so the Account Type column reads at a glance instead of as
+   five identical words. Green, amber, red and grey are RESERVED FOR STATUS - a type tone must never sit
+   in a status hue family, or a type pill and a status pill read as the same thing; that is why assets are
+   indigo and income is cyan rather than the teal and green this scale started with.
    five identical words. The tints are the soft pastels the rest of the app uses for status fills, the
    label keeps the 12px floor, and the mark is a 20px circle carrying the type glyph - the reference's
    icon-plus-colour idea, at table scale rather than as a legend bar. */
 .am-coa-page .am-coa-grid .am-type-badge{display:inline-flex;align-items:center;gap:7px;padding:2px 10px 2px 2px;border-radius:999px;background:#f1f4f8;color:#475467;font-size:12px;font-weight:600;line-height:1.6;white-space:nowrap}
 .am-coa-page .am-coa-grid .am-type-mark{display:inline-grid;place-items:center;flex:0 0 auto;width:20px;height:20px;border-radius:50%;background:#98a2b3;color:#fff}
-.am-coa-page .am-coa-grid .am-type-assets{background:#e6f6f0;color:#1c6b52}
-.am-coa-page .am-coa-grid .am-type-assets .am-type-mark{background:#2fa27f}
+.am-coa-page .am-coa-grid .am-type-assets{background:#eef0fd;color:#4038a8}
+.am-coa-page .am-coa-grid .am-type-assets .am-type-mark{background:#6d63d6}
 .am-coa-page .am-coa-grid .am-type-liabilities{background:#fbe9f4;color:#8e2f6b}
 .am-coa-page .am-coa-grid .am-type-liabilities .am-type-mark{background:#d356a4}
 .am-coa-page .am-coa-grid .am-type-equity{background:#e7f0fd;color:#1d4ed8}
 .am-coa-page .am-coa-grid .am-type-equity .am-type-mark{background:#3b82f6}
-.am-coa-page .am-coa-grid .am-type-income{background:#e9f7e3;color:#2f7d32}
-.am-coa-page .am-coa-grid .am-type-income .am-type-mark{background:#5cb85c}
+.am-coa-page .am-coa-grid .am-type-income{background:#e2f5f9;color:#0b6477}
+.am-coa-page .am-coa-grid .am-type-income .am-type-mark{background:#1b9fc0}
 .am-coa-page .am-coa-grid .am-type-expenses{background:#fdf0e3;color:#96540f}
 .am-coa-page .am-coa-grid .am-type-expenses .am-type-mark{background:#e08e2b}
