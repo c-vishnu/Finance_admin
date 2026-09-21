@@ -142,3 +142,21 @@ test('the account grid is one flat table with a visible row action',()=>{
   assert.match(workspace,/className="am-row-edit" onClick=\{\(\)=>start\(a\)\}/,'each row opens its editor from a visible button');
   assert.doesNotMatch(workspace,/openGroups|onToggleGroup|am-group-toggle/,'and the accordion state and markup are gone');
 });
+
+/* The Account Type column carries one mark per type, so the five types read at a glance. */
+test('every account type has its own mark and tone in the type column',()=>{
+  for(const [type,tone] of [['Assets','assets'],['Liabilities','liabilities'],['Equity','equity'],['Income','income'],['Expenses','expenses']])
+    assert.ok(workspace.includes(type+':{icon:Icon')&&workspace.includes("tone:'"+tone+"'"),type+' carries its own icon and tone');
+  assert.match(workspace,/<span className=\{'am-type-badge am-type-'\+\(mark\.tone\|\|'neutral'\)\}>\{Mark&&<span className="am-type-mark"><Mark size=\{13\}\/><\/span>\}/,'and the cell renders the mark beside the label');
+  assert.match(workspace,/const TYPE_MARKS=\{Assets:\{icon:IconHome/,'the marks are declared once, beside the page constants');
+  for(const token of [
+    '.am-coa-page .am-coa-grid .am-type-badge{display:inline-flex;align-items:center;gap:7px;padding:2px 10px 2px 2px;border-radius:999px;background:#f1f4f8;color:#475467;font-size:12px;font-weight:600;line-height:1.6;white-space:nowrap}',
+    '.am-coa-page .am-coa-grid .am-type-mark{display:inline-grid;place-items:center;flex:0 0 auto;width:20px;height:20px;border-radius:50%;background:#98a2b3;color:#fff}',
+    '.am-coa-page .am-coa-grid .am-type-assets{background:#e6f6f0;color:#1c6b52}',
+    '.am-coa-page .am-coa-grid .am-type-liabilities{background:#fbe9f4;color:#8e2f6b}',
+    '.am-coa-page .am-coa-grid .am-type-equity{background:#e7f0fd;color:#1d4ed8}',
+    '.am-coa-page .am-coa-grid .am-type-income{background:#e9f7e3;color:#2f7d32}',
+    '.am-coa-page .am-coa-grid .am-type-expenses{background:#fdf0e3;color:#96540f}',
+  ]) assert.ok(css.includes(token),'the type mark keeps '+token.slice(0,58));
+  assert.match(css,/\.am-coa-page \.am-coa-grid \.am-type-badge\{[^}]*font-size:12px/,'the label stays at the 12px floor');
+});

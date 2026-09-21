@@ -1,5 +1,15 @@
 # Testing and QA
 
+## Chart of Accounts: one mark per account type in the type column - 2026-09-21
+
+- User request: differentiate the account types simply and visually in the Chart of Accounts grid, using the attached reference (a house for Assets, a pie for Liabilities, a chart for Equity, coins for Revenue, a coin-and-arrow for Expenses, each on its own colour) as the idea rather than the layout.
+- `TYPE_MARKS` is declared once in `src/AccountWorkspace.jsx` - Assets `IconHome`, Liabilities `IconChartPie`, Equity `IconChartHistogram`, Income `IconCoins`, Expenses `IconReceipt2`, each with a tone name - and the Account Type cell renders one `span.am-type-badge` holding a 20px `span.am-type-mark` circle with the glyph beside the type label. The row map reads the mark before the row, so there is no lookup inside the JSX.
+- The reference is a legend of full-width gradient bars; at table scale that would fight the grid, so the marks are pills instead: a soft tint fill, the label in a darker tone of the same hue and the glyph reversed out of the solid circle. Five tones, each in the pastel register the rest of the app uses for status fills - assets `#e6f6f0` / `#1c6b52` on `#2fa27f`, liabilities `#fbe9f4` / `#8e2f6b` on `#d356a4`, equity `#e7f0fd` / `#1d4ed8` on `#3b82f6`, income `#e9f7e3` / `#2f7d32` on `#5cb85c`, expenses `#fdf0e3` / `#96540f` on `#e08e2b` - with a neutral `#f1f4f8` / `#475467` fallback for a type the map does not know. The label keeps the 12px floor and the pill is `white-space:nowrap`, so nothing wraps or clips.
+- The type help stays: the cell keeps its `title` and `aria-description` from `TYPE_HELP`, so the explanation still reaches a reader who hovers or tabs to it, and the badge adds the visual cue without replacing the word.
+- Verified live at 1440x800: all five tones compute exactly as declared - Assets `rgb(230,246,240)` / `rgb(28,107,82)` mark `rgb(47,162,127)`, Liabilities `rgb(251,233,244)` / `rgb(142,47,107)` mark `rgb(211,86,164)`, Equity `rgb(231,240,253)` / `rgb(29,78,216)` mark `rgb(59,130,246)`, Income `rgb(233,247,227)` / `rgb(47,125,50)` mark `rgb(92,184,92)`, Expenses `rgb(253,240,227)` / `rgb(150,84,15)` mark `rgb(224,142,43)` - each with a 20x20 mark carrying an `svg`, a 12px label, the Account Type column 242px wide, 22 rows and no horizontal overflow.
+- Validation actually executed: `tests/account-sticky-grid-ui.test.mjs` gained a test pinning the five marks and tones, the cell markup, the shared rule and the five tone rules, and it passes 11/11; the full sweep is 727 tests / 716 passing / the same 11 pre-existing failures in the Accounts, Journal, Operational modules, Settings and date-picker suites; `node node_modules/vite/bin/vite.js build` passed; `node scripts/validate-knowledge-docs.mjs` passed.
+
+
 ## Chart of Accounts on the register card, measured against Journal Entries - 2026-09-21
 
 - User request: use the same table/grid style as the Journal Entries register on the Chart of Accounts grid.
