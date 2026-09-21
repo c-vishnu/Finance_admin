@@ -1,6 +1,6 @@
 # Data Model
 
-**Last verified:** 2026-09-16  
+**Last verified:** 2026-09-21  
 **Primary sources:** `invoice-engine.js`, `account-master.js`, `receipt-engine.js`, `credit-note-service.js`, `period-locking.js`, `organisation-scope.js`, `organisation-context.js`.
 
 ### Additive account-master fields
@@ -11,7 +11,7 @@ Current browser records may include `reportingCategory`, `applicableBranches[]`,
 
 The main accounting aggregate is stored under `wayvida-accounting-v1`. It contains a version, accounts, invoices, payments, journals, audit events, and configuration; later modules add arrays such as receipts, receipt allocations, credit notes, credit applications, openings, and account audit records. Feature UIs may use additional local keys. Storage is device/browser-specific and must not be treated as a database.
 
-Important transient keys include `wayvida-open-account`, `wayvida-open-invoice`, `wayvida-open-credit`, and customer/document selection hints. These are navigation conveniences, not entity ownership.
+Important transient keys include `wayvida-open-account`, `wayvida-open-invoice`, `wayvida-open-credit`, and customer/document selection hints. These are navigation conveniences, not entity ownership. The sales create pages add their own keys for the Edit-customer detour: `wayvida-draft-order` / `wayvida-draft-invoice` hold the unsaved document, `wayvida-edit-customer` names the record to open and `wayvida-return-to` names the page to return to. They are consumed on the way back and are never read as entity data.
 
 ### Journal creation helpers
 
@@ -19,9 +19,52 @@ Important transient keys include `wayvida-open-account`, `wayvida-open-invoice`,
 
 Two presentation-only keys support the Create Journal Entry page and are never read by the ledger, reports or posting engine: `wayvida-journal-templates-v1` stores reusable templates (name, journal type, lines and an optional `None`, `Every month` or `Every year` repeat label) and `wayvida-journal-account-prefs-v1` stores the recent and favourite account codes used by the account picker. Sources: `src/JournalEntriesPro.jsx`, `src/journal-templates.js`, `src/JournalAccountPicker.jsx`. The Create Journal Entry page does not write the working-context keys (`wayvida-context-companies`, `wayvida-context-branches`, `wayvida-context-mode`, `wayvida-demo-company`, `wayvida-demo-branch`) or dispatch the working-context events at all: organisation and branch are edited per line instead, and no second context store exists. No field was added to the stored journal record: the mandatory reason (`narration`) is now edited in the metadata row, the collapsed Additional details keep the existing attachments array and approval comments projected from the existing audit trail, and the per-line organisation and branch selects write the `organization` and `branch` name fields that `emptyLine()` already stamped and `postToLedger()` already reads.
 
+### Customer Master
+
+`wayvida-customers` stores the customer records read by the register, the Customer Details screen, invoices, sales orders, receipts and credit notes. The core keys are unchanged and keep their meaning: `id`, `code` (unique, `CUSnnn` from `nextCustomerCode`), `name`, `type` (`Business` or `Individual`), `contact`, `email`, `phone`, `billing`, `shipping`, `state` (the place of supply), `limit`, `days` (credit days), `opening`, `account` (the receivable account code), `status` and the optional additive `auditTrail`.
+
+The 2026-09-18 Create / Edit Customer rework adds only optional keys:
+
+- `displayName` - defaults to `name` at save time.
+- `gstTreatment` - one of the seven `GST_TREATMENTS` values. It drives which of the keys below are meaningful: a treatment that carries no GSTIN stores an empty `gstin`, an Overseas customer stores the billing country in `state` instead of an Indian state, and only `Tax Exempt` stores an `exemptionReason`. A record that names no treatment of its own is given the one its own data supports: a GSTIN present keeps the registered default, none opens `Unregistered Business`, and an `Individual` stays `Consumer` - handing a record without a GSTIN the registered default made it impossible to save.
+- `taxPreference` - one of `TAXABILITY` (`Taxable`, `Tax Exempt`, `Zero Rated`, `Non-GST / Out of Scope`); `exemptionReason` is stored only while it is `Tax Exempt`.
+- `legalName`, `tradeName`, `gstStatus`, `taxpayerType` and `principalAddress` - the taxpayer fields, populated by the GST lookup and editable by the operator.
+- `gstLookup` - `{at, status, source}` recorded when Get Taxpayer Details succeeds, so the lookup date and the returned GST status stay with the customer for reference.
+- `website` - the input was removed, so nothing writes a new value, but an existing stored value is carried through `save` untouched.
+- `billingAddress` and `shippingAddress` - `{line1, line2, city, state, pin, country}` with `country` defaulting to `India`, so the form reopens exactly what was entered. `line1` and `line2` are the Address 1 and Address 2 inputs.
+- `shippingSameAsBilling` - boolean, true by default; while true the composed `shipping` mirrors `billing`.
+- `currency` (default `INR`), `paymentTerms` (the chosen term label), `openingDate`, `website`, `tags`, `notes`.
+- `contacts[]` - `{id, firstName, lastName, email, phone, designation, primary}`, with exactly one primary enforced by `normaliseContacts`.
+- `customFields[]` - `{id, label, value}`.
+
+`displayName`, `tags`, `notes` and `customFields` no longer have create/edit inputs, because the 2026-09-18 density pass removed them from More details. They remain part of the record: `save` carries their existing values through untouched, and `displayName` is still derived from `name` when it is blank. Reading them is therefore safe, and an existing customer never loses them by being edited.
+- `documents[]` - `{id, name, size}` metadata only; the file content itself is never stored.
+
+`billing`, `shipping` and `state` stay authoritative for every other module. They are composed from the structured objects by `composeAddress` and are never edited directly. A record written before this change carries no structured address, so `parseAddress` restores the whole composed string into `line1` instead of inventing parts, and `normaliseCustomer` fills every missing field so the form opens complete. No customer field posts a journal; the opening balance remains master data.
+
+`wayvida-accounting-v1` also carries the recurring schedule a posted invoice can hold, as an additive optional `recurring` object: `{frequency, nextDate, endDate, setAt}`. `frequency` is one of the engine's `RECURRING_FREQUENCIES` (Monthly, Quarterly, Half-Yearly, Yearly), `endDate` is an empty string when the schedule has no end, and `setAt` is when it was last set. The `recurring` command action writes it, `off:true` writes `null` rather than dropping the key, and it changes no total, journal or posting field: the prototype records the schedule and does not generate or post future invoices.
+
+### Credit Notes
+
+`wayvida-accounting-v1` holds credit notes in `creditNotes`, their invoice applications in `creditApplications` and their refunds in `creditRefunds`. The stored lifecycle is `status` (Draft, Pending Approval, Approved, Issued, Cancelled); everything that has happened to the money is derived by `creditNoteStatus()` from the applications and refunds, never stored twice.
+
+The refactor added only optional keys to a note: `type` (`Against Invoice` / `Without Invoice`), `reason` from the structured vocabulary (a note written earlier keeps its own string and is read through `canonicalReason`), `reasonNote` for `Other`, `notes`, and `salesReturnId`, which links the note to a Sales Return document and is validated to belong to the same customer and invoice. A refund is an additive record: `{id, number, creditNoteId, customerId, customerName, amount, date, bank, method, reference, journalId, token, createdAt, createdBy}` - posting a balanced journal like every other ledger entry and never editing the note or the invoice.
+
+A credit note never moves stock. The inventory side belongs to the Sales Return document, which is not built yet; until it is, no credit note can create an inventory movement.
+
 ### Vendor Master
 
-`wayvida-vendors-v1` stores vendor identity, contact and multiple-address data, GST/PAN/TDS configuration, payment terms, bank details, opening balance metadata, status, audit timestamps, and the Accounts Payable control-account reference. The current UI stores attachment file names only; file contents are not uploaded. Vendors are sub-ledger entities and do not create one Chart of Accounts record per vendor. Sources: `src/vendor-store.js`, `src/Vendors.jsx`.
+`wayvida-vendors-v1` stores vendor identity, contact and multiple-address data, GST/PAN/TDS configuration, payment terms, bank details, opening balance metadata, status, audit timestamps, and the Accounts Payable control-account reference. The create/edit form writes one extra flag beside the two addresses: `shippingSameAsBilling`, which records whether the shipping address is held equal to the billing address and is why an edit reopens with the shipping grid either shown or hidden; the form mirrors a billing edit into shipping while the flag is true and `save` writes `shipping` from `billing` in that case, so the stored pair is never left disagreeing. A record written before the flag existed still opens: the form derives it by comparing the two stored addresses. The current UI stores attachment file names only; file contents are not uploaded. Vendors are sub-ledger entities and do not create one Chart of Accounts record per vendor. Sources: `src/vendor-store.js`, `src/Vendors.jsx`.
+
+### Sales Orders
+
+`wayvida-sales-orders` stores the order header (number, date, due date, terms, customer id and name, billing/shipping/place, reference, shipment, salesperson, notes, terms and conditions, files), its lines, the calculated totals and the tax policy, plus `status` (`Draft` / `Confirmed` / `Completed` / `Cancelled`).
+
+2026-09-18 added five fields so the register can show the scope and the audit trail it was asked for. They are stamped at save from the working context and the acting role, never invented: `organizationId`, `organizationName`, `branchId` and `branchName` from `getCurrentOrganizationContext()`, and `createdBy` from the acting role (`Admin` for the Business owner view, `Accountant` for Head of Accountant). Each is written as `form.x||stamped`, so re-saving an existing order never overwrites a stored value, and an order saved before this change shows **Not recorded** in those columns until it is next saved.
+
+Payment status is not stored on the order. The register derives it: it finds the invoice whose `sourceOrder` is the order and calls `paymentStatus(state, invoice)` from `src/invoice-engine.js`, which returns `Unpaid` / `Partially Paid` / `Paid` / `Overdue` from the receipts allocated to that invoice. An order with no linked invoice reads `Not invoiced`.
+
+2026-09-19 added two additive optional fields to the order header, beside the existing `place` string: `placeSource` (`customer_address`, `shipping_address` or `manual`) and `placeCode`, the GST state code read from the existing `GST_STATE_CODES` table. `place` keeps its name and meaning - `calculate()` in `src/invoice-engine.js` compares it with the company state and every template and print preview prints it - so no stored value moved and no reader changed. A record saved before this change carries a `place` with no source, and that is read as `manual` on purpose, so an old order is never silently re-taxed. `convertSalesOrder` carries all three fields onto the invoice it creates, and the create page derives them through `placeOfSupplySuggestion` in `src/customer-tax.js`. Nothing here posts a journal; the posting path is unchanged and still requires a place of supply.
 
 ### Purchase Orders, Goods Receipts, Purchase Bills and Vendor Payments
 

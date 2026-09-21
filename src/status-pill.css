@@ -1,0 +1,19 @@
+/* The register status pill.
+
+   One shape for a status column anywhere in the app: a rounded tint, a 7px dot and a 12px
+   label. The geometry is the Chart of Accounts pill (.am-status in src/account-workspace.css)
+   and the tones are the Journal Entries ones (.je-status in src/journal-form.css), so a
+   register reads the same way instead of inventing its own badge. Presentation only - each
+   caller keeps its own status vocabulary and picks a tone. */
+.statusPill{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:14px;background:#e8f6ee;color:#287a51;font-size:12px;font-weight:550;white-space:nowrap}
+.statusPill>span{flex:none;width:7px;height:7px;border-radius:50%;background:#28a26b}
+.statusPill.neutral{background:#f1f3f6;color:#667085}
+.statusPill.neutral>span{background:#98a2b3}
+.statusPill.warn{background:#fff4df;color:#8a5d08}
+.statusPill.warn>span{background:#e6a117}
+.statusPill.info{background:#e8f1ff;color:#245fd9}
+.statusPill.info>span{background:#3478f6}
+.statusPill.violet{background:#f4ecff;color:#6941c6}
+.statusPill.violet>span{background:#7f56d9}
+.statusPill.danger{background:#fff0f1;color:#ad3542}
+.statusPill.danger>span{background:#d65261}

@@ -20,8 +20,13 @@ import {journal,today} from './invoice-engine.js';
 export const ADJUSTMENT_TYPES=['Quantity Adjustment','Value Adjustment'];
 export const ADJUSTMENT_STATUSES=['Draft','Pending Approval','Adjusted','Cancelled'];
 export const ADJUSTMENT_ENTRY_MODES=['Adjust By','Set New Value'];
-export const ADJUSTMENT_REASONS=['Physical Stock Count','Damaged Stock','Lost Stock','Expired Stock','Theft / Shrinkage','Data Entry Correction','Opening Stock Correction','Revaluation','Other'];
-export const ADJUSTMENT_ACTIONS={Draft:['View','Edit','Duplicate','Export','Cancel'],'Pending Approval':['View','Export','Cancel'],Adjusted:['View','Duplicate','Export','Reverse'],Cancelled:['View','Duplicate','Export']};
+export const ADJUSTMENT_REASONS=['Physical Stock Count','Damaged Stock','Lost Stock','Expired Stock','Theft / Shrinkage','Data Entry Correction','Opening Stock Correction','Revaluation','Sales Return','Other'];
+export const /* Every status offers Edit, Duplicate and Delete so the row menu is predictable; the screen
+   disables the one or two the engine would refuse and states why, exactly as it already does
+   for a role that lacks the duty. Only a draft is editable, and only a record that has posted
+   nothing can be deleted, because deleting an adjusted document would remove a posted journal
+   from the books - a reversal is the accounting-correct correction there. */
+ADJUSTMENT_ACTIONS={Draft:['View','Edit','Duplicate','Export','Delete','Cancel'],'Pending Approval':['View','Edit','Duplicate','Export','Delete','Cancel'],Adjusted:['View','Edit','Duplicate','Export','Delete','Reverse'],Cancelled:['View','Edit','Duplicate','Export','Delete']};
 
 /* The local role selector is a simulation of approval duty, never authentication.
    The same boundary is enforced in the command, not only by hiding buttons. */
@@ -35,7 +40,7 @@ export const adjustmentAllowed=(role,action)=>(permissions[role]||[]).includes(a
 /* The command names an action after what it does, the role duty names what it
    requires, and this is the one place the two vocabularies meet so a screen can
    never grant more than the command does. */
-const ADJUSTMENT_DUTY={save:'save','save-and-adjust':'post',submit:'submit',adjust:'post',cancel:'cancel',reverse:'reverse'};
+const ADJUSTMENT_DUTY={save:'save','save-and-adjust':'post',submit:'submit',adjust:'post',cancel:'cancel',reverse:'reverse',delete:'cancel'};
 
 const copy=value=>JSON.parse(JSON.stringify(value));
 const sum=(rows,key)=>rows.reduce((total,row)=>total+(Number(row?.[key])||0),0);
@@ -311,6 +316,14 @@ export function adjustmentCommand(state,action,payload={},ctx={}){
   row.reversedBy=mirror.id;row.reversedAt=now;row.reversedByUser=actor;row.status='Adjusted';
   push(row,'Correcting adjustment raised');
   return finish(s,mirror,action,before,ctx,now,{journalId:mirror.journalId});
+ }
+ if(action==='delete'){
+  /* A record that posted its journal must never be deleted: the ledger would lose an entry
+     with nothing left to point at it. Cancel (never posted) or Reverse (posted) instead. */
+  if(row.posted||row.status==='Adjusted')throw Error('An adjusted adjustment already posted its journal. Create a reversal instead of deleting it.');
+  s.inventoryAdjustments=s.inventoryAdjustments.filter(entry=>entry.id!==row.id);
+  (s.audit??=[]).push({id:crypto.randomUUID(),adjustmentId:row.id,action:'inventory-adjustment-delete',at:now,by:actor,fromStatus:before,toStatus:'Deleted',reason:String(p.reason||'').trim(),journalId:''});
+  return {state:s,result:{...row,deleted:true}};
  }
  throw Error('Unknown inventory adjustment action.');
 }

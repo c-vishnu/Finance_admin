@@ -11,15 +11,19 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
 const screen=readFileSync('src/Customers.jsx','utf8');
+/* The place-of-supply picker was extracted into src/SearchSelect.jsx, so its own outside-click
+   closer is asserted against that module now. */
+const picker=readFileSync('src/SearchSelect.jsx','utf8');
 const styles=readFileSync('src/customers.css','utf8');
 
 test('the register merges name and customer id into one column and drops the removed columns',()=>{
  assert.ok(screen.includes("['Customer Details','Type','Email / Phone','Net receivable','Available credit','Status','Actions'].map"),'the register header row is the new column set');
  assert.ok(screen.includes('itemIdentityCopy'),'the identity cell reuses the shared identity stack');
  assert.match(screen,/<b>\{x\.name\}<\/b><small>\{x\.code\|\|'No customer code'\}<\/small>/,'the cell shows the name over the customer id');
+ const headerRow=screen.slice(screen.indexOf("['Customer Details'"),screen.indexOf('].map(x=><th key={x}>{x}</th>)'));
  for(const gone of ["'Contact'","'Opening balance'","'Credit limit'","'Customer name'","'Code'"])
-  assert.ok(!screen.includes(gone),'the removed register column '+gone+' stays gone');
- assert.ok(screen.includes("placeholder=\"Search name, code, contact or email…\""),'search still covers code, contact and email');
+  assert.ok(!headerRow.includes(gone),'the removed register column '+gone+' stays gone');
+assert.ok(screen.includes("placeholder=\"Search name, code, contact or email…\""),'search still covers code, contact and email');
 });
 
 test('each row offers View Customer plus the canonical three-dot menu',()=>{
@@ -41,10 +45,11 @@ test('each row offers View Customer plus the canonical three-dot menu',()=>{
 });
 
 test('one page-level dismissal effect owns every menu on the page',()=>{
- assert.equal((screen.match(/addEventListener\('pointerdown'/g)||[]).length,1,'exactly one pointerdown listener');
- assert.equal((screen.match(/addEventListener\('keydown'/g)||[]).length,1,'exactly one keydown listener');
- assert.ok(screen.includes("document.querySelectorAll('.customerKebab[open]').forEach(node=>{if(!node.contains(event.target))node.removeAttribute('open')})"),'outside pointerdown closes the open menu');
- assert.ok(screen.includes("if(event.key==='Escape')closeCustomerMenus()"),'Escape closes the open menu');
+ assert.equal((screen.match(/document\.addEventListener\('pointerdown',onPointerDown\)/g)||[]).length,1,'exactly one page-level pointerdown listener owns the kebab menus');
+ assert.equal((screen.match(/document\.addEventListener\('keydown',onEscape\)/g)||[]).length,1,'exactly one keydown listener');
+ assert.equal((picker.match(/document\.addEventListener\('pointerdown',away\)/g)||[]).length,1,'the place-of-supply picker owns its own outside-click closer');
+ assert.ok(screen.includes("document.querySelectorAll('.customerKebab[open],.customerFilters[open]').forEach(node=>{if(!node.contains(event.target))node.removeAttribute('open')})"),'outside pointerdown closes the open menu and the Filters disclosure');
+ assert.ok(screen.includes("if(event.key==='Escape'){closeCustomerMenus();closeCustomerFilters()}"),'Escape closes the open menu and the Filters disclosure');
  assert.ok(screen.includes('const closeCustomerMenus='),'one shared closer is used by the row and detail menus');
 });
 test('the row menu changes status, duplicates and guards delete',()=>{
@@ -109,13 +114,47 @@ test('create and edit customer is a full page, not a modal popup',()=>{
  assert.equal((screen.match(/className="itemSection"/g)||[]).length,3,'the three field groups are itemSection blocks');
  assert.equal((screen.match(/className="itemSectionTitle"/g)||[]).length,3,'each group carries a plain section title, never a header element');
  assert.ok(!/<header[ >]/.test(screen),'no bare header element is rendered, because src/styles.css paints one as the app bar');
- for(const kept of ['Customer Name *','Customer Code *','Contact Person','Billing Address','Shipping Address','GSTIN','Credit Limit (₹)','Credit Days','Opening Balance (₹)','Receivable Account *','Copy billing to shipping address','Cancel'])
+ for(const kept of ['Customer code *','GST treatment *','Taxability','Place of supply *','Billing address','Shipping address same as billing','Currency','Payment terms','Credit limit (₹)','Receivable account *','Cancel'])
   assert.ok(screen.includes(kept),'the field or action '+kept+' survives');
  assert.ok(screen.includes("localStorage.setItem(CUSTOMERS_KEY,JSON.stringify(next))"),'the storage key is unchanged');
- assert.ok(screen.includes("const err={};if(!form.name.trim())err.name='Enter a customer name.';"),'the validation block is unchanged');
+ assert.ok(screen.includes("if(!GST_TREATMENT_VALUES.includes(form.gstTreatment))err.gstTreatment='Select a GST treatment.';"),'the GST treatment is a required field');
+ assert.ok(screen.includes("if(!form.code.trim())err.code='Enter a customer code.';"),'the customer code stays required and unique');
 });
 test('every visible customer string keeps the twelve pixel floor',()=>{
  const sizes=[...styles.matchAll(/font-size:([\d.]+)px/g)].map(match=>Number(match[1]));
  assert.ok(sizes.length>0,'the stylesheet declares font sizes');
- assert.ok(sizes.every(size=>size>=12),'no declaration drops below 12px: '+sizes.filter(size=>size<12).join(', '));
+assert.ok(sizes.every(size=>size>=12),'no declaration drops below 12px: '+sizes.filter(size=>size<12).join(', '));
+
+test('the register toolbar drops the record count and adds one Filters disclosure',()=>{
+ assert.ok(!screen.includes('{visible.length} customers'),'the removable toolbar count is gone');
+ assert.match(screen,/<details className="customerFilters"><summary aria-label="Open filters"><IconFilter size=\{17\}\/>Filters\{activeFilterCount>0&&<em className="customerFilterBadge">\{activeFilterCount\}<\/em>\}<\/summary>/,'one Filters disclosure carries the active count');
+ for(const label of ['Type','State / place of supply','GST treatment','Payment terms','Balance'])
+  assert.ok(screen.includes('<span>'+label+'</span>'),'the panel filters by '+label);
+ assert.match(screen,/const CUSTOMER_FILTER_DEFAULTS=\{type:'All types',state:'All states',gstTreatment:'All GST treatments',paymentTerms:'All payment terms',balance:'All balances'\}/,'one defaults object drives the panel and the badge');
+ assert.match(screen,/const activeFilterCount=Object\.values\(filters\)\.filter\(value=>!value\.startsWith\('All '\)\)\.length/,'the badge counts the values that left their default');
+ assert.match(screen,/const customerTypeOptions=\['All types',\.\.\.CUSTOMER_TYPES\]/,'Type offers the stored customer types');
+ assert.match(screen,/const customerStateOptions=\['All states',\.\.\.Array\.from\(new Set\(rows\.map\(row=>row\.state\)\.filter\(Boolean\)\)\)\.sort/,'the state filter lists the places of supply the records actually carry');
+ assert.match(screen,/const customerTreatmentOptions=\['All GST treatments',\.\.\.GST_TREATMENTS\.map\(item=>item\.value\)\]/,'GST treatment offers the stored treatments');
+ assert.match(screen,/const customerTermOptions=\['All payment terms',\.\.\.PAYMENT_TERMS\]/,'payment terms offer the stored terms');
+ assert.match(screen,/status==='All statuses'\|\|x\.status===status/,'the always-visible status select still filters');
+ assert.match(screen,/filters\.type==='All types'\|\|\(x\.type\|\|'Business'\)===filters\.type/,'Type filters on the stored type with the Business default');
+ assert.match(screen,/filters\.state==='All states'\|\|x\.state===filters\.state/,'State filters on the stored place of supply');
+ assert.match(screen,/filters\.gstTreatment==='All GST treatments'\|\|x\.gstTreatment===filters\.gstTreatment/,'GST treatment filters on the stored treatment');
+ assert.match(screen,/filters\.paymentTerms==='All payment terms'\|\|x\.paymentTerms===filters\.paymentTerms/,'payment terms filter on the stored term');
+ assert.match(screen,/filters\.balance==='All balances'\|\|\(filters\.balance==='With outstanding'\?x\.credit\.outstanding>0:x\.credit\.outstanding<=0\)/,'Balance filters on the credit summary the map computes before it');
+ assert.match(screen,/>Clear filters<\/button>/,'one clear action resets the panel');
+ assert.match(screen,/onClick=\{\(\)=>\{setFilters\(CUSTOMER_FILTER_DEFAULTS\);setStatus\("All statuses"\)\}\}/,'and it resets the status select too');
+ assert.ok(screen.includes('const BALANCE_FILTERS='),'the balance choices are one list');
+ assert.ok(styles.includes('.customersPage .itemsTools .customerFilterField{display:flex;flex-direction:column;align-items:stretch;gap:5px;width:auto;max-width:none;min-width:0;padding:0;border:0;color:#344054}'),'the panel fields reset the shared .itemsTools label box so the two-column grid survives');
+ assert.ok(styles.includes('.customersPage .customerFilterPanel{position:absolute;right:0;top:calc(100% + 6px);z-index:60;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));'),'the panel is anchored to its trigger');
+ assert.ok(styles.includes('.customersPage .customerFilterActions button:hover{background:#eef4ff;border-color:#bcd0f5;color:#2463d4}'),'and its action uses the shared control tokens');
+ assert.ok(styles.includes('@media(max-width:760px){'),'the narrow layout is declared');
+ assert.ok(styles.includes('.customersPage .customerFilterPanel{position:static;grid-template-columns:minmax(0,1fr);width:100%;max-width:none;max-height:none;margin-top:10px}'),'where the panel takes the flow instead of running off the left of the viewport');
+});
+
+test('the Filters disclosure shares the one page-level dismissal effect',()=>{
+ assert.ok(screen.includes("const closeCustomerFilters=()=>document.querySelectorAll('.customerFilters[open]').forEach(node=>node.removeAttribute('open'));"),'one shared closer for the filters');
+ assert.equal((screen.match(/document\.addEventListener\('pointerdown',onPointerDown\)/g)||[]).length,1,'still exactly one page-level pointerdown listener');
+ assert.equal((screen.match(/document\.addEventListener\('keydown',onEscape\)/g)||[]).length,1,'and exactly one keydown listener');
+});
 });

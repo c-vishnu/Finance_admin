@@ -5,14 +5,16 @@ body:has(>.pc) .app>main>*{visibility:hidden}
 .pc-badge.pending-unlock-approval{background:#fff2db;color:#99600e}
 .pc-summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:72px;align-content:start;gap:10px;height:auto!important;min-height:0!important;margin:14px 0}.pc-summary>div{display:flex;align-items:center;justify-content:space-between;height:72px;min-height:0;padding:14px 16px;border:1px solid #e1e6ed;border-radius:9px;background:#fff;box-shadow:0 2px 8px #10182808}.pc-summary span{color:#667085;font-size:13px}.pc-summary b{color:#172033;font-size:22px}.pc-review-list>div.warning{border-color:#f1dfb6;background:#fffaeb;color:#9a6700}.pc-review-list>div.blocking{border-color:#f1c8cc;background:#fff4f4;color:#b42318}.pc-check-symbol{display:grid;place-items:center;width:18px;height:18px;border:1px solid currentColor;border-radius:50%;font-weight:700;line-height:1}@media(max-width:1100px){.pc-summary{grid-template-columns:repeat(3,1fr)}}@media(max-width:800px){.pc-summary{grid-template-columns:repeat(2,1fr)}}
 .pc{left:270px;top:59px;padding:18px 24px 36px}
+/* The register screen shares the shell content box. The panel is pinned over .app>main, so it
+   takes main's own padding tokens and cap; without that the register card sat 24px in from the
+   left and 18px down, and the Accounting pages did not line up when navigating between them. */
+.pc.pc-focused{padding:22px clamp(16px,2.2vw,32px) 40px;max-width:1680px;margin:0 auto;scrollbar-gutter:stable}
 .pc header{position:static;inset:auto;width:auto;height:auto;max-width:none;margin:0}
 .pc aside{position:static;inset:auto;transform:none}
 .pc-heading{height:auto!important;min-height:0!important;border-top-width:1px;padding:18px 20px}
-.pc-focused>.pc-heading{min-height:76px!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
-.pc-focused>.pc-heading h1{font-size:27px;line-height:1.2;letter-spacing:-.55px}
-.pc-focused>.pc-heading-actions{align-items:center;justify-content:flex-end}
-.pc-focused>.pc-heading-actions button{min-height:40px;border-radius:7px;padding:0 15px;font-weight:600;white-space:nowrap}
-.pc-focused>.pc-heading-actions button.primary{box-shadow:0 3px 10px #326df433}
+.pc-focused .pc-heading-actions{align-items:center;justify-content:flex-end}
+.pc-focused .pc-heading-actions button{min-height:40px;border-radius:7px;padding:0 15px;font-weight:600;white-space:nowrap}
+.pc-focused .pc-heading-actions button.primary{box-shadow:0 3px 10px #326df433}
 .pc-register{box-shadow:none}
 .pc table{table-layout:auto}
 .pc th,.pc td{white-space:nowrap}
@@ -70,5 +72,4 @@ body:has(>.pc) .app>main>*{visibility:hidden}
 .pc .pc-request-table .pc-request-cell-actions{vertical-align:middle;white-space:normal}
 .pc .pc-request-table .pc-request-cell-actions .pc-action-note{flex:1 1 100%;white-space:normal;text-align:right}
 
-/* The heading row is pinned inside the page scroller so the attention count stays visible while the register scrolls, and it carries no reserved height of its own. */
-.pc-focused>.pc-heading{position:sticky!important;top:0!important;z-index:26!important;background:#f7f9fc!important;padding:10px 0 12px!important;box-shadow:0 1px 0 #e6ebf3}
+/* The merged register row is pinned inside the page scroller by src/register-head.css, so the

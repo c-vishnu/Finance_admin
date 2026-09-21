@@ -9,22 +9,22 @@ test('sidebar destinations are grouped once without duplicate routes',()=>{
     "leaf('General Ledger')",
     "leaf('Trial Balance')",
     "leaf('Day Book')",
-    "leaf('Period Closing')",
+    "leaf('Period Lock')",
     "leaf('Purchase Reports')"
   ]){
     assert.equal(navigation.split(destination).length-1,1,`${destination} must occur once`);
   }
   assert.ok(navigation.includes("{label:'Inventory',icon:IconPackage,children:[leaf('Items'),leaf('Inventory Adjustments')]}"),'Inventory holds Items with Inventory Adjustments directly below it');
-  assert.ok(navigation.includes("{label:'Accounting',icon:IconBook,children:[leaf('Chart of Accounts'),leaf('Journal Entries'),leaf('Budgets'),leaf('Period Closing')]}"),'Accounting holds one Budgets destination between Journal Entries and Period Closing');
+  assert.ok(navigation.includes("{label:'Accounting',icon:IconBook,children:[leaf('Chart of Accounts'),leaf('Journal Entries'),leaf('Budgets'),leaf('Period Lock')]}"),'Accounting holds one Budgets destination between Journal Entries and Period Lock');
 });
 
-test('Accounting holds one Budgets destination between Journal Entries and Period Closing',()=>{
+test('Accounting holds one Budgets destination between Journal Entries and Period Lock',()=>{
   const accounting=navigation.indexOf("{label:'Accounting'");
   const journal=navigation.indexOf("leaf('Journal Entries')");
   const budgets=navigation.indexOf("leaf('Budgets')");
-  const closing=navigation.indexOf("leaf('Period Closing')");
-  assert.ok(accounting>-1&&journal>-1&&budgets>-1&&closing>-1,'Accounting, Journal Entries, Budgets and Period Closing are all declared');
-  assert.ok(accounting<journal&&journal<budgets&&budgets<closing,'Budgets sits between Journal Entries and Period Closing inside the Accounting group');
+  const closing=navigation.indexOf("leaf('Period Lock')");
+  assert.ok(accounting>-1&&journal>-1&&budgets>-1&&closing>-1,'Accounting, Journal Entries, Budgets and Period Lock are all declared');
+  assert.ok(accounting<journal&&journal<budgets&&budgets<closing,'Budgets sits between Journal Entries and Period Lock inside the Accounting group');
   assert.equal((navigation.match(/leaf\('Budgets'\)/g)||[]).length,1,'Budgets is declared once');
   assert.ok(!navigation.includes("{label:'Budget',"),'no Budget sub-group is left inside Accounting');
   assert.ok(!navigation.includes('Budget Reports')&&!navigation.includes('Budget Settings'),'the reports and settings destinations are gone from the sidebar');

@@ -30,7 +30,7 @@ test('the automatic schedule keeps the closing fields and drops every boundary f
 
 test('the popup leads with one sentence straight into the switches, with no card heading text',()=>{
  const header=settings.slice(settings.indexOf('pls-heading-popup'),settings.indexOf('{warnings.map('));
- assert.ok(header.includes('<h1>Period Closing Settings</h1>'));
+ assert.ok(header.includes('<h1>Period Lock Settings</h1>'));
  assert.ok(header.includes('<p>Locking applies to every module in Wayvida Books, and changes apply from the next unclosed period.</p>'),'the popup subheading is one line');
  assert.ok(!settings.includes('Locking schedule and unlock approval.'),'the long scheduling sentence is gone');
  assert.ok(!settings.includes('<h2>'),'the card no longer carries a heading');
@@ -84,20 +84,20 @@ test('settings is a right side popup with a sticky footer and a dirty-state guar
  assert.ok(css.includes('.pls-popup{position:static!important'),'the popup hands layout back to the surrounding drawer');
 });
 
-test('period closing drops the read only policy chip and keeps settings and the mode aware lock action in More actions',()=>{
+test('period lock drops the read only policy chip and keeps settings and the mode aware lock action in More actions',()=>{
  assert.ok(!closing.includes('policyChip'),'the page no longer renders the policy chip');
  assert.ok(!closing.includes('pc-policy-chip'),'the chip markup leaves the heading');
- assert.ok(closing.indexOf('Period closing settings')<closing.indexOf('Create Lock / Close'),'the More actions entries keep their order');
- assert.ok(closing.includes('menuRun(openSettings)'),'the settings drawer opens from More actions');
+ assert.ok(closing.indexOf('Create Lock / Close')<closing.indexOf('Period lock settings'),'the create action leads and its caret menu keeps the settings entry');
+ assert.ok(closing.includes('menuRun(openSettings)'),'the settings drawer opens from the split menu');
  assert.ok(!closing.includes('pc-settings-btn'),'the standalone Settings button is folded into More actions');
- for(const text of ['Create Lock / Close','pc-settings-drawer','pc-more-menu','if(!period)return']) assert.ok(closing.includes(text),text);
+ for(const text of ['Create Lock / Close','pc-settings-drawer','registerSplitMore','if(!period)return']) assert.ok(closing.includes(text),text);
  assert.ok(!closingCss.includes('.pc-policy-chip'),'the chip styles leave the stylesheet');
  assert.ok(service.includes('export function policyChip'));
 });
 
 test('the unlock request flow and every request action disappear when approval is off',()=>{
  assert.ok(closing.includes('showRequests={approvalOn}'),'the kebab View Requests entry follows the approval policy');
- assert.ok(closing.includes('{onView&&showRequests&&<div className="pc-view-toggle"'),'the locked periods / requests toggle follows the approval policy');
+ assert.ok(closing.includes('<div className="pc-register-tabs">{onView&&showRequests&&<div className="pc-view-toggle"'),'the locked periods / requests toggle follows the approval policy');
  assert.ok(closing.includes('aria-pressed={isRequests}'),'the requests view stays reachable from the register toggle while approval is on');
  assert.ok(closing.includes("canRequest={approvalOn&&can(activeRole,'request-unlock')}"));
  assert.ok(closing.includes("'Unlocked until '+until"));
@@ -135,7 +135,7 @@ test('journal posting is blocked through the enforcement layer and names the blo
  assert.ok(journal.includes('periodCheck.lock.name'));
  assert.ok(journal.includes('result.remedy||result.message'));
  assert.match(service,/export function assertOperationAllowed/);
- assert.ok(service.includes('Open Period Closing to request an unlock'));
+ assert.ok(service.includes('Open Period Lock to request an unlock'));
 });
 
 test('the new stylesheet keeps readable text and reflows on small screens',()=>{

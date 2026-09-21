@@ -6,7 +6,8 @@ const workspace=readFileSync(new URL('../src/AccountWorkspace.jsx',import.meta.u
 const polish=readFileSync(new URL('../src/ui-quality-polish.css',import.meta.url),'utf8');
 
 test('Chart of Accounts header shows the contextual account total once',()=>{
-  assert.match(workspace,/\{t\.chartOfAccounts\} <span className="am-heading-count">\(\{db\.accounts\.length\}\)<\/span>/);
+  assert.match(workspace,/\{t\.chartOfAccounts\} <span className="am-heading-count">\(\{count\}\)<\/span>/);
+  assert.match(workspace,/count=\{db\.accounts\.length\}/,'the page still passes the live account total into the row');
   assert.equal((workspace.match(/am-heading-count/g)||[]).length,1);
   assert.doesNotMatch(workspace,/Account count/);
 });
@@ -30,12 +31,16 @@ for(const label of ['{t.accountName}','{t.accountCode}','{t.accountGroup}','{t.s
   assert.match(workspace,/useTerminology/);
 });
 
-test('Chart of Accounts list is selection-free and grouped with accessible accordions',()=>{
+test('Chart of Accounts is one flat table of accounts, with no accordion',()=>{
   assert.doesNotMatch(workspace,/am-list-meta/);
   assert.doesNotMatch(workspace,/Select all visible accounts/);
   assert.doesNotMatch(workspace,/aria-label={`Select /);
-  assert.match(workspace,/className="am-group-toggle" aria-expanded=/);
-  assert.match(workspace,/groupKey=`type:\$\{type\}`/);
+  assert.doesNotMatch(workspace,/am-group-toggle/,'the type accordion is gone');
+  assert.doesNotMatch(workspace,/am-group-row/,'along with its section rows');
+  assert.doesNotMatch(workspace,/openGroups/,'and the state that kept its sections open');
+  assert.match(workspace,/const flatRows=typeGroups\.flatMap\(group=>group\.rows\.map\(row=>\(\{\.\.\.row,type:group\.name\}\)\)\)/,'the grid is one flat list in chart order, each row carrying the type it belongs to');
+  assert.match(workspace,/<th>Account Type<\/th>/,'so the type is a column of the table instead of a section heading');
+  assert.match(workspace,/className="am-row-edit" onClick=\{\(\)=>start\(a\)\}/,'and every row carries one visible Edit action');
 });
 
 test('Account details shows a dated current balance and accountant notation',()=>{

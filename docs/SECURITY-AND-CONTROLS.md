@@ -46,7 +46,7 @@ The application is a browser prototype. Local role selectors, hidden buttons, an
 | Accountant | Yes | No | Yes | No | Soft-lock exception only if explicitly granted |
 | Admin | Yes | Yes | Yes | Yes | Only through audited policy; hard-lock edits remain blocked until reopened |
 
-Period Closing is implemented as a browser prototype and must not be represented as production protection until all dated command handlers invoke the validator atomically on an authenticated server. Client-side role labels and storage can be bypassed. The in-page "Working as" selector and the "Allowed roles" setting are simulation only: they demonstrate the requester/approver split but enforce nothing.
+Period Lock is implemented as a browser prototype and must not be represented as production protection until all dated command handlers invoke the validator atomically on an authenticated server. Client-side role labels and storage can be bypassed. The in-page "Working as" selector and the "Allowed roles" setting are simulation only: they demonstrate the requester/approver split but enforce nothing.
 
 The centralized Audit Log is also a prototype control. It provides useful cross-module traceability for demonstrations and regression review, but browser storage can be edited or cleared and the current actor label is simulated. It must not be represented as a legally immutable or security-grade audit record.
 

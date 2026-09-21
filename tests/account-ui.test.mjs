@@ -17,8 +17,19 @@ test('business and accountant views render the same operational account grid',()
   const state=normalizeAccounts(initial(),seed);state.accounts.push({id:'custom',code:'5001',name:'Internet Expense',type:'Expenses',active:true,nature:'Debit'});
   let mode='Business';globalThis.localStorage={getItem:key=>key===KEY?JSON.stringify(state):key==='wayvida-coa-view'?JSON.stringify(mode):null};
   let html=renderToString(React.createElement(Workspace,{seed,notify(){},onNavigate(){}}));
-  assert.match(html,/>5001</);assert.match(html,/Internet Expense/);assert.match(html,/Add Category/);assert.doesNotMatch(html,/<th>Organisation &amp; Availability<\/th>/);assert.doesNotMatch(html,/Protected posting account/);assert.doesNotMatch(html,/₹5,00,000/);
-  mode='Accounting';html=renderToString(React.createElement(Workspace,{seed,notify(){},onNavigate(){}}));assert.match(html,/>5001</);assert.match(html,/Internet Expense/);assert.match(html,/Account Type.*Account Group/);
+  /* The account list is one accordion at a time, so a collapsed group does not render its
+     accounts. The pushed account sits in Expenses, which opens only when it is chosen or when a
+     search leaves it as the first group with matches: the grid therefore proves the group row is
+     listed, and the open first group is what proves account rows render at all. */
+  assert.match(html,/Add Category/);assert.doesNotMatch(html,/<th>Organisation &amp; Availability<\/th>/);assert.doesNotMatch(html,/Protected posting account/);assert.doesNotMatch(html,/₹5,00,000/);
+  assert.match(html,/>1000</);assert.match(html,/Cash/,"the first group renders its accounts");
+  for(const group of ['Assets','Liabilities','Equity','Income','Expenses'])assert.ok(html.includes(group),group+' is listed');
+  assert.doesNotMatch(html,/aria-expanded="true"/,'no accordion section is open, because the grid is one flat table');
+  assert.match(html,/<th>Account Type<\/th>/,'and the type the sections used to group by is a column');
+  assert.match(html,/>5001</,'every account renders, because there is no collapsed section left to hide it');
+  mode='Accounting';html=renderToString(React.createElement(Workspace,{seed,notify(){},onNavigate(){}}));assert.match(html,/Account Type.*Account Group/);
+  assert.match(html,/>1000</);assert.match(html,/Cash/,"the accountant view opens the same first group");
+  assert.doesNotMatch(html,/aria-expanded="true"/,'and the same flat table, with no section open');
   delete globalThis.localStorage;
 });
 test('advanced form renders actual tax, TDS, control and opening controls',()=>{
@@ -27,13 +38,14 @@ test('advanced form renders actual tax, TDS, control and opening controls',()=>{
  for(const label of ['GST validation','CGST payable account','Configured rate','Restrict ordinary manual','Equity offset account','Post opening balance'])assert.ok(html.includes(label),label);
  assert.ok(html.includes('<select'));assert.ok(html.includes('type="number"'));
 });
-test('chart of accounts filter toolbar renders type and status dropdowns near advanced filters and excludes tax mapping',()=>{
+test('chart of accounts filter toolbar renders every filter inside the Filters panel and excludes tax mapping',()=>{
   const state=normalizeAccounts(initial(),seed);
   globalThis.localStorage={getItem:key=>key===KEY?JSON.stringify(state):key==='wayvida-coa-view'?JSON.stringify('accounting'):null};
   const html=renderToString(React.createElement(Workspace,{seed,notify(){},onNavigate(){}}));
   assert.match(html,/class="am-type-filter"/);
   assert.match(html,/class="am-status-filter"/);
-  assert.match(html,/Advanced filters/);
+  assert.match(html,/Open filters/);
+  assert.match(html,/>Filters<\/summary>/);
   assert.match(html,/All account types/);
   assert.match(html,/All statuses/);
   assert.doesNotMatch(html,/Tax mapping/);

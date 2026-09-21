@@ -13,3 +13,40 @@ test('reversal retains original journal, missing mapping is atomic',()=>{let {st
 test('interstate tax, discounts, cess, duplicate number and invalid lines',()=>{const t=calculate({...draft,place:'Karnataka'},initial().config);assert.equal(t.igst,1800000);assert.equal(t.cgst,0);assert.equal(t.sgst,0);assert.throws(()=>calculate({...draft,lines:[{...draft.lines[0],qty:'0'}]},initial().config),/quantity/);const {state:s,result:i}=saved();assert.throws(()=>command(s,'save',{...draft,number:i.number}),/already exists/);const c=calculate({...draft,lines:[{...draft.lines[0],discount:'10',cess:'1'}]},initial().config);assert.equal(c.taxable,9000000);assert.equal(c.cess,90000)});
 test('tax-inclusive item prices are converted to taxable value without double charging tax',()=>{const result=calculate({...draft,lines:[{...draft.lines[0],rate:'1180',priceTaxMode:'inclusive',taxes:{cgst:9,sgst:9,igst:0,cess:0}}]},initial().config);assert.equal(result.taxable,100000);assert.equal(result.cgst,9000);assert.equal(result.sgst,9000);assert.equal(result.total,118000)});
 test('explicit component tax selection posts balanced accounts including cess',()=>{let s=seedAccounts(initial(),seed);const d={...draft,lines:[{...draft.lines[0],taxes:{cgst:9,sgst:9,igst:0,cess:1}}]};const saved=command(s,'save',d);s=command(saved.state,'post',{id:saved.result.id}).state;assert.equal(s.invoices[0].totals.total,11900000);assert.equal(s.invoices[0].totals.cess,100000);assert.equal(reports(s).liabilities,1900000);assert.equal(reports(s).debit,reports(s).credit);assert.throws(()=>calculate({...d,place:'Karnataka'},s.config),/Inter-state/);assert.throws(()=>calculate({...d,lines:[{...d.lines[0],taxes:{cgst:9,sgst:0,igst:0,cess:0}}]},s.config),/equal CGST/);const inter=calculate({...d,place:'Karnataka',lines:[{...d.lines[0],taxes:{cgst:0,sgst:0,igst:18,cess:1}}]},s.config);assert.equal(inter.total,11900000);assert.equal(inter.igst,1800000)});
+
+test('the invoice posts to the customer own receivable ledger when one is set',()=>{
+ let {state:s,result:i}=saved();
+ s.accounts=[...s.accounts,{code:'1110',name:'Customer Ledger - ABC',type:'Assets',nature:'Debit',active:true,isGroup:false,system:false,revision:1}];
+ s=command(s,'save',{...i,receivableAccount:'1110'}).state;
+ s=command(s,'post',{id:s.invoices[0].id}).state;
+ assert.ok(s.journals[0].lines.some(l=>l.account==='1110'&&l.debit===11800000),'the customer ledger is debited, not the generic 1100');
+ assert.equal(s.invoices[0].arAccount,'1110');
+});
+test('the invoice falls back to the configured receivable account when the customer has none',()=>{
+ let {state:s,result:i}=saved();
+ s=command(s,'post',{id:i.id}).state;
+ assert.ok(s.journals[0].lines.some(l=>l.account==='1100'&&l.debit===11800000),'config.ar still posts when no customer ledger is carried');
+});
+
+test('a recurring schedule is a setting on a posted invoice, refused elsewhere and reversible',()=>{
+ let {state:s,result:i}=saved();
+ assert.throws(()=>command(s,'recurring',{id:i.id,frequency:'Monthly',nextDate:'2026-10-04'}),/Post the invoice/,'a draft cannot be made recurring');
+ s=command(s,'post',{id:i.id}).state;
+ assert.throws(()=>command(s,'recurring',{id:i.id,frequency:'Fortnightly',nextDate:'2026-10-04'}),/how often/,'only the shared vocabulary is accepted');
+ assert.throws(()=>command(s,'recurring',{id:i.id,frequency:'Monthly',nextDate:'4 October'}),/next invoice date/,'the next date must be a real date');
+ assert.throws(()=>command(s,'recurring',{id:i.id,frequency:'Monthly',nextDate:'2026-10-04',endDate:'2026-09-04'}),/on or after/,'the end date cannot precede the next date');
+ const out=command(s,'recurring',{id:i.id,frequency:'Quarterly',nextDate:'2026-10-04',endDate:'2027-10-04',reason:'Recurring Quarterly from 2026-10-04'});
+ assert.equal(out.result.recurring.frequency,'Quarterly');
+ assert.equal(out.result.recurring.nextDate,'2026-10-04');
+ assert.equal(out.result.recurring.endDate,'2027-10-04');
+ assert.ok(out.result.recurring.setAt,'the schedule records when it was set');
+ assert.equal(out.state.journals.length,1,'setting a schedule posts nothing');
+ assert.equal(out.state.payments.length,0,'and records no payment');
+ assert.equal(out.state.audit.at(-1).action,'recurring','the write still leaves an audit line');
+ assert.match(out.state.audit.at(-1).reason,/Recurring Quarterly/,true,'with the schedule the operator set');
+ const off=command(out.state,'recurring',{id:i.id,off:true,reason:'Recurring schedule removed'});
+ assert.equal(off.result.recurring,null,'turning the schedule off writes null rather than dropping the key');
+ assert.equal(off.state.audit.at(-1).action,'recurring');
+ const cancelled=command(off.state,'cancel',{id:i.id,reason:'Duplicate invoice'}).state;
+ assert.throws(()=>command(cancelled,'recurring',{id:i.id,frequency:'Monthly',nextDate:'2026-11-04'}),/cancelled/,'a cancelled invoice cannot be scheduled');
+});

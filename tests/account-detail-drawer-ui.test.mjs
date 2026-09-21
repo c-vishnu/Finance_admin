@@ -36,7 +36,7 @@ test('the popup reuses the account drawer shell and the existing detail text sca
   assert.ok(css.includes('.am-detail-drawer .am-detail-body{flex:1;min-height:0;overflow-y:auto;padding:16px;background:#f6f8fb}'),'the body is the drawer scroll container');
   assert.ok(css.includes('.am-detail-drawer .am-detail-footer{flex:0 0 auto;justify-content:flex-start;padding:13px 16px;background:#fff;'),'the footer is pinned under the body');
   assert.ok(css.includes('.am-detail-top{'),'the Day Book transaction detail header keeps its rule');
-  const block=css.slice(css.indexOf('/* Account details right-side popup.'));
+  const from=css.indexOf('/* Account details right-side popup.');const next=css.indexOf('/*',from+10);const block=css.slice(from,next===-1?undefined:next);
   assert.ok(!/font-size:/.test(block),'the popup adds no new type scale, so nothing renders below the 12px floor');
   const rules=css.replace(/\/\*[\s\S]*?\*\//g,'');
   assert.ok(Math.min(...[...rules.matchAll(/font-size:([\d.]+)px/g)].map(match=>Number(match[1])))>=11,'the page keeps its existing text scale');

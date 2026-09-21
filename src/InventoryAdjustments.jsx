@@ -13,17 +13,19 @@
    a cash or bank account, which is why an inventory adjustment can never create
    a cash movement of its own. */
 import {useEffect,useMemo,useRef,useState} from 'react';
-import {IconAlertTriangle,IconArrowBackUp,IconArrowLeft,IconBan,IconCheck,IconChevronDown,IconCopy,IconDotsVertical,IconEdit,IconEye,IconFileDownload,IconFilter,IconHistory,IconInfoCircle,IconPlus,IconSearch,IconTrash,IconX} from '@tabler/icons-react';
+import {IconAlertTriangle,IconArrowBackUp,IconArrowLeft,IconBan,IconCheck,IconChevronDown,IconCopy,IconDots,IconDownload,IconEdit,IconEye,IconFilter,IconHistory,IconInfoCircle,IconPlus,IconSearch,IconTrash,IconX} from '@tabler/icons-react';
 import {money,today} from './invoice-engine.js';
 import {readAccounts,writeAccounts} from './account-store.js';
 import {findOrganisation,getBranchesForOrganisation,organisationBranches,scopePickerState} from './organisation-scope.js';
 import {getAccessibleOrganizations,getScopeOrganisations} from './organisation-context.js';
 import OrganisationBranchScope from './OrganisationBranchScope.jsx';
 import JournalAccountPicker from './JournalAccountPicker.jsx';
+import AdjustmentPreview from './AdjustmentPreview.jsx';
+import StatusPill from './StatusPill.jsx';
 import {readSettings} from './settings-store.js';
 import {useTerminology} from './terminology.jsx';
 import {itemSeeds} from './Items.jsx';
-import {ADJUSTMENT_ACTIONS,ADJUSTMENT_ENTRY_MODES,ADJUSTMENT_REASONS,ADJUSTMENT_STATUSES,ADJUSTMENT_TYPES,accountingPreview,adjustmentActivity,adjustmentAllowed,adjustmentCommand,adjustmentCsv,adjustmentImpact,adjustmentRows,blankAdjustment,blankLine,canonicalItems,configuredAdjustmentAccount,duplicateAdjustment,formatQuantity,itemsForOrganisation,nextAdjustmentNumber,storedLines,suggestedAdjustmentAccount,validateAdjustment} from './inventory-adjustments.js';
+import {ADJUSTMENT_ACTIONS,ADJUSTMENT_ENTRY_MODES,ADJUSTMENT_REASONS,ADJUSTMENT_STATUSES,ADJUSTMENT_TYPES,accountingPreview,adjustmentActivity,adjustmentAllowed,adjustmentCommand,adjustmentCsv,adjustmentImpact,adjustmentRows,blankAdjustment,blankLine,canonicalItems,configuredAdjustmentAccount,duplicateAdjustment,entryModeLabel,formatQuantity,itemsForOrganisation,nextAdjustmentNumber,storedLines,suggestedAdjustmentAccount,validateAdjustment} from './inventory-adjustments.js';
 import './operational-modules.css';
 import './inventory-adjustments.css';
 import EmptyState from './EmptyState.jsx';
@@ -41,13 +43,24 @@ const downloadText=(filename,text,type='text/csv;charset=utf-8')=>{const url=URL
 const adjustmentTotal=row=>sum(storedLines(row),'valueImpact');
 /* Viewing is always allowed. Every other entry is gated by the adjustment role
    duty that the command enforces again on its own side. */
-const ACTION_ICONS={View:IconEye,Edit:IconEdit,Duplicate:IconCopy,Export:IconFileDownload,Cancel:IconBan,Reverse:IconArrowBackUp};
-const ACTION_DUTY={Edit:'save',Duplicate:'save',Export:'export',Cancel:'cancel',Reverse:'reverse'};
+const ACTION_ICONS={View:IconEye,Edit:IconEdit,Duplicate:IconCopy,Export:IconDownload,Delete:IconTrash,Cancel:IconBan,Reverse:IconArrowBackUp};
+const ACTION_DUTY={Edit:'save',Duplicate:'save',Export:'export',Delete:'cancel',Cancel:'cancel',Reverse:'reverse'};
 const ACTION_LABELS={Reverse:'Create reversal'};
+/* The engine refuses two actions once a record has moved on. The menu states the reason and
+   disables the entry rather than hiding it, exactly as it already does for a role that lacks
+   the duty, so Edit, Duplicate and Delete are always offered and never silently missing. */
+const ACTION_BLOCKED={
+ Edit:row=>row.status==='Draft'?'':'Only a draft adjustment can be edited. An adjusted record is corrected with a reversal.',
+ Delete:row=>row.posted||row.status==='Adjusted'?'An adjusted adjustment already posted its journal. Create a reversal instead of deleting it.':''
+};
+const actionEntries=(actions,role,row,size)=>actions.map(action=>{const duty=ACTION_DUTY[action],allowed=!duty||adjustmentAllowed(role,duty),blocked=ACTION_BLOCKED[action]?ACTION_BLOCKED[action](row):'',Icon=ACTION_ICONS[action];return {action,label:ACTION_LABELS[action]||action,icon:<Icon size={size}/>,danger:action==='Cancel'||action==='Reverse'||action==='Delete',disabled:!allowed||!!blocked,reason:allowed?(blocked||''):`Your adjustment role (${role}) cannot ${action.toLowerCase()} this record.`}});
 
-function Badge({value}){return <span className={`opsBadge iaBadge ${statusClass(value)}`}>{value}</span>}
+const STATUS_TONES={'draft':'neutral','pending-approval':'warn','adjusted':'ok','cancelled':'danger'};
+/* The register's status cell and the create/detail head badges share this one pill, so a page never
+   shows two different status shapes. */
+function Badge({value}){const status=value||'Draft';return <StatusPill status={status} tone={STATUS_TONES[statusClass(status)]||'neutral'}/>}
 function Empty({title,text,variant="default"}){return <EmptyState variant={variant} title={title} description={text}/>}
-function Kebab({label,entries,onPick}){return <details className="iaKebab"><summary aria-label={label}><IconDotsVertical size={17}/></summary><div className="iaKebabMenu">{entries.map(entry=><button type="button" key={entry.action} className={entry.danger?'iaDanger':''} disabled={entry.disabled} title={entry.disabled?entry.reason:''} onClick={event=>{event.stopPropagation();event.currentTarget.closest('details')?.removeAttribute('open');onPick(entry.action)}}>{entry.icon}<span>{entry.label}</span></button>)}</div></details>}
+function Kebab({label,entries,onPick}){return <details className="iaKebab"><summary aria-label={label}><IconDots size={17}/></summary><div className="iaKebabMenu">{entries.map(entry=><button type="button" key={entry.action} className={entry.danger?'iaDanger':''} disabled={entry.disabled} title={entry.disabled?entry.reason:''} onClick={event=>{event.stopPropagation();event.currentTarget.closest('details')?.removeAttribute('open');onPick(entry.action)}}>{entry.icon}<span>{entry.label}</span></button>)}</div></details>}
 
 export default function InventoryAdjustments({seed,notify=()=>{},onNavigate=()=>{}}){
   const [db,setDb]=useState(()=>{try{return readAccounts(seed)}catch{return null}});
@@ -61,6 +74,9 @@ export default function InventoryAdjustments({seed,notify=()=>{},onNavigate=()=>
   const role=mode==='business'?'Admin':'Accountant';
   const [view,setView]=useState('list');
   const [selectedId,setSelectedId]=useState('');
+  /* Preview replaces the detail screen with the printable document, the way Journal Entries
+     opens JournalPreview. Empty means the detail screen is showing. */
+  const [preview,setPreview]=useState('');
   const [form,setForm]=useState(null);
   const [touched,setTouched]=useState(false);
   const [dialog,setDialog]=useState(null);
@@ -118,14 +134,25 @@ export default function InventoryAdjustments({seed,notify=()=>{},onNavigate=()=>
     return {...base,number:nextAdjustmentNumber(dbRef.current||{}),lines:[blankLine('',branch?.id||'')]};
   }
   const openCreate=preset=>{setError('');setBanner('');setTouched(false);setForm(preset||newAdjustment());setView('create')};
-  const openDetail=row=>{setError('');setBanner('');setSelectedId(row.id);setView('detail')};
+  const openDetail=row=>{setError('');setBanner('');setPreview('');setSelectedId(row.id);setView('detail')};
   /* An edited draft is re-opened in rupees, because the stored line keeps paise. */
   const openEdit=row=>{setError('');setBanner('');setTouched(false);setForm({...row,number:row.number,lines:storedLines(row).map(line=>({id:line.id,itemId:line.itemId,locationId:line.locationId,qtyDelta:line.qtyDelta==null?'':String(line.qtyDelta),newQty:line.newQty==null?'':String(line.newQty),valueDelta:line.valueDelta==null?'':String(line.valueDelta/100),newValue:line.newValue==null?'':String(line.newValue/100)}))});setView('create')};
-  const backToList=()=>{setForm(null);setTouched(false);setDialog(null);setView('list')};
+  const backToList=()=>{setForm(null);setTouched(false);setDialog(null);setPreview('');setView('list')};
   function saveDraft(){const doc=run('save',form||{});if(doc){backToList();setBanner(doc.number+' saved as draft');notify('Inventory adjustment saved as draft')}return doc}
   function saveAndAdjust(){const doc=run('save-and-adjust',form||{});if(doc){setTouched(false);setForm(null);setSelectedId(doc.id);setView('detail');setBanner(doc.number+' adjusted'+(doc.journalId?' and posted to the ledger':''));notify('Inventory and accounting updated')}return doc}
   function submitForApproval(){const saved=run('save',form||{});if(!saved)return null;const submitted=run('submit',{id:saved.id});if(submitted){backToList();setBanner(saved.number+' submitted for approval');notify('Adjustment submitted for approval')}return submitted}
   function duplicateRow(row){openCreate({...duplicateAdjustment(dbRef.current||{},row),id:''})}
+  /* Deleting is refused by the engine for a record that posted its journal, and the menu says
+     so before the click. A permitted delete asks for confirmation first. */
+  function deleteRow(row){
+    if(!window.confirm('Delete '+row.number+'? This cannot be undone.'))return;
+    const doc=run('delete',{id:row.id});
+    if(!doc)return;
+    if(selectedId===row.id)setSelectedId('');
+    setView('list');
+    setBanner(row.number+' deleted');
+    notify('Inventory adjustment deleted');
+  }
   function exportRow(row){downloadText((row.number||'inventory-adjustment')+'.csv','\ufeff'+adjustmentCsv(row,{items,settings}))}
   function adjustRow(id){const doc=run('adjust',{id});if(doc){setSelectedId(doc.id);setView('detail');setBanner(doc.number+' adjusted'+(doc.journalId?' and posted to the ledger':''));notify('Inventory and accounting updated')}}
   function submitRow(id){const doc=run('submit',{id});if(doc){setBanner(doc.number+' submitted for approval');notify('Adjustment submitted for approval')}}
@@ -143,19 +170,23 @@ export default function InventoryAdjustments({seed,notify=()=>{},onNavigate=()=>
   if(!db)return <section className="opsPage iaPage"><div className="opsCard iaCard"><Empty title="Inventory adjustments are unavailable" text="Stored accounting data could not be read, so nothing was changed. Reload the workspace to try again."/></div></section>;
 
   return <section className={`opsPage iaPage ${view==='create'?'iaCreatePage':view==='detail'?'iaDetailPage':'iaRegisterPage'}`}>
-    {view==='list'&&<RegisterPage rows={rows} role={role} banner={banner} branchNameOf={branchLabel} accountNameOf={accountNameOf} onNew={()=>openCreate()} onOpen={openDetail} onEdit={openEdit} onDuplicate={duplicateRow} onExport={exportRow} onCancel={row=>setDialog({kind:'cancel',id:row.id,reason:''})} onReverse={row=>setDialog({kind:'reverse',id:row.id,date:today(),reason:''})}/>}
+    {view==='list'&&<RegisterPage rows={rows} role={role} banner={banner} branchNameOf={branchLabel} accountNameOf={accountNameOf} onNew={()=>openCreate()} onOpen={openDetail} onEdit={openEdit} onDuplicate={duplicateRow} onExport={exportRow} onDelete={deleteRow} onCancel={row=>setDialog({kind:'cancel',id:row.id,reason:''})} onReverse={row=>setDialog({kind:'reverse',id:row.id,date:today(),reason:''})}/>}
     {view==='create'&&form&&<CreatePage db={db} form={form} setForm={setForm} touched={touched} setTouched={setTouched} role={role} settings={settings} items={items} organisations={organisations} postingAccounts={postingAccounts} organisationOf={organisationOf} branchesOf={branchesOf} onBack={backToList} onCreateItem={()=>onNavigate('Items')} onSaveDraft={saveDraft} onSaveAndAdjust={saveAndAdjust} onSubmit={submitForApproval}/>}
-    {view==='detail'&&(selected?<DetailPage row={selected} db={db} items={items} settings={settings} role={role} branchNameOf={branchLabel} accountNameOf={accountNameOf} onBack={backToList} onOpen={openDetail} onEdit={openEdit} onDuplicate={duplicateRow} onExport={exportRow} onCancel={row=>setDialog({kind:'cancel',id:row.id,reason:''})} onReverse={row=>setDialog({kind:'reverse',id:row.id,date:today(),reason:''})} onAdjust={adjustRow} onSubmit={submitRow} onNavigate={onNavigate}/>:<div className="opsCard iaCard"><Empty title="Adjustment not found" text="This adjustment is no longer in the register."/></div>)}
+    {view==='detail'&&(selected?(preview==='document'?<AdjustmentPreview row={selected} items={items} accountNameOf={accountNameOf} branchNameOf={branchLabel} onClose={()=>setPreview('')}/>:<DetailPage row={selected} db={db} items={items} settings={settings} role={role} branchNameOf={branchLabel} accountNameOf={accountNameOf} onBack={backToList} onOpen={openDetail} onEdit={openEdit} onDuplicate={duplicateRow} onExport={exportRow} onDelete={deleteRow} onCancel={row=>setDialog({kind:'cancel',id:row.id,reason:''})} onReverse={row=>setDialog({kind:'reverse',id:row.id,date:today(),reason:''})} onAdjust={adjustRow} onSubmit={submitRow} onPreview={()=>setPreview('document')} onNavigate={onNavigate}/>):<div className="opsCard iaCard"><Empty title="Adjustment not found" text="This adjustment is no longer in the register."/></div>)}
     {dialog&&<AdjustmentDialog dialog={dialog} setDialog={setDialog} onConfirm={confirmDialog}/>}
     {error&&<p role="alert" className="opsError"><IconAlertTriangle/>{error}<button type="button" aria-label="Dismiss message" onClick={()=>setError('')}><IconX/></button></p>}
   </section>;
 }
 const lineLabel=line=>[line.name,line.sku].filter(Boolean).join(' · ')||'Item';
-const REGISTER_COLUMNS=['Reference','Date','Type','Organisation','Branch','Items','Amount','Status','Created By','Actions'];
+/* The register reads as four merged columns plus Status: Reference over Date, the adjustment
+   type over its Entry mode, Organisation over Branch, and the item count over the signed
+   amount. Reason, adjustment account and Created by left the register because the detail
+   screen already carries them under Adjustment information. */
+const REGISTER_COLUMNS=['Reference','Type / Mode of adjustment','Organisation','Items','Status','Actions'];
 
 /* The register: one enterprise table with search, filters, sorting, pagination,
    a row click into the detail screen and a status-aware action menu. */
-function RegisterPage({rows,role,banner,branchNameOf,accountNameOf,onNew,onOpen,onEdit,onDuplicate,onExport,onCancel,onReverse}){
+function RegisterPage({rows,role,banner,branchNameOf,accountNameOf,onNew,onOpen,onEdit,onDuplicate,onExport,onDelete,onCancel,onReverse}){
   const [query,setQuery]=useState('');
   const [type,setType]=useState('All types');
   const [status,setStatus]=useState('All statuses');
@@ -176,16 +207,12 @@ function RegisterPage({rows,role,banner,branchNameOf,accountNameOf,onNew,onOpen,
   const pages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));
   const current=Math.min(page,pages);
   const visible=filtered.slice((current-1)*PAGE_SIZE,current*PAGE_SIZE);
-  const handlers={View:onOpen,Edit:onEdit,Duplicate:onDuplicate,Export:onExport,Cancel:onCancel,Reverse:onReverse};
-  const entriesFor=row=>(ADJUSTMENT_ACTIONS[row.status]||['View']).map(action=>{const duty=ACTION_DUTY[action],allowed=!duty||adjustmentAllowed(role,duty),Icon=ACTION_ICONS[action];return {action,label:ACTION_LABELS[action]||action,icon:<Icon size={16}/>,danger:action==='Cancel'||action==='Reverse',disabled:!allowed,reason:`Your adjustment role (${role}) cannot ${action.toLowerCase()} this record.`}});
+  const handlers={View:onOpen,Edit:onEdit,Duplicate:onDuplicate,Export:onExport,Delete:onDelete,Cancel:onCancel,Reverse:onReverse};
+  const entriesFor=row=>actionEntries(ADJUSTMENT_ACTIONS[row.status]||['View'],role,row,16);
   const total=adjustmentTotal;
   return <>
-    <div className="iaHeading">
-      <div><h1>Inventory Adjustments</h1><p>Adjust inventory quantities or values and keep your accounting records accurate.</p></div>
-      <div className="iaHeadActions"><button className="primary" type="button" onClick={onNew}><IconPlus/>New Adjustment</button></div>
-    </div>
-    {banner&&<p className="iaBanner" role="status"><IconCheck size={16}/>{banner}</p>}
-    <div className="opsCard iaCard iaRegisterCard">
+    <div className="iaHeading registerHead">
+      <div className="registerHeadText"><h2>Inventory Adjustments</h2><p>Adjust inventory quantities or values and keep your accounting records accurate.</p></div>
       <div className="iaRegisterBar">
         <label className="iaSearch"><IconSearch/><input aria-label="Search adjustments" placeholder="Search reference, item, reason or person&hellip;" value={query} onChange={event=>setQuery(event.target.value)}/></label>
         <details className="iaFilters">
@@ -201,20 +228,20 @@ function RegisterPage({rows,role,banner,branchNameOf,accountNameOf,onNew,onOpen,
           </div>
         </details>
       </div>
+      <div className="iaHeadActions"><button className="primary" type="button" onClick={onNew}><IconPlus/>New Adjustment</button></div>
+    </div>
+    {banner&&<p className="iaBanner" role="status"><IconCheck size={16}/>{banner}</p>}
+    <div className="opsCard iaCard iaRegisterCard">
       <div className="opsTable iaTable">
         <table>
-          <thead><tr>{REGISTER_COLUMNS.map(column=><th key={column} scope="col" className={column==='Actions'?'iaActionsCell':column==='Amount'?'iaNum':undefined}>{column}</th>)}</tr></thead>
+          <thead><tr>{REGISTER_COLUMNS.map(column=><th key={column} scope="col" className={column==='Actions'?'iaActionsCell':undefined}>{column}</th>)}</tr></thead>
           <tbody>
             {visible.map(row=><tr key={row.id} className="iaRow" onClick={()=>onOpen(row)}>
-              <td><button type="button" className="iaLink" onClick={()=>onOpen(row)}>{row.number}</button><small>{row.reason||'Reason not recorded'}</small></td>
-              <td>{fmtDate(row.date)}</td>
-              <td>{row.type}</td>
-              <td>{row.companyName||row.companyId||'Not recorded'}<small>{row.account?accountNameOf(row.account):'Account not mapped'}</small></td>
-              <td>{branchNameOf(row.branchId)||'Not recorded'}</td>
-              <td>{storedLines(row).length} {storedLines(row).length===1?'item':'items'}</td>
-              <td className={'iaNum '+(total(row)<0?'iaDown':total(row)>0?'iaUp':'')}>{signedMoney(total(row))}</td>
+              <td><button type="button" className="iaLink" onClick={()=>onOpen(row)}>{row.number}</button><small>{fmtDate(row.date)}</small></td>
+              <td>{row.type}<small className="iaEntryModeLine">{'Entry mode · '+entryModeLabel(row.entryMode)}</small></td>
+              <td>{row.companyName||row.companyId||'Not recorded'}<small>{branchNameOf(row.branchId)||'Branch not recorded'}</small></td>
+              <td>{storedLines(row).length} {storedLines(row).length===1?'item':'items'}<small className={'iaAmountLine '+(total(row)<0?'iaDown':total(row)>0?'iaUp':'')}>{signedMoney(total(row))}</small></td>
               <td><Badge value={row.status}/></td>
-              <td>{row.createdBy||'Not recorded'}</td>
               <td className="iaActionsCell" onClick={event=>event.stopPropagation()}><button type="button" onClick={()=>onOpen(row)}><IconEye size={16}/>View</button><Kebab label={'More actions for '+row.number} entries={entriesFor(row)} onPick={action=>handlers[action](row)}/></td>
             </tr>)}
             {!visible.length&&<tr className="emptyStateRow"><td colSpan={REGISTER_COLUMNS.length} className="emptyStateCell"><EmptyState variant="adjustment" title="No adjustments found" description="Create an inventory adjustment to correct a quantity or value." actionLabel="Create Adjustment" onAction={onNew}/></td></tr>}
@@ -410,7 +437,7 @@ function CreatePage({db,form,setForm,touched,setTouched,role,settings,items,orga
 /* The detail screen is the adjustment's own record: what it did - or will do - to
    inventory and to the ledger, and who touched it. A posted adjustment is never
    edited here; it is corrected by a reversal document instead. */
-function DetailPage({row,db,items,settings,role,branchNameOf,accountNameOf,onBack,onOpen,onEdit,onDuplicate,onExport,onCancel,onReverse,onAdjust,onSubmit,onNavigate}){
+function DetailPage({row,db,items,settings,role,branchNameOf,accountNameOf,onBack,onOpen,onEdit,onDuplicate,onExport,onDelete,onCancel,onReverse,onAdjust,onSubmit,onPreview,onNavigate}){
   const lines=storedLines(row);
   const valueType=row.type===VALUE_TYPE;
   const approval=settings.approvals?.inventoryAdjustments!==false;
@@ -429,8 +456,8 @@ function DetailPage({row,db,items,settings,role,branchNameOf,accountNameOf,onBac
     ?(approval?{label:'Submit for approval',run:()=>onSubmit(row.id)}:canPost?{label:'Save & adjust',run:()=>onAdjust(row.id)}:null)
     :row.status==='Pending Approval'&&adjustmentAllowed(role,'approve')?{label:'Approve & adjust',run:()=>onAdjust(row.id)}:null;
   const menuActions=(ADJUSTMENT_ACTIONS[row.status]||['Export']).filter(action=>action!=='View'&&!(action==='Reverse'&&row.reversedBy));
-  const menuHandlers={Edit:onEdit,Duplicate:onDuplicate,Export:onExport,Cancel:onCancel,Reverse:onReverse};
-  const menuEntries=menuActions.map(action=>{const duty=ACTION_DUTY[action],allowed=!duty||adjustmentAllowed(role,duty),Icon=ACTION_ICONS[action];return {action,label:ACTION_LABELS[action]||action,icon:<Icon size={16}/>,danger:action==='Cancel'||action==='Reverse',disabled:!allowed,reason:`Your adjustment role (${role}) cannot ${action.toLowerCase()} this record.`}});
+  const menuHandlers={Edit:onEdit,Duplicate:onDuplicate,Export:onExport,Delete:onDelete,Cancel:onCancel,Reverse:onReverse};
+  const menuEntries=actionEntries(menuActions,role,row,16);
   const reversalAllowed=row.status==='Adjusted'&&!row.reversedBy&&adjustmentAllowed(role,'reverse');
   return <>
     <header className="opsHead">
@@ -440,6 +467,9 @@ function DetailPage({row,db,items,settings,role,branchNameOf,accountNameOf,onBac
       </div>
       <div className="iaHeadSide">
         <Badge value={row.status}/>
+        {/* Preview is the printable document, opened only on request, the way the other
+            document screens open theirs. */}
+        <button type="button" className="iaPreviewButton" onClick={onPreview}><IconEye size={16}/>Preview</button>
         {statusAction&&<button type="button" className="primary" onClick={statusAction.run}>{statusAction.label}</button>}
         {reversalAllowed&&<button type="button" onClick={()=>onReverse(row)}><IconArrowBackUp size={16}/>Create reversal</button>}
         <Kebab label={'More actions for '+row.number} entries={menuEntries} onPick={action=>menuHandlers[action](row)}/>
@@ -454,6 +484,7 @@ function DetailPage({row,db,items,settings,role,branchNameOf,accountNameOf,onBac
       <dl className="iaFacts">
         <div><dt>Date</dt><dd>{fmtDate(row.date)}</dd></div>
         <div><dt>Adjustment type</dt><dd>{row.type}</dd></div>
+        <div><dt>Entry mode</dt><dd>{entryModeLabel(row.entryMode||'')}</dd></div>
         <div><dt>Organisation</dt><dd>{row.companyName||row.companyId||'Not recorded'}</dd></div>
         <div><dt>Branch / location</dt><dd>{row.branchName||branchNameOf(row.branchId)}</dd></div>
         <div><dt>Reason</dt><dd>{row.reason||'Not recorded'}</dd></div>

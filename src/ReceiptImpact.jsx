@@ -25,7 +25,7 @@ export function AccountingImpact({db,receipt,context}){
 export default function ReceiptImpact({db,receipt,initialTab='Customer Ledger',onNavigate}){
  const [tab,setTab]=useState(initialTab);
  const rows=receiptLedger(db,receipt,tab);
- return <><div className="ivTabs receiptLedgerTabs" role="tablist" aria-label="Ledger impact views">{['Customer Ledger','Bank/Cash Ledger','Journal Entry View'].map(t=><button key={t} role="tab" aria-selected={tab===t} className={tab===t?'active':''} onClick={()=>setTab(t)}>{t}</button>)}</div>
+ return <><div className="itemDetailTabs ivDetailTabs receiptLedgerTabs" role="tablist" aria-label="Ledger impact views">{['Customer Ledger','Bank/Cash Ledger','Journal Entry View'].map(t=><button key={t} role="tab" aria-selected={tab===t} className={tab===t?'active':''} onClick={()=>setTab(t)}>{t}</button>)}</div>
  {tab==='Journal Entry View'?<JournalTables db={db} journals={receiptJournals(db,receipt)} receipt={receipt}/>:<>
  <h3>{tab==='Customer Ledger'?'Customer trade receivables':db.accounts.find(a=>a.code===receipt.bank)?.name||receipt.bank}</h3>
  <p>{tab==='Customer Ledger'?'Posted receivable movements for this customer. Advances remain in liability until allocated. Normal receipt allocation does not duplicate the credit.':'All posted movements in this bank/cash account, including other transactions.'} Balance is debit less credit; only recorded journal history is included.</p>

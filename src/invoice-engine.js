@@ -1,6 +1,8 @@
 // Browser-local repository. All monetary values are integer paise; one commit per command.
 import {validatePostingDate} from './period-locking.js';
 export const KEY='wayvida-accounting-v1';
+/* How an invoice can repeat. One vocabulary, read by the register dialog and checked by the engine. */
+export const RECURRING_FREQUENCIES=['Monthly','Quarterly','Half-Yearly','Yearly'];
 export const money=n=>((n||0)/100).toLocaleString('en-IN',{style:'currency',currency:'INR'});
 export const today=()=>new Date().toLocaleDateString('en-CA');
 export function minor(value){if(!/^\d+(\.\d{1,2})?$/.test(String(value)))throw Error('Enter a non-negative amount with at most two decimals.');const [a,b='']=String(value).split('.');const n=Number(a)*100+Number(b.padEnd(2,'0'));if(!Number.isSafeInteger(n)||n>1e13)throw Error('Amount is too large.');return n}
@@ -45,12 +47,27 @@ export function command(state,action,payload){const s=clone(state),p=clone(paylo
   if(!i)fail('Invoice not found.');result=i;
   if(action==='submit'){if(i.status!=='Draft')fail('Only drafts may be submitted.');i.status='Pending Approval';}
   else if(action==='post'){
-   if(i.posted)return {state:s,result:i};if(!['Draft','Pending Approval'].includes(i.status))fail('Invoice cannot be posted.');const t=calculate(i,i.taxPolicy||s.config);if(t.total<=0)fail('Invoice total must be positive.');validateAccountTaxes(s,t);const ar=account(s,s.config.ar,['Assets']);const lines=[{account:ar,debit:t.total,credit:0}];t.lines.forEach(l=>lines.push({account:account(s,l.income||s.config.sales,['Income']),debit:0,credit:l.taxable}));for(const k of ['cgst','sgst','igst','cess'])if(t[k])lines.push({account:account(s,s.config[k],['Liabilities']),debit:0,credit:t[k],description:k.toUpperCase()});if(t.roundOff)lines.push({account:account(s,s.config.round,['Expenses']),debit:Math.max(-t.roundOff,0),credit:Math.max(t.roundOff,0)});const j=journal(s,i,'Sales Invoice',lines,i.date,'invoice:'+i.id);Object.assign(i,{posted:true,status:'Approved',totals:t,journalId:j.id,arAccount:ar,postedAt:j.createdAt});
+   if(i.posted)return {state:s,result:i};if(!['Draft','Pending Approval'].includes(i.status))fail('Invoice cannot be posted.');const t=calculate(i,i.taxPolicy||s.config);if(t.total<=0)fail('Invoice total must be positive.');validateAccountTaxes(s,t);const ar=account(s,i.receivableAccount||s.config.ar,['Assets']);const lines=[{account:ar,debit:t.total,credit:0}];t.lines.forEach(l=>lines.push({account:account(s,l.income||s.config.sales,['Income']),debit:0,credit:l.taxable}));for(const k of ['cgst','sgst','igst','cess'])if(t[k])lines.push({account:account(s,s.config[k],['Liabilities']),debit:0,credit:t[k],description:k.toUpperCase()});if(t.roundOff)lines.push({account:account(s,s.config.round,['Expenses']),debit:Math.max(-t.roundOff,0),credit:Math.max(t.roundOff,0)});const j=journal(s,i,'Sales Invoice',lines,i.date,'invoice:'+i.id);Object.assign(i,{posted:true,status:'Approved',totals:t,journalId:j.id,arAccount:ar,postedAt:j.createdAt});
   }else if(action==='send'){if(!i.posted||i.status==='Cancelled')fail('Post the invoice first.');i.status='Sent';}
   else if(action==='pay'){
    if(s.payments.some(x=>x.token===p.token))return {state:s,result:i};if(!p.token)fail('Payment request ID required.');if(!i.posted||i.status==='Cancelled')fail('Only posted invoices can receive payments.');if(!dateOK(p.date)||p.date<i.date)fail('Payment date must be on or after invoice date.');const amount=minor(p.amount);if(amount<=0||amount>outstanding(s,i))fail('Payment must be positive and cannot exceed outstanding.');const bank=s.accounts.find(a=>a.code===p.bank&&a.active&&a.type==='Assets'&&/bank|cash/i.test(a.name));if(!bank)fail('Select an active cash or bank account.');const j=journal(s,i,'Customer Payment',[{account:bank.code,debit:amount,credit:0},{account:i.arAccount,debit:0,credit:amount}],p.date,'payment:'+p.token);s.payments.push({id:crypto.randomUUID(),number:'PAY-'+String(s.payments.length+1).padStart(4,'0'),invoiceId:i.id,customerId:i.customerId,amount,date:p.date,bank:p.bank,reference:p.reference||'',journalId:j.id,token:p.token});
   }else if(action==='cancel'){
    if(i.status==='Cancelled')return {state:s,result:i};if(!p.reason?.trim())fail('A cancellation reason is required.');if(s.payments.some(x=>x.invoiceId===i.id&&!x.reversed)||(s.receiptAllocations||[]).some(a=>a.invoiceId===i.id&&!a.voided))fail('This invoice has payments. A credit note and refund workflow is required; cancellation is blocked.');if((s.creditNotes||[]).some(c=>c.originalInvoiceId===i.id&&c.status!=='Cancelled'&&c.posted)||(s.creditApplications||[]).some(a=>a.invoiceId===i.id&&!a.voided))fail('Cancel or reverse the related credit notes first.');if(i.posted){const original=s.journals.find(j=>j.id===i.journalId);journal(s,i,'Invoice Reversal',original.lines.map(l=>({...l,debit:l.credit,credit:l.debit})),today(),'reverse:'+i.id)}i.status='Cancelled';i.reason=p.reason;
+  }else if(action==='recurring'){
+   /* A repeat schedule is a setting on a real invoice, never a second posting: it stores the
+      cadence and the next date on the invoice and stops there. Nothing is generated or posted by
+      this action, and the register says so where the operator sets it. Clearing it writes null
+      rather than deleting the key, so an invoice that was once recurring still reads honestly. */
+   if(i.status==='Cancelled')fail('A cancelled invoice cannot be made recurring.');
+   if(p.off){i.recurring=null;}
+   else{
+    if(!i.posted)fail('Post the invoice before setting a recurring schedule.');
+    if(!RECURRING_FREQUENCIES.includes(p.frequency))fail('Choose how often the invoice repeats.');
+    if(!dateOK(p.nextDate))fail('Choose the next invoice date.');
+    if(p.endDate&&!dateOK(p.endDate))fail('Enter a valid end date.');
+    if(p.endDate&&p.endDate<p.nextDate)fail('The end date must be on or after the next invoice date.');
+    i.recurring={frequency:p.frequency,nextDate:p.nextDate,endDate:p.endDate||'',setAt:new Date().toISOString()};
+   }
   }else fail('Unknown command.');
  }
  s.audit.push({id:crypto.randomUUID(),action,invoiceId:result.id||null,at:new Date().toISOString(),by:'Admin',journalId:result.journalId||null,reason:p.reason||''});return {state:s,result};

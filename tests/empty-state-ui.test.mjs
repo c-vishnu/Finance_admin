@@ -21,10 +21,11 @@ test('one reusable EmptyState component backs every table empty state',()=>{
   }
   assert.ok(component.includes('viewBox="0 0 96 96"'),'every variant shares one illustration frame');
   assert.ok(component.includes('aria-hidden="true"'),'the illustration is decorative for assistive technology');
-  for(const variant of ['budget','lock','request','journal','adjustment','default']){
+  for(const variant of ['budget','lock','request','journal','adjustment','customer','default']){
     assert.ok(component.includes(variant+': <>'),variant+' has its own illustration variant');
   }
   assert.ok(component.includes('{ART[variant]||ART.default}'),'an unknown variant falls back to the default art');
+  assert.ok(component.includes('customer: <>')&&component.includes('<circle className="emptyDraw" cx="48" cy="41" r="9"/>')&&component.includes('<path className="emptyDraw emptyDrawLate" d="M32 68a16 16 0 0 1 32 0"/>'),'the customer variant is a contact glyph that draws itself on in the same two beats as the rest');
   assert.ok(component.includes('action||(actionLabel&&onAction?'),'the call to action only renders when it is actually wired');
   assert.deepEqual(component.split('\n').filter(line=>line.startsWith('import ')),['import React from "react";','import "./empty-state.css";'],'the component depends on nothing but React and its own stylesheet');
   assert.ok(!/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}]/u.test(component),'no emoji appear in the empty states');

@@ -5,7 +5,7 @@
 
 ## Prototype UI gaps - 2026-09-16
 
-- The Inventory Adjustments confirmation dialog header is still caught by the legacy global app-bar element rule. `src/inventory-adjustments.css` styles the title block as `.iaModal>header` but never resets `position`, and `src/styles.css` declares an unscoped `header{position:fixed;z-index:10;top:0;left:206px;right:0;height:58px;...}`, so that title block is pulled out of `.iaModal` and printed as a 58px fixed bar instead of sitting inside the dialog. The Create Item section cards, the Period Closing cards and the budget and account drawers already carry a scoped `header` reset; this dialog does not. Reported, not fixed - the change that found it touched only the Create Item page.
+- The Inventory Adjustments confirmation dialog header is still caught by the legacy global app-bar element rule. `src/inventory-adjustments.css` styles the title block as `.iaModal>header` but never resets `position`, and `src/styles.css` declares an unscoped `header{position:fixed;z-index:10;top:0;left:206px;right:0;height:58px;...}`, so that title block is pulled out of `.iaModal` and printed as a 58px fixed bar instead of sitting inside the dialog. The Create Item section cards, the Period Lock cards and the budget and account drawers already carry a scoped `header` reset; this dialog does not. Reported, not fixed - the change that found it touched only the Create Item page.
 
 ## COA production gaps after the enterprise prototype upgrade
 
@@ -48,5 +48,5 @@ Highest-priority gap: move settings, roles, numbering and posting validation to 
 
 ## Period-control production gap
 
-The Period Closing prototype is navigable, styled, persistent, audited, and covered by domain tests. It is not a production lock: browser storage and simulated roles can be bypassed, and the operational transaction engines do not yet share an authenticated server-side command boundary. Production work must enforce the period policy atomically with every dated mutation.
+The Period Lock prototype is navigable, styled, persistent, audited, and covered by domain tests. It is not a production lock: browser storage and simulated roles can be bypassed, and the operational transaction engines do not yet share an authenticated server-side command boundary. Production work must enforce the period policy atomically with every dated mutation.
 

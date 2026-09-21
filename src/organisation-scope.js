@@ -61,7 +61,7 @@ export function selectedOrganisations(references,organisations=[],{fallbackToLis
 /* The state an organisation/branch picker renders from: which selectors the
    available list justifies, the resolved selection, the branch options of the
    chosen organisation (never another organisation’s branch) and the context
-   line. Create Journal Entry, the Period Closing lock drawer and the request
+   line. Create Journal Entry, the Period Lock lock drawer and the request
    unlock drawer all render from this, so the control cannot drift. */
 export function scopePickerState({organisations=[],companyIds=[],branchIds=[],label='Locking for'}={}){
  const visibility=getScopeVisibility({organisations,label});

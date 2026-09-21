@@ -1,4 +1,424 @@
 .salesOrderDialog{width:1060px}.salesOrdersPage .itemFormGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.soLines{overflow:auto}.soLine{display:grid;grid-template-columns:minmax(220px,1fr) 90px 110px 110px 30px;gap:12px;align-items:start;padding:12px 0;border-bottom:1px solid #e4e9f0;min-width:650px}.soLineHead{font-size:12px;color:#667085;background:#f8fafc;padding:12px 6px}.soLine input,.soLine select,.soTotals input,.soTotals select{font:inherit;border:1px solid #d0d5dd;border-radius:6px;height:38px;padding:0 8px;width:100%;background:#fff;min-width:0}.soLine>div input{margin-top:7px}.soLine strong{padding-top:10px;text-align:right}.soLine button,.soFile button{border:0;background:none;color:#b42318;padding:8px}.soRowActions{display:flex;gap:10px;margin-top:12px}.soRowActions button{border:1px solid #d0d5dd;border-radius:6px;background:#fff;color:#175cd3;padding:8px 12px}.soBottom{display:grid;grid-template-columns:1fr 340px;gap:32px;margin-top:28px}.soNotes{display:flex;flex-direction:column;gap:18px;min-width:0}.soNotes label{display:flex;flex-direction:column;gap:8px}.soNotes textarea{font:inherit;border:1px solid #d0d5dd;border-radius:6px;padding:10px;min-height:80px;resize:vertical}.soNotes small{font-size:12px}.soNotes input[type=file]{max-width:100%}.soTotals{padding:18px;background:#f8fafc;border:1px solid #e4e9f0;border-radius:8px;align-self:start}.soTotals p{display:flex;justify-content:space-between;gap:10px}.soTotals label{display:flex;flex-direction:column;gap:8px;margin:15px 0}.soTotals label>div{display:flex;gap:8px}.soGrand{border-top:1px solid #d0d5dd;padding-top:16px;font-size:16px}.soFile{display:flex;justify-content:space-between;align-items:center;gap:8px}.soFile a{overflow-wrap:anywhere;color:#175cd3}.salesOrdersPage input:focus-visible,.salesOrdersPage select:focus-visible,.salesOrdersPage textarea:focus-visible{outline:2px solid #b2ccff;outline-offset:1px}@media(max-width:720px){.salesOrdersPage .itemFormGrid,.soBottom{grid-template-columns:minmax(0,1fr)}.salesOrdersPage .itemDialogFooter{flex-wrap:wrap;gap:6px}.salesOrdersPage .itemDialogFooter button{padding:0 10px;font-size:12px}}
-.soCreatePage .salesOrderForm{width:100%;max-width:none;margin:0;background:transparent;box-shadow:none;border:0;padding:0}.soCreatePage .ivHeading{padding:0;border:0}.soCreatePage .ivFields{grid-template-columns:repeat(3,minmax(0,1fr))}.soCreatePage .soLine{align-items:center;grid-template-columns:minmax(240px,1fr) 110px 140px 140px 42px}.soCreatePage .soLine strong{padding-top:0}.soCreatePage .soLineHead{border-radius:6px 6px 0 0}.soCreatePage .soTotals{background:white;border:0;padding:0}.soCreatePage .soBottom{margin-top:0}.soCreatePage .ivFooter{margin-top:20px}.soCreatePage .soNotes small{line-height:1.5}.soCreatePage .ivHeading h2{margin:0 0 7px}.soCreatePage .soRowActions button{color:#286aee}@media(max-width:900px){.soCreatePage .ivFields{grid-template-columns:repeat(2,minmax(0,1fr))}.soCreatePage .soBottom{grid-template-columns:1fr}}@media(max-width:540px){.soCreatePage .ivFields{grid-template-columns:1fr}.soCreatePage .ivFooter{flex-wrap:wrap}}
-.salesOrdersPage{max-width:100%}.soPageHeading{padding:2px 0}.soEyebrow{display:block;margin-bottom:5px;color:#286aee;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}.salesOrdersPage .soCreateButton{display:inline-flex;align-items:center;gap:8px;padding:0 17px}.soListCard{box-shadow:0 8px 24px rgba(16,24,40,.045)}.salesOrdersPage .itemsTools label{width:min(430px,100%)}.soOrdersTable{width:100%;min-width:920px!important;table-layout:fixed}.soOrdersTable th,.soOrdersTable td{padding-left:11px;padding-right:11px;overflow:hidden;text-overflow:ellipsis}.soOrdersTable th:nth-child(1){width:10%}.soOrdersTable th:nth-child(2){width:11%}.soOrdersTable th:nth-child(3){width:15%}.soOrdersTable th:nth-child(4){width:11%}.soOrdersTable th:nth-child(5){width:13%}.soOrdersTable th:nth-child(6){width:10%}.soOrdersTable th:nth-child(7){width:10%}.soOrdersTable th:nth-child(8){width:20%}.soOrdersTable th:last-child,.soOrdersTable td:last-child{text-align:right;overflow:visible}.soOrdersTable td:last-child{padding-right:12px}.soOrderNumber{color:#1849a9;font-weight:650}.soAmount{font-weight:650;font-variant-numeric:tabular-nums}.soStatus{display:inline-flex;align-items:center;min-height:25px;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:600;line-height:1}.soStatusDraft{background:#f2f4f7;color:#475467}.soStatusConfirmed{background:#e8f1ff;color:#175cd3}.soStatusCompleted{background:#e7f6ec;color:#18794e}.soStatusCancelled{background:#fdecee;color:#b42318}.soGridActions{display:flex;align-items:center;justify-content:flex-end;gap:6px;white-space:nowrap}.soRowButton{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:36px;padding:0 9px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;font-weight:600;transition:border-color .15s,background .15s,color .15s}.soRowButton:hover:not(:disabled){border-color:#98a2b3;background:#f9fafb}.soPreviewButton{border-color:#b2ccff;color:#175cd3;background:#f5f8ff}.soPreviewButton:hover:not(:disabled){border-color:#84adff;background:#edf4ff}.soRowButton:focus-visible{outline:2px solid #84adff;outline-offset:2px}.soRowButton:disabled{opacity:.48;cursor:not-allowed}.salesOrdersPage .soMoreButton{margin-left:0;width:36px;height:36px;border-radius:7px}.salesOrdersPage .itemsEmpty button{display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:10px 14px}@media(max-width:1000px){.soOrdersTable{min-width:920px!important}}@media(max-width:680px){.salesOrdersPage .itemsTools{align-items:stretch}.salesOrdersPage .itemsTools select{flex:1}.salesOrdersPage .itemsTools>span{display:flex;align-items:center}.soGridActions{gap:5px}}
-.soOrdersTable th,.soOrdersTable td{padding-left:10px;padding-right:10px}.soOrdersTable th{white-space:normal;line-height:1.25}.soOrdersTable th:nth-child(1){width:11.5%}.soOrdersTable th:nth-child(2){width:10.5%}.soOrdersTable th:nth-child(3){width:14%}.soOrdersTable th:nth-child(4){width:10%}.soOrdersTable th:nth-child(5){width:13%}.soOrdersTable th:nth-child(6){width:11%}.soOrdersTable th:nth-child(7){width:10%}.soOrdersTable th:nth-child(8){width:20%}
+.soCreatePage .salesOrderForm{width:auto;max-width:none;margin-top:12px;margin-bottom:0;background:transparent;box-shadow:none;border:0;padding:0}.soCreatePage .ivFields{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.soCreatePage .soLine{align-items:center;grid-template-columns:minmax(240px,1fr) 110px 140px 140px 42px}.soCreatePage .soLine strong{padding-top:0}.soCreatePage .soLineHead{border-radius:6px 6px 0 0}.soCreatePage .soTotals{background:white;border:0;padding:0}.soCreatePage .soBottom{margin-top:0}.soCreatePage .ivFooter{margin-top:20px}.soCreatePage .soNotes small{line-height:1.5}.soCreatePage .soRowActions button{color:#286aee}@media(max-width:1180px){.soCreatePage .ivFields{grid-template-columns:repeat(2,minmax(0,1fr))}.soCreatePage .soBottom{grid-template-columns:1fr}}@media(max-width:640px){.soCreatePage .ivFields{grid-template-columns:1fr}.soCreatePage .ivFooter{flex-wrap:wrap}}
+.salesOrdersPage{max-width:100%}.soPageHeading{padding:2px 0}.salesOrdersPage .soCreateButton{display:inline-flex;align-items:center;gap:8px;padding:0 17px}/* The shared .itemsCard clips its own corners with overflow:hidden. The register card must not,
+   because the Filters panel opens inside its toolbar and would be cut off at the card edge -
+   the same reason the Inventory Adjustments and Budgets register cards are visible. */
+.soListCard{overflow:visible;box-shadow:0 8px 24px rgba(16,24,40,.045)}.salesOrdersPage .itemsTools label{width:min(430px,100%)}.soOrdersTable{width:100%;min-width:920px!important;table-layout:fixed}.soOrdersTable th,.soOrdersTable td{padding-left:11px;padding-right:11px;overflow:hidden;text-overflow:ellipsis}.soOrdersTable th:nth-child(1){width:13%}.soOrdersTable th:nth-child(2){width:16%}.soOrdersTable th:nth-child(3){width:17%}.soOrdersTable th:nth-child(4){width:10%}.soOrdersTable th:nth-child(5){width:10%}.soOrdersTable th:nth-child(6){width:12%}.soOrdersTable th:nth-child(7){width:9%}.soOrdersTable th:nth-child(8){width:13%}.soOrdersTable th:last-child,.soOrdersTable td:last-child{text-align:right;overflow:visible}.soOrdersTable td:last-child{padding-right:12px}.soOrderNumber{color:#1849a9;font-weight:650}.soAmount{font-weight:650;font-variant-numeric:tabular-nums}.soGridActions{display:flex;align-items:center;justify-content:flex-end;gap:6px;white-space:nowrap}.soRowButton{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:36px;padding:0 9px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;font-weight:600;transition:border-color .15s,background .15s,color .15s}.soRowButton:hover:not(:disabled){border-color:#98a2b3;background:#f9fafb}.soRowButton:focus-visible{outline:2px solid #84adff;outline-offset:2px}.soRowButton:disabled{opacity:.48;cursor:not-allowed}.salesOrdersPage .soMoreButton{margin-left:0;width:36px;height:36px;border-radius:7px}.salesOrdersPage .itemsEmpty button{display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:10px 14px}@media(max-width:1000px){.soOrdersTable{min-width:920px!important}}@media(max-width:680px){.salesOrdersPage .itemsTools{align-items:stretch}.salesOrdersPage .itemsTools select{flex:1}.soGridActions{gap:5px}}
+.soOrdersTable th,.soOrdersTable td{padding-left:10px;padding-right:10px}.soOrdersTable th{white-space:normal;line-height:1.25}.soOrdersTable th:nth-child(1){width:11.5%}.soOrdersTable th:nth-child(2){width:12.5%}.soOrdersTable th:nth-child(3){width:16%}.soOrdersTable th:nth-child(4){width:10%}.soOrdersTable th:nth-child(5){width:10%}.soOrdersTable th:nth-child(6){width:11%}.soOrdersTable th:nth-child(7){width:9%}.soOrdersTable th:nth-child(8){width:13%}
+
+/* ---------------------------------------------------------------------------
+   Sales order register: the filter bar and the merged identity cells.
+
+   The register lists eight columns - Order (number over date), Customer, Branch &
+   Organisation, Amount, Status, Payment status, Created by and Actions - and the
+   filter panel carries the rest. Status and Payment status render the shared pill
+   (src/status-pill.css), so the bespoke status badges are gone. The Filters
+   disclosure sits where the record count used to, because the bar no longer
+   reports a count.
+   --------------------------------------------------------------------------- */
+.soOrdersTable td small{display:block;margin-top:3px;color:#667085;font-size:12px;font-weight:400}
+.soFiltersMore{position:relative;flex:none;margin-left:auto}
+.soFiltersMore>summary{display:inline-flex;align-items:center;gap:7px;min-height:38px;padding:0 12px;border:1px solid #d0d5dd;border-radius:6px;background:#fff;color:#344054;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer;list-style:none}
+.soFiltersMore>summary::-webkit-details-marker{display:none}
+.soFiltersMore>summary:hover{background:#f5f8ff;border-color:#aac2ed}
+.soFiltersMore>summary:focus-visible{outline:2px solid #84adff;outline-offset:2px}
+.soFiltersMore>summary i{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#e8f1ff;color:#175cd3;font-size:12px;font-style:normal;font-weight:600}
+.soFiltersMore[open]>summary{border-color:#84adff;color:#1849a9}
+.soFiltersPanel{position:absolute;right:0;top:calc(100% + 6px);z-index:75;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 16px;width:min(720px,calc(100vw - 48px));padding:16px;border:1px solid #e1e6ed;border-radius:9px;background:#fff;box-shadow:0 12px 30px #1018281f}
+/* The register search box is a `.itemsTools label` - a bordered 340px pill. The filter fields sit
+   inside that same toolbar, so without this reset every field would be boxed and its label
+   centred, which is what made the panel look crowded. The panel lays its fields out as a plain
+   stacked caption above a control, and the two-class selector is required because
+   `.salesOrdersPage .itemsTools label` sets the width at the same specificity. */
+.salesOrdersPage .soFiltersPanel label{display:flex;flex-direction:column;align-items:stretch;gap:7px;width:auto;max-width:none;min-width:0;padding:0;border:0;border-radius:0;background:transparent;color:#344054;font-size:12px;font-weight:600}
+.salesOrdersPage .soFiltersPanel select,.salesOrdersPage .soFiltersPanel input{width:100%;height:38px;border:1px solid #d0d5dd;border-radius:6px;background:#fff;padding:0 10px;color:#344054;font:inherit;font-size:13px}
+.salesOrdersPage .soFiltersPanel select:focus,.salesOrdersPage .soFiltersPanel input:focus{outline:2px solid #84adff;outline-offset:1px}
+.soClearFilters{grid-column:1/-1;justify-self:start;min-height:36px;margin-top:2px;padding:0 12px;border:1px solid #d0d5dd;border-radius:6px;background:#fff;color:#344054;font-weight:600;cursor:pointer}
+.soClearFilters:hover{background:#f5f8ff;border-color:#aac2ed}
+@media(max-width:900px){.soFiltersPanel{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){.soFiltersPanel{position:static;width:auto;grid-template-columns:minmax(0,1fr);box-shadow:none}.soFiltersMore{width:100%;margin-left:0}.soFiltersMore>summary{width:100%;justify-content:center}}
+
+/* ---------------------------------------------------------------------------
+   Create / Edit sales order: the full-bleed head and the customer reference.
+
+   The head is the same 56px white bar the Create Item and Create Customer pages
+   use - one 40px square back button beside the page title - and it sits flush
+   under the Organisation / Branch bar, so the arrow lines up with that bar's own
+   building icon. Actions follow: the shell box, the page max-width and the page
+   gutter are given up for this state and handed back to every child but the head.
+   --------------------------------------------------------------------------- */
+body:has(.soCreatePage) .app main{max-width:none!important;padding:0!important}
+/* The create page scrolls in the document, so only `html` keeps the overflow. `body` and `#root`
+   must stay `overflow:visible`: releasing their height is what lets the page scroll, but any
+   overflow other than visible makes that element a scrollport, and a sticky action bar then pins
+   to the bottom of a box that is exactly as tall as its own content - which is why the buttons
+   scrolled off screen while every ancestor looked correct. */
+html:has(.soCreatePage){height:auto;min-height:100%;overflow-y:auto}
+body:has(.soCreatePage){height:auto;min-height:100%;overflow:visible}
+body:has(.soCreatePage) #root{height:auto;min-height:100%;overflow:visible}
+body:has(.soCreatePage) .app{height:auto;min-height:100vh;overflow:visible}
+body:has(.soCreatePage) .app>main{height:auto;max-height:none;overflow:visible;scrollbar-gutter:auto}
+.app main>.itemsPage.salesOrdersPage>.soCreatePage{max-width:none;margin:0;padding:0 0 28px}
+.salesOrdersPage:has(.soCreatePage){background:#f6f8fb;min-height:100%}
+.soCreatePage>.soCreateHead{display:grid;grid-template-columns:minmax(0,1fr);align-items:center;gap:14px;width:100%;min-height:56px;margin:0;padding:8px 24px;background:#fff;border-top:1px solid #dfe6ef;border-bottom:1px solid #dfe6ef;border-radius:0;box-shadow:none}
+.soCreatePage>:not(.soCreateHead){margin-left:clamp(16px,2.2vw,24px);margin-right:clamp(16px,2.2vw,24px)}
+.soHeadIdentity{display:grid;grid-template-columns:40px minmax(0,1fr);align-items:center;gap:14px;min-width:0}
+.soBack{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;padding:0;border:1px solid #d7e0eb;border-radius:8px;background:#fff;color:#475467;cursor:pointer;transition:background-color .15s ease,border-color .15s ease,color .15s ease}
+.soBack:hover{background:#eef4ff;border-color:#bcd0f5;color:#2463d4}
+.soBack:focus-visible{outline:2px solid #245fd9;outline-offset:2px}
+.soHeadText{display:flex;flex-direction:column;gap:3px;min-width:0}
+.soCreatePage .soCreateHead h2{margin:0;color:#172033;font-size:16px;font-weight:650;line-height:1.25}
+.soCreatePage .soHeadHint{display:inline;margin:0;color:#667085;font-size:12px;font-weight:400}
+
+/* The customer's tax identity and addresses are READ-ONLY facts copied from the customer record,
+   so they are rendered as the same definition list the Item Details page uses for its read-only
+   facts (12px muted dt over a 13px strong dd) inside one bordered panel - no per-field boxes, so
+   nothing reads as an input. Only Place of supply is a control, and its select is styled like the
+   page's other fields so the one interactive thing is obvious. Every rule is prefixed with the
+   page class because src/invoice-workspace.css is imported after this sheet and styles bare
+   p / small / h3 / label / select inside the workspace. */
+.soCreatePage .soCustomerRef{margin-top:14px}
+.soCreatePage .soFactCaption{margin:0 0 8px;color:#667085;font-size:12px;line-height:1.45}
+/* Until a customer is chosen the card carries no facts at all. Eight placeholders - Not recorded,
+   Not registered, Not provided - read as a customer whose tax identity is simply missing, so the
+   empty state stands in their place and the filled read-out appears only once there is a record to
+   read. The block is bounded to the height the fact list takes, which is what keeps the two cards
+   level, and the illustration drops a size so it reads as a slot in a card rather than a page-level
+   empty screen. The motion comes from the shared empty-state stylesheet, including its own
+   prefers-reduced-motion escape. */
+.soCreatePage .soCustomerEmpty{min-height:284px;padding:20px;gap:8px}
+.soCreatePage .soCustomerEmpty .emptyArt{width:78px;height:78px}
+/* `align-items:start` keeps each fact at its natural height: the four short values and the two
+   addresses stay on one baseline without a tall empty box under the single-line ones. */
+.soCreatePage .soFactList{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) repeat(2,minmax(0,2fr));align-items:start;gap:16px 24px;margin:0;padding:14px 18px;border:1px solid #e4e9f0;border-radius:10px;background:#fbfcfe}
+.soCreatePage .soFactItem{display:flex;flex-direction:column;gap:4px;min-width:0}
+.soCreatePage .soFactItemWide{grid-column:span 2}
+/* Every label occupies the same 30px line, so an address label - whose row also carries the Edit
+   button - sits on the same baseline as the plain values beside it instead of dropping below them. */
+.soCreatePage .soFactItem dt{display:flex;align-items:center;min-height:30px;color:#6b7789;font-size:12px;font-weight:500;line-height:1.3}
+.soCreatePage .soFactItem dd{margin:0;color:#172033;font-size:13px;font-weight:600;line-height:1.45;overflow-wrap:anywhere}
+.soCreatePage .soFactItem dd>small{display:block;margin-top:6px;color:#667085;font-size:12px;font-weight:400;line-height:1.45}
+.soCreatePage .soFactAddrHead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+/* The one action in the read-only panel. Labelled, not a bare pencil, so it is obvious what it
+   does; the customer master is never rewritten, the edit lands on this order. */
+.soCreatePage .soAddressSameNote{display:block;margin-top:6px;color:#667085;font-size:12px;font-weight:400;line-height:1.45}
+
+/* The address editor: the same fixed layer and backdrop the account drawer uses. */
+.soAddressLayer{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;padding:24px}
+.soCreatePage .soAddressLayer .soAddressBackdrop{position:absolute;inset:0;width:100%;height:100%;min-height:0;padding:0;border:0;border-radius:0;background:rgba(15,23,42,.28);background-color:rgba(15,23,42,.28)!important;backdrop-filter:none;cursor:default}
+.soAddressDialog{position:relative;width:min(520px,100%);max-height:calc(100dvh - 48px);overflow:auto;border:1px solid #e4e9f0;border-radius:12px;background:#fff;box-shadow:0 24px 60px #10182833}
+.soAddressDialog>.soAddressDialogHead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid #eef1f6}
+.soCreatePage .soAddressDialog h3{margin:0;color:#172033;font-size:15px;font-weight:650}
+.soCreatePage .soAddressClose{display:inline-grid;place-items:center;flex:none;width:32px;height:32px;min-height:0;padding:0;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#475467;cursor:pointer}
+.soCreatePage .soAddressClose:hover{background:#eef4ff;border-color:#bcd0f5;color:#2463d4}
+/* The six address fields take the dialog's own gutter, so they line up with the heading, the note
+   and the footer instead of touching the dialog's left and right edges. */
+.soAddressDialog>.soAddressFields{padding:16px 18px 0}
+.soCreatePage .soAddressDialog textarea{width:100%;min-height:110px;padding:9px 10px;border:1px solid #d7e0eb;border-radius:7px;background:#fff;color:#26354b;font:13px "Instrument Sans",Arial,sans-serif;resize:vertical}
+.soAddressDialog textarea:focus{outline:0;border-color:var(--ui-primary);box-shadow:0 0 0 3px rgba(52,120,246,.12)}
+.soAddressNote{margin:10px 18px 0;color:#667085;font-size:12px;line-height:1.5}
+.soAddressDialog>footer{display:flex;justify-content:flex-end;gap:9px;padding:16px 18px}
+.soAddressDialog>footer button{min-height:38px;padding:0 14px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;font-weight:600;cursor:pointer}
+.soAddressDialog>footer button:hover{background:#f5f8fc}
+.soAddressDialog>footer .primary{border-color:#3478f6;background:#3478f6;color:#fff}
+.soAddressDialog>footer .primary:hover{background:#2f6be0;border-color:#2f6be0}
+@media(max-width:1100px){.soCreatePage .soFactList{grid-template-columns:repeat(2,minmax(0,1fr))}.soCreatePage .soFactItemWide{grid-column:span 2}}
+@media(max-width:820px){.soCreatePage .soFactList{grid-template-columns:repeat(2,minmax(0,1fr))}.soCreatePage .soFactItemWide{grid-column:span 2}}
+@media(max-width:560px){.soCreatePage .soFactList{grid-template-columns:minmax(0,1fr)}.soCreatePage .soFactItemWide{grid-column:span 1}}
+@media(max-width:760px){
+ .soCreateHead{padding:8px 12px}
+ .soHeadIdentity{grid-template-columns:36px minmax(0,1fr);gap:10px}
+ .soBack{width:36px;height:36px}
+ .soCreatePage>:not(.soCreateHead){margin-left:12px;margin-right:12px}
+}
+@media(max-width:680px){.soAddressLayer{padding:12px}}
+
+/* The order form reads as two full rows of four: the number, date, customer and reference on the
+   first, then the place of supply (which drives the tax) given two columns ahead of the payment
+   terms and due date. Without the span the second row ends in an empty column. */
+
+/* The Tax cell stacked the rate selector above the price-tax treatment, so every line was two
+   controls tall in a table where every other cell is one. They sit side by side now, at the same
+   40px height as the siblings beside them. */
+.soCreatePage .ivLineTax{display:grid;grid-template-columns:max-content minmax(96px,1fr);align-items:center;gap:8px;width:100%}
+.soCreatePage .ivTaxSelect{min-width:0;max-width:100%;overflow:hidden}
+.soCreatePage .ivTaxSelect>summary{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.soCreatePage .ivLineTax>select{min-width:0;width:100%;height:40px;padding:6px 6px;font-size:12px}
+
+.soCreatePage .soAddressSplit{padding:0;border:0;background:none;color:#245fd9;font:inherit;font-size:12px;font-weight:600;cursor:pointer;text-decoration:underline}
+.soCreatePage .soAddressSplit:hover{color:#1849a9}
+.soCreatePage .soAddressSplit:focus-visible{outline:2px solid #245fd9;outline-offset:2px}
+
+/* ---------------------------------------------------------------------------
+   Order items: fit the line table inside the card, and tighten the card.
+
+   The shared line table is min-width:980px but its content measured 1196px in a
+   1061px wrapper, so it always scrolled sideways. The wrapper is wide enough; the
+   content was not. Cell padding drops from 14px 12px to 10px 8px, the numeric
+   inputs narrow, and the item search cell gives up the width it was over-allocating.
+   --------------------------------------------------------------------------- */
+/* A fixed layout with percentage columns means the table can never be wider than its wrapper,
+   so no amount of real content brings the horizontal scrollbar back - which shaving pixels
+   could not guarantee, because an amount like 1,25,000.00 is wider than the em dash that stood
+   in for it while the table was empty. */
+/* `table.ivLineTable` rather than `.ivLineTable`: the shared sheet's `.invoiceWorkspace .ivLineTable`
+   carries min-width:980px at the same class-level specificity and is imported after this file, so
+   only the extra element in the selector keeps the fixed layout and lets the table fit its wrapper. */
+.soCreatePage table.ivLineTable{table-layout:fixed;width:100%;min-width:0}
+.soCreatePage .ivLineTable th,.soCreatePage .ivLineTable td{padding:10px 8px;overflow:hidden}
+.soCreatePage .ivLineTable input,.soCreatePage .ivLineTable select{width:100%;min-width:0;max-width:100%}
+.soCreatePage .ivLineTable th:nth-child(1){width:19%}
+.soCreatePage .ivLineTable th:nth-child(2){width:7%}
+.soCreatePage .ivLineTable th:nth-child(3){width:5.5%}
+.soCreatePage .ivLineTable th:nth-child(4){width:8%}
+.soCreatePage .ivLineTable th:nth-child(5){width:15.5%}
+.soCreatePage .ivLineTable th:nth-child(6){width:29.5%}
+.soCreatePage .ivLineTable th:nth-child(7){width:11%}
+.soCreatePage .ivLineTable th:nth-child(8){width:4.5%}
+/* Both widgets carry a fixed width in the shared sheet that is wider than their column: the item
+   search 230px and the tax selector 215px. Sized to their columns, the tax selector now takes its
+   own natural width instead of 215, which is what lets the two tax controls share one line. */
+.soCreatePage .ivItemSearch{width:100%}
+/* The shared sheet pins the search input at 230px with !important, which is wider than its column
+   and clipped the item name, so the input is re-fitted to the cell. */
+.soCreatePage .ivLineTable .ivSearchInput input{width:100%!important;max-width:100%}
+.soCreatePage .ivTaxSelect{width:auto}
+.soCreatePage .ivLineTable th:last-child,.soCreatePage .ivLineTable td:last-child{padding-left:6px;padding-right:6px;text-align:center}
+/* The unit column holds one short word, so it does not need the full cell gutter, and the width it
+   gives up keeps "box" readable at the narrowest desktop width. */
+.soCreatePage .ivLineTable th:nth-child(3),.soCreatePage .ivLineTable td:nth-child(3){padding-left:2px;padding-right:2px}
+/* The unit is a value from the Item master, so the line prints it instead of offering a second
+   place to edit it. It keeps the row's height so the cells beside it stay aligned. */
+.soCreatePage .ivLineTable .soUnitValue{display:flex;align-items:center;min-height:40px;padding:0 2px;color:#44536b;font-size:13px}
+
+/* The place of supply is a field of the document-details grid, right of the due date, with its
+   source line under the control as a 12px sentence. */
+.soCreatePage .soFieldRow4 .soPlaceHint{gap:4px;line-height:1.4}
+.soCreatePage .soPlaceHint{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:0;color:#667085;font-size:12px;line-height:1.45}
+.soCreatePage .soPlaceReset{padding:0;border:0;background:none;color:#245fd9;font:inherit;font-size:12px;font-weight:600;cursor:pointer;text-decoration:underline}
+.soCreatePage .soPlaceReset:hover{color:#1849a9}
+.soCreatePage .soPlaceReset:focus-visible{outline:2px solid #245fd9;outline-offset:2px}
+/* Below 700px the eight-column line table cannot hold a usable control at the fixed
+   percentage widths - the item search collapsed to about 35px. The table keeps its
+   no-sideways-scroll shape at every width it was measured at (1600px down to 980px)
+   and only falls back to its own horizontal scroll on a phone, where the alternative
+   is unreadable columns. `.ivScroll` already carries `overflow:auto`. */
+@media(max-width:700px){
+ .soCreatePage table.ivLineTable{min-width:760px}
+}
+/* The discount number and its %/₹ selector share one cell. The shared sheet gives every line
+   input width:100%, which pushed the selector out of the cell and clipped it, so the number
+   yields instead and the selector keeps a fixed, readable width. */
+.soCreatePage .ivLineTable .ivDiscount{display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden}
+.soCreatePage .ivLineTable .ivDiscount input{width:auto!important;flex:1 1 0;min-width:0}
+.soCreatePage .ivLineTable .ivDiscount select{width:54px!important;flex:0 1 54px;min-width:46px}
+/* The remove action is destructive, so it reads as one: a small red target with room for its icon
+   rather than a squeezed 36px box with no padding. */
+.soCreatePage .ivLineTable td:last-child button{width:32px;min-width:32px;height:32px;min-height:32px;padding:0;display:inline-flex;align-items:center;justify-content:center;color:#b42318;background:#fff5f4;border-color:#f0c8c4;border-radius:7px}
+.soCreatePage .ivLineTable td:last-child button:hover:not(:disabled){color:#912018;background:#fde8e6;border-color:#e3a49e}
+.soCreatePage .ivCard{padding:16px}
+.soCreatePage .salesOrderForm .ivCard+.ivCard{margin-top:14px}
+.soCreatePage .ivCard .ivHeading{margin-bottom:12px}
+/* ---------------------------------------------------------------------------
+   Create / Edit Sales Order - section heads, field rows, billing summary,
+   additional details and the pinned action bar.
+
+   The page now reads top to bottom in the order the operator works: Customer
+   (picker, scope and the one-row identity panel), Order details (number, dates,
+   reference, terms), Order items, Billing summary, then the collapsed Additional
+   details. Every rule is prefixed with .soCreatePage because
+   src/invoice-workspace.css loads after this sheet and styles bare elements.
+   --------------------------------------------------------------------------- */
+.soCreatePage .soFormSection{padding:18px 20px}
+.soCreatePage .soSectionHead{display:flex;flex-direction:column;gap:3px;margin-bottom:14px}
+.soCreatePage .soSectionHead h3{margin:0;color:#172033;font-size:14px;font-weight:650}
+.soCreatePage .soSectionHead p{margin:0;color:#667085;font-size:12px;line-height:1.45}
+/* The order opens on the two things the operator works with: the customer on the left (60%) and the
+   order itself on the right (40%). Putting the customer beside the order fields instead of above them
+   removes a full-width band from the page - the summary is read where the customer is chosen, and the
+   order fields get a column of their own. The wider customer card carries the tax identity, the two
+   addresses and the picker, so the two cards end level under align-items:stretch. */
+.soCreatePage .soOrderTop{display:grid;grid-template-columns:minmax(0,60fr) minmax(0,40fr);align-items:stretch;gap:14px}
+/* In the 60% column the customer's facts read as rows - one fact per line, hairlines between them -
+   because five facts across 420px would crush every value. The three-per-row grid returns as soon as
+   the two cards stack at full width. */
+/* One fact per line as label-left / value-right, which is what makes a 400px column readable; the two
+   address facts keep the stacked shape because their value is long and their row also carries Edit.
+   `grid-column:auto` is essential: a `span 2` item inside a one-column grid creates an implicit second
+   column, which silently turned this list back into two columns. */
+.soCreatePage .soOrderTop .soFactList{grid-template-columns:minmax(0,1fr);gap:0;padding:4px 14px}
+.soCreatePage .soOrderTop .soFactItem{flex-direction:row;align-items:center;justify-content:space-between;gap:14px;padding:9px 0;border-top:1px solid #eef1f6;min-height:0}
+.soCreatePage .soOrderTop .soFactItem:first-child{border-top:0}
+.soCreatePage .soOrderTop .soFactItem dt{min-height:0}
+.soCreatePage .soOrderTop .soFactItem dd{text-align:right}
+.soCreatePage .soOrderTop .soFactItemWide{grid-column:auto}
+.soCreatePage .soOrderTop .soCustomerRow{max-width:none}
+/* The stacked-card margin is dropped inside the row: a grid item stretches its MARGIN box, so the
+   14px margin that separates stacked cards left the right card 14px shorter than the left one. The
+   extra class raises this above `.soCreatePage .salesOrderForm .ivCard+.ivCard`, which ties on
+   class count and would otherwise win by order. */
+.soCreatePage .soOrderTop>.ivCard+.ivCard.ivCard{margin-top:0}
+/* The right column is narrower than the full page, so the eight order fields pair up instead of
+   running four across; they go back to four when the cards stack. */
+/* The action bar states the running total on the left and keeps the actions on the right, the way a
+   sales document does: the figure the operator is about to commit stays in view while the lines are
+   being entered, instead of living only in the summary under them. */
+.soCreatePage .ivFooter.soActionBar{justify-content:space-between}
+.soCreatePage .soBarTotals{display:flex;align-items:center;gap:26px;margin:0;min-width:0}
+.soCreatePage .soBarTotals>div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.soCreatePage .soBarTotals dt{color:#6b7789;font-size:12px;font-weight:500}
+.soCreatePage .soBarTotals dd{margin:0;color:#172033;font-size:14px;font-weight:650;white-space:nowrap}
+/* `margin-left:auto` is what keeps the three decisions on the right of the page whether or not the
+   running totals are rendered beside them. */
+.soCreatePage .soBarActions{display:flex;align-items:center;gap:10px;flex:none;margin-left:auto}
+@media(max-width:640px){
+ .soCreatePage .soActionBar{flex-wrap:wrap}
+ .soCreatePage .soBarTotals{gap:18px}
+ .soCreatePage .soBarActions{flex:1 1 100%;justify-content:flex-end}
+}
+/* The two addresses are facts in the customer strip, in the same read-out as the tax identity
+   beside them: a 12px muted label over a 13px value. They span the strip because an address is
+/* The address editor is the customer form's address block, narrowed to the six parts the record
+   actually stores: Address 1 and Address 2 over the row, then City beside State and PIN beside
+   Country. The writer composes the stored string from these, so nothing downstream changes. */
+.soCreatePage .soAddressFields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px}
+.soCreatePage .soAddressFields>label{display:flex;flex-direction:column;gap:6px;min-width:0;color:#344054;font-size:12px;font-weight:600}
+.soCreatePage .soAddressFields>label.soAddressFieldWide{grid-column:1/-1}
+.soCreatePage .soAddressFields input,.soCreatePage .soAddressFields select{width:100%;min-width:0;min-height:40px;padding:0 10px;border:1px solid #d7e0eb;border-radius:7px;background:#fff;color:#172033;font:inherit;font-size:13px}
+.soCreatePage .soAddressFields input:focus-visible,.soCreatePage .soAddressFields select:focus-visible{outline:2px solid #3478f6;outline-offset:1px}
+@media(max-width:560px){.soCreatePage .soAddressFields{grid-template-columns:minmax(0,1fr)}}
+/* The order facts keep the customer's whole address and state name readable: the wide cell spans the
+   row so a value is never cut shorter than a state name, and the only thing that changes them is the
+   one pencil at the top right of the card. */
+.soCreatePage .soOrderTop .soFactWide{grid-column:1/-1}
+.soCreatePage .soOrderTop .soFactWide>dt{margin-bottom:3px}
+.soCreatePage .soOrderTop .soFactWide>dd{line-height:1.5}
+.soCreatePage .soSectionHead.soFactHead{flex-direction:row;align-items:flex-start;justify-content:space-between;gap:12px}
+.soCreatePage .soSectionHeadText{display:flex;flex-direction:column;gap:3px;min-width:0}
+.soCreatePage .soFactEdit{position:relative;flex:none}
+.soCreatePage .soFactEdit>summary{display:grid;place-items:center;width:32px;height:32px;min-height:0;padding:0;border:0;border-radius:7px;background:transparent;color:#667085;cursor:pointer;list-style:none;transition:background-color .15s ease,color .15s ease}
+.soCreatePage .soFactEdit>summary::-webkit-details-marker{display:none}
+.soCreatePage .soFactEdit>summary:hover{background:#eef4ff;color:#2463d4}
+.soCreatePage .soFactEdit[open]>summary{background:#eef4ff;color:#245fd9}
+.soCreatePage .soFactEdit>summary:focus-visible{outline:2px solid #245fd9;outline-offset:2px}
+.soCreatePage .soFactEditMenu{position:absolute;right:0;top:calc(100% + 6px);z-index:80;display:flex;flex-direction:column;min-width:196px;padding:6px;border:1px solid #e1e6ed;border-radius:9px;background:#fff;box-shadow:0 12px 30px #1018281f}
+.soCreatePage .soFactEditMenu button{display:flex;align-items:center;min-height:36px;padding:0 10px;border:0;border-radius:6px;background:transparent;color:#344054;font-size:13px;text-align:left;white-space:nowrap;cursor:pointer}
+.soCreatePage .soFactEditMenu button:hover{background:#f4f7ff;color:#245fd9}
+.soCreatePage .soOrderTop .soFieldRow4{grid-template-columns:repeat(2,minmax(0,1fr))}
+/* The three tax facts read as one strip across the card instead of three sparse label/value lines:
+   a label over its value in each of three columns, then the two addresses on their own full-width
+   rows. It saves about 100px of card height and reads as a fact panel rather than a list. */
+.soCreatePage .soOrderTop .soFactList{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 14px;padding:12px 14px}
+.soCreatePage .soOrderTop .soFactItem{flex-direction:column;align-items:flex-start;gap:3px;padding:0;border-top:0;min-height:0}
+.soCreatePage .soOrderTop .soFactItem dt{min-height:0}
+.soCreatePage .soOrderTop .soFactItem dd{text-align:left}
+
+/* The two cards are one height. They are close enough in content that the stretch leaves only a
+   line or two of slack, and a paired row that ends level reads as one block rather than two. */
+/* The two cards sit side by side only while the narrower 40% column can still hold a readable
+   field: below this they stack, and the document-details grid goes back to four across on the full
+   width. The customer at 60% asks for more room than the old 58/42 split did, so the fold moved up
+   with it - at 1180px the details column was 333px and its two field columns were 137px, which
+   truncated every organisation select and every placeholder. */
+@media(max-width:1240px){
+ .soCreatePage .soOrderTop{grid-template-columns:minmax(0,1fr)}
+ .soCreatePage .soOrderTop .soFieldRow4{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .soCreatePage .soOrderTop .soFactWide{grid-column:1/-1}
+}
+/* One row per section: three fields in Additional details, and the eight Order details fields on a
+   four-column grid, which lays them out as two complete rows of four. */
+.soCreatePage .soFieldRow{grid-template-columns:repeat(3,minmax(0,1fr))}
+.soCreatePage .soFieldRow4{grid-template-columns:repeat(4,minmax(0,1fr))}
+/* The customer picker is a searchable combobox (src/SearchSelect.jsx), so it is given a comfortable
+   reading width instead of being stretched across the whole card; the read-only facts below keep the
+   full width. */
+.soCreatePage .soCustomerRow{max-width:520px}
+.soCreatePage .soFieldRow2{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:1080px){.soCreatePage .soFieldRow4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:820px){.soCreatePage .soFieldRow,.soCreatePage .soFieldRow3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.soCreatePage .soFieldRow,.soCreatePage .soFieldRow2,.soCreatePage .soFieldRow3,.soCreatePage .soFieldRow4{grid-template-columns:minmax(0,1fr)}}
+/* Below 560px the stacked top row is a single narrow card, so the five-column fact row and the
+   four-column field row cannot hold a readable value - "Not recorded" wrapped one character per
+   line. The fold has to be restated here at the same class depth as the `@media(max-width:1080px)`
+   block above, because `.soCreatePage .soOrderTop .soFactList` (three classes) outranks the
+   two-class `.soCreatePage .soFactList` breakpoint regardless of source order, and media queries
+   add no specificity. */
+@media(max-width:560px){
+ .soCreatePage .soOrderTop .soFactList{grid-template-columns:minmax(0,1fr);gap:0;padding:12px 14px}
+ .soCreatePage .soOrderTop .soFactItem{flex-direction:column;align-items:stretch;gap:4px;min-height:0;padding:10px 0;border-top:1px solid #eef1f6}
+ .soCreatePage .soOrderTop .soFactItem:first-child{border-top:0;padding-top:0}
+ .soCreatePage .soOrderTop .soFactItem dt{min-height:0}
+ .soCreatePage .soOrderTop .soFactItemWide{grid-column:auto}
+ .soCreatePage .soOrderTop .soFieldRow4{grid-template-columns:minmax(0,1fr)}
+}
+
+/* Billing summary closes the order items card. The block is the same width as the totals panel and
+   right-aligned with it, so its heading sits directly above the figures instead of stranded at the far
+   left of a full-width band. */
+.soCreatePage .soBillingSummary{display:block;width:min(420px,100%);margin:18px 0 0 auto}
+.soCreatePage .soSummaryHead{margin-bottom:10px}
+.soCreatePage .soSummaryHead h3{margin:0;color:#172033;font-size:14px;font-weight:650}
+/* The summary is a block of its own, not eight loose lines on the card: a tinted panel on the
+   right with slightly tighter rows so it reads as a statement without dominating the section. */
+.soCreatePage .soBillingSummary .ivTotals{width:100%;max-width:none;margin:0;padding:12px 16px;border:1px solid #eef1f6;border-radius:9px;background:#fbfcfe}
+.soCreatePage .soBillingSummary .ivTotals>div{padding:7px 0}
+.soCreatePage .soBillingSummary .ivTotals>div:last-child{margin-top:5px;padding-top:12px;font-size:16px}
+.soCreatePage .soBillingSummary>small{color:#667085;font-size:12px;line-height:1.5}
+
+/* Additional details: a collapsed card with a title, a hint and a CSS chevron. */
+.soCreatePage .soMoreCard{padding:0;overflow:visible}
+.soCreatePage .soMoreCard>summary{display:flex;align-items:center;gap:10px;padding:16px 20px;color:#172033;font-size:14px;font-weight:650;cursor:pointer;list-style:none}
+.soCreatePage .soMoreCard>summary::-webkit-details-marker{display:none}
+.soCreatePage .soMoreCard>summary::after{content:"";flex:none;width:8px;height:8px;margin-left:auto;border-right:2px solid #667085;border-bottom:2px solid #667085;transform:rotate(45deg) translateY(-2px);transition:transform .16s ease}
+.soCreatePage .soMoreCard[open]>summary::after{transform:rotate(-135deg) translateY(-2px)}
+.soCreatePage .soMoreCard>summary:focus-visible{outline:2px solid #245fd9;outline-offset:-2px}
+.soCreatePage .soMoreHint{color:#667085;font-size:12px;font-weight:400}
+.soCreatePage .soMoreBody{display:flex;flex-direction:column;gap:16px;padding:0 20px 20px}
+
+/* Document upload: the same tile the Create Item page uses for its image (36px tinted icon, one
+   hairline, the blue focus ring), with a drop zone and a file list. Drag and drop is real - the
+   handlers on the label feed the same reader the file input uses. */
+.soCreatePage .soUploadField{display:flex;flex-direction:column;gap:8px;min-width:0}
+.soCreatePage .soUploadLabel{color:#344054;font-size:12px;font-weight:600}
+.soCreatePage .soUploadDrop{position:relative;display:grid;grid-template-columns:36px minmax(0,1fr) auto;align-items:center;gap:12px;min-height:64px;padding:12px 14px;border:1px dashed #cfd8e5;border-radius:9px;background:#fbfcfe;cursor:pointer;transition:border-color .16s,background .16s,box-shadow .16s}
+.soCreatePage .soUploadDrop:hover{border-color:#7aa7f8;background:#f8faff}
+.soCreatePage .soUploadDrop:focus-within{border-color:var(--ui-primary);box-shadow:0 0 0 3px rgba(52,120,246,.12)}
+.soCreatePage .soUploadDrop.isActive{border-style:solid;border-color:var(--ui-primary);background:#eef4ff;box-shadow:0 0 0 3px rgba(52,120,246,.12)}
+.soCreatePage .soUploadDrop input{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.soCreatePage .soUploadIcon{display:grid;place-items:center;width:36px;height:36px;border-radius:8px;background:#eef4ff;color:#2463d4}
+.soCreatePage .soUploadCopy{display:grid;gap:3px;min-width:0}
+.soCreatePage .soUploadCopy b{color:#26354b;font-size:13px;font-weight:650}
+.soCreatePage .soUploadCopy small{color:#667085;font-size:12px;font-weight:400}
+.soCreatePage .soUploadChoose{display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:0 12px;border:1px solid #cfd8e5;border-radius:7px;background:#fff;color:#245fd9;font-size:12px;font-weight:650;white-space:nowrap}
+.soCreatePage .soUploadDrop:hover .soUploadChoose{border-color:#bcd0f5;background:#eef4ff}
+.soCreatePage .soFileList{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.soCreatePage .soFileList>li{display:grid;grid-template-columns:30px minmax(0,1fr) auto;align-items:center;gap:10px;padding:8px 10px;border:1px solid #e4e9f0;border-radius:8px;background:#fff}
+.soCreatePage .soFileIcon{display:grid;place-items:center;width:30px;height:30px;border-radius:7px;background:#f2f6fd;color:#3b5b8c}
+.soCreatePage .soFileMeta{display:grid;gap:2px;min-width:0}
+.soCreatePage .soFileMeta b{color:#26354b;font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.soCreatePage .soFileList>li>button{display:inline-grid;place-items:center;width:28px;height:28px;padding:0;border:1px solid #e4e9f0;border-radius:7px;background:#fff;color:#b42318;cursor:pointer}
+.soCreatePage .soFileList>li>button:hover{background:#fff5f4;border-color:#f0c8c4}
+.soCreatePage .soUploadError{margin:0;color:#b42318;font-size:12px;font-weight:600}
+
+/* Cancel, Save draft and Save & confirm are pinned to the foot of the viewport, so a long document
+   never hides the three decisions, and the actions always take the right side of the page: the bar
+   spans edge to edge on the page gutter, the running totals keep the left, and `.soBarActions`
+   carries `margin-left:auto` so the buttons stay right-aligned even when the totals block is absent
+   - it renders only once the document can be calculated, and a lone flex child under
+   `space-between` sits at the LEFT, which is what parked the buttons under the customer card.
+   Sticky rather than fixed keeps the page gutter; the opaque background and the top hairline keep
+   the form from showing through behind the buttons, and the bar stays layered under the row menus
+   (z-index 80) and the address dialog (z-index 1200). */
+.soCreatePage .soActionBar{position:sticky;bottom:0;z-index:6;display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 0 0;margin-left:calc(-1 * clamp(16px,2.2vw,24px));margin-right:calc(-1 * clamp(16px,2.2vw,24px));padding:12px clamp(16px,2.2vw,24px);background:#f6f8fb;border-top:1px solid #e3e8ef}
+@media(max-width:760px){.soCreatePage .soActionBar{margin-left:-12px;margin-right:-12px;padding:12px}}
+
+/* The credit-limit warning sits under the customer's facts: a warning tint, the 12px floor and the
+   same radius/spacing as the rest of the create page. */
+.soCreatePage .soCreditNotice{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 0;padding:10px 12px;border:1px solid #f5d9a8;border-radius:8px;background:#fffaf0;color:#8a4b09;font-size:12px;line-height:1.5}
+.soCreatePage .soCreditNotice b{color:#7a3f06;font-weight:650}
+/* The order's own history, read-only, in Additional details. */
+.soCreatePage .soOrderHistory{display:flex;flex-direction:column;gap:8px}
+.soCreatePage .soOrderHistory>ul{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.soCreatePage .soOrderHistory>ul>li{display:flex;flex-direction:column;gap:2px;padding:8px 10px;border:1px solid #e4e9f0;border-radius:8px;background:#fff}
+.soCreatePage .soOrderHistory b{color:#26354b;font-size:13px;font-weight:600}
+.soCreatePage .soOrderHistory small{color:#667085;font-size:12px;font-weight:400}

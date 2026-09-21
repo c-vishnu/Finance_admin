@@ -7,13 +7,13 @@ const workspace=readFileSync(new URL('../src/BudgetWorkspace.jsx',import.meta.ur
 const css=readFileSync(new URL('../src/budget-workspace.css',import.meta.url),'utf8');
 
 test('Budgets is one flat destination inside Accounting',()=>{
-  assert.match(navigation,/\{label:'Accounting',icon:IconBook,children:\[leaf\('Chart of Accounts'\),leaf\('Journal Entries'\),leaf\('Budgets'\),leaf\('Period Closing'\)\]\}/,'Accounting holds one Budgets leaf between Journal Entries and Period Closing');
+  assert.match(navigation,/\{label:'Accounting',icon:IconBook,children:\[leaf\('Chart of Accounts'\),leaf\('Journal Entries'\),leaf\('Budgets'\),leaf\('Period Lock'\)\]\}/,'Accounting holds one Budgets leaf between Journal Entries and Period Lock');
   assert.ok(!navigation.includes("{label:'Budget',"),'the Budget sub-group is gone from the sidebar');
   assert.ok(!navigation.includes('Budget Reports')&&!navigation.includes('Budget Settings'),'the reports and settings destinations are gone from the sidebar');
   const journal=navigation.indexOf("leaf('Journal Entries')");
   const budgets=navigation.indexOf("leaf('Budgets')");
-  const closing=navigation.indexOf("leaf('Period Closing')");
-  assert.ok(journal>-1&&journal<budgets&&budgets<closing,'Budgets sits between Journal Entries and Period Closing');
+  const closing=navigation.indexOf("leaf('Period Lock')");
+  assert.ok(journal>-1&&journal<budgets&&budgets<closing,'Budgets sits between Journal Entries and Period Lock');
   assert.equal((navigation.match(/leaf\('Budgets'\)/g)||[]).length,1);
 });
 

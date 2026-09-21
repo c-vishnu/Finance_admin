@@ -1,6 +1,12 @@
 .budgetV3{--budget-blue:#326df4;--budget-text:#172033;--budget-muted:#667085;--budget-border:#dfe6ef;max-width:1680px;margin:0 auto;padding:18px 24px 36px;color:var(--budget-text);font:14px/1.5 'Instrument Sans',sans-serif}.budgetV3 *{box-sizing:border-box}.budgetV3 h1,.budgetV3 h2,.budgetV3 p{margin:0}.budgetV3 button,.budgetV3 input,.budgetV3 select{font:inherit}.budgetV3 button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:8px 12px;border:1px solid var(--budget-border);border-radius:7px;background:#fff;color:#344054;cursor:pointer}.budgetV3 button.primary{border-color:var(--budget-blue);background:var(--budget-blue);color:#fff;box-shadow:0 3px 10px #326df433}.budgetV3 button:disabled{opacity:.55;cursor:not-allowed}.budgetV3Head{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:76px;margin-bottom:18px}.budgetV3Head h1{font-size:26px;letter-spacing:-.6px}.budgetV3Head p{margin-top:5px;color:var(--budget-muted)}.budgetListCard,.budgetSetup,.budgetSelect,.budgetAllocation,.budgetReview,.budgetDetailBody{background:#fff;border:1px solid var(--budget-border);border-radius:10px;overflow:hidden}.budgetFilters{display:flex;align-items:center;gap:10px;padding:13px;border-bottom:1px solid #e8edf3}.budgetFilters label,.budgetSelectionTools label{display:flex;align-items:center;gap:8px;flex:1;min-width:240px;min-height:40px;padding:0 11px;border:1px solid #d9e1eb;border-radius:7px;color:#667085}.budgetFilters input,.budgetSelectionTools input{width:100%;border:0;outline:0}.budgetFilters select{min-height:40px;padding:0 26px 0 10px;border:1px solid #d9e1eb;border-radius:7px;background:#fff;color:#344054}.budgetListCard table,.budgetAllocationGrid table{width:100%;border-collapse:collapse}.budgetListCard th,.budgetAllocationGrid th{padding:12px 16px;background:#f6f8fb;color:#667085;font-size:12px;text-align:left}.budgetListCard td{padding:14px 16px;border-top:1px solid #edf1f6}.budgetTextAction,.budgetIconAction{border:0!important;background:transparent!important;color:#2463d4!important}.budgetIconAction{color:#b42318!important;padding:6px!important;min-height:30px!important}.budgetEmpty{text-align:center!important;padding:42px!important;color:#667085}.budgetStatus{display:inline-flex;align-items:center;padding:4px 9px;border-radius:999px;background:#edf1f5;color:#536176;font-size:12px;font-weight:650}.budgetStatus.active{background:#e4f5ec;color:#19734c}.budgetStatus.draft{background:#fff2db;color:#99600e}.budgetStatus.closed{background:#edf1f5;color:#536176}.budgetSetup,.budgetSelect,.budgetAllocation,.budgetReview{padding:20px}.budgetSetup h2{margin:0 0 11px;font-size:16px}.budgetSetup h2:not(:first-child){margin-top:22px}.budgetSetup h2 small{color:#7a8799;font-size:11px;font-weight:500}.budgetPurposeCards,.budgetTemplateCards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.budgetTemplateCards{grid-template-columns:repeat(3,minmax(0,1fr))}.budgetPurposeCards button,.budgetTemplateCards button{min-height:84px;align-items:flex-start;justify-content:flex-start;flex-direction:column;gap:4px;padding:13px;text-align:left}.budgetPurposeCards button.active,.budgetTemplateCards button.active{border-color:var(--budget-blue);background:#f3f7ff;box-shadow:0 0 0 1px var(--budget-blue)}.budgetPurposeCards small,.budgetTemplateCards small{color:#667085;font-size:12px;font-weight:400;line-height:1.35}.budgetSetupFields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:20px;padding-top:20px;border-top:1px solid #edf1f6}.budgetSetupFields label{display:flex;flex-direction:column;gap:6px;color:#344054;font-weight:600}.budgetSetupFields input,.budgetSetupFields select{min-height:40px;padding:8px 10px;border:1px solid #d9e1eb;border-radius:7px;background:#fff;color:#344054}.budgetSelectHead{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:14px}.budgetSelectHead h2,.budgetReview h2{font-size:18px}.budgetSelectHead p{margin-top:4px;color:#667085}.budgetSelectHead>span{padding:4px 9px;border-radius:99px;background:#edf4ff;color:#2463d4;font-size:12px;font-weight:650}.budgetAccountTabs{display:flex;gap:0;border-bottom:1px solid var(--budget-border);overflow:auto}.budgetAccountTabs button{flex:0 0 auto;border:0;border-bottom:3px solid transparent;border-radius:0;background:transparent;color:#667085;font-weight:650}.budgetAccountTabs button.active{border-bottom-color:var(--budget-blue);color:#2463d4;background:#f6f9ff}.budgetSelectionTools{display:flex;gap:9px;margin:14px 0}.budgetSelectionTools label{max-width:380px}.budgetTreeV3{max-height:380px;overflow:auto;border:1px solid #e1e8f2;border-radius:8px}.budgetTreeV3 label{display:flex;align-items:center;gap:10px;min-height:44px;padding:8px 12px;border-bottom:1px solid #edf1f6;cursor:pointer}.budgetTreeV3 label:hover{background:#f8fbff}.budgetTreeV3 input{width:16px;height:16px;accent-color:var(--budget-blue)}.budgetTreeV3 span{display:flex;flex-direction:column}.budgetTreeV3 small,.budgetAllocationGrid small{color:#7a8799;font-size:11px}.budgetTreeV3 p{padding:24px;text-align:center;color:#667085}.budgetAllocationActions{display:flex;gap:8px;flex-wrap:wrap}.budgetAllocationActions button{min-height:34px;padding:6px 10px;font-size:12px}.budgetAllocationGrid{overflow:auto;border:1px solid #e1e8f2;border-radius:8px}.budgetAllocationGrid table{min-width:920px}.budgetAllocationGrid th{border-right:1px solid #e9edf3;white-space:nowrap}.budgetAllocationGrid td{padding:0;border-top:1px solid #edf1f6;border-right:1px solid #edf1f6}.budgetAllocationGrid td:first-child{position:sticky;left:0;z-index:1;min-width:240px;padding:10px 12px;background:#fff}.budgetAllocationGrid td input{width:100%;min-width:76px;min-height:42px;padding:7px;border:0;background:transparent;text-align:right}.budgetAllocationGrid td input:focus{outline:2px solid #9cbbff;outline-offset:-2px;background:#f5f8ff}.budgetAllocationGrid td:last-child{padding:0 12px;text-align:right;white-space:nowrap}.budgetReview dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px}.budgetReview dl>div{padding:12px 0;border-bottom:1px solid #edf1f6}.budgetReview dt{color:#667085;font-size:12px}.budgetReview dd{margin:3px 0 0;font-weight:650}.budgetReviewTotals,.budgetSummaryCards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:20px}.budgetReviewTotals{grid-template-columns:repeat(3,minmax(0,1fr))}.budgetReviewTotals article,.budgetSummaryCards article{display:flex;flex-direction:column;gap:4px;padding:14px;border:1px solid #e1e8f2;border-radius:8px;background:#f8fafc}.budgetReviewTotals span,.budgetSummaryCards span{color:#667085;font-size:12px}.budgetReviewTotals b,.budgetSummaryCards b{font-size:18px}.budgetWizardActions{display:flex;justify-content:flex-end;gap:9px;margin-top:16px}.budgetDetailBody{margin-top:14px;padding:18px}.budgetActivity article{display:flex;flex-direction:column;gap:3px;padding:13px 0;border-bottom:1px solid #edf1f6}.budgetActivity span{color:#667085;font-size:12px}.budgetUnder{color:#19734c}.budgetOver{color:#b42318}.budgetError{margin:12px 0 0;padding:10px 12px;border:1px solid #fecaca;border-radius:7px;background:#fff1f2;color:#b42318}@media(max-width:900px){.budgetFilters{flex-wrap:wrap}.budgetFilters label{flex-basis:100%}.budgetPurposeCards,.budgetTemplateCards{grid-template-columns:repeat(2,minmax(0,1fr))}.budgetSummaryCards{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:700px){.budgetV3{padding:14px 16px 24px}.budgetV3Head{align-items:flex-start;flex-direction:column}.budgetV3Head .primary{width:100%}.budgetSetup,.budgetSelect,.budgetAllocation,.budgetReview{padding:15px}.budgetPurposeCards,.budgetTemplateCards,.budgetSetupFields,.budgetReview dl,.budgetReviewTotals,.budgetSummaryCards{grid-template-columns:1fr}.budgetSelectionTools{align-items:stretch;flex-direction:column}.budgetSelectionTools label{max-width:none}.budgetSelectHead{flex-direction:column}.budgetAllocationActions{width:100%}.budgetAllocationActions button{flex:1}.budgetWizardActions button{flex:1}}
 /* Prevent global shell header/welcome rules from affecting Budget content. */
-.welcome:has(+.budgetV3){display:none!important}.app main>.budgetV3{position:static!important;inset:auto!important;z-index:auto!important;width:100%!important;min-height:0!important;margin:0 auto!important;padding:14px 18px 28px!important;overflow:visible!important;background:transparent!important}.app main>.budgetV3>.budgetV3Head{position:static!important;inset:auto!important;display:flex!important;width:auto!important;height:auto!important;min-height:64px!important;margin:0 0 14px!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}.budgetWizard .budgetSteps{margin-bottom:14px!important}.budgetWizard .budgetSetup,.budgetWizard .budgetSelect,.budgetWizard .budgetAllocation,.budgetWizard .budgetReview{margin:0!important}.budgetWizardActions{position:static!important;margin:14px 0 0!important;padding:0!important}.budgetSelect{min-height:0!important}.budgetTreeV3{max-height:360px!important}.budgetAllocationGrid{max-height:calc(100dvh - 360px);overflow:auto!important}@media(max-width:760px){.app main>.budgetV3{padding:12px 14px 22px!important}.app main>.budgetV3>.budgetV3Head{min-height:auto!important;margin-bottom:12px!important}}
+.welcome:has(+.budgetV3){display:none!important}.app main>.budgetV3{position:static!important;inset:auto!important;z-index:auto!important;width:100%!important;min-height:0!important;margin:0 auto!important;padding:14px 18px 28px!important;overflow:visible!important;background:transparent!important}
+/* The register screen takes the same content container as the Journal Entries and Chart of
+   Accounts pages, which both sit on the shell's own main padding with no page padding of their
+   own. Without this the card was inset 18px on each side and started 14px lower, so navigating
+   between the three Accounting pages moved the table. The wizard and the detail keep the padding
+   rule above: their full-bleed heads are designed around it. */
+.app main>.budgetV3:not(.budgetWizard):not(.budgetDetailV3){max-width:100%!important;margin:0!important;padding:0!important}.app main>.budgetV3>.budgetV3Head{position:static!important;inset:auto!important;display:flex!important;width:auto!important;height:auto!important;min-height:64px!important;margin:0 0 14px!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}.budgetWizard .budgetSteps{margin-bottom:14px!important}.budgetWizard .budgetSetup,.budgetWizard .budgetSelect,.budgetWizard .budgetAllocation,.budgetWizard .budgetReview{margin:0!important}.budgetWizardActions{position:static!important;margin:14px 0 0!important;padding:0!important}.budgetSelect{min-height:0!important}.budgetTreeV3{max-height:360px!important}.budgetAllocationGrid{max-height:calc(100dvh - 360px);overflow:auto!important}@media(max-width:760px){.app main>.budgetV3{padding:12px 14px 22px!important}.app main>.budgetV3>.budgetV3Head{min-height:auto!important;margin-bottom:12px!important}}
 
 /* Budget creation must use a compact, ordinary document flow.  This protects
    the wizard from legacy full-page/flex rules used by other workspaces. */
@@ -91,7 +97,7 @@
 .budgetFilterSearch{display:flex;align-items:center;gap:8px;flex:1 1 260px;min-width:200px;min-height:38px;padding:0 10px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#8fa0b7}
 .budgetFilterSearch input{width:100%;min-width:0;padding:0;border:0;outline:0;background:transparent;color:#172033}
 .budgetFilterSearch:focus-within{border-color:#9fbdf0;box-shadow:0 0 0 3px #eaf1ff}
-.budgetRegisterBar .budgetFilterYear{flex:0 1 190px;min-width:150px;min-height:38px;padding:0 26px 0 10px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#1d293d}
+.budgetRegisterBar>.budgetFilterYear{flex:0 1 190px;min-width:150px;min-height:38px;padding:0 26px 0 10px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#1d293d}
 .budgetFiltersMore{position:relative;flex:none}
 .budgetFiltersMore>summary{display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:0 14px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#1d293d;font-weight:600;cursor:pointer;list-style:none}
 .budgetFiltersMore>summary::-webkit-details-marker{display:none}
@@ -104,14 +110,14 @@
 .budgetFiltersPanelActions button{min-height:34px;padding:0 12px;font-size:12px;font-weight:600;color:#33415c}
 .budgetFilterBadge{flex:none;margin-left:auto;display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:#fff2db;color:#99600e;font-size:12px;font-weight:700;font-style:normal}
 .budgetListCard .budgetTable{width:100%;border-collapse:collapse}
-.budgetListCard .budgetTable th{padding:12px 14px;background:#f5f7fb;color:#68768b;font-size:12px;font-weight:600;text-align:left;white-space:nowrap}
-.budgetListCard .budgetTable td{padding:13px 14px;border-top:1px solid #edf1f6;vertical-align:middle}
-.budgetListCard .budgetTable tbody tr:hover td{background:#fafcff}
+.budgetListCard .budgetTable th{padding:12px 14px;background:#f7f9fc;color:#5b6b81;font-size:12px;font-weight:600;text-align:left;white-space:nowrap}
+.budgetListCard .budgetTable td{padding:11px 14px;border-top:1px solid #edf1f6;vertical-align:middle;font-size:13px}
+.budgetListCard .budgetTable tbody tr:hover td{background:#f8fbff}
 .budgetListCard .budgetTable th:last-child,.budgetListCard .budgetTable td:last-child{width:1%;text-align:right;white-space:nowrap}
 .budgetListCard .budgetTable td:first-child b{color:#172033;font-weight:650}
 .budgetActionsCell .budgetRowActions{justify-content:flex-end}
 @media(max-width:1100px){.budgetFiltersPanel{grid-template-columns:minmax(0,1fr);min-width:min(320px,92vw)}}
-@media(max-width:760px){.budgetRegisterBar .budgetFilterSearch{flex:1 1 100%}.budgetRegisterBar .budgetFilterYear{flex:1 1 100%;min-width:0}}
+@media(max-width:760px){.budgetRegisterBar .budgetFilterSearch{flex:1 1 100%}.budgetRegisterBar>.budgetFilterYear{flex:1 1 100%;min-width:0}}
 
 
 /* Create Budget: the scope row, the template switch, the shared account
@@ -143,10 +149,19 @@
 .budgetAccountGrid tbody tr:hover{background:#fafcff}
 .budgetAccountGrid tbody tr:focus-within{background:#f4f7ff}
 .budgetAccountGrid tr.budgetRowChosen{background:#f4f7ff}
-.budgetAccountGrid tr.budgetGroupRow>*{padding:9px 14px;border-top:1px solid #e8edf3;background:#f1f5fb;color:#344054;font-size:12px;text-align:left}
-.budgetAccountGrid .budgetGroupCell{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.budgetAccountGrid .budgetGroupCell b{font-weight:700}
-.budgetAccountGrid .budgetGroupCell span{color:#667085;font-size:12px;font-weight:600}
+.budgetAccountGrid tr.budgetGroupRow>*{padding:0;border-top:1px solid #e8edf3;background:#f7f9fc;color:#253550;text-align:left}
+.budgetAccountGrid .budgetGroupCell{display:flex;align-items:center;justify-content:flex-start;gap:12px;width:100%;min-height:48px;padding:8px 14px;border:0;border-radius:0;background:#f7f9fc;color:#253550;font-weight:650;cursor:pointer}
+.budgetAccountGrid .budgetGroupCell:hover{background:#eef4fc}
+.budgetAccountGrid .budgetGroupCell:focus-visible{outline:2px solid #245fd9;outline-offset:-2px}
+.budgetAccountGrid .budgetGroupCell>svg{flex:0 0 auto;width:22px;height:22px;padding:2px;border:1px solid #d9e1ec;border-radius:6px;background:#fff;color:#3f5b8f}
+.budgetAccountGrid .budgetGroupCell[aria-expanded="false"]>svg{border-color:#e1e6ed;color:#8392a7}
+.budgetAccountGrid .budgetGroupCell b{font-size:13px;font-weight:650;color:#253550}
+ .budgetAccountGrid .budgetGroupCell span{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;background:#e4eaf4;color:#55637a;font-size:12px;font-weight:600;line-height:1}
+.budgetAccountGrid tr.budgetGroupRow:has(.budgetGroupCell[aria-expanded="true"])>*{background:#eef4ff}
+.budgetAccountGrid .budgetGroupCell[aria-expanded="true"]{background:#eef4ff;box-shadow:inset 3px 0 0 #3478f6}
+.budgetAccountGrid .budgetGroupCell[aria-expanded="true"]:hover{background:#e4edff}
+.budgetAccountGrid .budgetGroupCell[aria-expanded="true"]>svg{border-color:#bcd0f5;color:#245fd9}
+.budgetAccountGrid .budgetGroupCell[aria-expanded="true"] span{background:#d8e5ff;color:#2a4f9e}
 .budgetAccountGrid .budgetChooseCell{width:56px;text-align:center}
 .budgetAccountGrid .budgetChooseCell input{width:18px;height:18px;accent-color:var(--budget-blue);cursor:pointer}
 .budgetAccountGrid .budgetChooseCell input:focus-visible{outline:2px solid #245fd9;outline-offset:2px}
@@ -252,7 +267,7 @@
 .budgetStatementRow td:first-child{padding-left:30px;font-weight:600}
 .budgetStatementRow td:first-child small{display:inline-block;margin-left:8px;font-weight:400}
 .budgetStatementSection>th,.budgetStatementType>th,.budgetStatementGroup>th{text-align:left;white-space:normal;border-top:1px solid #e4eaf2}
-.budgetStatementSection>th{padding:12px 14px;background:#f4f7fc;color:#172033;font-size:13px;font-weight:700}
+.budgetStatementSection>th{padding:12px 14px;background:#e9eff8;box-shadow:inset 3px 0 0 #3478f6;color:#172033;font-size:13px;font-weight:700}
 .budgetStatementType>th{padding:11px 14px;background:#fbfcfe;color:#172033;font-size:13px;font-weight:700}
 .budgetStatementGroup>th{padding:10px 14px 10px 26px;background:#fff;color:#536176;font-size:12px;font-weight:650}
 .budgetStatementTotal>*{background:#f8fafd;font-weight:700}
@@ -320,11 +335,25 @@
 .budgetAllocationGrid thead th:first-child{left:0;z-index:4}
 .budgetAllocationGrid tbody .budgetStickyCol{position:sticky;left:0;z-index:1;min-width:240px;padding:10px 12px;background:#fff}
 .budgetAllocationGrid small{font-size:12px}
-.budgetAllocBand>th{padding:9px 12px;border-top:1px solid #dfe6ef;background:#eef2f8;color:#172033;font-size:12px;font-weight:700;text-align:left;white-space:normal}
-.budgetAllocGroup>th{padding:0;border-top:1px solid #e8edf3;background:#f1f5fb;white-space:normal}
-.budgetAllocGroup>th>button{display:flex;align-items:center;gap:9px;width:100%;min-height:40px;padding:9px 12px;border:0;border-radius:0;background:transparent;color:#344054;font-size:13px;font-weight:650;text-align:left}
-.budgetAllocGroup>th>button:hover{background:#e8effa}
-.budgetAllocGroup>th>button span{margin-left:auto;color:#667085;font-size:12px;font-weight:600}
+/* The allocation grid carries the same section rows the Chart of Accounts accordion uses: the band names
+   the statement, the group row is one 48px button with the chevron in a bordered chip, the accounting type
+   and its account count on one line, and an open group tints the row, the chip and the count with a 3px
+   brand accent on the left. The accent sits on the button, never on the th, because the button covers the
+   whole cell and would hide it. */
+.budgetAllocBand>th{padding:10px 14px;border-top:1px solid #dfe6ef;background:#e9eff8;box-shadow:inset 3px 0 0 #3478f6;color:#172033;font-size:12px;font-weight:700;text-align:left;white-space:normal;letter-spacing:.02em;text-transform:uppercase}
+.budgetAllocGroup>th{padding:0;border-top:1px solid #e8edf3;background:#f7f9fc;white-space:normal}
+.budgetAllocGroup>th>button{display:flex;align-items:center;justify-content:flex-start;gap:12px;width:100%;min-height:48px;padding:8px 14px;border:0;border-radius:0;background:#f7f9fc;color:#253550;font-size:13px;font-weight:650;text-align:left;cursor:pointer}
+.budgetAllocGroup>th>button:hover{background:#eef4fc}
+.budgetAllocGroup>th>button:focus-visible{outline:2px solid #245fd9;outline-offset:-2px}
+.budgetAllocGroup>th>button>svg{flex:0 0 auto;width:22px;height:22px;padding:2px;border:1px solid #d9e1ec;border-radius:6px;background:#fff;color:#3f5b8f}
+.budgetAllocGroup>th>button[aria-expanded="false"]>svg{border-color:#e1e6ed;color:#8392a7}
+.budgetAllocGroup>th>button b{font-size:13px;font-weight:650;color:#253550}
+ .budgetAllocGroup>th>button span{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;background:#e4eaf4;color:#55637a;font-size:12px;font-weight:600;line-height:1}
+.budgetAllocGroup>th:has(button[aria-expanded="true"]){background:#eef4ff}
+.budgetAllocGroup>th>button[aria-expanded="true"]{background:#eef4ff;box-shadow:inset 3px 0 0 #3478f6}
+.budgetAllocGroup>th>button[aria-expanded="true"]:hover{background:#e4edff}
+.budgetAllocGroup>th>button[aria-expanded="true"]>svg{border-color:#bcd0f5;color:#245fd9}
+.budgetAllocGroup>th>button[aria-expanded="true"] span{background:#d8e5ff;color:#2a4f9e}
 .budgetGrowthField{display:flex;align-items:center;gap:7px;min-height:34px;padding:0 10px;border:1px solid #d9e1eb;border-radius:7px;background:#fff;color:#475467;font-size:12px;font-weight:600}
 .budgetGrowthField input{width:64px;min-height:28px;padding:2px 6px;border:1px solid #e1e8f2;border-radius:6px;background:#fff;color:#344054;text-align:right}
 .budgetImportButton{position:relative;display:inline-flex;align-items:center;gap:7px;min-height:34px;padding:6px 10px;border:1px solid var(--budget-border);border-radius:7px;background:#fff;color:#344054;font-size:12px;font-weight:650;cursor:pointer}
@@ -344,7 +373,6 @@
 .budgetBalanceCheck.unbalanced .budgetPanelHead>span{color:#8a4b09}
 .budgetScopeSummary,.budgetSelectedCount{white-space:nowrap}
 .budgetSelectionTools .budgetTypeFilter{min-height:40px;padding:0 26px 0 10px;border:1px solid #d9e1eb;border-radius:7px;background:#fff;color:#344054}
-.budgetAccountGrid .budgetGroupCell{width:100%;min-height:0;padding:0;border:0;border-radius:0;background:transparent;color:inherit;font-weight:400;cursor:pointer}
 .budgetSetupFields textarea{min-height:64px;padding:8px 10px;border:1px solid #d9e1eb;border-radius:7px;background:#fff;color:#344054;font:inherit;resize:vertical}
 @media(max-width:1200px){.budgetDetailV3>.budgetAccountTabs{grid-template-columns:none!important;grid-auto-flow:column!important;grid-auto-columns:max-content!important;overflow-x:auto!important}}
 @media(max-width:900px){.budgetHealthBars,.budgetDetailsFacts{grid-template-columns:1fr}.budgetDetailsGroup{grid-template-columns:1fr}}

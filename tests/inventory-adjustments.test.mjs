@@ -10,7 +10,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {accountingPreview,accountCodeOf,adjustmentActivity,adjustmentCommand,adjustmentCsv,adjustmentImpact,adjustmentRows,blankAdjustment,blankLine,canonicalItems,configuredAdjustmentAccount,duplicateAdjustment,formatQuantity,inventoryPosition,nextAdjustmentNumber,storedLines,validateAdjustment} from '../src/inventory-adjustments.js';
+import {ADJUSTMENT_ACTIONS,ADJUSTMENT_STATUSES,accountingPreview,accountCodeOf,adjustmentActivity,adjustmentCommand,adjustmentCsv,adjustmentImpact,adjustmentRows,blankAdjustment,blankLine,canonicalItems,configuredAdjustmentAccount,duplicateAdjustment,entryModeLabel,formatQuantity,inventoryPosition,nextAdjustmentNumber,storedLines,validateAdjustment} from '../src/inventory-adjustments.js';
 
 const engine=readFileSync(new URL('../src/inventory-adjustments.js',import.meta.url),'utf8');
 const screen=readFileSync(new URL('../src/InventoryAdjustments.jsx',import.meta.url),'utf8');
@@ -304,11 +304,11 @@ test('the register follows the accounting register structure of Journal Entries 
   assert.match(screen,/const role=mode==='business'\?'Admin':'Accountant'/,'the acting role follows the header View as switch');
   assert.doesNotMatch(screen,/Acting as/,'the acting-as control left the page');
   assert.doesNotMatch(screen,/RoleField|setRole/,'no role selector is wired on any of the three screens');
-  assert.match(screen,/<div className="iaHeading">/,'the register heading is the plain title row the other registers use');
+  assert.match(screen,/<div className="iaHeading registerHead">/,'the register heading is the plain title row the other registers use');
   assert.match(screen,/<div className="iaHeadActions"><button className="primary" type="button" onClick=\{onNew\}>/);
   assert.match(screen,/<details className="iaFilters">/,'one Filters disclosure holds every dropdown');
   assert.match(screen,/<summary aria-label="Open filters"><IconFilter size=\{16\}\/>Filters/,'the filter button carries the filter icon and is labelled for a screen reader');
-  assert.match(screen,/IconFileDownload,IconFilter,IconHistory/,'the filter icon is imported from the design-system icon set');
+  assert.match(screen,/IconDownload/,'the filter icon is imported from the design-system icon set');
   assert.ok(!screen.includes('iaFilterCount'),'the register bar prints no count beside the filters');
   assert.ok(!styles.includes('iaFilterCount'),'no count styling is left behind');
   assert.match(screen,/document\.querySelectorAll\('details\.iaKebab\[open\],details\.iaFilters\[open\]'\)/,'one dismissal effect closes the filters panel and the row menus together');
@@ -329,4 +329,104 @@ test('the item tables pin their header row and Item column and keep text legible
   assert.match(styles,/\.iaKebabMenu\{position:absolute;right:0;top:38px;z-index:80/);
   assert.match(styles,/th\.iaNum,td\.iaNum\{text-align:right/);
   assert.doesNotMatch(styles,/font-size:(?:[0-9]|1[01])(?:\.\d+)?px/);
+});
+
+test('the register is four merged columns plus Status, with the entry mode on the left',()=>{
+  assert.match(screen,/const REGISTER_COLUMNS=\['Reference','Type \/ Mode of adjustment','Organisation','Items','Status','Actions'\];/,'the register column set is the merged one');
+  for(const gone of ["'Date'","'Branch'","'Amount'","'Created By'","'Type'"])
+    assert.ok(!screen.includes("const REGISTER_COLUMNS=["+gone),'the standalone '+gone+' column is gone');
+  assert.match(screen,/<td><button type="button" className="iaLink" onClick=\{\(\)=>onOpen\(row\)\}>\{row\.number\}<\/button><small>\{fmtDate\(row\.date\)\}<\/small><\/td>/,'Reference and Date share one cell');
+  assert.match(screen,/<td>\{row\.type\}<small className="iaEntryModeLine">\{'Entry mode · '\+entryModeLabel\(row\.entryMode\)\}<\/small><\/td>/,'the adjustment type shares its cell with the entry mode, in the left column group');
+  assert.match(screen,/<td>\{row\.companyName\|\|row\.companyId\|\|'Not recorded'\}<small>\{branchNameOf\(row\.branchId\)\|\|'Branch not recorded'\}<\/small><\/td>/,'Organisation and Branch share one cell');
+  assert.match(screen,/<td>\{storedLines\(row\)\.length\} \{storedLines\(row\)\.length===1\?'item':'items'\}<small className=\{'iaAmountLine '/,'the item count shares its cell with the signed amount');
+  assert.match(screen,/<td><Badge value=\{row\.status\}\/><\/td>/,'Status keeps its own column');
+  assert.match(screen,/import \{ADJUSTMENT_ACTIONS,ADJUSTMENT_ENTRY_MODES,ADJUSTMENT_REASONS,ADJUSTMENT_STATUSES,ADJUSTMENT_TYPES,accountingPreview,adjustmentActivity,adjustmentAllowed,adjustmentCommand,adjustmentCsv,adjustmentImpact,adjustmentRows,blankAdjustment,blankLine,canonicalItems,configuredAdjustmentAccount,duplicateAdjustment,entryModeLabel,/,'the entry mode label helper is imported');
+});
+
+test('the columns the register dropped stay reachable on the detail screen',()=>{
+  for(const kept of ['<div><dt>Reason</dt><dd>{row.reason||\'Not recorded\'}</dd></div>','<div><dt>Adjustment account</dt>','<div><dt>Created by</dt>'])
+    assert.ok(screen.includes(kept),'the detail still shows what the register dropped: '+kept);
+  assert.match(screen,/<div><dt>Entry mode<\/dt><dd>\{entryModeLabel\(row\.entryMode\|\|''\)\}<\/dd><\/div>/,'the detail now states the entry mode the register surfaces');
+});
+
+test('the merged cells keep the register legible',()=>{
+  assert.match(styles,/\.iaTable td \.iaEntryModeLine\{margin-top:3px;font-weight:500\}/);
+  assert.match(styles,/\.iaTable td \.iaAmountLine\{margin-top:4px;color:#344054;font-size:13px;font-weight:600\}/,'the amount stays readable inside the Items cell');
+  assert.match(styles,/\.iaTable td \.iaAmountLine\.iaUp\{color:#18794e\}/,'a positive adjustment keeps its green');
+  assert.match(styles,/\.iaTable td \.iaAmountLine\.iaDown\{color:#b42318\}/,'a negative adjustment keeps its red');
+  assert.match(styles,/th\.iaNum,td\.iaNum\{text-align:right/,'the item tables keep the right-aligned numeric column');
+  assert.ok(!styles.includes('.iaRole')&&!styles.includes('.iaSort'),'no deleted control came back');
+});
+
+/* ---- the row menu: Edit, Duplicate and Delete ---- */
+
+test('the row menu offers Edit, Duplicate and Delete on every status',()=>{
+  for(const status of ADJUSTMENT_STATUSES)
+    for(const action of ['Edit','Duplicate','Delete'])
+      assert.ok(ADJUSTMENT_ACTIONS[status].includes(action),status+' offers '+action);
+  assert.deepEqual(ADJUSTMENT_ACTIONS.Draft,['View','Edit','Duplicate','Export','Delete','Cancel']);
+  assert.deepEqual(ADJUSTMENT_ACTIONS.Adjusted.slice(-1),['Reverse'],'an adjusted record still ends with Create reversal');
+  assert.equal(entryModeLabel(undefined),'Adjust By','the preview can label a legacy record');
+});
+
+test('a draft can be deleted, and the deletion is audited',()=>{
+  const saved=adjustmentCommand(state(),'save',draft(),ctx());
+  assert.equal(saved.state.inventoryAdjustments.length,1);
+  const deleted=adjustmentCommand(saved.state,'delete',{id:saved.result.id},ctx());
+  assert.equal(deleted.state.inventoryAdjustments.length,0,'the row leaves the register');
+  assert.equal(deleted.result.deleted,true);
+  const event=deleted.state.audit.at(-1);
+  assert.equal(event.action,'inventory-adjustment-delete');
+  assert.equal(event.adjustmentId,saved.result.id);
+  assert.equal(event.toStatus,'Deleted');
+  assert.equal(event.fromStatus,'Draft');
+});
+
+test('a pending adjustment can be deleted before it posts',()=>{
+  const saved=adjustmentCommand(state(),'save',draft(),ctx());
+  const submitted=adjustmentCommand(saved.state,'submit',{id:saved.result.id},ctx());
+  assert.equal(submitted.result.status,'Pending Approval');
+  const deleted=adjustmentCommand(submitted.state,'delete',{id:submitted.result.id},ctx());
+  assert.equal(deleted.state.inventoryAdjustments.length,0);
+  assert.equal(deleted.state.journals.length,0,'nothing had posted, so nothing is left behind');
+});
+
+test('a posted adjustment is never deleted, only reversed',()=>{
+  const saved=adjustmentCommand(state(),'save',draft(),ctx());
+  const posted=adjustmentCommand(saved.state,'adjust',{id:saved.result.id},ctx());
+  assert.equal(posted.result.status,'Adjusted');
+  assert.ok(posted.state.journals.length,'the adjustment posted a journal');
+  assert.throws(()=>adjustmentCommand(posted.state,'delete',{id:posted.result.id},ctx()),/Create a reversal instead of deleting it/);
+  assert.equal(posted.state.inventoryAdjustments.length,1,'the posted row survives the refused delete');
+  assert.equal(posted.state.journals.length,1,'the posted journal is untouched');
+});
+
+test('an accountant may delete, because the duty is the cancel duty',()=>{
+  const saved=adjustmentCommand(state(),'save',draft(),ctx());
+  const deleted=adjustmentCommand(saved.state,'delete',{id:saved.result.id},ctx({actor:'Accountant',role:'Accountant'}));
+  assert.equal(deleted.state.inventoryAdjustments.length,0);
+});
+
+/* ---- the detail preview ---- */
+
+test('the detail head opens the printable adjustment preview on request',()=>{
+  assert.ok(screen.includes("import AdjustmentPreview from './AdjustmentPreview.jsx';"),'the page imports the preview');
+  assert.match(screen,/const \[preview,setPreview\]=useState\(''\)/,'preview is opt-in state');
+  assert.match(screen,/preview==='document'\?<AdjustmentPreview row=\{selected\}/,'the preview replaces the detail screen, the way Journal Entries does');
+  assert.match(screen,/className="iaPreviewButton" onClick=\{onPreview\}><IconEye size=\{16\}\/>Preview<\/button>/,'the Preview button sits in the detail head');
+  assert.match(screen,/const openDetail=row=>\{[^}]*setPreview\(''\)/,'opening a record clears any open preview');
+  assert.match(screen,/const backToList=\(\)=>\{[^}]*setPreview\(''\)/,'leaving the detail clears it too');
+});
+
+test('the preview renders the stored document and nothing is recalculated',()=>{
+  const preview=readFileSync(new URL('../src/AdjustmentPreview.jsx',import.meta.url),'utf8');
+  assert.match(preview,/role="dialog" aria-modal="true" aria-labelledby="adjustment-preview-title"/,'it is an accessible dialog');
+  assert.match(preview,/onMouseDown=\{event=>event\.target===event\.currentTarget&&onClose\(\)\}/,'the backdrop closes it');
+  assert.match(preview,/window\.print\(\)/,'it prints');
+  assert.match(preview,/import '\.\/journal-preview\.css';/,'it reuses the internal-document preview shell');
+  assert.ok(!preview.includes('computeLine'),'the preview never recalculates a line');
+  assert.match(preview,/const lines=storedLines\(row\)/,'it reads the lines the engine stored');
+  assert.match(preview,/entryModeLabel\(row\.entryMode\)/,'it states the entry mode');
+  assert.match(preview,/row\.posted\?'Posted'/,'it distinguishes a posted document from an unposted one');
+  assert.match(preview,/\{columns\.map\(column=><th key=\{column\}>\{column\}<\/th>\)\}/,'the quantity/value columns follow the adjustment type');
 });

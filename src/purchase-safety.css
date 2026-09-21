@@ -1,2 +1,0 @@
-/* Posted bills are cancelled only from their detail page, where reversal rules run. */
-.purchaseListCard tr:has(.purchaseStatus.unpaid,.purchaseStatus.partiallypaid,.purchaseStatus.paid) .purchaseMenu .danger{display:none}

@@ -390,6 +390,13 @@ export function budgetToCSV(budget){
   return [['Account Code','Account Name','Account Type',...labels,'Total'].join(','),...rows].join('\r\n');
 }
 
+/* The register export: one row per budget carrying the four columns the grid shows plus the two it
+   filters on, so a filtered register exports exactly what the reader is looking at. Values are
+   quoted the way src/daybook-export.js quotes them, so a name with a comma or a quote survives. */
+export function budgetListCSV(budgets=[]){
+  const quote=value=>'"'+String(value==null?'':value).replaceAll('"','""')+'"';
+  return [['Budget Name','Financial Year','Budget Period','Type','Scope','Status'],...budgets.map(budget=>[budget.name,budget.financialYear,budget.period,budget.type,budget.scope?.type||'',budget.status])].map(row=>row.map(quote).join(',')).join('\r\n');
+}
 export function parseBudgetCSV(text,availableAccounts=[]){
   const lines=String(text||'').split(/\r?\n/).filter(line=>line.trim());
   if(lines.length<2)throw Error('CSV needs a header and at least one data row.');

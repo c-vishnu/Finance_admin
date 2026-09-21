@@ -1,0 +1,35 @@
+/* The shared searchable picker (src/SearchSelect.jsx).
+
+   Extracted from the Create / Edit Customer form so the sales order can pick a customer with the
+   same control instead of a second hand-rolled dropdown. The rules were scoped to `.customersPage`
+   while only that page used them; they are now scoped to the component's own root (`.customerSelect`)
+   so any page that renders the picker gets the same styling, and so the rules outrank the host page's
+   own `button` / `input` element rules - src/invoice-workspace.css styles every bare button and input
+   at class-plus-element specificity, which a single-class component rule loses to. */
+.customerSelectField{display:flex;flex-direction:column;gap:7px;min-width:0}
+.customerSelectLabel{color:#344054;font-size:12px;font-weight:600}
+.customerSelect{position:relative;min-width:0}
+.customerSelect .customerSelectTrigger{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:40px;padding:7px 10px;border:1px solid #d7e0eb;border-radius:7px;background:#fff;color:#26354b;font:13px "Instrument Sans",Arial,sans-serif;text-align:left;cursor:pointer}
+.customerSelect .customerSelectTrigger:hover{border-color:#bcd0f5}
+.customerSelect.open .customerSelectTrigger{border-color:var(--ui-primary);box-shadow:0 0 0 3px rgba(52,120,246,.12)}
+.customerSelect .customerSelectTrigger[aria-invalid=true]{border-color:#d92d20}
+.customerSelect .customerSelectTrigger svg{flex:none;color:#667085}
+.customerSelect .customerSelectValue{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#26354b;font-weight:500}
+.customerSelect .customerSelectPlaceholder{color:#98a2b3}
+.customerSelect .customerSelectPop{position:absolute;z-index:70;left:0;right:0;top:calc(100% + 6px);padding:6px;border:1px solid #e1e6ed;border-radius:9px;background:#fff;box-shadow:0 12px 30px #1018281f}
+.customerSelect .customerSelectSearch{display:flex;align-items:center;gap:8px;padding:0 8px;border:1px solid #d7e0eb;border-radius:7px;color:#667085}
+.customerSelect .customerSelectSearch input{flex:1;min-width:0;height:34px;border:0;outline:0;background:transparent;color:#26354b;font:13px "Instrument Sans",Arial,sans-serif}
+.customerSelect .customerSelectList{max-height:240px;margin-top:6px;overflow-y:auto}
+.customerSelect .customerSelectOption{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:34px;padding:0 9px;border-radius:6px;color:#344054;font-size:13px;cursor:pointer}
+.customerSelect .customerSelectOption.active{background:#f4f7ff;color:#245fd9}
+.customerSelect .customerSelectOption.selected{color:#245fd9;font-weight:600}
+.customerSelect .customerSelectOption svg{flex:none}
+.customerSelect .customerSelectEmpty{margin:0;padding:10px 9px;color:#667085;font-size:12px}
+
+/* The trigger shows a search icon while it is empty, so the control reads as searchable before it is
+   opened; with a value it shows the value alone. */
+.customerSelect .customerSelectPrompt{display:flex;align-items:center;gap:8px;min-width:0}
+/* Customer options carry a second line (the code or the email) so two similarly named customers can be
+   told apart. The margin-top is reset because the host sheet styles every bare small. */
+.customerSelect .customerSelectOptionLabel{display:flex;flex-direction:column;gap:2px;min-width:0;text-align:left}
+.customerSelect .customerSelectOptionLabel small{margin-top:0;color:#667085;font-size:12px;font-weight:400;line-height:1.3}

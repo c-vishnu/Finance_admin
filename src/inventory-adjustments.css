@@ -19,7 +19,7 @@
 .iaHeadIdentity{display:flex;align-items:center;gap:13px;min-width:0}
 .iaHeadIdentity>div{min-width:0}
 .iaHeadSide{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-end}
-.iaHeadSide .iaBadge{text-transform:none;letter-spacing:normal}
+
 .iaHeadSide .iaKebabMenu span{color:#344054;font-size:13px;font-weight:500;letter-spacing:normal;text-transform:none}
 .iaBack{flex:0 0 40px;width:40px;height:40px;padding:0;border:1px solid #d7e0eb;border-radius:8px;background:#fff;color:#344054}
 .iaBack:hover{background:#eef4ff;border-color:#bcd0f5;color:#2463d4}
@@ -74,12 +74,6 @@ th.iaActionsCell,td.iaActionsCell{text-align:right;white-space:nowrap}
 .iaPager>div{display:flex;align-items:center;gap:9px}
 .iaPager>span{font-weight:600}
 .iaPager>div>span{font-weight:600}
-
-/* ---------- status badges ---------- */
-.iaBadge.draft{background:#eef2f7;color:#59677a}
-.iaBadge.pending-approval{background:#fff3df;color:#99600e}
-.iaBadge.adjusted{background:#e8f7ef;color:#18794e}
-.iaBadge.cancelled{background:#ffe9ec;color:#b7374b}
 
 /* ---------- row action menu (the .pc-kebab geometry) ---------- */
 .iaKebab{position:relative;display:inline-block;vertical-align:middle}
@@ -275,3 +269,18 @@ th.iaActionsCell,td.iaActionsCell{text-align:right;white-space:nowrap}
 .iaField .pc-scope-picker .pc-field select{width:100%;min-height:40px;padding:9px 32px 9px 11px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#172033;font-size:13px;font-weight:400}
 .iaField .je-account-picker svg{width:auto;height:auto}
 @media(max-width:700px){.iaField .pc-scope-picker .pc-fields{grid-template-columns:minmax(0,1fr)}}
+
+/* The Inventory Adjustments register reads as merged cells: Reference over Date, the
+   adjustment type over its Entry mode, Organisation over Branch, and the item count over
+   the signed amount, so ten columns became six. The shared `.opsTable td small` already
+   supplies the 12px muted secondary line; these two rules only state what the merged lines
+   mean. The signed amount keeps its up/down colour now that it sits inside the Items cell
+   rather than in a right-aligned Amount column. */
+.iaTable td .iaEntryModeLine{margin-top:3px;font-weight:500}
+.iaTable td .iaAmountLine{margin-top:4px;color:#344054;font-size:13px;font-weight:600}
+.iaTable td .iaAmountLine.iaUp{color:#18794e}
+.iaTable td .iaAmountLine.iaDown{color:#b42318}
+
+/* Preview is a secondary action beside the status action in the detail head, so it takes the
+   shared .opsPage button treatment and only needs to never wrap. */
+.iaHeadSide .iaPreviewButton{white-space:nowrap}

@@ -10,22 +10,22 @@ html,body,#root{max-width:100%;min-height:100%}
 :where(.purchaseWorkspace,.invoiceWorkspace,.salesOrdersPage,.itemsPage,.vendorPage,.bankPage,.opsPage,.gl,.je,.day,.auditPage) :where(section,article,form,fieldset,header,footer,nav,div,label){min-width:0}
 
 /* One interaction language for application controls. */
-:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) button:not(:disabled){cursor:pointer}
-:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) button{transition:background-color .16s ease,border-color .16s ease,color .16s ease,box-shadow .16s ease,transform .08s ease}
-:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) button:not(:disabled):active{transform:translateY(1px)}
-:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) button:disabled{cursor:not-allowed;opacity:.52;box-shadow:none}
-:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) button:focus-visible,
-:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) :is(input,select,textarea,summary,a):focus-visible{outline:0;box-shadow:var(--wvb-focus)}
-:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) button.primary:not(:disabled):hover{filter:brightness(.96);box-shadow:0 4px 12px rgba(52,120,246,.18)}
-:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) button.danger:not(:disabled):hover{background:var(--wvb-danger-bg);border-color:#f3b6b2;color:var(--wvb-danger)}
-:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) button svg{flex:0 0 auto}
+:where(.app main,.settingsPortal,.helpPortal,.auditPortal,.pc) button:not(:disabled){cursor:pointer}
+:where(.app main,.settingsPortal,.helpPortal,.auditPortal,.pc) button{transition:background-color .16s ease,border-color .16s ease,color .16s ease,box-shadow .16s ease,transform .08s ease}
+:where(.app main,.settingsPortal,.helpPortal,.auditPortal,.pc) button:not(:disabled):active{transform:translateY(1px)}
+:where(.app main,.settingsPortal,.helpPortal,.auditPortal,.pc) button:disabled{cursor:not-allowed;opacity:.52;box-shadow:none}
+:where(.app main,.settingsPortal,.helpPortal,.auditPortal,.pc) button:focus-visible,
+:where(.app main,.settingsPortal,.helpPortal,.auditPortal,.pc) :is(input,select,textarea,summary,a):focus-visible{outline:0;box-shadow:var(--wvb-focus)}
+:where(.app main,.settingsPortal,.helpPortal,.auditPortal,.pc) button.primary:not(:disabled):hover{filter:brightness(.96);box-shadow:0 4px 12px rgba(52,120,246,.18)}
+:where(.app main,.settingsPortal,.helpPortal,.auditPortal,.pc) button.danger:not(:disabled):hover{background:var(--wvb-danger-bg);border-color:#f3b6b2;color:var(--wvb-danger)}
+:where(.app main,.settingsPortal,.helpPortal,.auditPortal,.pc) button svg{flex:0 0 auto}
 
 /* Forms share height, legibility, error and disabled treatment. */
-:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) :is(input:not([type=checkbox]):not([type=radio]):not([type=file]),select){min-height:var(--wvb-control-h)}
-:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) :is(input,select,textarea){color:#25324a}
-:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) :is(input,select,textarea)::placeholder{color:#98a2b3;opacity:1}
-:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) :is(input,select,textarea):disabled{background:#f2f4f7;color:#667085;cursor:not-allowed}
-:where(.app main,.purchasePortal,.vendorPortal,.settingsPortal,.helpPortal,.auditPortal,.pc) :is([role=alert],.purchaseError,.bankError,.bankFormError,.opsError,.opsFormError,.vendorError,.ivError){overflow-wrap:anywhere}
+:where(.app main,.settingsPortal,.helpPortal,.auditPortal,.pc) :is(input:not([type=checkbox]):not([type=radio]):not([type=file]),select){min-height:var(--wvb-control-h)}
+:where(.app main,.settingsPortal,.helpPortal,.auditPortal,.pc) :is(input,select,textarea){color:#25324a}
+:where(.app main,.settingsPortal,.helpPortal,.auditPortal,.pc) :is(input,select,textarea)::placeholder{color:#98a2b3;opacity:1}
+:where(.app main,.settingsPortal,.helpPortal,.auditPortal,.pc) :is(input,select,textarea):disabled{background:#f2f4f7;color:#667085;cursor:not-allowed}
+:where(.app main,.settingsPortal,.helpPortal,.auditPortal,.pc) :is([role=alert],.purchaseError,.bankError,.bankFormError,.opsError,.opsFormError,.vendorError,.ivError){overflow-wrap:anywhere}
 
 /* Dense tables remain readable; only their own wrapper may scroll. */
 :where(.purchaseTableWrap,.vendorTableWrap,.bankTable,.opsTable,.itemsTableWrap,.ivScroll,.je-table-wrap,.day-table-scroll,.auditTable){max-width:100%;overscroll-behavior-inline:contain}
@@ -48,7 +48,7 @@ html,body,#root{max-width:100%;min-height:100%}
 :where(.bankDialog,.opsDrawer,.soConfirm,.soDocument,.coaModal form,.pc-modal>section)>footer{position:sticky;bottom:0;z-index:2;background:#fff}
 
 /* Portal workspaces use the same dashboard geometry. */
-:where(.auditPortal,.vendorPortal,.settingsPortal,.helpPortal,.purchasePortal,.pc){left:270px;top:58px;right:0;bottom:0}
+:where(.auditPortal,.settingsPortal,.helpPortal,.pc){left:270px;top:58px;right:0;bottom:0}
 .auditPortal{padding:24px}
 
 /* Toolbars wrap before controls collide. */
@@ -61,7 +61,7 @@ html,body,#root{max-width:100%;min-height:100%}
 :where(.purchaseEmpty,.bankEmpty,.bankBlank,.bankTableEmpty,.opsEmpty,.vendorEmpty,.auditEmpty,.ivEmpty,.itemsEmpty)>svg{width:32px;height:32px;color:#7d91ad}
 
 @media(max-width:1280px){
-  :where(.auditPortal,.vendorPortal,.settingsPortal,.helpPortal,.purchasePortal,.pc){padding-left:20px;padding-right:20px}
+  :where(.auditPortal,.settingsPortal,.helpPortal,.pc){padding-left:20px;padding-right:20px}
   :where(.bankAccountGrid,.opsSummary,.purchaseSummary){gap:10px}
 }
 @media(max-width:1024px){
@@ -69,10 +69,10 @@ html,body,#root{max-width:100%;min-height:100%}
   :where(.purchaseHeading,.bankHead,.opsHead,.ivHeading,.itemsHeading,.je-heading,.gl-heading,.auditPage>header)>:last-child{max-width:100%;flex-wrap:wrap}
   :where(.bankAccountGrid,.opsSummary,.purchaseSummary,.cnApplySummary){grid-template-columns:repeat(2,minmax(0,1fr))}
   :where(.bankFormGrid,.vendorGrid,.purchaseFields,.opsFormGrid){grid-template-columns:minmax(0,1fr)}
-  :where(.auditPortal,.vendorPortal,.settingsPortal,.helpPortal,.purchasePortal,.pc){left:270px}
+  :where(.auditPortal,.settingsPortal,.helpPortal,.pc){left:270px}
 }
 @media(max-width:760px){
-  :where(.auditPortal,.vendorPortal,.settingsPortal,.helpPortal,.purchasePortal,.pc){left:0;top:58px;padding:14px}
+  :where(.auditPortal,.settingsPortal,.helpPortal,.pc){left:0;top:58px;padding:14px}
   :where(.bankAccountGrid,.opsSummary,.purchaseSummary,.cnApplySummary){grid-template-columns:minmax(0,1fr)}
   :where(.purchaseHeading,.bankHead,.opsHead,.ivHeading,.itemsHeading,.je-heading,.gl-heading,.auditPage>header) button.primary{width:100%;justify-content:center}
   :where(.purchaseTools,.bankTools,.opsTools,.itemsTools,.ivTools,.am-toolbar,.je-tools,.day-filter-row,.auditTools)>:is(label,select,button){width:100%;flex:1 1 100%}
@@ -108,30 +108,6 @@ html,body,#root{max-width:100%;min-height:100%}
   box-shadow:-18px 0 48px #10182826!important;
 }
 
-/* Purchase Reports uses a semantic header inside a portal. Reset the legacy
-   global app-header rule so the title and export action stay in normal flow. */
-.purchaseReportPage>.purchaseReportHead{
-  position:static!important;
-  inset:auto!important;
-  z-index:auto!important;
-  width:100%!important;
-  height:auto!important;
-  min-height:0!important;
-  margin:0 0 18px!important;
-  padding:0!important;
-  border:0!important;
-  background:transparent!important;
-  box-shadow:none!important;
-  align-items:flex-start!important;
-}
-.purchaseReportHead>div{min-width:0}
-.purchaseReportHead h1{line-height:1.25}
-.purchaseReportHead p{line-height:1.45}
-.purchaseReportHead>button{flex:0 0 auto;justify-content:center;white-space:nowrap}
-@media(max-width:700px){
-  .purchaseReportPage>.purchaseReportHead{gap:12px}
-  .purchaseReportHead>button{width:100%}
-}
 
 /* Organization context has its own row below the primary application header. */
 .headerActions>:is(.companySelect,.branchSelect,.yearSelect){display:none!important}
@@ -158,11 +134,11 @@ html,body,#root{height:100%;overflow:hidden}
 .app{height:100dvh;overflow:hidden}
 .app>aside{height:100dvh;overflow:hidden}
 .app>main{height:calc(100dvh - 105px);overflow-x:clip;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
-:where(.transactionPortal,.auditPortal,.helpPortal,.settingsPortal,.vendorPortal,.purchasePortal,.pc,.budgetPage){top:105px!important}
+:where(.transactionPortal,.auditPortal,.helpPortal,.settingsPortal,.pc,.budgetPage){top:105px!important}
 @media(max-width:760px){
   .orgContextBar{left:0;height:46px;padding:0 12px}
   .app>main{margin-top:46px}
-  :where(.transactionPortal,.auditPortal,.helpPortal,.settingsPortal,.vendorPortal,.purchasePortal,.pc,.budgetPage){top:105px!important}
+  :where(.transactionPortal,.auditPortal,.helpPortal,.settingsPortal,.pc,.budgetPage){top:105px!important}
 }
 
 .am-coa-heading{margin-bottom:14px}

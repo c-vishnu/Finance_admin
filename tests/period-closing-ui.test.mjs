@@ -6,18 +6,19 @@ const jsx=readFileSync(new URL('../src/PeriodClosing.jsx',import.meta.url),'utf8
 const service=readFileSync(new URL('../src/period-locking.js',import.meta.url),'utf8');
 const css=readFileSync(new URL('../src/period-closing.css',import.meta.url),'utf8');
 const focus=readFileSync(new URL('../src/period-closing-focus.css',import.meta.url),'utf8');
+const registerHead=readFileSync(new URL('../src/register-head.css',import.meta.url),'utf8');
 const accounting=readFileSync(new URL('../src/AccountingSettingsPanel.jsx',import.meta.url),'utf8');
 const settingsCss=readFileSync(new URL('../src/period-lock-settings.css',import.meta.url),'utf8');
 
-test('period closing is one lean screen whose heading pairs the title with a journal style subheading and a single More actions menu',()=>{
+test('period lock is one lean screen whose merged register row pairs the title with a journal style subheading and one split action menu',()=>{
  assert.ok(!jsx.includes('pc-section-tabs'),'the tab row is gone and the locked periods list is the page body');
  assert.ok(!jsx.includes('const TABS='),'no tab model remains');
  assert.ok(!jsx.includes('const compositeLine=')&&!jsx.includes('const statusLine='),'the repeated period, scope and lock facts leave the header');
  for(const text of ['pc-composite-line','pc-status-line','pc-missing','pc-current-actions','pc-link-action','pc-status-link']) assert.ok(!jsx.includes(text),text+' must not come back');
  assert.ok(!jsx.includes('Review accounting periods, close books, and manage period access.'),'the page subtitle is gone');
- for(const text of ['pc-title-block','pc-more-menu','More actions']) assert.ok(jsx.includes(text),text);
+ for(const text of ['pc-title-block','registerSplitMore','Create Lock / Close']) assert.ok(jsx.includes(text),text);
  assert.ok(!jsx.includes('pc-policy-chip'),'the inline locking policy chip leaves the heading');
- assert.ok(jsx.indexOf('<h1>{t.periodClosing}</h1>')<jsx.indexOf('pc-heading-note'),'the journal style subheading sits beneath the title');
+ assert.ok(jsx.indexOf('className="pc-register-heading pc-title-block registerHeadText"><h2>{title}</h2>')<jsx.indexOf('pc-heading-note'),'the journal style subheading sits beneath the title in the merged register row');
  assert.ok(!jsx.includes('pc-overview-cards'),'the four KPI cards stay deleted');
  assert.ok(!jsx.includes('pc-current-facts'),'the four meta cards stay deleted');
  assert.ok(!jsx.includes('Working as'),'the global VIEW AS control owns the acting role');
@@ -36,7 +37,7 @@ test('the locked periods register is the page body with a locked periods / reque
  assert.ok(jsx.includes('pc-table-fit pc-history-table'),'the register still renders its table');
  assert.ok(!jsx.includes("'Every lock for '+organisation.name"),'the register header stops repeating the organisation and year in prose');
  assert.ok(!jsx.includes("title={view==='requests'?'Unlock requests':'Locked periods'}"),'the panel heading text is replaced by the view toggle');
- assert.ok(jsx.indexOf('pc-view-toggle')<jsx.indexOf('pc-filter-search'),'the locked periods / requests toggle leads the panel on the left');
+ assert.ok(!jsx.slice(jsx.indexOf('pc-register-bar'),jsx.indexOf('pc-register-tabs')).includes('pc-view-toggle'),'the switch is not on the toolbar row');
  assert.ok(jsx.includes('mode={lockMode}'),'the register receives the active locking mode');
 });
 
@@ -50,16 +51,16 @@ test('the register lists past locks in automatic mode and only locks created her
  assert.match(service,/if\(mode==='Manual'\)return rows\.filter\(period=>createdIds\.includes\(period\.id\)\)/,'manual mode keeps only locks created here');
 });
 
-test('the header owns one More actions menu, a separate create action and a compact pre-close attention pill',()=>{
+test('the register row owns one split create action and a compact pre-close attention pill',()=>{
  assert.ok(!jsx.includes('pc-policy-chip'),'the header no longer repeats the locking policy beside the title');
- assert.match(jsx,/pc-more-menu/);
- assert.ok(jsx.includes('Period closing settings'),'the settings entry stays in the More actions menu');
+ assert.match(jsx,/registerSplitMore/);
+ assert.ok(jsx.includes('Period lock settings'),'the settings entry stays in the split menu');
  assert.ok(!jsx.includes('Audit log / History'),'the lock history entry leaves the More actions menu');
  assert.match(jsx,/const lockMode=manual\?'Manual':\(lockingOn\?'Automatic':'Off'\)/);
  assert.match(jsx,/const attention=useMemo\(\(\)=>\{const failed=readiness\.checks\.filter\(check=>check\.state!=='Passed'\)/,'one computed value counts what needs attention');
  assert.ok(!jsx.includes('<em className="pc-more-badge">{attentionChecks}</em>'),'the count is stated once, never repeated in a badge');
  assert.ok(!jsx.includes('Create Lock / Close</b>'),'the create action left the More actions menu');
- assert.match(jsx,/\{lockingOn&&can\(activeRole,'lock'\)&&<button type="button" className="pc-create-lock primary" onClick=\{\(\)=>openLockForm\(\)\}/,'the create action sits beside More actions in automatic and manual mode');
+ assert.match(jsx,/\{lockingOn&&can\(activeRole,'lock'\)&&<div className="registerSplit"><button type="button" className="primary registerSplitMain" onClick=\{\(\)=>openLockForm\(\)\}/,'the create action is the split primary in automatic and manual mode');
  assert.ok(jsx.includes('mode={lockMode}'),'the lock drawer receives the active locking mode');
  assert.ok(jsx.includes('pc-heading-note'),'the page carries a journal style subheading');
  assert.ok(jsx.includes('pc-attention-pill'),'the pre-close review is a compact pill in the header action group');
@@ -158,7 +159,7 @@ test('period settings open from the lean page header in a right side popup and n
  assert.match(jsx,/PeriodLockSettings/);
  assert.ok(jsx.includes('settingsOpen&&createPortal'),'the page owns the settings portal');
  assert.ok(jsx.includes('pc-settings-drawer'));
- assert.ok(jsx.includes('aria-label="Period closing settings"'));
+ assert.ok(jsx.includes('aria-label="Period lock settings"'));
  assert.ok(!jsx.includes('if(settingsOpen)return'),'settings is a right side popup, not a page takeover');
  assert.ok(!jsx.includes("localStorage.setItem('wayvida-period-settings-v1'"));
 });
@@ -224,14 +225,19 @@ test('page chrome follows the journal heading grid and no legacy top bar styling
 
 test('the heading note keeps only the locking promise',()=>{
  assert.ok(!jsx.includes('Every close, reopen and override is written to the audit trail'),'the audit sentence leaves the page subtitle');
- assert.match(jsx,/Lock accounting periods and control when postings stop\.<\/p>/,'the subtitle is one short line');
+ assert.match(jsx,/note="Lock accounting periods and control when postings stop\."/,'the subtitle is one short line, handed to the merged register row');
 });
 
 test('the register toolbar is one compact row: the view toggle, the search box and the Filters disclosure',()=>{
  assert.ok(!jsx.includes('(onView&&showRequests))&&<header>'),'the register bar is a div, so the legacy header label rule cannot restyle the filters inside it');
- assert.match(jsx,/&&<div className="pc-register-bar">/);
- const toolbar=jsx.slice(jsx.indexOf('&&<div className="pc-register-bar">'),jsx.indexOf('<details className="pc-filters-more">'));
- assert.ok(toolbar.includes('pc-view-toggle')&&toolbar.includes('pc-filter-search'),'the toggle and the search box share the row');
+ assert.ok(jsx.includes("{(title||note||(onView&&showRequests))&&<div className={'pc-register-bar'+(merged?' registerHead':'')}>"),'the bar is one div and carries the shared merged marker');
+ assert.ok(jsx.indexOf('pc-view-toggle')>jsx.indexOf("className={'pc-register-bar'"),'the toggle renders inside the merged bar');
+ const toolbar=jsx.slice(jsx.indexOf("{(title||note||(onView&&showRequests))&&<div className={'pc-register-bar'"),jsx.indexOf('pc-register-tabs'));
+ assert.ok(!toolbar.includes('pc-filter-search')&&!toolbar.includes('pc-view-toggle'),'the toolbar row holds the title and the actions, not the grid controls');
+ assert.ok(toolbar.includes('pc-title-block')||toolbar.indexOf('registerHeadText')>-1,'the title block leads the toolbar row');
+ const afterBar=jsx.slice(jsx.indexOf('{actions?actions():null}</div>}')+'{actions?actions():null}</div>}'.length);
+ assert.ok(afterBar.indexOf('<div className="pc-register-tabs">')>-1&&afterBar.indexOf('<div className="pc-register-tabs">')<40&&afterBar.includes('pc-view-toggle'),'the Locked Periods / Requests switch sits in its own section directly under the toolbar row');
+ assert.ok(afterBar.indexOf('pc-register-tabs')<afterBar.indexOf('{isRequests?'),'and above the table');
  const rowTail=jsx.slice(jsx.indexOf('<div className="pc-filters-panel-actions">'),jsx.indexOf('{isRequests?<div className='));
  assert.ok(!rowTail.includes('pc-filter-count'),'the period and request counts leave the toolbar row');
  assert.ok(!toolbar.includes('<label className="pc-filter">')&&!toolbar.includes('<select'),'Period and Status leave the visible row');
@@ -240,16 +246,16 @@ test('the register toolbar is one compact row: the view toggle, the search box a
  assert.ok(panel.indexOf('<span>Period</span>')<panel.indexOf('<span>Financial Year</span>'),'Period and Status lead the filter panel');
  assert.ok(panel.indexOf('<span>Status</span>')<panel.indexOf('<span>Financial Year</span>'));
  assert.match(jsx,/const advanced=\[filters\.status!=='All'\?filters\.status:'',filters\.period,/,'the Filters badge counts the two filters that moved inside');
- assert.match(css,/\.pc \.pc-register-bar \.pc-filters\{flex:0 1 auto/);
+ assert.match(css,/\.pc \.pc-register-tabs \.pc-filters\{flex:0 1 auto/,'the search pair sits on the switch row');
  assert.ok(!css.includes('pc-filter-count'),'the count text and the rules that served it are deleted');
 });
 
-test('the current accounting period opens from More actions instead of sitting on the page',()=>{
+test('the current accounting period opens from the split menu instead of sitting on the page',()=>{
  assert.equal(jsx.split('<CurrentPeriodPanel period={currentPeriod}').length-1,1,'the period card leaves the page body for the popup');
  assert.match(jsx,/const openCurrent=\(\)=>setPanel\('current'\)/);
  assert.match(jsx,/onClick=\{menuRun\(openCurrent\)\}/,'the entry opens from the More actions menu');
  assert.match(jsx,/const currentMeta=currentPeriod\?currentPeriod\.name/,'the menu entry names the period and its status');
- assert.ok(jsx.indexOf('Current accounting period</b>')<jsx.indexOf('Period closing settings</b>'),'the current period leads the More actions menu');
+ assert.ok(jsx.indexOf('>Current period</button>')<jsx.indexOf('>Period lock settings</button>'),'the current period leads the split menu');
  assert.ok(jsx.indexOf('menuRun(openCurrent)')<jsx.indexOf('menuRun(openSettings)'),'the More actions entries keep their order');
  assert.ok(jsx.includes("panel==='current'&&createPortal"),'the current period popup is a right side drawer');
  assert.ok(jsx.includes('pc-current-drawer'));
@@ -277,38 +283,33 @@ test('the request list renders every row in one table, with a scope column and a
 
 test('the details drawer stays in product vocabulary and More actions reads as a styled menu button',()=>{
  assert.ok(!jsx.includes('<dt>Lock type</dt>'),'the Hard Lock / Soft Lock engine value leaves the period details summary');
- assert.ok(jsx.includes('<IconChevronDown className="pc-more-caret" size={16}/>'),'the More actions button carries a caret');
- assert.match(css,/\.pc-more-caret\{[^}]*transition:transform/,'the caret animates with the open state');
- assert.match(css,/\.pc-more\[open\]>summary \.pc-more-caret\{[^}]*transform:rotate\(180deg\)/,'the caret points up while the menu is open');
- assert.match(css,/\.pc-more>summary:hover\{border-color:#b9c9e3;background:#f8faff\}/,'the menu button hovers like every other button on the page');
- assert.match(css,/\.pc-more>summary:focus-visible\{outline:3px solid #a8c2ff/,'the menu button keeps the page focus ring');
- assert.match(css,/\.pc-more\[open\]>summary\{[^}]*box-shadow:0 0 0 3px #eaf1ff/,'the open menu button reads as selected');
- assert.match(css,/\.pc-more-menu\{[^}]*top:calc\(100% \+ 6px\)[^}]*max-height:min\(70vh,420px\)[^}]*overflow-y:auto/,'the menu hangs off the button and scrolls instead of overflowing the viewport');
+ assert.ok(jsx.includes('<IconChevronDown size={16}/></summary>'),'the split caret is the shared chevron');
+ assert.ok(registerHead.includes('.registerHead .registerSplit>.registerSplitMore>summary{display:inline-grid;place-items:center;width:38px;height:40px;'),'and the menu wears the shared register split geometry');
+ assert.ok(registerHead.includes('.registerHead .registerSplit>.registerSplitMore[open]>summary{background:#245bdd;border-color:#245bdd}'),'the open caret reads as selected');
+ assert.ok(registerHead.includes('.registerHead .registerSplit>.registerSplitMore>div>button:hover{background:#f4f7ff;color:#245fd9}'),'the menu rows hover like every other menu on the page');
+ assert.ok(registerHead.includes('.registerHead .registerSplit>.registerSplitMore>div>button{display:flex;'),'and every entry is a real menu row');
+ assert.match(css,/\.pc-heading-actions button,\.pc-heading-actions \.pc-more/,'the page still owns the action button sizing');
+ assert.ok(registerHead.includes('.registerHead .registerSplit>.registerSplitMore>div{position:absolute;right:0;top:calc(100% + 6px);z-index:80;'),'the menu hangs off the caret at the shared offset');
  assert.ok(jsx.includes("document.addEventListener('pointerdown',closeOnPointerDown)"),'a pointer outside the menu dismisses it');
  assert.ok(jsx.includes("event.key==='Escape'"),'Escape dismisses the menu');
 });
 
-test('the More actions disclosure shares one box with the create action beside it',()=>{
- assert.match(css,/\.pc-more\{position:relative;display:flex;min-width:0\}/,'the menu wrapper is a flex box so its summary can fill it');
- assert.match(css,/\.pc-more>summary\{[^}]*flex:1 1 auto[^}]*\}/,'the summary fills the details box when the row stretches');
- const summary=/\.pc-more>summary\{([^}]*)\}/.exec(css)[1];
- const create=/\.pc-focused>\.pc-heading-actions button\{([^}]*)\}/.exec(focus)[1];
- for(const rule of ['min-height:40px','border-radius:7px','padding:0 15px']) assert.ok(summary.includes(rule)&&create.includes(rule),'both controls share '+rule);
- assert.ok(summary.includes('gap:7px'),'the icon gap matches the sibling button');
- assert.ok(summary.includes('font-size:14px')&&summary.includes('font-weight:600'),'the menu label is the same size and weight as the create action');
- assert.ok(summary.includes('white-space:nowrap')&&create.includes('white-space:nowrap'),'neither label wraps inside its 40px box');
- assert.ok(!/\.pc-more>summary\{[^}]*font-size:13px/.test(css),'the smaller 13px menu label is gone');
- assert.match(css,/@media\(max-width:650px\)\{[^@]*\.pc-heading-actions button,\.pc-heading-actions \.pc-more\{flex:1\}/,'the menu stretches with the buttons on narrow screens');
+test('the split create action shares the shared register geometry',()=>{
+ assert.ok(registerHead.includes('.registerHead .registerSplit{display:inline-flex;align-items:stretch;flex:0 0 auto;min-width:0}'),'the two halves share one box');
+ assert.ok(registerHead.includes('.registerHead .registerSplit>.registerSplitMain{border-top-right-radius:0;border-bottom-right-radius:0}'),'the primary keeps its inner corners square');
+ assert.ok(registerHead.includes('.registerHead .registerSplit>.registerSplitMore>summary{display:inline-grid;place-items:center;width:38px;height:40px;'),'the caret is a 40px square beside it');
+ assert.match(focus,/\.pc-focused \.pc-heading-actions button\{[^}]*min-height:40px[^}]*border-radius:7px[^}]*padding:0 15px/,'the page keeps its 40px action button height');
+ assert.match(css,/@media\(max-width:650px\)\{[^@]*\.pc-heading-actions button/,'the actions stretch on narrow screens');
 });
 
 test('the business view names the page Financial Lock',()=>{
- assert.ok(jsx.includes('<h1>{t.periodClosing}</h1>'),'the heading reads the shared terminology label instead of declaring its own');
+ assert.ok(jsx.includes('title={t.periodClosing}'),'the heading reads the shared terminology label instead of declaring its own');
  assert.ok(!jsx.includes("business?'Close Books'")&&!jsx.includes("business?'Financial Lock'"),'no hardcoded business title is left in the page');
  assert.ok(jsx.includes("const {mode:viewMode,t}=useTerminology(),business=viewMode==='business'"),'the label and the view mode both come from the shared terminology hook');
  const terms=readFileSync(new URL('../src/terminology.jsx',import.meta.url),'utf8');
- assert.match(terms,/accountant:\{[^}]*periodClosing:'Period Closing'/,'the accountant view still reads Period Closing');
+ assert.match(terms,/accountant:\{[^}]*periodClosing:'Period Lock'/,'the accountant view reads Period Lock');
  assert.match(terms,/business:\{[^}]*periodClosing:'Financial Lock'/,'the business owner view reads Financial Lock');
- assert.match(terms,/const pageLabel=\(page,t\)=>\(\{[^}]*'Period Closing':t\.periodClosing[^}]*\}\[page\]\|\|page\)/,'the sidebar and the page title resolve the same value, so they cannot disagree again');
+ assert.match(terms,/const pageLabel=\(page,t\)=>\(\{[^}]*'Period Lock':t\.periodClosing[^}]*\}\[page\]\|\|page\)/,'the sidebar and the page title resolve the same value, so they cannot disagree again');
 });
 test('drawer and modal close buttons survive the legacy app bar rule',()=>{
  assert.match(css,/\.pc-history-drawer>header>button,\.pc-modal>section>header>button\{display:inline-flex!important\}/,'the legacy rule hides any direct child button of a header below 1050px');
@@ -340,7 +341,7 @@ test('the requests register is one table whose rows carry one View button and on
  assert.ok(jsx.includes("canDelete=self||canApprove"),'Delete is offered to the requester and to an approver, and to nobody else');
  assert.ok(jsx.includes("onClick={pick(()=>onDeleteRequest(request))}"),'Delete closes the menu through the same pick helper as every other entry');
  assert.ok(jsx.includes("const pick=handler=>event=>{event.currentTarget.closest('details')?.removeAttribute('open');handler()}"),'choosing a menu row closes the menu');
- assert.ok(jsx.includes("document.querySelectorAll('.pc-more[open],.pc-kebab[open],.pc-filters-more[open],.pc-attention-pop[open]')"),'the page outside click and Escape rule already owns the row menu and the attention popover');
+ assert.ok(jsx.includes("document.querySelectorAll('.registerSplitMore[open],.pc-kebab[open],.pc-filters-more[open],.pc-attention-pop[open]')"),'the page outside click and Escape rule owns the split menu, the row menu and the attention popover');
  assert.ok(jsx.includes('return <div className="pc-request-actions"><button type="button" className="pc-request-view"'),'one return gives every row the same cell shape, decided or pending');
  assert.ok(jsx.includes('function RequestDetailsDrawer({request,onClose}){'),'View Details opens one request, not the whole period');
  assert.ok(jsx.includes('aria-label="Unlock request details"'),'the request popup names itself');
@@ -366,7 +367,7 @@ test('the attention pill states the count once and opens a read-only review popo
  assert.ok(jsx.includes('{attention.count>0&&<details className="pc-attention-pop">'),'the pill disappears once the checks pass');
  assert.ok(jsx.includes("aria-label={'Review '+attention.count+' '+attention.noun+' that '+attention.verb+' attention'}"),'the pill publishes an accessible review label');
  assert.ok(jsx.includes('<span className="pc-attention-count" aria-live="polite">{attention.count+\' \'+attention.noun}</span>'),'the count is live text, not colour alone');
- assert.ok(!/chevron/i.test(jsx.slice(jsx.indexOf('<details className="pc-attention-pop">'),jsx.indexOf('<details className="pc-more">'))),'the pill carries no trailing chevron because it opens a popover rather than navigating');
+ assert.ok(!/chevron/i.test(jsx.slice(jsx.indexOf('<details className="pc-attention-pop">'),jsx.indexOf('<div className="registerSplit">'))),'the pill carries no trailing chevron because it opens a popover rather than navigating');
  assert.ok(jsx.includes("<b>Before you close</b><span>{attention.count?attention.count+' '+attention.noun+' '+attention.verb+' attention':'All checks passed'}"),'the popover repeats the same count with the entry total, and says All checks passed only there');
  assert.ok(jsx.includes('<Checklist readiness={readiness} onNavigate={onNavigate} only/>'),'each failing check keeps its count and its link into the filtered entries');
  assert.ok(jsx.includes('>Review all<IconArrowRight size={14}/></button>'),'the popover ends with one Review all action');
@@ -375,5 +376,5 @@ test('the attention pill states the count once and opens a read-only review popo
  assert.match(css,/pc-attention-pill\.danger\{[^}]*color:#b42318/,'a blocking check reads red');
  assert.match(css,/pc-attention-pill\{[^}]*color:#4a5468/,'one or two soft checks stay neutral grey');
  assert.match(css,/\.pc-attention-pop-menu\{[^}]*width:min\(400px,92vw\)/,'the popover hangs off the pill inside the viewport');
- assert.match(focus,/\.pc-focused>\.pc-heading\{position:sticky!important;top:0!important;z-index:26!important;background:#f7f9fc!important/,'the header row is pinned so the attention count survives the register scrolling');
+ assert.match(registerHead,/\.pc-register-bar\.registerHead\{position:sticky!important;top:0!important;z-index:9!important/,'the merged register row is pinned so the attention count survives the register scrolling');
 });

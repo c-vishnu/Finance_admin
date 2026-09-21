@@ -1,0 +1,43 @@
+/* The Import journals dialog.
+
+   The register's split menu opens this, and it is the only way a journal arrives from a file: the
+   rows are parsed and planned by src/journal-import.js, this sheet states what will import and what
+   will not, and the page saves the ready plans as drafts. It reuses the reverse-entry overlay and
+   dialog shell, so only the parts that shell does not already own are styled here - the two file
+   controls, the per-voucher preview and its three states.
+
+   Everything is scoped through .je-import-dialog, because the reverse-entry rules reach every label
+   and input inside the shared shell at a higher specificity than a bare class would. */
+
+.je-import-dialog{width:min(560px,100%)}
+.je-import-dialog .je-import-tools{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:16px}
+
+/* Choose CSV is a labelled button, not a stacked field: the reverse dialog styles every label as a
+   column and every input as a 42px control, so the row direction, the field height and the
+   invisible file input are all restated here at the dialog's own specificity. */
+.je-import-dialog .je-import-tools>button{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;font-size:13px;font-weight:600;cursor:pointer}
+.je-import-dialog .je-import-tools>button:hover{background:#f3f6fc;border-color:#b8c9e9}
+.je-import-dialog .je-import-tools .je-import-choose{position:relative;overflow:hidden;display:inline-flex;flex-direction:row;align-items:center;gap:8px;min-height:40px;margin:0;padding:0 14px;border:1px solid #3478f6;border-radius:7px;background:#3478f6;color:#fff;font-size:13px;font-weight:600;cursor:pointer}
+.je-import-dialog .je-import-tools .je-import-choose:hover{background:#245bdd;border-color:#245bdd}
+.je-import-dialog .je-import-tools .je-import-choose input{position:absolute;inset:0;width:100%;height:100%;min-height:0;margin:0;padding:0;border:0;opacity:0;cursor:pointer}
+.je-import-dialog .je-import-tools .je-import-choose input:focus-visible{outline:2px solid #245fd9;outline-offset:-3px}
+
+.je-import-dialog .je-import-error{margin:14px 0 0;padding:10px 12px;border:1px solid #ffd1d8;border-radius:7px;background:#fff0f2;color:#b32d40;font-size:12px;font-weight:600}
+.je-import-dialog .je-import-note{margin:14px 0 0;color:#667085;font-size:12px}
+.je-import-dialog .je-import-preview{margin-top:16px}
+.je-import-dialog .je-import-count{margin:0 0 8px;color:#475467;font-size:12px;font-weight:600}
+.je-import-dialog .je-import-preview ul{display:flex;flex-direction:column;gap:7px;max-height:230px;overflow:auto;margin:0;padding:0;list-style:none}
+.je-import-dialog .je-import-preview li{display:grid;gap:2px;padding:10px 12px;border:1px solid #e4e9f0;border-radius:8px;background:#fff}
+.je-import-dialog .je-import-preview li.good{border-color:#cfe8da;background:#f5fbf8}
+.je-import-dialog .je-import-preview li.bad{border-color:#f3d2cf;background:#fff7f6}
+.je-import-dialog .je-import-preview li b{color:#1d293d;font-size:13px;font-weight:650}
+.je-import-dialog .je-import-preview li small{color:#667085;font-size:12px}
+.je-import-dialog .je-import-preview li em{color:#667085;font-size:12px;font-style:normal}
+.je-import-dialog .je-import-preview li.good em{color:#19734c}
+.je-import-dialog .je-import-preview li.bad em{color:#b42318}
+
+/* The register hides the superseded legacy journal screen with an adjacent-sibling rule, so anything
+   the page renders between the two unhides it. The dialog is exactly such a node, which put the old
+   register back on screen behind the overlay the moment Import was opened. General siblings hold
+   whatever sits between them. */
+.je-page~.journals,.je-create~.journals,.je-detail~.journals,.je-page~.journalCreate,.je-create~.journalCreate,.je-detail~.journalCreate{display:none!important}

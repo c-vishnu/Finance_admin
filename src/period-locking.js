@@ -203,7 +203,7 @@ export function assertOperationAllowed({operation='post',date,role='Business Use
  if(!control||!Array.isArray(control.periods))return {allowed:false,operation,operationLabel:label,code:'PERIOD_NOT_CONFIGURED',locks:[],lock:null,remedy:'The lock state could not be read, so this '+label+' is blocked. Ask an administrator to confirm the period configuration before continuing.'};
  const result=validatePeriodAction({date,role,companyId,branchId,module,state:control,settings:value,approvalGranted,now,action:label});
  const locks=result.allowed?[]:blockingLocksFor(control.periods,{date,companyId,branchId,module,now}),lock=locks[0]||(result.period&&LOCK_ACTIVE_STATUSES.includes(periodStatus(result.period))?result.period:null);
- const remedy=result.allowed?'':`${lock?.name||'That period'} is locked for ${lock?contextLabel(lock):'this scope'}. ${value.approval?'Open Period Closing to request an unlock, or ask an administrator for a written override.':'Unlock approval is off, so only an administrator can apply a written override.'}`;
+ const remedy=result.allowed?'':`${lock?.name||'That period'} is locked for ${lock?contextLabel(lock):'this scope'}. ${value.approval?'Open Period Lock to request an unlock, or ask an administrator for a written override.':'Unlock approval is off, so only an administrator can apply a written override.'}`;
  return {...result,operation,operationLabel:label,locks,lock,remedy};
 }
 export function applyAdminOverride(state,{periodId,reason,user='Admin',operation='post',targetDate,now=new Date().toISOString()}={}){

@@ -1,5 +1,5 @@
 import {useMemo,useState} from 'react';
-import {IconArrowLeft,IconBuilding,IconCalendar,IconCheck,IconChevronRight,IconDotsVertical,IconDownload,IconEye,IconFileInvoice,IconFilter,IconPlus,IconReport,IconSearch,IconShieldCheck,IconTrash,IconX} from '@tabler/icons-react';
+import {IconArrowLeft,IconBuilding,IconCalendar,IconCheck,IconChevronRight,IconDownload,IconEye,IconFileInvoice,IconFilter,IconPlus,IconReport,IconSearch,IconShieldCheck,IconTrash,IconX} from '@tabler/icons-react';
 import {KEY,money} from './invoice-engine.js';
 import {accountingState,createAsset,createBudget,createCategory,createExpense,postDepreciation,readOperations,saveOperations} from './operations-store.js';
 import './operational-modules.css';

@@ -33,6 +33,10 @@ const ART = {
     <path className="emptyDraw" d="M32 42l16 8 16-8"/>
     <path className="emptyDraw" d="M48 50v18"/>
   </>,
+  customer: <>
+    <circle className="emptyDraw" cx="48" cy="41" r="9"/>
+    <path className="emptyDraw emptyDrawLate" d="M32 68a16 16 0 0 1 32 0"/>
+  </>,
   default: <>
     <path className="emptyDraw" d="M32 40h32v26H32z"/>
     <path className="emptyDraw" d="M32 52h9l3 5h10l3-5h9"/>

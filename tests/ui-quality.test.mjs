@@ -14,8 +14,8 @@ test('shared polish protects interaction, responsive and reduced-motion states',
   for(const contract of [':focus-visible','button:disabled','@media(max-width:1024px)','@media(max-width:760px)','prefers-reduced-motion']) assert.ok(css.includes(contract),contract);
 });
 
-test('dashboard portals share collision-safe geometry',()=>{
-  assert.match(css,/\.auditPortal,.vendorPortal,.settingsPortal,.helpPortal,.purchasePortal,.pc/);
+test('the remaining dashboard portals share collision-safe geometry',()=>{
+  assert.match(css,/\.auditPortal,.settingsPortal,.helpPortal,.pc/);
   assert.match(css,/left:270px;top:58px/);
   assert.match(css,/left:0;top:58px/);
 });

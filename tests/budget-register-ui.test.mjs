@@ -19,26 +19,41 @@ test('the Budgets register is a grid of Budget Name, Financial Year, Budget Peri
   assert.ok(workspace.indexOf('className="budgetV3Head"')<workspace.indexOf('className="budgetListCard"'),'the page heading now leads straight into the register card');
 });
 
-test('the register toolbar sits inside the card above the table, like the other registers',()=>{
-  assert.ok(workspace.includes('<section className="budgetListCard">\n      <div className="budgetRegisterBar">'),'the toolbar is the first child of the register card');
-  assert.ok(workspace.indexOf('className="budgetRegisterBar"')<workspace.indexOf('<table className="budgetTable">'),'the toolbar renders above the table');
-  assert.ok(workspace.includes('className="budgetFilterSearch"'),'the toolbar carries the search box');
-  assert.ok(workspace.includes('className="budgetFilterYear"'),'the financial year select sits beside the search');
+test('the Budgets heading and its register bar are one merged row, like the other registers',()=>{
+  assert.ok(workspace.includes('<div className="budgetV3Head registerHead"><div className="registerHeadText"><h2>{business?\'Budgets\':\'Budget Management\'} <span className="budgetHeadingCount">({budgets.length})</span></h2><p>Plan, monitor and control financial performance.</p></div><div className="budgetRegisterBar">'),'the page title, its count and the description lead the shared register row and the register bar follows on the same line');
+  const head=workspace.indexOf('className="budgetV3Head registerHead"');
+  const bar=workspace.indexOf('className="budgetRegisterBar"');
+  const actions=workspace.indexOf('className="budgetHeadActions"');
+  const card=workspace.indexOf('className="budgetListCard"');
+  assert.ok(head>-1&&head<bar&&bar<actions&&actions<card,'the merged row is the title, the register bar and the actions, and the table card follows it');
+  assert.ok(workspace.includes('<section className="budgetListCard">'+'\n'+'      <table className="budgetTable">'),'the card holds the table alone, so the heading row is its top');
+  assert.ok(workspace.includes('className="budgetFilterSearch"'),'the row carries the search box');
   assert.ok(workspace.includes('<details className="budgetFiltersMore">'),'one Filters button opens a disclosure');
-  assert.ok(workspace.includes('<div className="budgetFiltersPanel">'),'the disclosure holds the remaining filters');
-  for(const field of ['Budget type','Budget period','Scope','Status']){
+  assert.ok(workspace.includes('<div className="budgetFiltersPanel">'),'the disclosure holds every filter');
+  for(const field of ['Financial year','Budget type','Budget period','Scope','Status']){
     assert.ok(workspace.includes('<label className="budgetFilterField"><span>'+field+'</span><select'),field+' is filtered inside the disclosure');
   }
   const search=workspace.indexOf('className="budgetFilterSearch"');
   const year=workspace.indexOf('className="budgetFilterYear"');
   const more=workspace.indexOf('className="budgetFiltersMore"');
-  assert.ok(search>-1&&search<year&&year<more,'the toolbar order is search, financial year, then Filters');
+  assert.ok(search>-1&&search<more,'the search sits directly beside the Filters button, with no select between them');
+  assert.ok(year>more,'and the financial year is one of the panel filters rather than a row control');
+  assert.ok(workspace.includes('<details className="budgetFiltersMore"><summary aria-label="Open filters"><IconFilter size={17}/>Filters'),'the Filters button carries the funnel icon');
   assert.ok(workspace.includes('<div className="budgetFiltersPanelActions"><button type="button" onClick={clearAdvanced}>Clear filters</button></div>'),'the panel ends with the shared clear action row');
   assert.ok(!workspace.includes('<div className="budgetFilters">'),'the old full width filter row is gone from the register');
-  assert.ok(!workspace.includes('budgetRegisterHead')&&!workspace.includes('className="budgetSearch"'),'the heading no longer carries the filters');
-  assert.ok(workspace.includes('<div className="budgetV3Head"><div><h1>{business?'),'the page heading keeps the title block');
-  assert.ok(workspace.includes('className="budgetHeadActions"><button onClick={()=>importRef.current?.click()}>'),'the heading keeps only Import beside the title');
-  assert.ok(workspace.includes('const activeFilterCount=[')&&workspace.includes('const clearAdvanced=()=>setFilters({...filters,...advancedDefaults});'),'one computed count drives the Filters badge and the clear action');
+  assert.ok(!workspace.includes('budgetRegisterBarHead')&&!workspace.includes('className="budgetSearch"'),'the heading never carried a second search box');
+  assert.ok(workspace.includes("const advancedDefaults={year:'All years',type:'All types',period:'All periods',scope:'All scopes',status:'All statuses'};"),'every panel filter has a default');
+  assert.ok(workspace.includes("const activeFilterCount=['year','type','period','scope','status']"),'and one computed count drives the Filters badge, including the financial year');
+  assert.ok(workspace.includes('const clearAdvanced=()=>setFilters({...filters,...advancedDefaults});'),'with the clear action resetting the same set');
+});
+
+/* The add action is the shared split button: the primary creates a budget and the caret opens the
+   register's other two directions, exactly as the Journal Entries register does. */
+test('Create Budget is one plain primary action on the register row',()=>{
+  assert.ok(workspace.includes('<div className="budgetHeadActions"><button type="button" className="primary" onClick={create}><IconPlus size={17}/>Create Budget</button></div>'),'the register row ends in one primary action');
+  assert.ok(!workspace.includes('registerSplit'),'the register carries no split menu');
+  assert.ok(!workspace.includes('registerSplitMore')&&!workspace.includes("const exportList="),'and no import or export entries of its own');
+  assert.ok(workspace.includes('<label className="budgetImportButton"><IconUpload size={16}/>Import Budget'),'the create wizard keeps its own Import Budget control');
 });
 
 test('each row offers View Details and one 3-dot menu',()=>{
@@ -51,7 +66,7 @@ test('each row offers View Details and one 3-dot menu',()=>{
   assert.ok(menu.includes('className="budgetKebabDanger"'),'Delete is the destructive entry');
   assert.equal((menu.match(/type="button"/g)||[]).length,4,'every menu entry is a real button');
   assert.ok(workspace.includes("const menuRun=handler=>event=>{event.currentTarget.closest('details')?.removeAttribute('open');handler()};"),'running an action closes the menu');
-  assert.ok(workspace.includes("document.querySelectorAll('.budgetKebab[open],.budgetFiltersMore[open]')"),'one page level dismissal closes the row menus and the filter panel');
+  assert.ok(workspace.includes("document.querySelectorAll('.budgetKebab[open],.budgetFiltersMore[open]')"),'one page level dismissal closes the row menus, the filter panel and the split menu');
   assert.ok(workspace.includes("window.addEventListener('keydown',closeOnEscape)")||workspace.includes("document.addEventListener('keydown',closeOnEscape)"),'Escape closes the menu');
   for(const removed of ['title="Export"','title="Archive"','title="View"','title="Edit"','title="Duplicate"']){
     assert.ok(!workspace.includes(removed),removed+' is no longer a register row control');
@@ -99,6 +114,16 @@ test('the register menu uses the canonical kebab geometry and the card never cli
   assert.ok(sizes.length>=2&&Math.min(...sizes)>=12,'every register control stays at 12px or larger');
 });
 
+/* The register sits on the same content container as the Journal Entries and Chart of Accounts
+   pages, and its grid reuses those pages' cell tokens rather than inventing its own. */
+test('the register shares the Journal Entries and Chart of Accounts content container and grid tokens',()=>{
+  assert.ok(css.includes('.app main>.budgetV3:not(.budgetWizard):not(.budgetDetailV3){max-width:100%!important;margin:0!important;padding:0!important}'),'the register keeps no page padding of its own, so the shell main padding is the only gutter');
+  assert.ok(css.includes('.app main>.budgetV3{position:static!important;inset:auto!important;z-index:auto!important;width:100%!important;min-height:0!important;margin:0 auto!important;padding:14px 18px 28px!important;overflow:visible!important;background:transparent!important}'),'and the wizard and the detail keep the padding their full-bleed heads are built on');
+  assert.ok(css.includes('.budgetListCard .budgetTable th{padding:12px 14px;background:#f7f9fc;color:#5b6b81;'),'the header row carries the Chart of Accounts cell fill and colour');
+  assert.ok(css.includes('.budgetListCard .budgetTable td{padding:11px 14px;border-top:1px solid #edf1f6;vertical-align:middle;font-size:13px}'),'and its body cells the same padding, hairline and 13px text');
+  assert.ok(css.includes('.budgetListCard .budgetTable tbody tr:hover td{background:#f8fbff}'),'with the same row hover');
+});
+
 test('the grid matches the Period Closing register density and right aligns the actions',()=>{
   assert.ok(css.includes('.budgetRegisterBar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:14px 20px 16px;border-bottom:1px solid #eef1f6}'),'the toolbar reuses the shared register bar padding');
   assert.ok(css.includes('.budgetFilterSearch{display:flex;align-items:center;gap:8px;flex:1 1 260px;min-width:200px;min-height:38px;padding:0 10px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#8fa0b7}'),'the search box matches the shared filter search');
@@ -108,9 +133,9 @@ test('the grid matches the Period Closing register density and right aligns the 
   assert.ok(css.includes('.budgetFilterBadge{flex:none;margin-left:auto;'),'the filters badge matches the shared badge');
   assert.ok(css.includes('.budgetFilterField select{min-height:38px;width:100%;padding:0 10px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#172033}'),'the panel fields match the shared filter field');
   for(const token of [
-    '.budgetListCard .budgetTable th{padding:12px 14px;background:#f5f7fb;color:#68768b;font-size:12px;font-weight:600;text-align:left;white-space:nowrap}',
-    '.budgetListCard .budgetTable td{padding:13px 14px;border-top:1px solid #edf1f6;vertical-align:middle}',
-    '.budgetListCard .budgetTable tbody tr:hover td{background:#fafcff}',
+    '.budgetListCard .budgetTable th{padding:12px 14px;background:#f7f9fc;color:#5b6b81;font-size:12px;font-weight:600;text-align:left;white-space:nowrap}',
+    '.budgetListCard .budgetTable td{padding:11px 14px;border-top:1px solid #edf1f6;vertical-align:middle;font-size:13px}',
+    '.budgetListCard .budgetTable tbody tr:hover td{background:#f8fbff}',
     '.budgetListCard .budgetTable th:last-child,.budgetListCard .budgetTable td:last-child{width:1%;text-align:right;white-space:nowrap}',
     '.budgetActionsCell{white-space:nowrap;text-align:right}',
     '.budgetActionsCell .budgetRowActions{justify-content:flex-end}'

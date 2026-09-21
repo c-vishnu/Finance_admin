@@ -102,8 +102,11 @@ test('the allocation step carries the summary and the new wizard styles stay in 
   for(const token of [
     '.budgetAccountGrid{max-height:440px;overflow:auto;border:1px solid #e8edf3;border-radius:9px}',
     '.budgetAccountGrid thead th{position:sticky;top:0;z-index:1;padding:12px 14px;background:#f6f8fb;color:#667085;font-size:12px;text-align:left}',
-    '.budgetAccountGrid tr.budgetGroupRow>*{padding:9px 14px;border-top:1px solid #e8edf3;background:#f1f5fb;color:#344054;font-size:12px;text-align:left}',
-    '.budgetAccountGrid .budgetGroupCell{display:flex;align-items:center;justify-content:space-between;gap:12px}',
+    '.budgetAccountGrid tr.budgetGroupRow>*{padding:0;border-top:1px solid #e8edf3;background:#f7f9fc;color:#253550;text-align:left}',
+    '.budgetAccountGrid .budgetGroupCell{display:flex;align-items:center;justify-content:flex-start;gap:12px;width:100%;min-height:48px;padding:8px 14px;border:0;border-radius:0;background:#f7f9fc;color:#253550;font-weight:650;cursor:pointer}',
+    '.budgetAccountGrid .budgetGroupCell span{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;background:#e4eaf4;color:#55637a;font-size:12px;font-weight:600;line-height:1}',
+    '.budgetAccountGrid tr.budgetGroupRow:has(.budgetGroupCell[aria-expanded="true"])>*{background:#eef4ff}',
+    '.budgetAccountGrid .budgetGroupCell[aria-expanded="true"]{background:#eef4ff;box-shadow:inset 3px 0 0 #3478f6}',
     '.budgetAccountGrid .budgetAccountCell small{color:#667085;font-size:12px}',
     '.budgetAccountGrid .budgetChooseCell input{width:18px;height:18px;accent-color:var(--budget-blue);cursor:pointer}',
     '.budgetAccountGrid tbody tr:focus-within{background:#f4f7ff}',
@@ -117,7 +120,7 @@ test('the allocation step carries the summary and the new wizard styles stay in 
     '.budgetWizard .budgetSetupFields .budgetDuration{margin:0;padding:0;border:0;background:transparent}',
     '@media(max-width:1100px){.budgetWizard .budgetSetupFields,.budgetScopeRow .pc-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.budgetWizard .budgetSetupFields .budgetDuration{grid-column:span 2}.budgetWizard .budgetSetupFields .budgetDurationDates{grid-template-columns:repeat(2,minmax(0,1fr))}}',
   ])assert.ok(css.includes(token),token.slice(0,70));
-  for(const token of ['.budgetTotals{margin-top:18px;padding:16px;border:1px solid #e1e8f2;border-radius:10px;background:#fbfcfe}','.budgetTotalsGrid tr.budgetTotalsDerived>*{background:#f1f5fb;font-weight:700}','.budgetTotalsGrid td.budgetTotalsNegative{color:#b42318}','.budgetBalanceCheck.balanced .budgetBalanceNote{border:1px solid #cdeadd;background:#f1faf5;color:#19734c}','.budgetBalanceCheck.unbalanced .budgetBalanceNote{border:1px solid #ffe4c4;background:#fff8f0;color:#8a4b09}','.budgetAllocBand>th{padding:9px 12px;','.budgetAllocGroup>th>button{display:flex;','.budgetImportButton{position:relative;','.budgetVariance.favourable{color:#19734c}','.budgetVariance.unfavourable{color:#b42318}','.budgetVariance.neutral{color:#475467}'])assert.ok(css.includes(token),token.slice(0,70));
+  for(const token of ['.budgetTotals{margin-top:18px;padding:16px;border:1px solid #e1e8f2;border-radius:10px;background:#fbfcfe}','.budgetTotalsGrid tr.budgetTotalsDerived>*{background:#f1f5fb;font-weight:700}','.budgetTotalsGrid td.budgetTotalsNegative{color:#b42318}','.budgetBalanceCheck.balanced .budgetBalanceNote{border:1px solid #cdeadd;background:#f1faf5;color:#19734c}','.budgetBalanceCheck.unbalanced .budgetBalanceNote{border:1px solid #ffe4c4;background:#fff8f0;color:#8a4b09}','.budgetAllocBand>th{padding:10px 14px;','.budgetAllocGroup>th>button{display:flex;align-items:center;justify-content:flex-start;gap:12px;','.budgetImportButton{position:relative;','.budgetVariance.favourable{color:#19734c}','.budgetVariance.unfavourable{color:#b42318}','.budgetVariance.neutral{color:#475467}'])assert.ok(css.includes(token),token.slice(0,70));
   const block=css.slice(css.indexOf('.budgetWizard .budgetSetup>.budgetSetupFields'));
   const sizes=[...block.matchAll(/font-size:([\d.]+)px/g)].map(match=>Number(match[1]));
   assert.ok(sizes.length>=4&&Math.min(...sizes)>=12,'every new wizard style stays at 12px or larger');
@@ -228,4 +231,26 @@ test('the budget scope uses the shared multi-select organisation and branch cont
   assert.equal(oneAvailable.showBranch,false,'a one branch organisation hides the branch control too');
   assert.deepEqual(scope.scopePickerRows(oneAvailable).organisationRows,[],'a hidden control builds no rows');
   assert.deepEqual(scope.scopePickerRows({}).branchRows,[],'an empty scope builds no rows instead of throwing');
+});
+ 
+/* The grouped section rows are the same control in all three grids: the Chart of Accounts
+   accordion, the budget account-selection grid and the budget allocation grid. */
+test('the budget grids carry the same section rows as the Chart of Accounts accordion',()=>{
+  const coa=readFileSync(new URL('../src/account-workspace.css',import.meta.url),'utf8');
+  for(const token of [
+    '.budgetAllocGroup>th>button>svg{flex:0 0 auto;width:22px;height:22px;padding:2px;border:1px solid #d9e1ec;border-radius:6px;background:#fff;color:#3f5b8f}',
+    '.budgetAllocGroup>th>button b{font-size:13px;font-weight:650;color:#253550}',
+    '.budgetAllocGroup>th>button span{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;background:#e4eaf4;color:#55637a;font-size:12px;font-weight:600;line-height:1}',
+    '.budgetAllocGroup>th>button[aria-expanded="true"]{background:#eef4ff;box-shadow:inset 3px 0 0 #3478f6}',
+    '.budgetAllocGroup>th>button[aria-expanded="true"] span{background:#d8e5ff;color:#2a4f9e}',
+    '.budgetAllocGroup>th>button[aria-expanded="false"]>svg{border-color:#e1e6ed;color:#8392a7}',
+    '.budgetAllocBand>th{padding:10px 14px;border-top:1px solid #dfe6ef;background:#e9eff8;box-shadow:inset 3px 0 0 #3478f6;color:#172033;font-size:12px;font-weight:700;text-align:left;white-space:normal;letter-spacing:.02em;text-transform:uppercase}',
+    '.budgetStatementSection>th{padding:12px 14px;background:#e9eff8;box-shadow:inset 3px 0 0 #3478f6;color:#172033;font-size:13px;font-weight:700}'
+  ])assert.ok(css.includes(token),'the budget section row keeps '+token);
+  assert.ok(css.includes('.budgetAccountGrid .budgetGroupCell>svg{flex:0 0 auto;width:22px;height:22px;padding:2px;border:1px solid #d9e1ec;border-radius:6px;background:#fff;color:#3f5b8f}'),'the account grid uses the same chevron chip');
+  assert.ok(css.includes('.budgetAccountGrid .budgetGroupCell[aria-expanded="true"]{background:#eef4ff;box-shadow:inset 3px 0 0 #3478f6}'),'and the same left accent');
+  assert.ok(!coa.includes('am-group-toggle'),'the Chart of Accounts accordion the comparison used to lean on is gone, so the two budget grids keep the chip geometry between themselves');
+  assert.ok(css.includes('.budgetAllocation .budgetAllocGroup>th>button{box-shadow:inset 3px 0 0 #3478f6')||css.includes('.budgetAccountGrid .budgetGroupCell[aria-expanded="true"]{background:#eef4ff;box-shadow:inset 3px 0 0 #3478f6}'),'and the accent sits on the button in the budget grids themselves, where the button cannot hide it');
+  const sizes=[...css.slice(css.indexOf('/* The allocation grid carries the same section rows')).matchAll(/font-size:([\d.]+)px/g)].map(m=>Number(m[1]));
+  assert.ok(sizes.length&&Math.min(...sizes)>=12,'every budget section row stays at or above the 12px floor');
 });

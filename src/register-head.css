@@ -1,0 +1,205 @@
+/* ---------------------------------------------------------------------------
+   The one register header row, shared by every grid page.
+
+   The page heading and the register toolbar are merged into a single sticky row:
+   the title and subtitle lead it, the search box sits directly beside the Filters
+   disclosure, and the page actions close it. The row pins to the top of the
+   application scroll port and slides away while the reader scrolls down, coming
+   back on the first upward scroll or at the very top, exactly like the Chart of
+   Accounts header. Everything here is scoped to the `registerHead` marker class,
+   so a page keeps its old header until it is migrated and the rollout can move one
+   page at a time.
+   --------------------------------------------------------------------------- */
+.registerHead{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;position:sticky;top:0;z-index:9;padding:10px 0;background:#f6f8fb;transition:transform .22s ease}
+.registerHead>.registerHeadText{flex:1 1 260px;min-width:0}
+.registerHead>.registerHeadText h1,.registerHead>.registerHeadText h2{margin:0}
+.registerHead>.registerHeadText p{margin:6px 0 0;color:#667085}
+.registerHead>.registerHeadText .itemsHeadingCount{font-size:16px;font-weight:600;color:#667085}
+/* The toolbar gives up its card chrome once it sits in the header row. */
+.registerHead .ivTools,.registerHead .itemsTools{margin:0;padding:0;border:0;background:transparent;flex:0 1 auto;min-width:0;align-items:center;gap:10px;flex-wrap:nowrap}
+.registerHead .ivTools>label,.registerHead .itemsTools>label{flex:0 1 260px;min-width:180px;width:auto;max-width:280px}
+.registerHead .ivTools>select,.registerHead .itemsTools>select{flex:0 0 auto}
+/* The search keeps the pair with the Filters disclosure: the free space opens before it. */
+.registerHead .ivToolSearch,.registerHead .itemsTools>label:first-child{margin-left:auto}
+/* The Journal Entries register: its own stylesheet declares the toolbar and the search field
+   with !important, so these rules carry the extra `.je-page` class to outrank them. */
+.je-page .registerHead .je-tools{margin:0!important;padding:0!important;border:0!important;background:transparent!important;min-height:0!important;gap:10px!important;flex:0 1 auto!important;flex-wrap:nowrap!important}
+/* The journal heading is a transparent bar in its own stylesheet, and src/journal-heading-fix.css
+   makes it a two-column grid, so the merged row restates the opaque background it needs in order
+   to stick and cover the content beneath it, and takes a third column for the actions. The extra
+   column is scoped above the mobile fold, where that file already stacks the heading. */
+.je-page .je-heading.registerHead{background:#fff!important;min-height:0!important;margin:0!important;padding:12px 16px!important;border:1px solid #e1e6ed!important;border-bottom:1px solid #e1e6ed!important;border-radius:10px 10px 0 0!important;box-shadow:none!important}
+/* The heading bar is the top of the register card, so the page reads as one card exactly like the
+   Chart of Accounts: the bar carries the card border and the top radius, the table card beneath it
+   gives up its top border and its top corners and takes the bottom radius, and the bar keeps a
+   hairline so the column header row is divided from the heading the way that page divides its
+   toolbar from its grid. The bar stays opaque because it is sticky and has to cover the rows it
+   passes over, and it keeps no shadow of its own - a sticky element paints above the card below
+   it, so its shadow would cast a seam across the very edge they share. */
+.je-page .je-card.unified{margin-top:0!important;border-top:0!important;border-radius:0 0 10px 10px!important}
+@media(min-width:761px){
+ .je-page .je-heading.registerHead{grid-template-columns:minmax(0,1fr) auto auto!important}
+}
+.je-page .registerHead .je-tools>label{width:auto!important;flex:0 1 260px!important;min-width:180px!important;max-width:280px!important;margin-left:auto!important}
+.je-page .registerHead .je-filters>summary>span{display:inline-grid;place-items:center;min-width:20px;height:20px;margin-left:7px;padding:0 6px;border-radius:11px;background:#fff2db;color:#99600e;font-size:12px;font-weight:700}
+/* The add action is a split button, matching the Chart of Accounts header control: the primary
+   button keeps the main action and the caret opens the related register actions. */
+.registerHead .registerSplit{display:inline-flex;align-items:stretch;flex:0 0 auto;min-width:0}
+.registerHead .registerSplit>.registerSplitMain{border-top-right-radius:0;border-bottom-right-radius:0}
+.registerHead .registerSplit>.registerSplitMore{position:relative;display:inline-flex;flex:0 0 auto}
+.registerHead .registerSplit>.registerSplitMore>summary{display:inline-grid;place-items:center;width:38px;height:40px;min-height:40px;margin:0 0 0 -1px;padding:0;border:1px solid var(--je-blue,#3478f6);border-left-color:#8fb4fa;background:var(--je-blue,#3478f6);color:#fff;border-radius:0 7px 7px 0;cursor:pointer;list-style:none}
+.registerHead .registerSplit>.registerSplitMore>summary::-webkit-details-marker{display:none}
+.registerHead .registerSplit>.registerSplitMore>summary:hover,.registerHead .registerSplit>.registerSplitMore[open]>summary{background:#245bdd;border-color:#245bdd}
+.registerHead .registerSplit>.registerSplitMore[open]{z-index:80}
+.registerHead .registerSplit>.registerSplitMore>div{position:absolute;right:0;top:calc(100% + 6px);z-index:80;display:flex;flex-direction:column;min-width:212px;padding:8px;border:1px solid #e1e6ed;border-radius:9px;background:#fff;box-shadow:0 12px 30px #1018281f}
+.registerHead .registerSplit>.registerSplitMore>div>button{display:flex;flex:0 0 auto;width:100%;height:auto;min-height:40px;align-items:center;justify-content:flex-start;gap:11px;padding:0 12px;border:0;border-radius:7px;background:transparent;color:#344054;font-size:13px;font-weight:600;text-align:left;white-space:nowrap}
+.registerHead .registerSplit>.registerSplitMore>div>button:hover{background:#f4f7ff;color:#245fd9}
+.registerHead .registerSplit>.registerSplitMore>div>button svg{width:16px;height:16px;flex:0 0 auto}
+/* The heading bar is the top of the register card, exactly as the Chart of Accounts page reads, so
+   the page is one card instead of a title band floating above a table: the bar takes the card
+   border and the top radius, and the card immediately after it gives up its top border and its top
+   corners and takes the bottom radius. Each shell keeps its own gutter inside the bar - the journal
+   bar uses 16px and the iv / items bar uses the card's own 22px - so the title stays inset the way
+   the table beneath it is. The bar stays opaque because it is sticky and must cover the rows it
+   passes over, and it keeps no shadow of its own: a sticky element paints above the card below it,
+   so its shadow would cast a seam across the very edge the two share. */
+/* The items shell head: the same row as the other registers, with the actions slot the page adds.
+   The title takes the Journal Entries sizes, exactly as the journal, budgets and period lock rows do. */
+.registerHead.itemsHeading .registerHeadText h2{margin:0;font-size:24px;font-weight:700;line-height:1.25;letter-spacing:-.4px;color:#172033}
+.registerHead.itemsHeading .registerHeadText p{margin:5px 0 0;color:#667085;font-size:12px}
+/* The register count sits inside the title as a plain span and reads at the title size, exactly as
+   the journal, items, budgets and period lock counts do. */
+.registerHead .registerHeadText .registerHeadCount{font-size:24px;font-weight:700;line-height:1.25;letter-spacing:-.4px;color:#172033}
+/* The item count reads at the title size, exactly as the journal, budgets and period lock counts do. */
+.registerHead.itemsHeading .registerHeadText .itemsHeadingCount{font-size:24px;font-weight:700;color:#172033}
+.registerHead>.itemsActions{flex:0 0 auto;display:flex;align-items:center;gap:8px}
+.registerHead.ivHeading,.registerHead.itemsHeading{margin-bottom:0;padding:12px 22px;background:#fff;border:1px solid #e1e6ed;border-bottom:1px solid #e1e6ed;border-radius:10px 10px 0 0;box-shadow:none}
+/* The invoice and vendor shells carry their own 23px page title, so the merged row restates the
+   Journal Entries sizes the way the items shell does, and the actions slot closes the row. */
+.registerHead.ivHeading .registerHeadText h2{margin:0;font-size:24px;font-weight:700;line-height:1.25;letter-spacing:-.4px;color:#172033}
+.registerHead.ivHeading .registerHeadText p{margin:5px 0 0;color:#667085;font-size:12px}
+.registerHead.ivHeading>.ivActions{flex:0 0 auto;align-items:center;gap:8px}
+.registerHead.ivHeading .ivTools .soFiltersMore>summary svg,.registerHead.ivHeading .ivToolSearch svg{width:17px;height:17px}
+
+.registerHead.ivHeading+.ivCard,.registerHead.itemsHeading+.itemsCard{margin-top:0;border-top:0;border-radius:0 0 10px 10px}
+/* The Budgets register head. It is the register card's top row exactly like the journal and vendor
+   registers, so the page title, the register bar and the split action share one line and the table
+   card finishes the same card. src/budget-workspace.css declares this head with !important from a
+   three-class, one-element selector, so these rules repeat that whole prefix and add .registerHead
+   to outrank it. The financial year select is not on the row: it is one of the filters in the
+   panel, which leaves the search directly beside the Filters button. */
+.app main>.budgetV3>.budgetV3Head.registerHead{position:sticky!important;top:0!important;z-index:9!important;display:flex!important;margin:0!important;padding:12px 16px!important;background:#fff!important;border:1px solid #e1e6ed!important;border-radius:10px 10px 0 0!important;box-shadow:none!important;min-height:0!important;flex-wrap:nowrap!important;align-items:center!important;gap:16px!important}
+.budgetV3Head.registerHead>.registerHeadText{flex:1 1 auto;min-width:0}
+.budgetV3Head.registerHead .registerHeadText h2{margin:0;font-size:24px;font-weight:700;line-height:1.25;letter-spacing:-.4px;color:#172033;white-space:nowrap}
+.budgetV3Head.registerHead .registerHeadText p{margin:5px 0 0;color:#667085;font-size:12px}
+.budgetV3Head.registerHead .budgetRegisterBar{margin:0 0 0 auto;padding:0;border:0;background:transparent;flex-wrap:nowrap;gap:10px}
+.budgetV3Head.registerHead .budgetFilterSearch{flex:0 1 220px;min-width:180px;max-width:240px}
+.budgetV3Head.registerHead .budgetFiltersMore>summary svg{width:17px;height:17px}
+/* The year select is a panel field now, so the row rule's 190px flex-basis - which sets a height
+   inside the panel's column flex field - must not reach it. */
+.budgetV3Head.registerHead .budgetFiltersPanel .budgetFilterYear{flex:0 0 auto;min-height:38px}
+.budgetV3Head.registerHead .budgetHeadActions{flex:0 0 auto;width:auto;flex-wrap:nowrap}
+.app main>.budgetV3>.budgetV3Head.registerHead+.budgetListCard{margin-top:0!important;border-top:0!important;border-radius:0 0 10px 10px!important}
+@media(max-width:900px){
+ .app main>.budgetV3>.budgetV3Head.registerHead{flex-wrap:wrap!important;gap:12px!important;padding:12px 16px!important}
+ .budgetV3Head.registerHead .registerHeadText h2{white-space:normal}
+ .budgetV3Head.registerHead .budgetRegisterBar{flex:1 1 100%;margin-left:0;flex-wrap:wrap}
+ .budgetV3Head.registerHead .budgetFilterSearch{flex:1 1 100%;max-width:none}
+ .budgetV3Head.registerHead .budgetHeadActions{flex:1 1 100%;width:100%}
+}
+/* The Period Lock register head. The page renders it inside the register card, so the same row
+   carries the title, the Locked Periods / Requests toggle, the search and Filters pair and the
+   split action, and the card below finishes it. src/period-closing.css and its focus sheet declare
+   the bar with padding and a bottom rule, so these rules carry the extra class names to outrank
+   them. The bar is sticky against the page scroller the fixed .pc panel owns, which is why
+   src/register-head.js accepts .pc as a scroll port as well as .app>main. */
+.pc-register-bar.registerHead{position:sticky!important;top:0!important;z-index:9!important;margin:0!important;padding:12px 16px!important;background:#fff!important;border:1px solid #e1e6ed!important;border-bottom:1px solid #eef1f6!important;border-radius:10px 10px 0 0!important;box-shadow:none!important;flex-wrap:wrap!important;align-items:center!important;justify-content:flex-end!important;gap:10px 12px!important}
+.pc-register-bar.registerHead>.registerHeadText{flex:1 1 190px;min-width:185px}
+.pc-register-bar.registerHead .registerHeadText h2{margin:0;font-size:24px;font-weight:700;line-height:1.25;letter-spacing:-.4px;color:#172033}
+.pc-register-bar.registerHead .registerHeadText p{margin:5px 0 0;color:#667085;font-size:12px}
+.pc-register-tabs>.pc-filters{flex:0 1 auto;margin-left:auto}
+.pc-register-tabs>.pc-filters>.pc-filter-search{flex:0 1 160px;min-width:140px;max-width:200px}
+.pc-register-bar.registerHead>.pc-heading-actions{flex:0 0 auto;flex-wrap:nowrap}
+.pc-panel:has(>.pc-register-bar.registerHead){margin-top:0!important;border-top:0!important;border-radius:0 0 10px 10px!important}
+@media(max-width:1100px){
+ .pc-register-bar.registerHead{flex-wrap:wrap!important}
+ .pc-register-bar.registerHead>.registerHeadText{flex:1 1 100%}
+ .pc-register-tabs>.pc-filters{flex:1 1 100%;margin-left:0}
+ .pc-register-tabs>.pc-filters>.pc-filter-search{flex:1 1 100%;max-width:none}
+}
+/* The Inventory Adjustments register head: the same one-card row as the other registers. Its page
+   stylesheet declares the heading as a plain flex row, so these rules restate the card geometry and
+   the Journal Entries title sizes. They are scoped inside the breakpoints because the page's own
+   mobile block stacks the heading and a bare higher-specificity rule would outrank it at every width. */
+@media(min-width:1101px){
+ .iaHeading.registerHead{position:sticky!important;top:0!important;z-index:9!important;display:flex!important;margin:0!important;padding:12px 16px!important;background:#fff!important;border:1px solid #e1e6ed!important;border-bottom:1px solid #eef1f6!important;border-radius:10px 10px 0 0!important;box-shadow:none!important;min-height:0!important;flex-wrap:nowrap!important;align-items:center!important;gap:16px!important}
+ .iaHeading.registerHead>.registerHeadText{flex:1 1 200px;min-width:0}
+ .iaHeading.registerHead>.iaRegisterBar{margin:0 0 0 auto;padding:0;border:0;background:transparent;flex-wrap:nowrap;gap:10px}
+ .iaHeading.registerHead>.iaRegisterBar .iaSearch{flex:0 1 220px;min-width:160px;max-width:260px}
+ .iaHeading.registerHead>.iaHeadActions{flex:0 0 auto;flex-wrap:nowrap}
+}
+@media(max-width:1100px){
+ .iaHeading.registerHead{position:sticky!important;top:0!important;z-index:9!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:14px!important;margin:0!important;padding:12px 16px!important;background:#fff!important;border:1px solid #e1e6ed!important;border-bottom:1px solid #eef1f6!important;border-radius:10px 10px 0 0!important;box-shadow:none!important;min-height:0!important}
+ .iaHeading.registerHead>.registerHeadText{flex:1 1 auto;min-width:0;width:100%}
+ .iaHeading.registerHead>.iaRegisterBar{margin:0;padding:0;border:0;background:transparent;flex-wrap:wrap;width:100%}
+ .iaHeading.registerHead>.iaRegisterBar .iaSearch{flex:1 1 100%;max-width:none}
+ .iaHeading.registerHead>.iaHeadActions{flex:1 1 auto;width:100%;justify-content:flex-start}
+}
+.iaHeading.registerHead .registerHeadText h2{margin:0;font-size:24px;font-weight:700;line-height:1.25;letter-spacing:-.4px;color:#172033}
+.iaHeading.registerHead .registerHeadText p{margin:5px 0 0;color:#667085;font-size:12px}
+/* .opsPage is a flex column with a 16px gap, so the register card can only sit flush against the
+   head when that gap is removed for this page. The adjacent-sibling form keeps the card's own
+   border whenever the transient status banner sits between the two. */
+.iaPage.iaRegisterPage{gap:0}
+.iaHeading.registerHead+.opsCard{margin-top:0!important;border-top:0!important;border-radius:0 0 10px 10px!important}
+/* The filters disclosure is a flex item of the register toolbar, and flex shrinking reached the
+   glyph inside it: the funnel measured 8.5px wide on the invoices register and 5.3px on the sales
+   orders register against 17px on Customers, Journal Entries and Chart of Accounts, which reads as
+   a different icon. Neither the disclosure nor the glyph may shrink, so the funnel stays a funnel. */
+.registerHead details:has(>summary[aria-label="Open filters"]){flex:0 0 auto}
+.registerHead summary[aria-label="Open filters"]>svg{flex:0 0 auto;width:17px;height:17px}
+/* Below the narrow-viewport fold the invoice and customer filter panels open in the flow rather
+   than floating, so an open panel inside the pinned row would make that row taller than the
+   viewport it is pinning to. The row gives up its pin only while such a panel is open. */
+@media(max-width:760px){
+ .registerHead:has(.soFiltersMore[open]),.registerHead:has(.customerFilters[open]){position:static}
+}
+.registerHead.isHidden{transform:translateY(calc(-100% - 24px))}
+/* ---------------------------------------------------------------------------
+   The column heading row pins under the page heading row.
+
+   Every table the shared script marks pins its `thead th` beneath the page heading row and takes
+   that row place the moment it slides away, because `--register-head-h` is republished as 0px
+   while the row is hidden. The inset shadow stands in for the collapsed border a sticky cell loses
+   - the same rule the Chart of Accounts grid has used since it pinned its own headings - and the
+   top transition matches the row own 220ms slide, so the two hand over without a jump. The fill is
+   not declared here: every shell already paints its `th` opaquely, and a sticky cell must stay
+   opaque to cover the rows passing under it.
+   --------------------------------------------------------------------------- */
+[data-sticky-head] thead th{position:sticky;top:calc(var(--register-head-h,0px) - var(--register-head-pad,22px));z-index:6;box-shadow:inset 0 -1px 0 #e6ecf6;transition:top .22s ease}
+/* A sticky offset is measured from the scroll port content box, but the scroll port carries a top
+   padding of its own, so a heading pinned at 0 sat that padding below the visible top edge and the
+   rows scrolled through the band it left. The offset subtracts that padding, which puts the pinned
+   heading exactly at the top of the visible area with the page header row away, and exactly under
+   that row while it is there. */
+/* Masking, for the one page whose own heading rules win the offset: while a page heading is away,
+   the strip above the sticky heading repeats the heading own fill, so no row can ever appear in the
+   band between the page heading and the column heading. It is applied only while a heading is
+   actually away, so it can never paint over a toolbar on a page that has no such row. */
+body:has(.registerHead.isHidden) [data-sticky-head] thead th::before,
+body:has(.am-coa-page.am-coa-bar-hidden) [data-sticky-head] thead th::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:40px;background:inherit;pointer-events:none}
+/* A wrapper that scrolls in either direction is the sticky containing block, so a heading inside it
+   would pin to a box that never moves and never appear to pin. The script adds this class only
+   while the table fits that wrapper horizontally, so a wrapper that really does scroll sideways
+   keeps its scrolling and simply leaves its heading unpinned. */
+.stickyHeadWrap{overflow:visible!important}
+@media print{
+ [data-sticky-head] thead th{position:static;transition:none}
+}
+@media(max-width:760px){
+ .registerHead .ivTools,.registerHead .itemsTools{flex:1 1 100%;flex-wrap:wrap}
+ .registerHead .ivTools>label,.registerHead .itemsTools>label{flex:1 1 100%;max-width:none;margin-left:0}
+ .je-page .registerHead .je-tools{flex:1 1 100%!important;flex-wrap:wrap!important}
+ .je-page .registerHead .je-tools>label{flex:1 1 100%!important;max-width:none!important;margin-left:0!important}
+ .je-page .je-heading.registerHead{grid-template-columns:minmax(0,1fr)!important}
+}

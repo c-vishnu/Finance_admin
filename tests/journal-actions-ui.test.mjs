@@ -52,6 +52,6 @@ test('row menus dismiss on selection and on an outside pointer or Escape',()=>{
   assert.ok(coaSource.includes('const menuRun=handler=>event=>{event.currentTarget.closest(\'details\')?.removeAttribute(\'open\');handler()};'),'account rows close the menu when the action runs');
   assert.ok(source.includes("document.querySelectorAll('.je-row-actions details[open],.je-detail-more[open]')"),'journal entries registers one page level dismissal');
   assert.ok(coaSource.includes("document.querySelectorAll('.am-table .am-more[open]')"),'the chart of accounts registers one page level dismissal');
-  assert.ok(closingSource.includes("document.querySelectorAll('.pc-more[open],.pc-kebab[open],.pc-filters-more[open],.pc-attention-pop[open]')"),'period closing keeps its dismissal');
+  assert.ok(closingSource.includes("document.querySelectorAll('.registerSplitMore[open],.pc-kebab[open],.pc-filters-more[open],.pc-attention-pop[open]')"),'period closing keeps its dismissal');
   assert.ok(!styles.includes('details>div:before')&&!coaStyles.includes('.am-more>div:before'),'the old caret arrows are gone');
 });

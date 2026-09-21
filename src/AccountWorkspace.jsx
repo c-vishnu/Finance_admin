@@ -1,5 +1,5 @@
-import {useEffect,useState} from 'react';
-import {IconPlus,IconSearch,IconDownload,IconUpload,IconArrowLeft,IconArrowRight,IconCheck,IconX,IconChevronRight,IconDots,IconEdit,IconCopy,IconTrash,IconBook,IconBuildingBank,IconTrendingUp,IconTrendingDown,IconWallet,IconShieldLock,IconAdjustments,IconCircleCheck,IconCircleX,IconFolder,IconFileInvoice,IconHistory,IconInfoCircle} from '@tabler/icons-react';
+import {useEffect,useRef,useState} from 'react';
+import {IconPlus,IconSearch,IconDownload,IconUpload,IconArrowLeft,IconArrowRight,IconCheck,IconX,IconChevronDown,IconChevronRight,IconDots,IconEdit,IconCopy,IconTrash,IconBook,IconBuildingBank,IconTrendingUp,IconTrendingDown,IconWallet,IconShieldLock,IconFilter,IconAdjustments,IconCircleCheck,IconCircleX,IconFolder,IconFileInvoice,IconHistory,IconInfoCircle} from '@tabler/icons-react';
 import {ACCOUNT_NATURES,ACCOUNT_SCOPES,CATEGORY,TYPES,SUGGESTIONS,normalizeAccounts,nextCode,suggestedGroup,changeAccount,accountUsed,references,parseAccountCSV,importAccounts} from './account-master.js';
 import {readAccounts,writeAccounts} from './account-store.js';
 import {initial,money,ledger} from './invoice-engine.js';
@@ -39,11 +39,36 @@ export default function AccountWorkspace({seed,notify,onNavigate}){
   const [db,setDb]=useState(()=>{try{return readAccounts(seed)}catch{return normalizeAccounts(initial(),seed)}});
   const [error,setError]=useState(()=>{try{readAccounts(seed);return ''}catch(e){return e.message}});
   const [view,setView]=useState(safeReadPreference),[query,setQuery]=useState(''),[type,setType]=useState('All'),[status,setStatus]=useState('All'),[creator,setCreator]=useState('All'),[group,setGroup]=useState('All'),[branch,setBranch]=useState('All'),[balanceRange,setBalanceRange]=useState('All'),[selected,setSelected]=useState(()=>{try{return db.accounts.find(a=>a.code===sessionStorage.getItem('wayvida-open-account'))?.id||null}catch{return null}}),[tab,setTab]=useState('Transactions'),[collapsed,setCollapsed]=useState([]),[form,setForm]=useState(null),[step,setStep]=useState(1),[confirm,setConfirm]=useState(null),[importRows,setImportRows]=useState(null),[importOpen,setImportOpen]=useState(false),[importError,setImportError]=useState('');
+  const [barHidden,setBarHidden]=useState(false);
+  const shellRef=useRef(null);
+  /* The account list no longer scrolls inside its own box: the whole page scrolls in the
+     application shell. The toolbar therefore pins to the top of that one scroll port, hides
+     while the reader scrolls down and comes back on the first upward scroll or at the very
+     top. Its measured height is published as --am-coa-bar-h so the sticky column header and
+     the account-group rows always sit directly under it, at any wrapping width. */
+  useEffect(()=>{
+    const shell=shellRef.current,bar=shell?.querySelector('.am-filter-toolbar');
+    const scroller=shell?.closest('main')||document.querySelector('.app>main');
+    if(!shell||!bar||!scroller)return;
+    const measure=()=>shell.style.setProperty('--am-coa-bar-h',bar.offsetHeight+'px');
+    measure();
+    const observer=typeof ResizeObserver!=='undefined'?new ResizeObserver(measure):null;
+    observer?.observe(bar);
+    window.addEventListener('resize',measure);
+    let last=scroller.scrollTop;
+    const onScroll=()=>{
+      const y=scroller.scrollTop,delta=y-last;
+      last=y;
+      const next=y>4&&delta>0&&y>bar.offsetHeight;
+      setBarHidden(current=>current===next?current:next);
+    };
+    scroller.addEventListener('scroll',onScroll,{passive:true});
+    return()=>{observer?.disconnect();window.removeEventListener('resize',measure);scroller.removeEventListener('scroll',onScroll)};
+  },[]);
   const [templateName,setTemplateName]=useState('');
   const [workingContext,setWorkingContext]=useState(readWorkingContext);
   useEffect(()=>{try{sessionStorage.removeItem('wayvida-open-account')}catch{}},[]);
   useEffect(()=>{setView(mode==='business'?'Business':'Accounting')},[mode]);
-  useEffect(()=>{const help=TYPE_HELP[view];document.querySelectorAll('.am-group-toggle').forEach(button=>{const type=Object.keys(BUSINESS_LABELS).find(key=>button.textContent.includes(view==='Business'?BUSINESS_LABELS[key]:key));if(type){button.title=help[type];button.setAttribute('aria-description',help[type])}})},[view,db]);
   useEffect(()=>{const refresh=event=>setWorkingContext({...readWorkingContext(),organizationIds:event.detail?.companyIds||readWorkingOrganisationIds()});window.addEventListener('wayvida-organization-change',refresh);return()=>window.removeEventListener('wayvida-organization-change',refresh)},[]);
   useEffect(()=>{const refresh=()=>{try{setDb(readAccounts(seed))}catch(e){setError(e.message)}};window.addEventListener('storage',refresh);window.addEventListener('wayvida-accounts-updated',refresh);return()=>{window.removeEventListener('storage',refresh);window.removeEventListener('wayvida-accounts-updated',refresh)}},[seed]);
   useEffect(()=>{const refresh=event=>setView(event.detail?.view||safeReadPreference());window.addEventListener('wayvida-coa-view-change',refresh);return()=>window.removeEventListener('wayvida-coa-view-change',refresh)},[]);
@@ -85,7 +110,7 @@ export default function AccountWorkspace({seed,notify,onNavigate}){
   function commitImport(){try{const next=importAccounts(readAccounts(seed),importRows,masterReferences());writeAccounts(next);setDb(next);setImportOpen(false);setImportRows(null);notify('Accounts imported successfully')}catch(e){setImportError(e.message)}}
   const exportTransactions=a=>{const rows=entries.filter(line=>codesFor(a).has(line.account));download(`${a.code}-transactions.csv`,[['Date','Voucher','Source','Description','Debit','Credit'],...rows.map(row=>[row.date,row.number,row.source,row.description||row.reference,row.debit/100,row.credit/100])]);notify('Account transactions exported')};
   const menuRun=handler=>event=>{event.currentTarget.closest('details')?.removeAttribute('open');handler()};
-  const more=a=><details className="am-more"><summary aria-label={'More actions for '+a.name}><IconDots size={17}/></summary><div><button type="button" onClick={menuRun(()=>start(a))}><IconEdit size={16}/>Edit Account</button><button type="button" onClick={menuRun(()=>start(a,true))}><IconCopy size={16}/>Duplicate Account</button><button type="button" onClick={menuRun(()=>{setSelected(a.id);setTab('Transactions')})}><IconBook size={16}/>View Transactions</button><button type="button" onClick={menuRun(()=>run('toggle',a))}>{a.active?<IconCircleX size={16}/>:<IconCircleCheck size={16}/>}{a.active?'Inactive':'Active'}</button><button type="button" className="am-danger" disabled={a.system||accountUsed(db,a.code)} onClick={menuRun(()=>{setError('');setConfirm(a)})}><IconTrash size={16}/>Delete Account</button></div></details>;
+  const more=a=><details className="am-more"><summary aria-label={'More actions for '+a.name}><IconDots size={17}/></summary><div><button type="button" onClick={menuRun(()=>start(a,true))}><IconCopy size={16}/>Duplicate Account</button><button type="button" onClick={menuRun(()=>{setSelected(a.id);setTab('Transactions')})}><IconBook size={16}/>View Transactions</button><button type="button" onClick={menuRun(()=>run('toggle',a))}>{a.active?<IconCircleX size={16}/>:<IconCircleCheck size={16}/>}{a.active?'Inactive':'Active'}</button><button type="button" className="am-danger" disabled={a.system||accountUsed(db,a.code)} onClick={menuRun(()=>{setError('');setConfirm(a)})}><IconTrash size={16}/>Delete Account</button></div></details>;
   function treeRows(type){
     const rows=[],visited=new Set();const matching=new Set(visible.map(a=>a.code));
     if(query||status!=='All'||type!=='All'||group!=='All'||branch!=='All'||balanceRange!=='All'){visible.forEach(a=>{let p=a.parent;const seen=new Set();while(p&&!seen.has(p)){seen.add(p);matching.add(p);p=db.accounts.find(x=>x.code===p)?.parent}})}
@@ -98,9 +123,13 @@ export default function AccountWorkspace({seed,notify,onNavigate}){
   const suggestion=form&&nameSuggestion(form.name,form.type);
   function useTemplate(name){const rows=templateRows(name,db.accounts);setTemplateName(name);setImportRows(rows);setImportError(rows.length?'':'All accounts in this template already exist.');setImportOpen(true)}
   const locked=form?.id&&(form.system||accountUsed(db,form.code));
-  return <section className="am am-coa-page"><div className="am-heading am-coa-heading"><div><h1>{t.chartOfAccounts} <span className="am-heading-count">({db.accounts.length})</span></h1><p>{t.chartSubtitle}</p></div><div className="am-actions"><button onClick={()=>{setImportOpen(true);setTemplateName('');setImportRows(null);setImportError('')}}><IconUpload size={17}/>Import</button><details className="am-more"><summary className="am-template-trigger">Templates</summary><div>{Object.keys(ACCOUNT_TEMPLATES).map(name=><button key={name} onClick={()=>useTemplate(name)}>{name} Template</button>)}</div></details><button onClick={exportList}><IconDownload size={17}/>Export</button><button className="primary" onClick={()=>start()}><IconPlus size={18}/>{t.addAccount}</button></div></div>{error&&<div role="alert" className="am-error">{error}<button aria-label="Dismiss error" onClick={()=>setError('')}><IconX size={16}/></button></div>}
-    <AccountFilters query={query} setQuery={setQuery} type={type} setType={setType} groups={groups} group={group} setGroup={setGroup} status={status} setStatus={setStatus} creator={creator} setCreator={setCreator} branch={branch} setBranch={setBranch} balanceRange={balanceRange} setBalanceRange={setBalanceRange} view={view} t={t}/>
-    <div className="am-layout"><div className="am-list"><div className="am-table-wrap"><table className="am-table am-account-grid am-coa-grid standard"><thead><tr><th>{t.accountName}</th><th>{t.accountCode}</th><th>{t.accountGroup}</th><th>{t.status}</th>{scopeColumns.showOrgColumn&&<th>Organisation</th>}{scopeColumns.showBranchColumn&&<th>Branch</th>}<th aria-label="Actions">Actions</th></tr></thead><tbody>{TYPES.filter(t=>type==='All'||t===type).map(typeName=>{const rows=treeRows(typeName);return rows.length?<AccountGroup key={typeName} view={view} db={db} type={typeName} rows={rows} collapsed={collapsed} setCollapsed={setCollapsed} open={open} selected={selected} balance={balance} more={more} scopeColumns={scopeColumns} scopeCell={accountScopeCell}/>:null})}</tbody></table></div>{!visible.length&&<div className="am-empty"><IconSearch size={30}/><h3>No accounts found</h3><p>Try another search or create an account.</p><button onClick={()=>{setQuery('');setType('All');setStatus('All');setCreator('All');setGroup('All');setBranch('All');setBalanceRange('All')}}>Clear filters</button></div>}
+  const typeGroups=TYPES.filter(name=>type==='All'||name===type).map(name=>({name,rows:treeRows(name)})).filter(group=>group.rows.length);
+  /* One flat list, in the chart order the type sections used to imply: the register is a table of
+     accounts now, not a set of disclosures, and the type each row belongs to is a column. */
+  const flatRows=typeGroups.flatMap(group=>group.rows.map(row=>({...row,type:group.name})));
+  return <section ref={shellRef} className={barHidden?'am am-coa-page am-coa-bar-hidden':'am am-coa-page'}>{error&&<div role="alert" className="am-error">{error}<button aria-label="Dismiss error" onClick={()=>setError('')}><IconX size={16}/></button></div>}
+    <AccountFilters query={query} setQuery={setQuery} type={type} setType={setType} groups={groups} group={group} setGroup={setGroup} status={status} setStatus={setStatus} creator={creator} setCreator={setCreator} branch={branch} setBranch={setBranch} balanceRange={balanceRange} setBalanceRange={setBalanceRange} view={view} t={t} count={db.accounts.length} onImport={()=>{setImportOpen(true);setTemplateName('');setImportRows(null);setImportError('')}} onExport={exportList} onAdd={()=>start()} onUseTemplate={useTemplate}/>
+    <div className="am-layout"><div className="am-list"><div className="am-table-wrap"><table className="am-table am-account-grid am-coa-grid standard"><thead><tr><th>{t.accountName}</th><th>{t.accountCode}</th><th>Account Type</th><th>{t.accountGroup}</th><th>{t.status}</th>{scopeColumns.showOrgColumn&&<th>Organisation</th>}{scopeColumns.showBranchColumn&&<th>Branch</th>}<th aria-label="Actions">Actions</th></tr></thead><tbody>{flatRows.map(({a,depth,hasChildren,type:rowType})=>{const isCollapsed=collapsed.includes(a.code),name=view==='Business'?(a.displayName||a.name):a.name;return <tr key={a.id} className={selected===a.id?'selected':''}><td><div style={{paddingLeft:depth*18}} className="am-tree-name">{hasChildren?<button title={isCollapsed?'Expand to show sub-accounts':'Collapse sub-accounts'} aria-label={(isCollapsed?'Expand ':'Collapse ')+a.name} aria-expanded={!isCollapsed} onClick={()=>setCollapsed(isCollapsed?collapsed.filter(c=>c!==a.code):[...collapsed,a.code])}><IconChevronRight className={!isCollapsed?'rotated':''} size={16}/></button>:<span className="am-tree-spacer"/>}<button onClick={()=>open(a)}>{name}</button></div></td><td>{a.code}</td><td className="am-account-type" title={(TYPE_HELP[view]||{})[rowType]} aria-description={(TYPE_HELP[view]||{})[rowType]}>{view==='Business'?BUSINESS_LABELS[rowType]:rowType}</td><td>{a.group}</td><td><Stamp active={a.active}/></td>{scopeColumns.showOrgColumn&&<td>{accountScopeCell(a).organisation}</td>}{scopeColumns.showBranchColumn&&<td>{accountScopeCell(a).branch}</td>}<td className="am-row-actions-cell"><div className="am-row-actions"><button type="button" className="am-row-edit" onClick={()=>start(a)}><IconEdit size={16}/>Edit</button>{more(a)}</div></td></tr>})}</tbody></table></div>{!visible.length&&<div className="am-empty"><IconSearch size={30}/><h3>No accounts found</h3><p>Try another search or create an account.</p><button onClick={()=>{setQuery('');setType('All');setStatus('All');setCreator('All');setGroup('All');setBranch('All');setBalanceRange('All')}}>Clear filters</button></div>}
     <p className="am-note"><IconInfoCircle size={17}/>Income and expenses are not cash flow. Balances exclude the old sample amounts and unposted documents.</p></div>
     {account&&<div className="am-create-drawer-layer am-detail-layer"><button type="button" className="am-create-drawer-backdrop" aria-label="Close account details" onClick={()=>setSelected(null)}/><aside className="am-create-drawer am-detail-drawer" role="dialog" aria-modal="true" aria-label="Account details"><div className="am-create-drawer-header"><div><h2>Account details</h2><p>{account.name} · {account.code}</p></div><button type="button" className="am-create-drawer-close" aria-label="Close account details" onClick={()=>setSelected(null)}><IconX size={18}/></button></div><div className="am-detail-body" role="tabpanel">
       <AccountConfiguration account={account} db={db} view={view} currentBalance={balance(account)} t={t} workingContext={workingContext}/>
@@ -131,28 +160,26 @@ function AccountConfiguration({account,db,view,currentBalance,t,workingContext})
 }
 function ScopeOrganisations({organisations}){if(organisations.length===1)return organisations[0].name;return <details className="am-scope-availability"><summary>{organisations.length} organisations<span>View organisations</span></summary><ul>{organisations.map(organisation=><li key={organisation.id}>{organisation.name}</li>)}</ul></details>}
 function ScopeAvailability({label,branches,empty}){const grouped=branches.reduce((all,branch)=>{const name=branch.organisationName||'Organisation';(all[name]??=[]).push(branch);return all},{});return <details className="am-scope-availability"><summary>{label}{branches.length>0&&<span>View branches</span>}</summary>{branches.length?<div className="am-scope-branch-groups">{Object.entries(grouped).map(([organisation,items])=><div key={organisation}><b>{organisation}</b><ul>{items.map(branch=><li key={branch.id||branch.name}>{branch.name}</li>)}</ul></div>)}</div>:<p>{empty}</p>}</details>}
-function AccountFilters({query,setQuery,type,setType,groups,group,setGroup,status,setStatus,creator,setCreator,branch,setBranch,balanceRange,setBalanceRange,view,t}){
-  const advancedCount=[creator!=='All',group!=='All',branch!=='All',balanceRange!=='All'].filter(Boolean).length;
-  const resetAdvanced=()=>{setCreator('All');setGroup('All');setBranch('All');setBalanceRange('All')};
+function AccountFilters({query,setQuery,type,setType,groups,group,setGroup,status,setStatus,creator,setCreator,branch,setBranch,balanceRange,setBalanceRange,view,t,count,onImport,onExport,onAdd,onUseTemplate}){
+  /* The panel owns every filter except the search box, so the badge counts all of them and
+     Reset clears all of them. */
+  const advancedCount=[type!=='All',status!=='All',creator!=='All',group!=='All',branch!=='All',balanceRange!=='All'].filter(Boolean).length;
+  const resetAdvanced=()=>{setType('All');setStatus('All');setCreator('All');setGroup('All');setBranch('All');setBalanceRange('All')};
+  /* The heading shares this row: one sticky control bar carries the title, the subtitle, the
+     search box, the Filters disclosure and the actions, so the page has no second row. */
   return <div className="am-toolbar am-filter-toolbar">
+    <div className="am-coa-title"><h1>{t.chartOfAccounts} <span className="am-heading-count">({count})</span></h1><p>{t.chartSubtitle}</p></div>
     <label className="am-search"><IconSearch size={18}/><input aria-label="Search accounts" value={query} placeholder="Search accounts..." onChange={e=>setQuery(e.target.value)}/></label>
-    <select className="am-type-filter" aria-label={t?.accountType||'Account type'} value={type} onChange={e=>setType(e.target.value)}>
-      <option value="All">{view==='Business'?'All money types':'All account types'}</option>
-      {TYPES.map(typeName=><option key={typeName} value={typeName}>{view==='Business'?(BUSINESS_LABELS[typeName]||typeName):typeName}</option>)}
-    </select>
-    <select className="am-status-filter" aria-label={t?.status||'Status'} value={status} onChange={e=>setStatus(e.target.value)}>
-      <option value="All">All statuses</option>
-      <option value="Active">Active</option>
-      <option value="Inactive">Inactive</option>
-    </select>
     <details className="am-filter-menu">
-      <summary><IconAdjustments size={18}/>Advanced filters{advancedCount>0&&<span>{advancedCount}</span>}</summary>
+      <summary aria-label="Open filters"><IconFilter size={17}/>Filters{advancedCount>0&&<span>{advancedCount}</span>}</summary>
       <div className="am-filter-popover">
         <div className="am-filter-head">
           <div><b>Filter accounts</b><small>Narrow the account list</small></div>
           <button type="button" disabled={!advancedCount} onClick={resetAdvanced}>Reset</button>
         </div>
         <div className="am-filter-fields">
+          <label>{t?.accountType||'Account type'}<select className="am-type-filter" aria-label={t?.accountType||'Account type'} value={type} onChange={e=>setType(e.target.value)}><option value="All">{view==='Business'?'All money types':'All account types'}</option>{TYPES.map(typeName=><option key={typeName} value={typeName}>{view==='Business'?(BUSINESS_LABELS[typeName]||typeName):typeName}</option>)}</select></label>
+          <label>{t?.status||'Status'}<select className="am-status-filter" aria-label={t?.status||'Status'} value={status} onChange={e=>setStatus(e.target.value)}><option value="All">All statuses</option><option>Active</option><option>Inactive</option></select></label>
           <label>Created by<select aria-label="System or user created" value={creator} onChange={e=>setCreator(e.target.value)}><option value="All">System and user</option><option>System</option><option>User</option></select></label>
           <label>{t?.accountGroup||'Account group'}<select aria-label={t?.accountGroup||'Account group'} value={group} onChange={e=>setGroup(e.target.value)}><option value="All">All groups</option>{groups.map(g=><option key={g}>{g}</option>)}</select></label>
           <label>Branch requirement<select aria-label="Branch requirement" value={branch} onChange={e=>setBranch(e.target.value)}><option value="All">All branches</option><option value="Required">Branch required</option><option value="Optional">Branch optional</option></select></label>
@@ -160,6 +187,7 @@ function AccountFilters({query,setQuery,type,setType,groups,group,setGroup,statu
         </div>
       </div>
     </details>
+    <div className="am-actions am-toolbar-actions"><details className="am-more"><summary className="am-template-trigger">Templates</summary><div>{Object.keys(ACCOUNT_TEMPLATES).map(name=><button key={name} onClick={()=>onUseTemplate(name)}>{name} Template</button>)}</div></details><div className="am-split"><button type="button" className="primary am-split-main" onClick={onAdd}><IconPlus size={18}/>{t.addAccount}</button><details className="am-split-more"><summary aria-label="More account actions" title="More account actions"><IconChevronDown size={18}/></summary><div><button type="button" onClick={onImport}><IconUpload size={16}/>Import</button><button type="button" onClick={onExport}><IconDownload size={16}/>Export</button></div></details></div></div>
   </div>;
 }
 function SimpleAccountForm({form,setForm,db,error,setError,locked,duplicate,onSave}){
@@ -171,6 +199,5 @@ function SimpleAccountForm({form,setForm,db,error,setError,locked,duplicate,onSa
 }
 function Switch({label,note,checked,onChange,disabled}){return <label className="am-switch-row"><span><b>{label}</b><small>{note}</small></span><input type="checkbox" role="switch" checked={checked} disabled={disabled} onChange={e=>onChange(e.target.checked)}/></label>}
 function safeReadPreference(){try{const saved=String(JSON.parse(localStorage.getItem('wayvida-coa-view'))||'').toLowerCase();return saved==='accounting'||saved==='accountant'?'Accounting':'Business'}catch{return 'Business'}}
-function AccountGroup({view,type,rows,collapsed,setCollapsed,open,selected,more,scopeColumns={},scopeCell=()=>({})}){const groupKey=`type:${type}`,groupCollapsed=collapsed.includes(groupKey);return <><tr className="am-group-row"><th colSpan={5+(scopeColumns.showOrgColumn?1:0)+(scopeColumns.showBranchColumn?1:0)}><button className="am-group-toggle" aria-expanded={!groupCollapsed} onClick={()=>setCollapsed(groupCollapsed?collapsed.filter(c=>c!==groupKey):[...collapsed,groupKey])}><IconChevronRight className={!groupCollapsed?'rotated':''} size={17}/><span><strong>{view==='Business'?BUSINESS_LABELS[type]:type}</strong><small>{rows.length} {rows.length===1?'account':'accounts'}</small></span></button></th></tr>{!groupCollapsed&&rows.map(({a,depth,hasChildren})=>{const isCollapsed=collapsed.includes(a.code),name=view==='Business'?(a.displayName||a.name):a.name;return <tr key={a.id} className={selected===a.id?'selected':''}><td><div style={{paddingLeft:depth*18}} className="am-tree-name">{hasChildren?<button title={isCollapsed?'Expand to show sub-accounts':'Collapse sub-accounts'} aria-label={(isCollapsed?'Expand ':'Collapse ')+a.name} aria-expanded={!isCollapsed} onClick={()=>setCollapsed(isCollapsed?collapsed.filter(c=>c!==a.code):[...collapsed,a.code])}><IconChevronRight className={!isCollapsed?'rotated':''} size={16}/></button>:<span className="am-tree-spacer"/>}<button onClick={()=>open(a)}>{name}</button></div></td><td>{a.code}</td><td>{a.group}</td><td><Stamp active={a.active}/></td>{scopeColumns.showOrgColumn&&<td>{scopeCell(a).organisation}</td>}{scopeColumns.showBranchColumn&&<td>{scopeCell(a).branch}</td>}<td className="am-row-more">{more(a)}</td></tr>})}</>}
 function AccountLedger({rows,source,transaction}){let running=0;rows=rows.map(r=>({...r,balance:(running+=r.debit-r.credit)}));if(!rows.length)return <div className="am-empty"><IconBook size={28}/><h3>No posted activity</h3><p>Transactions using this account will appear here.</p></div>;return <><button className="am-export-ledger" onClick={()=>download('account-ledger.csv',[['Date','Voucher','Source','Description','Debit','Credit','Balance Dr-Cr'],...rows.map(r=>[r.date,r.number,r.reference,r.description||r.source,r.debit/100,r.credit/100,r.balance/100])])}><IconDownload size={16}/>Export ledger</button><div className="am-ledger-scroll"><table className="am-table"><thead><tr><th>Date / voucher</th><th>{transaction?'Transaction':'Description'}</th><th>Voucher type</th><th>Debit</th><th>Credit</th>{!transaction&&<th>Balance</th>}</tr></thead><tbody>{rows.map(r=><tr key={r.id}><td>{r.date}<small>{r.number}</small></td><td>{r.invoiceId||r.creditNoteId?<button className="am-link" onClick={()=>source(r)}>{r.reference}</button>:<span>{r.reference}</span>}<small>{r.description||r.source}</small></td><td>{r.source}</td><td>{r.debit?money(r.debit):'—'}</td><td>{r.credit?money(r.credit):'—'}</td>{!transaction&&<td>{money(Math.abs(r.balance))} {r.balance<0?'Cr':'Dr'}</td>}</tr>)}</tbody></table></div></>}
 

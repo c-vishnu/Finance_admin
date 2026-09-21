@@ -2,3 +2,11 @@
 .soActionMenu button[role=menuitem]{display:flex;align-items:center;gap:10px;min-height:40px}
 .soActionMenu button[role=menuitem] svg{flex-shrink:0;color:#667085}
 .soActionMenu button[role=menuitem]:focus-visible{outline:2px solid #3478f6;outline-offset:-2px;background:#edf4ff}
+
+/* The destructive entries: a red row in the menu and a red confirm button, the treatment the other
+   registers use for delete. */
+.soActionMenu button[role=menuitem].soActionDanger{color:#b42318}
+.soActionMenu button[role=menuitem].soActionDanger svg{color:#b42318}
+.soActionMenu button[role=menuitem].soActionDanger:hover:not(:disabled){background:#fef3f2}
+.soConfirm button.soConfirmDanger{border-color:#d92d20;background:#d92d20;color:#fff;font-weight:600}
+.soConfirm button.soConfirmDanger:hover{background:#b42318;border-color:#b42318}

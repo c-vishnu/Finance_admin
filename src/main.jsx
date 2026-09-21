@@ -8,7 +8,9 @@ import "./typography.css";
 import "./ui-system.css";
 import "./journal-form.css";
 import "./ui-quality-polish.css";
+import "./register-head.css";
 import {installAuditLog} from './audit-log.js';
+import {installRegisterHead} from './register-head.js';
 import {bootstrapDemoData} from './demo-data.js';
 import {TerminologyProvider} from './terminology.jsx';
 import WayvidaDatePicker from './WayvidaDatePicker.jsx';
@@ -25,6 +27,7 @@ class StartError extends React.Component{
 
 try{
   installAuditLog();
+  installRegisterHead();
   bootstrapDemoData();
   createRoot(root).render(
     <React.StrictMode>

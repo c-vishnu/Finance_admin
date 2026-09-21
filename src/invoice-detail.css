@@ -1,1 +1,150 @@
-.invoiceWorkspace{max-width:1400px}.ivMoreActions{position:relative}.ivMoreActions>div{position:absolute;z-index:20;top:46px;right:0;width:190px;padding:6px;background:#fff;border:1px solid #e0e6ef;border-radius:9px;box-shadow:0 14px 34px #10182820}.invoiceWorkspace .ivMoreActions>div button{width:100%;border:0;justify-content:flex-start;padding:9px}.invoiceWorkspace .ivMoreActions>div button:hover{background:#f5f8ff}.ivOverviewPage{background:#f7f9fc;padding:18px}.ivOverviewInformation,.ivOverviewCard{background:#fff;border:1px solid #e3e9f2;border-radius:9px}.ivOverviewInformation{padding:22px 24px;margin-bottom:16px}.ivOverviewInformation .ivFields{grid-template-columns:repeat(2,minmax(0,1fr));gap:0 34px}.ivOverviewInformation .ivFields>div{min-height:72px;padding:7px 0 17px;border-bottom:1px solid #edf0f5}.ivOverviewInformation .ivFields small{margin:0 0 7px}.ivOverviewInformation .ivFields p{margin:0;color:#243149;font-weight:550;line-height:1.45}.ivOverviewCards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.ivOverviewCard{padding:20px 22px;min-width:0}.ivOverviewCard .ivSectionTitle{margin-bottom:12px;padding-bottom:13px}.ivOverviewCard .ivTotals{max-width:none;margin:0}.ivOverviewCard .ivTotals>div{padding:7px 0}.ivImpactRow,.ivRelatedRow{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:9px 0;margin:0;border-bottom:1px solid #edf0f5;color:#344054!important}.ivImpactRow span{font-weight:550}.ivImpactRow small{margin:2px 0 0}.ivImpactRow b{white-space:nowrap}.ivCompactFacts{margin:0}.ivCompactFacts>div{display:flex;justify-content:space-between;gap:18px;padding:9px 0;border-bottom:1px solid #edf0f5}.ivCompactFacts dd{margin:0;font-weight:650;text-align:right}.ivCompactFacts dt{color:#667085}.ivCardActions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}.ivRelatedRow b{max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ivActivity{padding:24px 28px}.ivActivity>p{padding:10px 0;margin:0;border-bottom:1px solid #edf0f5}@media(max-width:1100px){.ivOverviewCards{grid-template-columns:1fr}.ivDocumentActions{width:100%}}@media(max-width:650px){.ivOverviewPage{padding:10px}.ivOverviewInformation,.ivOverviewCard{padding:16px}.ivOverviewInformation .ivFields{grid-template-columns:1fr}.ivTabs{grid-template-columns:repeat(5,minmax(0,1fr))!important}.ivDocumentActions{display:flex}.ivDocumentActions>button,.ivDocumentActions>.ivMoreActions{flex:1}.ivMoreActions>button{width:100%;justify-content:center}.ivMoreActions>div{right:auto;left:0}}
+.invoiceWorkspace{max-width:1400px}.ivMoreActions{position:relative}.ivMoreActions>div{position:absolute;z-index:20;top:46px;right:0;width:190px;padding:6px;background:#fff;border:1px solid #e0e6ef;border-radius:9px;box-shadow:0 14px 34px #10182820}.invoiceWorkspace .ivMoreActions>div button{width:100%;border:0;justify-content:flex-start;padding:9px}.invoiceWorkspace .ivMoreActions>div button:hover{background:#f5f8ff}.ivOverviewPage{background:#f7f9fc}.ivOverviewCard{background:#fff;border:1px solid #e3e9f2;border-radius:9px}.ivOverviewCards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.ivOverviewCard{padding:14px 16px;min-width:0}.ivDetailSheet .ivSectionTitle{padding-bottom:11px;margin-bottom:14px}.ivOverviewCard .ivTotals{max-width:none;margin:0}.ivOverviewCard .ivTotals>div{padding:7px 0}.ivImpactRow,.ivRelatedRow{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:7px 0;margin:0;border-bottom:1px solid #edf0f5;color:#344054!important}.ivImpactRow span{font-weight:550}.ivImpactRow small{margin:2px 0 0}.ivImpactRow b{white-space:nowrap}.ivCompactFacts{margin:0}.ivCompactFacts>div{display:flex;justify-content:space-between;gap:18px;padding:7px 0;border-bottom:1px solid #edf0f5}.ivCompactFacts dd{margin:0;font-weight:650;text-align:right}.ivCompactFacts dt{color:#667085}.ivCardActions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}.ivRelatedRow b{max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ivActivity{padding:24px 28px}.ivActivity>p{padding:10px 0;margin:0;border-bottom:1px solid #edf0f5}@media(max-width:1100px){.ivOverviewCards{grid-template-columns:1fr}.ivDocumentActions{width:100%}}@media(max-width:650px){.ivOverviewPanel{padding:12px}.ivOverviewCard{padding:16px}.ivTabs{grid-template-columns:repeat(5,minmax(0,1fr))!important}.ivDocumentActions{display:flex}.ivDocumentActions>button,.ivDocumentActions>.ivMoreActions{flex:1}.ivMoreActions>button{width:100%;justify-content:center}.ivMoreActions>div{right:auto;left:0}}
+
+/* ---------------------------------------------------------------------------
+   Invoice details: the full-bleed head, the single detail sheet and the
+   Overview panels.
+
+   The page previously opened with a breadcrumb strip, a blue SALES INVOICE
+   eyebrow, a four-tile summary row and a five-tab strip spread over four
+   separate blocks. It now opens with the same arrow-led head the other detail
+   and create pages use, and everything that identifies the document - number,
+   status, customer, actions, the four figures and the tab row - lives in ONE
+   card with the tab body inside it. Items and Payments stopped being tabs: they
+   are sections of Overview, which leaves Overview / Accounting / Activity.
+
+   The detail page scrolls in the document, exactly as the create pages do, so
+   the head bar can run edge to edge under the working-context bar. `#root` and
+   the body stay `overflow:visible` - any other overflow would make that element
+   the scrollport and the sticky-free page would still scroll, but the bar would
+   be measured against a box as tall as its own content.
+   --------------------------------------------------------------------------- */
+html:has(.ivDetailOpen),body:has(.ivDetailOpen){height:auto;min-height:100%;overflow-y:auto}
+body:has(.ivDetailOpen) #root{height:auto;min-height:100%;overflow:visible}
+body:has(.ivDetailOpen) .app{height:auto;min-height:100vh;overflow:visible}
+body:has(.ivDetailOpen) .app>main{height:auto;max-height:none;overflow:visible;scrollbar-gutter:auto;max-width:none!important;padding:0!important}
+.invoiceWorkspace.ivDetailOpen{max-width:none}
+.invoiceWorkspace.ivDetailOpen .ivDetailHead{display:grid;grid-template-columns:40px minmax(0,1fr);align-items:center;gap:14px;width:100%;min-height:56px;padding:8px 24px;border-top:1px solid #dfe6ef;border-bottom:1px solid #dfe6ef;background:#fff}
+.invoiceWorkspace.ivDetailOpen .ivDetailHead h2{margin:0;color:#172033;font-size:16px;font-weight:650;line-height:1.25}
+.ivDetailHeadText{display:flex;flex-direction:column;gap:3px;min-width:0}
+.invoiceWorkspace.ivDetailOpen .ivDetailHeadText small{margin:0;color:#667085;font-size:12px;font-weight:400}
+.ivDetailBack{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;padding:0;border:1px solid #d7e0eb;border-radius:8px;background:#fff;color:#475467;cursor:pointer;transition:background-color .15s ease,border-color .15s ease,color .15s ease}
+.ivDetailBack:hover{background:#eef4ff;border-color:#bcd0f5;color:#2463d4}
+.ivDetailBack:focus-visible{outline:2px solid #245fd9;outline-offset:2px}
+.ivDetailBody{margin:14px clamp(16px,2.2vw,24px) 28px}
+/* `overflow:visible` is required: the More actions menu opens inside this card. */
+.ivDetailSheet{background:#fff;border:1px solid #e3e9f2;border-radius:10px;box-shadow:0 3px 10px #25334d04;overflow:visible}
+.ivDetailIdentityRow{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;flex-wrap:wrap;padding:14px 18px 12px;border-bottom:1px solid #eef1f6}
+.ivDetailIdentity{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ivDetailNumber{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ivDetailNumber h3{margin:0;color:#172033;font-size:18px;font-weight:650}
+.ivDetailIdentity>p{margin:0;color:#667085;font-size:13px}
+.ivDetailStats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid #eef1f6}
+.ivDetailStats>span{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:11px 18px;border-left:1px solid #eef1f6}
+.ivDetailStats>span:first-child{border-left:0}
+.ivDetailStats small{color:#667085;font-size:12px}
+.ivDetailStats strong{color:#172033;font-size:15px;font-weight:650}
+/* The tab row IS the Item Details row: the markup carries `itemDetailTabs` so the two screens share
+   one control, and this block restates that row's own values under the page class. It is not a
+   second style - it is the guard the host sheet forces, because src/invoice-workspace.css styles
+   every bare `button` at class-plus-element specificity (9px 13px padding, 6px radius, min-height
+   36px) and would otherwise restyle the tabs whenever the two sheets load in the other order.
+   Keep these values identical to `.itemDetailTabs` in src/items.css; the only deliberate difference
+   is `overflow:auto` where Item Details uses `hidden`, so four tabs are never clipped on a card that
+   is narrower than the row. */
+.ivDetailSheet .itemDetailTabs{display:flex;align-items:center;flex:0 0 auto;gap:0;height:46px;padding:0 4px;border-top:1px solid #e6ebf2;background:transparent;overflow:auto}
+.ivDetailSheet .itemDetailTabs button{display:flex;flex:0 0 auto;width:auto;min-width:0;min-height:0;align-items:center;justify-content:center;gap:6px;height:100%;padding:0 12px;border:0;border-bottom:2px solid transparent;border-radius:0;background:transparent;color:#5c6b80;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer;transition:background-color .15s ease,color .15s ease,border-color .15s ease}
+.ivDetailSheet .itemDetailTabs button:hover{background:#f5f8fd;color:#245fd9}
+.ivDetailSheet .itemDetailTabs button.active{color:#245fd9;border-bottom-color:#3478f6}
+.ivDetailSheet .itemDetailTabs button:focus-visible{outline:2px solid #3478f6;outline-offset:-2px}
+.ivDetailSheet .itemDetailTabs button span{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#e7ecf4;color:#5c6b80;font-size:12px;font-weight:600}
+.ivDetailSheet .itemDetailTabs button.active span{background:#eaf1ff;color:#245fd9}
+@media(max-width:520px){.ivDetailSheet .itemDetailTabs{padding:0}.ivDetailSheet .itemDetailTabs button{flex:1 1 0;padding:0 8px;gap:5px;font-size:12px}}
+.ivDetailTabBody-accounting,.ivDetailTabBody-activity{padding:18px}
+
+.ivOverviewPanel{padding:14px 16px}
+.ivFactList{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 18px;margin:0}
+.ivFactList dt{color:#667085;font-size:12px;font-weight:500}
+.ivFactList dd{margin:4px 0 0;color:#172033;font-size:13px;font-weight:600;line-height:1.45;overflow-wrap:anywhere}
+.ivPaymentRows{display:flex;flex-direction:column;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid #edf0f5}
+.ivPaymentRows p{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0;color:#344159;font-size:13px}
+.ivMutedNote{margin:0;color:#667085;font-size:13px}
+@media(max-width:1100px){.ivDetailStats{grid-template-columns:repeat(2,minmax(0,1fr))}.ivDetailStats>span:nth-child(3){border-left:0}.ivFactList{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){
+ .invoiceWorkspace.ivDetailOpen .ivDetailHead{grid-template-columns:36px minmax(0,1fr);gap:10px;padding:8px 12px}
+ .ivDetailBack{width:36px;height:36px}
+ .ivDetailBody{margin:12px 12px 24px}
+ .ivDetailIdentityRow{padding:14px}
+ .ivDetailStats{grid-template-columns:minmax(0,1fr)}
+ .ivDetailStats>span{border-left:0;border-top:1px solid #eef1f6}
+ .ivDetailStats>span:first-child{border-top:0}
+ 
+ .ivFactList{grid-template-columns:minmax(0,1fr)}
+ .ivOverviewPage{padding:12px}
+}
+
+/* The Overview is the invoice itself, read top to bottom: the customer, the money, the items, the
+   payments, and one collapsed More details for everything that is reference data rather than the
+   document. The former Organisation & branch panel, the eight-fact Invoice information panel and
+   the Accounting summary and Related documents cards are gone - the first two are reference data
+   inside More details now, and the accounting lives on its own tab. */
+.ivCustomerBlock{display:flex;flex-direction:column;gap:4px}
+.ivCustomerBlock b{color:#172033;font-size:14px;font-weight:650}
+.ivCustomerBlock p{margin:0;color:#475467;font-size:13px;line-height:1.45}
+.ivCount{display:inline-grid;place-items:center;min-width:22px;height:22px;margin-left:8px;padding:0 7px;border-radius:999px;background:#eef2f7;color:#4a5b73;font-size:12px;font-weight:600}
+.ivSectionTitle:has(.ivCount){display:flex;align-items:center}
+/* The money block: the four build-up lines, a rule, then Total / Paid / Balance. */
+.ivAmountLines{margin:0}
+.ivAmountLines>div{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:6px 0}
+.ivAmountLines dt{color:#475467}
+.ivAmountLines dd{margin:0;color:#172033;font-weight:600;font-variant-numeric:tabular-nums}
+.ivAmountClose{margin-top:8px;padding-top:10px;border-top:1px solid #e7ebf2}
+.ivAmountTotal dd{font-size:16px;font-weight:700}
+.ivAmountBalance dt,.ivAmountBalance dd{color:#19734c}
+/* Payments: one row per receipt or payment, date and method left, amount right. */
+.ivPaymentRows p b{color:#172033;font-variant-numeric:tabular-nums}
+.ivPaymentRows .ivPaymentWhen{flex:0 0 108px;color:#475467}
+.ivPaymentRows .ivPaymentHow{flex:1;min-width:0;color:#344054}
+/* More details folds the reference data away so the document itself stays short. */
+.ivOverviewMore{padding:0}
+.ivOverviewMore>summary{display:flex;align-items:center;gap:10px;padding:14px 16px;color:#172033;font-size:14px;font-weight:650;cursor:pointer;list-style:none}
+.ivOverviewMore>summary::-webkit-details-marker{display:none}
+.ivOverviewMore>summary::after{content:"";flex:none;width:8px;height:8px;margin-left:auto;border-right:2px solid #667085;border-bottom:2px solid #667085;transform:rotate(45deg) translateY(-2px);transition:transform .16s ease}
+.ivOverviewMore[open]>summary{border-bottom:1px solid #eef1f6}
+.ivOverviewMore[open]>summary::after{transform:rotate(-135deg) translateY(-2px)}
+.ivOverviewMore>summary:focus-visible{outline:2px solid #245fd9;outline-offset:-2px}
+.ivOverviewMore>.ivFactList{padding:14px 16px}
+@media(max-width:650px){.ivPaymentRows>p>span:first-child{min-width:0}}
+
+/* The totals close the item list on the right, the way the document itself reads: a 420px block
+   aligned to the right margin under the table, split by a rule before Total. */
+.ivInvoiceSummary{width:min(420px,100%);margin:14px 0 0 auto;border-top:1px solid #eef1f6}
+.ivInvoiceSummary .ivSectionTitle{padding-bottom:8px;margin-bottom:8px}
+/* The two addresses run the full width of the fact list, because a real address wraps. */
+.ivFactList .ivFactWide{grid-column:1/-1}
+@media(max-width:650px){.ivInvoiceSummary{width:100%}}
+
+/* ---------------------------------------------------------------------------
+   The Invoice details page follows the Item Details page: the same tab row, the
+   same card border and radius, the same tinted section-title strip and the same
+   dt/dd fact grid. The two Overview sections sit side by side at half width
+   each, and the item list follows at full width with the totals closing it on
+   the right.
+   --------------------------------------------------------------------------- */
+.ivOverviewPage{display:flex;flex-direction:column;gap:14px;background:#f7f9fc;border-radius:0 0 10px 10px}
+.ivOverviewGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+/* Half-width cards cannot carry three fact columns, so the grid pairs up. */
+.ivOverviewPage .itemDetailFacts{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 20px}
+.ivOverviewPage .itemDetailFacts>div.ivFactWide{grid-column:1/-1}
+.ivInvoiceSummary .ivSectionTitle{padding-bottom:8px;margin-bottom:8px;border-bottom:0}
+@media(max-width:900px){
+ .ivOverviewGrid{grid-template-columns:minmax(0,1fr)}
+ .ivOverviewPage .itemDetailFacts{grid-template-columns:minmax(0,1fr)}
+ .ivOverviewPage{padding:10px}
+}
+/* The section titles are the Item Details size, which the host sheet's `.invoiceWorkspace h2`
+   (23px) outranks at equal class-plus-element specificity - the same trap the create head hit. The
+   extra class settles it, and the two cards are stretched to one height so the pair reads level. */
+.ivDetailSheet .itemDetailSectionTitle h2{margin:0;font-size:13.5px;font-weight:650;color:#172033}
+.ivOverviewPage{padding:16px}
+.ivOverviewGrid{align-items:stretch}
+.ivInvoiceSummary{padding:10px 16px 2px}

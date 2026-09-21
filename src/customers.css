@@ -1,4 +1,4 @@
-.customerContact{display:flex;flex-direction:column;gap:5px}.customerContact small{font-size:12px}.customerStatus{border-radius:12px;background:#f2f4f7;color:#475467;padding:4px 9px;font-size:12px}.customerStatus.active{background:#e9f8ef;color:#187747}.customersPage .itemFormGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.customersPage textarea{font:inherit;width:100%;min-height:86px;padding:10px;border:1px solid #d0d5dd;border-radius:6px;resize:vertical}.customersPage textarea:focus{outline:2px solid #b2ccff}.customersPage .copyAddress{margin-top:12px;border:0;background:#edf4ff;color:#175cd3;border-radius:6px;padding:8px 12px;font-size:12px}.customersPage .itemFormGrid label{align-self:start}@media(max-width:600px){.customersPage .itemFormGrid{grid-template-columns:minmax(0,1fr)}}
+.customerContact{display:flex;flex-direction:column;gap:5px}.customerContact small{font-size:12px}.customersPage .itemFormGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.customersPage textarea{font:inherit;width:100%;min-height:86px;padding:10px;border:1px solid #d0d5dd;border-radius:6px;resize:vertical}.customersPage textarea:focus{outline:2px solid #b2ccff}.customersPage .copyAddress{margin-top:12px;border:0;background:#edf4ff;color:#175cd3;border-radius:6px;padding:8px 12px;font-size:12px}.customersPage .itemFormGrid label{align-self:start}@media(max-width:600px){.customersPage .itemFormGrid{grid-template-columns:minmax(0,1fr)}}
 
 /* Customer register row actions: one View Customer button beside the canonical three-dot menu. The geometry is the
    Period Closing / Journal Entries / Chart of Accounts kebab - a 32px square trigger on #d9e1ec with a 7px radius
@@ -82,3 +82,145 @@
 @media(max-width:800px){.customerDetailFacts{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.customerDetailPage .customerDetailHead{grid-template-columns:36px minmax(0,1fr);gap:10px;padding:8px 12px}.customerDetailPage .customerDetailHead .customerBack{width:36px;height:36px}.customerDetailPage .customerDetailBody{margin:12px 12px 0;gap:12px}.customerDetailPage .customerDetailIdentity{grid-template-columns:44px minmax(0,1fr);padding:12px}.customerDetailPage .customerDetailIdentity>span{width:44px;height:44px}.customerDetailActions{grid-column:1/-1;justify-content:flex-start}.customerDetailSectionTitle{flex-wrap:wrap}.customerDetailFacts{padding:14px}.customerDetailTabs{padding:0}}
 @media(max-width:520px){.customerDetailTabs button{flex:1 1 0;padding:0 8px;gap:5px;font-size:12px}.customerDetailFacts{grid-template-columns:minmax(0,1fr)}.customerRowActions{justify-content:flex-start}.customerStatementLink{margin-left:0}}
+/* ---------------------------------------------------------------------------
+   Create / Edit Customer: the simplified, conditional form.
+
+   Every rule below is scoped to .customersPage and reuses the shared create-page
+   tokens already in src/items.css - a 40px control on #d7e0eb with a 7px radius,
+   12px/600 labels, 13px values, #26354b text - so the page still reads as the same
+   Wayvida create screen the Items and Vendors forms use. Nothing here restyles a
+   shared class; the new class names are the form structure only.
+   --------------------------------------------------------------------------- */
+
+/* The address line spans both columns of the two-column create grid. */
+.customersPage .itemCreatePage .itemFieldWide{grid-column:1/-1}
+.customersPage .itemHint{color:#667085;font-size:12px;font-weight:400}
+
+/* GSTIN / UIN with the Get Taxpayer Details action beside it. */
+.customersPage .itemFieldAction{display:flex;flex-direction:column;gap:7px;min-width:0;color:#344054;font-size:12px;font-weight:600}
+.customersPage .itemFieldAction .itemInputAction{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:stretch}
+.customersPage .itemFieldAction .itemInputAction button{white-space:nowrap}
+
+/* The lookup result: green once the GSTIN decodes, red when it cannot be accepted. */
+.customersPage .customerTaxNotice{gap:8px;align-items:flex-start;margin:12px 0 0;padding:10px 12px;border:1px solid #dfe6ef;border-radius:8px;background:#f8fafc;color:#667085;line-height:1.5}
+.customersPage .customerTaxNotice.ok{border-color:#bfe3cd;background:#f1faf5;color:#19734c}
+.customersPage .customerTaxNotice.error{border-color:#f2c9c5;background:#fff5f6;color:#b42318}
+.customersPage .customerTaxNotice svg{flex:none;margin-top:1px}
+.customersPage .itemAdvancedGroup .itemNotice{margin:12px 0 0;color:#667085;line-height:1.5}
+
+/* Shipping address same as billing. */
+.customersPage .customerSameAddress{gap:11px;margin:14px 0 0;padding:11px 12px;border:1px solid #e3e9f1;border-radius:8px;background:#fbfcfe}
+
+/* Contact persons, custom fields and documents repeaters. */
+.customersPage .customerContacts{display:flex;flex-direction:column;gap:12px;list-style:none;margin:0 0 12px;padding:0}
+.customersPage .customerContacts>li{padding:12px;border:1px solid #e6ebf2;border-radius:9px;background:#fff}
+.customersPage .customerContactRow{grid-template-columns:repeat(3,minmax(0,1fr));align-items:start}
+.customersPage .customerContactTools{display:flex;align-items:center;gap:10px}
+.customersPage .customerContactRow .customerContactTools{grid-column:1/-1;justify-content:space-between}
+.customersPage .customerContactRemove{display:inline-grid;place-items:center;width:36px;height:36px;padding:0;border:1px solid #f0c7c3;border-radius:8px;background:#fff;color:#b42318;cursor:pointer;transition:background-color .15s ease}
+.customersPage .customerContactRemove:hover{background:#fff5f6}
+.customersPage .customerContactsEmpty{margin:0 0 12px;color:#667085;font-size:12px}
+.customersPage .customerAddContact{display:inline-flex;align-items:center;gap:7px}
+
+/* Uploaded documents listed under the shared itemImageUpload control. */
+.customersPage .customerDocuments{display:flex;flex-direction:column;gap:8px;list-style:none;margin:8px 0 0;padding:0}
+.customersPage .customerDocuments li{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:12px;padding:9px 12px;border:1px solid #e3e9f1;border-radius:8px;background:#fff}
+.customersPage .customerDocuments span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#26354b;font-size:13px}
+.customersPage .customerDocuments small{color:#667085;font-size:12px}
+.customersPage .customerDocuments button{border:0;background:none;color:#b42318;font-size:12px;font-weight:600;cursor:pointer}
+
+/* Place of supply: a searchable combobox on the create-page field tokens. The control
+   root is a div, never a label, so its option rows cannot re-fire the trigger. */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media(max-width:900px){
+ .customersPage .customerContactRow{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:600px){
+ .customersPage .customerContactRow{grid-template-columns:minmax(0,1fr)}
+ .customersPage .customerDocuments li{grid-template-columns:minmax(0,1fr) auto}
+}
+
+/* ---------------------------------------------------------------------------
+   Create / Edit Customer density pass.
+
+   Three fields per row on a wide screen, a clear gap between the Customer type
+   choice and the name row, and payment terms inside More details. The rules carry
+   three classes so they outrank the shared `.itemCreatePage .itemFormGrid` two-class
+   declaration in src/items.css without touching it.
+   --------------------------------------------------------------------------- */
+.customersPage .itemCreatePage .itemTypeField{margin:0 0 16px}
+.customersPage .itemCreatePage .itemFormGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 16px}
+.customersPage .itemCreatePage .customerContactRow{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:1100px){
+ .customersPage .itemCreatePage .itemFormGrid,.customersPage .itemCreatePage .customerContactRow{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:700px){
+ .customersPage .itemCreatePage .itemFormGrid,.customersPage .itemCreatePage .customerContactRow{grid-template-columns:minmax(0,1fr)}
+}
+
+/* GST lookup status and the treatment notes added with the dynamic GST fields. */
+.customersPage .customerGstFetched{display:inline-flex;align-items:center;gap:6px;color:#19734c;font-size:12px;font-weight:600}
+.customersPage .customerTreatmentNote{margin:10px 0 0;color:#667085;line-height:1.5}
+.customersPage .itemFieldAction .itemInputAction button:disabled{opacity:.6;cursor:wait}
+
+/* The contact person's primary marker is a toggle button, not a checkbox: the page styles
+   the checkbox as a 17px accent square elsewhere, which read as a stray form field inside a
+   contact card. This reuses the create-page control tokens (36px tall, #d9e1ec hairline,
+   7px radius, 12px/600 label) and states its state through aria-pressed plus the active fill. */
+.customersPage .customerPrimaryToggle{display:inline-flex;align-items:center;gap:7px;min-height:36px;padding:0 12px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#344054;font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;transition:background-color .15s ease,border-color .15s ease,color .15s ease,box-shadow .15s ease}
+.customersPage .customerPrimaryToggle:hover{background:#eef4ff;border-color:#bcd0f5;color:#2463d4}
+.customersPage .customerPrimaryToggle:focus-visible{outline:2px solid #245fd9;outline-offset:2px}
+.customersPage .customerPrimaryToggle.active{border-color:#7aa7f8;background:#eef4ff;color:#245fd9;box-shadow:0 0 0 2px rgba(52,120,246,.08)}
+.customersPage .customerPrimaryToggle.active:hover{background:#e4edff;border-color:#7aa7f8}
+
+/* ---------------------------------------------------------------------------
+   Customer register filters.
+
+   The status select stays visible in the toolbar and everything else lives in one
+   Filters disclosure built on the Period Closing register geometry (a 38px
+   control row on a #d9e1ec hairline with a 7px radius, and a #e1e6ed panel with a
+   10px radius and the shared shadow). The toolbar labels keep the shared
+   .itemsTools label box, so the panel's fields reset it; the card keeps
+   overflow:visible (src/items.css .itemsPage .itemsCard), so the panel is never
+   clipped.
+   --------------------------------------------------------------------------- */
+.customersPage .itemsTools .customerFilters{position:relative;flex:none}
+.customersPage .itemsTools .customerFilters>summary{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 14px;border:1px solid #d0d5dd;border-radius:6px;background:#fff;color:#344054;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer;list-style:none}
+.customersPage .itemsTools .customerFilters>summary::-webkit-details-marker{display:none}
+.customersPage .itemsTools .customerFilters[open]>summary,.customersPage .itemsTools .customerFilters>summary:focus-visible{border-color:#9fbdf0;box-shadow:0 0 0 3px #eaf1ff;outline:none}
+.customersPage .customerFilterBadge{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:11px;background:#fff2db;color:#99600e;font-size:12px;font-weight:700;font-style:normal}
+.customersPage .customerFilterPanel{position:absolute;right:0;top:calc(100% + 6px);z-index:60;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;width:min(460px,90vw);max-height:min(70vh,520px);overflow-y:auto;padding:14px;border:1px solid #e1e6ed;border-radius:10px;background:#fff;box-shadow:0 14px 30px #0f172a1f}
+.customersPage .itemsTools .customerFilterField{display:flex;flex-direction:column;align-items:stretch;gap:5px;width:auto;max-width:none;min-width:0;padding:0;border:0;color:#344054}
+.customersPage .customerFilterField>span{color:#667085;font-size:12px;font-weight:600}
+.customersPage .customerFilterField select{width:100%;height:38px;min-width:0;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#172033}
+.customersPage .customerFilterActions{grid-column:1/-1;display:flex;justify-content:flex-end}
+.customersPage .customerFilterActions button{min-height:34px;padding:0 12px;border:1px solid #d0d5dd;border-radius:6px;background:#fff;color:#33415c;font-size:12px;font-weight:600;cursor:pointer}
+.customersPage .customerFilterActions button:hover{background:#eef4ff;border-color:#bcd0f5;color:#2463d4}
+/* Narrow screens stack the toolbar and let the panel take the flow. An absolutely positioned panel anchored to the
+   right edge of a Filters trigger that itself sits near the left edge of a small viewport runs off the left of the
+   screen, so below 760px the disclosure owns a full-width row and the panel becomes a static block. */
+@media(max-width:760px){
+ .customersPage .itemsTools{flex-wrap:wrap}
+ .customersPage .itemsTools .customerFilters{flex:1 1 100%}
+ .customersPage .itemsTools .customerFilters>summary{width:100%;justify-content:space-between}
+ .customersPage .customerFilterPanel{position:static;grid-template-columns:minmax(0,1fr);width:100%;max-width:none;max-height:none;margin-top:10px}
+}

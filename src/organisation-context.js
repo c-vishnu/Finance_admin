@@ -1,6 +1,6 @@
 /* Working organisation context - the storage-backed list of organisations and
    branches the header selector has made available. Create Journal Entry and
-   Period Closing both read their available scope from here, so the shared
+   Period Lock both read their available scope from here, so the shared
    organisation/branch rule in src/organisation-scope.js is applied to one list
    and can never drift between screens.
 
