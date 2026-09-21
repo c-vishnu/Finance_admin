@@ -1,5 +1,13 @@
 # Testing and QA
 
+## Chart of Accounts: the page-closing note is removed - 2026-09-21
+
+- User request: remove the text "Income and expenses are not cash flow. Balances exclude the old sample amounts and unposted documents." from the Chart of Accounts table, grid and list page.
+- The paragraph was the last child of `div.am-list` in `src/AccountWorkspace.jsx`, sitting after the account table and the empty state: `p.am-note` with the 17px `IconInfoCircle` and that sentence. It is deleted rather than hidden, and the closing `div` of `am-list` is untouched, so the page now ends with the grid itself.
+- Nothing else moved. `IconInfoCircle` stays imported because the file uses it elsewhere, and the shared `.am-note` rules stay because six other surfaces still render them - only this one paragraph is gone. The table, its columns, the filters, the counts, the sticky heading and the detail drawer are unchanged.
+- Verified live at 1440x800: the rendered page contains neither `not cash flow` nor `old sample amounts`, `.am-coa-page .am-note` matches zero elements, and the grid still renders its 22 rows.
+- Validation actually executed: the full sweep is 727 tests / 716 passing / the same 11 pre-existing failures; `node node_modules/vite/bin/vite.js build` passes; `node scripts/validate-knowledge-docs.mjs` passes.
+
 ## Chart of Accounts: the expenses type mark is the shopping bag - 2026-09-21
 
 - User request: change the Expenses icon in the Chart of Accounts table, grid and list.
