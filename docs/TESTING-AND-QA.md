@@ -1,5 +1,13 @@
 # Testing and QA
 
+## Knowledge package catch-up for the last three grid-page passes - 2026-09-21
+
+- User question: were the knowledge documents and the cross-AI handover updated for the last three passes (the expenses type mark, the removed page-closing note and the Account Group results-panel width)?
+- Audited by file rather than assumed. All three passes had updated `docs/TESTING-AND-QA.md`, `docs/project-manifest.json` and `docs/TRANSFER-TO-ANOTHER-AI.md`, and two had updated `docs/UI-DESIGN-SYSTEM.md`. The modular document (`docs/MODULES.md`), the handbook (`docs/WAYVIDA-BOOKS-HANDBOOK.md`) and the bootstrap prompt (`docs/AI-HANDOFF-PROMPT.md`) had not been touched by any of them.
+- The gap was material, because the earlier Chart of Accounts flattening had never propagated to those three files either: they still described the deleted account-type accordion as current behaviour - `openGroups` / `openList` / `toggleGroup`, the three-section cap, the 48px accordion row with its chevron chip and count pill, and the `.am-group-row th` sticky offset - so an assistant resuming from the modular doc or the handoff prompt would have rebuilt a control that no longer exists.
+- Fixed in this pass: `docs/MODULES.md` now states the flat table, `flatRows`, the six columns, the deleted accordion symbols, the type marks with their reserved-hue rule, the shopping-bag glyph, the removed closing note and the picker panel width, and its accordion restyle paragraph is marked superseded and points at the budget grids; `docs/WAYVIDA-BOOKS-HANDBOOK.md` carries the flat table, the type marks and the fact that only the budget grids keep a section row; `docs/AI-HANDOFF-PROMPT.md` carries the same corrections plus the popover width rule. `docs/TRANSFER-TO-ANOTHER-AI.md` and `docs/UI-DESIGN-SYSTEM.md` had their remaining `.am-group-row` sticky-offset clauses corrected and the superseded 2026-09-15 sticky paragraph marked as such.
+- Validation actually executed: a scan of every knowledge document finds no accordion, `.am-group-row` or `.am-group-toggle` reference that is not explicitly marked deleted, superseded, or surviving only in the budget grids; `node scripts/validate-knowledge-docs.mjs` passes across the 15 required files, the manifest and the local links.
+
 ## Create Account: the Account Group results panel matches its field - 2026-09-21
 
 - User report: in the Create Account right-hand popup, opening the Account Group dropdown made the results panel override the control width, and it felt wrong; the panel should be the same width as the dropdown input.
