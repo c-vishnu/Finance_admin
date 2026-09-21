@@ -215,12 +215,13 @@
 .am-coa-page>.am-filter-toolbar .am-coa-title h1{color:#172033;font-size:24px;font-weight:700;line-height:1.25;letter-spacing:-.4px}
 .am-coa-page .am-table-wrap:has(.am-account-grid){margin-top:0;border-top:0;border-radius:0 0 10px 10px}
 /* One mark and one tone per accounting type, so the Account Type column reads at a glance instead of as
-   five identical words. Green, amber, red and grey are RESERVED FOR STATUS - a type tone must never sit
-   in a status hue family, or a type pill and a status pill read as the same thing; that is why assets are
-   indigo and income is cyan rather than the teal and green this scale started with.
-   five identical words. The tints are the soft pastels the rest of the app uses for status fills, the
-   label keeps the 12px floor, and the mark is a 20px circle carrying the type glyph - the reference's
-   icon-plus-colour idea, at table scale rather than as a legend bar. */
+   five identical words: a 20px circle carrying the type glyph beside the label, which is the reference idea
+   of an icon plus a colour, at table scale rather than as a legend bar. The tints are the soft pastels the
+   rest of the app already uses and the label keeps the 12px floor. Green, red and grey are the hues this
+   grid spends on status - the Active pill is green and Inactive is grey - so no type tone may sit in one of
+   those families; that is why assets are indigo and income is cyan rather than the teal and green the scale
+   started with, after the assets mark was reported as reading the same as the status green. Expenses keeps
+   its amber, because this grid renders no amber status chip for it to collide with. */
 .am-coa-page .am-coa-grid .am-type-badge{display:inline-flex;align-items:center;gap:7px;padding:2px 10px 2px 2px;border-radius:999px;background:#f1f4f8;color:#475467;font-size:12px;font-weight:600;line-height:1.6;white-space:nowrap}
 .am-coa-page .am-coa-grid .am-type-mark{display:inline-grid;place-items:center;flex:0 0 auto;width:20px;height:20px;border-radius:50%;background:#98a2b3;color:#fff}
 .am-coa-page .am-coa-grid .am-type-assets{background:#eef0fd;color:#4038a8}

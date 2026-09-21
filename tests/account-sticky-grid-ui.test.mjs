@@ -149,6 +149,7 @@ test('every account type has its own mark and tone in the type column',()=>{
     assert.ok(workspace.includes(type+':{icon:Icon')&&workspace.includes("tone:'"+tone+"'"),type+' carries its own icon and tone');
   assert.match(workspace,/<span className=\{'am-type-badge am-type-'\+\(mark\.tone\|\|'neutral'\)\}>\{Mark&&<span className="am-type-mark"><Mark size=\{13\}\/><\/span>\}/,'and the cell renders the mark beside the label');
   assert.match(workspace,/const TYPE_MARKS=\{Assets:\{icon:IconHome/,'the marks are declared once, beside the page constants');
+  assert.match(workspace,/Expenses:\{icon:IconShoppingBag,tone:'expenses'\}/,"the expenses mark is the shopping bag rather than the receipt glyph the payment documents use");
   for(const token of [
     '.am-coa-page .am-coa-grid .am-type-badge{display:inline-flex;align-items:center;gap:7px;padding:2px 10px 2px 2px;border-radius:999px;background:#f1f4f8;color:#475467;font-size:12px;font-weight:600;line-height:1.6;white-space:nowrap}',
     '.am-coa-page .am-coa-grid .am-type-mark{display:inline-grid;place-items:center;flex:0 0 auto;width:20px;height:20px;border-radius:50%;background:#98a2b3;color:#fff}',

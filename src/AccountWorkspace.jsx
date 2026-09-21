@@ -1,5 +1,5 @@
 import {useEffect,useRef,useState} from 'react';
-import {IconPlus,IconSearch,IconDownload,IconUpload,IconArrowLeft,IconArrowRight,IconCheck,IconX,IconChevronDown,IconChevronRight,IconDots,IconEdit,IconCopy,IconTrash,IconBook,IconBuildingBank,IconTrendingUp,IconTrendingDown,IconWallet,IconShieldLock,IconFilter,IconAdjustments,IconCircleCheck,IconCircleX,IconFolder,IconFileInvoice,IconHistory,IconInfoCircle,IconHome,IconChartPie,IconChartHistogram,IconCoins,IconReceipt2} from '@tabler/icons-react';
+import {IconPlus,IconSearch,IconDownload,IconUpload,IconArrowLeft,IconArrowRight,IconCheck,IconX,IconChevronDown,IconChevronRight,IconDots,IconEdit,IconCopy,IconTrash,IconBook,IconBuildingBank,IconTrendingUp,IconTrendingDown,IconWallet,IconShieldLock,IconFilter,IconAdjustments,IconCircleCheck,IconCircleX,IconFolder,IconFileInvoice,IconHistory,IconInfoCircle,IconHome,IconChartPie,IconChartHistogram,IconCoins,IconShoppingBag} from '@tabler/icons-react';
 import {ACCOUNT_NATURES,ACCOUNT_SCOPES,CATEGORY,TYPES,SUGGESTIONS,normalizeAccounts,nextCode,suggestedGroup,changeAccount,accountUsed,references,parseAccountCSV,importAccounts} from './account-master.js';
 import {readAccounts,writeAccounts} from './account-store.js';
 import {initial,money,ledger} from './invoice-engine.js';
@@ -8,7 +8,7 @@ import {itemSeeds} from './Items.jsx';
 /* One mark per accounting type: an icon and a tone, so the type column reads at a glance instead of as
    five identical words. The five types are the ones the type picker and the budget grids use, and the
    tints are the soft pastels the rest of the app already uses for status. */
-const TYPE_MARKS={Assets:{icon:IconHome,tone:'assets'},Liabilities:{icon:IconChartPie,tone:'liabilities'},Equity:{icon:IconChartHistogram,tone:'equity'},Income:{icon:IconCoins,tone:'income'},Expenses:{icon:IconReceipt2,tone:'expenses'}};
+const TYPE_MARKS={Assets:{icon:IconHome,tone:'assets'},Liabilities:{icon:IconChartPie,tone:'liabilities'},Equity:{icon:IconChartHistogram,tone:'equity'},Income:{icon:IconCoins,tone:'income'},Expenses:{icon:IconShoppingBag,tone:'expenses'}};
 import './account-workspace.css';
 import './chart-of-accounts-simple.css';
 import {ACCOUNT_TEMPLATES,templateRows,nameSuggestion} from './account-templates.js';
