@@ -1,5 +1,14 @@
 # Testing and QA
 
+## Create Account: the Account Group results panel matches its field - 2026-09-21
+
+- User report: in the Create Account right-hand popup, opening the Account Group dropdown made the results panel override the control width, and it felt wrong; the panel should be the same width as the dropdown input.
+- Measured rather than guessed. At 1440x800 the drawer is 560px wide with this field in a 240px column, and the trigger and `.agp-field` both measured 240px at x=1007 while `.agp-pop` measured 360px - so the panel ran to x=1299, past the drawer's own right edge at x=1280, and was clipped by the viewport. `.agp-pop` carried `width:min(360px,92vw)`.
+- `src/account-group-picker.css` now sizes the panel to its trigger: `left:0!important;right:0!important;width:auto!important` in place of the fixed width. The `@media(max-width:1180px)` block that repeated those same values is deleted, because the base rule now states them; its only rule was the `.agp-pop` override, so no other selector was lost.
+- Nothing else changed. The option labels already truncate with an ellipsis (`b{text-overflow:ellipsis}`) rather than widening the panel, the keyboard and pointer behaviour is untouched, and the two other popovers on that surface already matched their fields: the drawer MultiSelect (`.am-drawer-multi-menu`, `width:100%`) and `SearchSelect` (`.ss-*`, no fixed width).
+- Verified live at 1440x800 after the change: the panel and the trigger both measure 240px at x=1007, so the panel right edge is 1247 inside the 1280 drawer edge, and the grouped list still renders ASSETS / LIABILITIES with the selected row checked.
+- Validation actually executed: `tests/account-group-picker-ui.test.mjs` now pins the trigger-width rule and refuses a fixed-width panel, and passes 6/6; the full sweep is 727 tests / 716 passing / the same 11 pre-existing failures; `node node_modules/vite/bin/vite.js build` passes; `node scripts/validate-knowledge-docs.mjs` passes.
+
 ## Chart of Accounts: the page-closing note is removed - 2026-09-21
 
 - User request: remove the text "Income and expenses are not cash flow. Balances exclude the old sample amounts and unposted documents." from the Chart of Accounts table, grid and list page.

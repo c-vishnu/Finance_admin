@@ -60,7 +60,9 @@ test('the picker stays keyboard and pointer accessible',()=>{
 });
 
 test('the picker stylesheet mirrors the journal picker and keeps readable text',()=>{
- for(const text of ['.agp{position:relative','.agp-field{display:flex','.agp-field:disabled','.agp-pop{position:absolute','.agp-search input{','.agp-list{max-height','.agp-option.selected','@media(max-width:1180px)']) assert.ok(css.includes(text),text);
+ for(const text of ['.agp{position:relative','.agp-field{display:flex','.agp-field:disabled','.agp-pop{position:absolute','.agp-search input{','.agp-list{max-height','.agp-option.selected']) assert.ok(css.includes(text),text);
+  assert.match(css,/\.agp-pop\{[^}]*left:0!important[^}]*right:0!important[^}]*width:auto!important/,'the results panel is sized to its trigger instead of to a fixed width');
+  assert.ok(!/\.agp-pop\{[^}]*width:min\(/.test(css),'no fixed-width results panel is left, because it overhung the Create Account drawer');
  const rules=css.replace(/\/\*[\s\S]*?\*\//g,'');
  assert.ok(!rules.includes('.am-create-drawer'),'the picker styling is self contained: no selector reaches into the account drawer');
  assert.ok(css.includes('!important'),'the drawer field input rule is overridden explicitly, the way journal-form.css does');
