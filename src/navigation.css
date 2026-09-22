@@ -1,12 +1,45 @@
 .erpNavigation{flex:1;min-height:0;height:auto;padding:8px 10px 0;overflow:hidden}
-.app>aside{display:flex;flex-direction:column;width:270px}
-.app:has(>aside .erpNavigation){padding-left:270px}
-.app>header{left:270px}
+.app>aside{display:flex;flex-direction:column;width:250px}
+.app:has(>aside .erpNavigation){padding-left:250px}
+.app>header{left:250px}
 .app>aside .erpNavigation{padding-left:14px;padding-right:14px}
 @media(max-width:700px){
   .app:has(>aside .erpNavigation){padding-left:0}
   .app>header{left:0}
   .app>aside{width:min(280px,calc(100vw - 24px))}
+}
+/* Desktop compact rail. The collapse state keeps a 72px icon navigation. */
+.app>header>button.navToggle{display:none}
+.app>header>button.navToggle svg{width:19px;height:19px}
+@media(min-width:701px){
+  .app{transition:padding-left .22s ease}
+  .app>header{transition:left .22s ease}
+  .app>aside{transition:width .22s ease}
+  .app.navCollapsed:has(>aside .erpNavigation){padding-left:72px}
+  .app.navCollapsed>header{left:72px}
+  .app.navCollapsed>aside{width:72px;transform:none;visibility:visible}
+  .app>header>button.navToggle:not(.primary):not(.hamb){position:fixed;z-index:500;top:18px;left:238px;display:grid;place-items:center;width:26px;height:26px;flex:none;padding:0;border:1px solid #b8c7da;background:#ffffffd9;border-radius:999px;color:#344b6a;box-shadow:0 2px 8px #1018282b;backdrop-filter:blur(6px);transition:left .22s ease,background .15s,border-color .15s,color .15s}
+  .app>header>button.navToggle:not(.primary):not(.hamb)>svg{display:block}
+  .app.navCollapsed>header>button.navToggle:not(.primary):not(.hamb){left:59px}
+  .app>header>button.navToggle:not(.primary):not(.hamb):hover{background:#e5efff;border-color:#8eb4ef;color:#175cd3}
+  body.navCollapsed :where(.auditPortal,.settingsPortal,.helpPortal,.pc,.transactionPortal){left:72px}
+  body.navCollapsed .itemCreatePage .itemDialogFooter{left:calc(72px + clamp(16px,2.2vw,24px))}
+  body.navCollapsed .guideBackdrop{left:72px!important}
+  .app.navCollapsed>aside>.brand{justify-content:center;padding:11px 0}
+  .app.navCollapsed>aside>.brand>span:not(.wayvidaLogo),.app.navCollapsed>aside>.brand>button{display:none}
+  .app.navCollapsed>aside .erpNavigation{padding-left:12px;padding-right:12px}
+  .app.navCollapsed .erpNavigation>ul>li{margin-bottom:6px}
+  .app.navCollapsed .erpNavigation .navGroup>ul{display:none}
+  .app.navCollapsed .erpNavigation :is(.navLeaf,.navGroupButton){justify-content:center;width:48px;min-height:42px;padding:10px}
+  .app.navCollapsed .erpNavigation :is(.navLeaf,.navGroupButton)>span,.app.navCollapsed .erpNavigation .navGroupButton>svg:last-child{display:none}
+  .app.navCollapsed .erpNavigation :is(.navLeaf,.navGroupButton)>svg:first-child{width:19px;height:19px}
+  .app.navCollapsed .erpNavigation .navStandalone{margin:0}
+  .app.navCollapsed .workingContext{padding:3px;margin-bottom:10px;border-radius:11px}
+  .app.navCollapsed .workingContext .wcTrigger{justify-content:center;min-height:42px;padding:5px}
+  .app.navCollapsed .workingContext .wcTriggerText,.app.navCollapsed .workingContext .wcTrigger>svg{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .app,.app>header,.app>aside{transition:none}
 }
 .erpNavigation ul{list-style:none;margin:0;padding:0}
 .erpNavigation ul[hidden]{display:none}
@@ -36,22 +69,49 @@
 .app>aside .erpNavigation{display:flex;flex-direction:column;overflow:hidden;padding-bottom:0}
 .erpNavigation>ul{flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;padding-bottom:4px;overscroll-behavior:contain;scrollbar-width:none;-ms-overflow-style:none}
 .erpNavigation>ul::-webkit-scrollbar{display:none;width:0;height:0}
-.navThemeFooter{flex:none;padding:7px 0 10px;border-top:1px solid #e4e9f0;background:inherit}
+.navSidebarFooter{flex:none;display:flex;flex-direction:column;gap:10px;padding-top:10px;border-top:1px solid #e4e9f0;background:inherit}
+.navUtilityRow{display:flex;justify-content:flex-end;min-height:34px}
+.navThemeToggle{display:grid!important;place-items:center;width:34px!important;height:34px!important;min-height:34px!important;padding:0!important;border:1px solid #ffffff38!important;border-radius:9px!important;background:#ffffff14!important;color:#dbe7f7!important;box-shadow:inset 0 1px 0 #ffffff1f!important}
+.navThemeToggle:hover{background:#ffffff24!important;color:#fff!important;border-color:#ffffff66!important}
+.navThemeToggle svg{width:18px;height:18px}
+.erpNavigation[data-theme=light] .navThemeToggle{border-color:#d5deea!important;background:#edf1f6!important;color:#344b6a!important;box-shadow:0 1px 3px #10182812!important}
+.erpNavigation[data-theme=light] .navThemeToggle:hover{background:#dceaff!important;border-color:#9bbcf0!important;color:#175cd3!important}
+.app.navCollapsed .navUtilityRow{justify-content:center}
+.app.navCollapsed .navThemeToggle{display:grid!important}
+@media(max-width:700px){.navUtilityRow{justify-content:flex-end}}.erpNavigation .navThemeSegment{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:10px;background:#eef1f5}
+.erpNavigation .navThemeOption{display:flex;align-items:center;justify-content:center;gap:7px;min-height:34px;padding:0 8px;border:0;border-radius:8px;background:transparent;color:#667085;font:600 12px 'Instrument Sans',Arial,sans-serif;transition:background .15s,color .15s,box-shadow .15s}
+.erpNavigation .navThemeOption svg{width:16px;height:16px;flex:none}
+.erpNavigation .navThemeOption:hover{color:#175cd3}
+.erpNavigation .navThemeOption.active{background:#fff;color:#182230;box-shadow:0 1px 2px #10182814}
 .erpNavigation .navHelp{margin-bottom:3px;font-weight:600}
-.erpNavigation .navThemeSwitch{display:flex;align-items:center;justify-content:space-between;width:100%;color:#344054}
-.navThemeTrack{position:relative;width:36px;height:22px;flex:none;border-radius:20px;background:#98a2b3}
-.navThemeTrack::after{content:'';position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .18s}
-.navThemeSwitch[aria-checked=true] .navThemeTrack{background:#3478f6}
-.navThemeSwitch[aria-checked=true] .navThemeTrack::after{transform:translateX(14px)}
+.erpNavigation .navThemeOption.active:hover{color:#182230}
 .erpNavigation[data-theme=dark]{color:#dbe4f0;color-scheme:dark}
 .erpNavigation[data-theme=dark] .navLeaf{color:#c8d3e3}
-.erpNavigation[data-theme=dark] .navGroupButton,.erpNavigation[data-theme=dark] .navThemeSwitch{color:#e3eaf4}
+.erpNavigation[data-theme=dark] .navGroupButton,.erpNavigation[data-theme=dark] .navThemeOption{color:#a8b8ce}
+.erpNavigation[data-theme=dark] .navThemeSegment{background:#1e2c41}
+.erpNavigation[data-theme=dark] .navThemeOption:hover{color:#e3eaf4}
+.erpNavigation[data-theme=dark] .navThemeOption.active{background:#31415c;color:#fff;box-shadow:0 1px 2px #050b1626}
+.erpNavigation[data-theme=dark] .navThemeOption.active:hover{color:#fff}
 .erpNavigation[data-theme=dark] button:hover{background:#25364d;color:#fff}
 .erpNavigation[data-theme=dark] .navLeaf.selected{background:#263e63;color:#a6ccff}
 .erpNavigation[data-theme=dark] .hasActive{color:#a6ccff}
 .erpNavigation[data-theme=dark] .navGroup>ul,.erpNavigation[data-theme=dark] .navThemeFooter{border-color:#34435a}
 .erpNavigation[data-theme=dark] button:focus-visible{outline-color:#a6ccff}
-@media(prefers-reduced-motion:reduce){.navThemeTrack::after{transition:none}}
+@media(prefers-reduced-motion:reduce){.navThemeOption{transition:none}}
 .app>aside>.brand{flex:none;gap:10px;padding-left:16px;padding-right:16px;white-space:nowrap}
 .wayvidaLogo{position:relative;display:block;width:36px;height:36px;flex:0 0 36px;overflow:hidden;background:transparent}
 .wayvidaLogo img{position:absolute;width:60px;height:60px;max-width:none;left:-13px;top:-12px;object-fit:contain}
+
+
+.railSubmenuBackdrop { position: fixed; inset: 0; z-index: 55; background: transparent; border: 0; cursor: default; }
+.railSubmenu { position: fixed; left: 76px; z-index: 60; width: 220px; background: #fff; border: 1px solid #e1e6ed; border-radius: 8px; box-shadow: 0 10px 30px #1018281a; padding: 8px; display: flex; flex-direction: column; }
+.railSubmenu[data-theme="dark"] { background: #172235; border-color: #2d3b50; color: #c8d3e3; }
+.railSubmenu strong { padding: 4px 10px 8px; font-size: 13px; border-bottom: 1px solid #e1e6ed; margin-bottom: 4px; display: block; color: #172033; }
+.railSubmenu[data-theme="dark"] strong { border-color: #2d3b50; color: #fff; }
+.railSubmenu button { width: 100%; text-align: left; border: 0; background: transparent; padding: 8px 10px; border-radius: 5px; cursor: pointer; color: #344054; display: block; font-size: 12px; }
+.railSubmenu[data-theme="dark"] button { color: #c8d3e3; }
+.railSubmenu button:hover { background: #f4f7fa; color: #175cd3; }
+.railSubmenu[data-theme="dark"] button:hover { background: #25364d; color: #fff; }
+.railSubGroup { padding: 2px 0; }
+.railSubGroup > span { display: block; padding: 6px 10px 2px; font-size: 11px; color: #667085; text-transform: uppercase; font-weight: 600; }
+.railSubmenu[data-theme="dark"] .railSubGroup > span { color: #7a8ba3; }
