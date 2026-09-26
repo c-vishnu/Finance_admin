@@ -51,7 +51,7 @@ test('the five documented empty states carry their exact copy',()=>{
   assert.ok(closing.includes('<EmptyState variant="lock" title="No locks created yet" description="Create a lock to close a period across your modules." actionLabel={onCreate?\'Create Lock\':null} onAction={onCreate}/>'),'Period Locks: No locks created yet, with Create Lock');
   assert.ok(closing.includes('<EmptyState variant="request" title="No unlock requests yet" description="Unlock requests will appear here when submitted."/>'),'Unlock Requests: No unlock requests yet');
   assert.ok(!/variant="request"[^>]*actionLabel/.test(closing),'Unlock Requests offer no action, because submitting is not what creates them');
-  assert.ok(journals.includes('<EmptyState variant="journal" title="No journals found" description="Adjust the filters or create a manual journal." actionLabel="Create Journal" onAction={onCreate}/>'),'Journals: No journals found, with Create Journal');
+  assert.ok(journals.includes('<EmptyState variant="journal" title="No transactions found" description="Adjust the filters or record a transaction." actionLabel="Record Transaction" onAction={onCreate}/>'),'Journals: No transactions found, with Record Transaction');
   assert.ok(adjustments.includes('<EmptyState variant="adjustment" title="No adjustments found" description="Create an inventory adjustment to correct a quantity or value." actionLabel="Create Adjustment" onAction={onNew}/>'),'Inventory Adjustments: No adjustments found, with Create Adjustment');
 });
 

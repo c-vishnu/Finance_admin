@@ -1,9 +1,14 @@
 /* The shared searchable picker (src/SearchSelect.jsx).
 
-   It was extracted from the Create / Edit Customer form so the sales order could pick a customer
-   with the same control instead of a second hand-rolled dropdown. These assertions pin the parts
-   both pages depend on: one combobox trigger, a search field inside the popover, string OR object
-   options, keyboard navigation, and a root that is a div so label activation can never re-fire it. */
+   It was extracted from the Create / Edit Customer form so a screen that picks a VALUE and a screen
+   that picks a RECORD shared one control instead of two hand-rolled dropdowns. These assertions pin
+   the parts its remaining hosts depend on: one combobox trigger, a search field inside the popover,
+   string OR object options, keyboard navigation, and a root that is a div so label activation can
+   never re-fire it.
+
+   The Sales Order left this control on 2026-09-25: its customer field is a plain search box with the
+   matches listed under it (CustomerSearch in src/SalesDocumentFields.jsx), which is one gesture
+   rather than open-then-search. The last test pins both sides of that split. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -53,10 +58,11 @@ test('its styles travel with it and outrank the host page element rules',()=>{
  assert.match(styles,/\.customerSelect \.customerSelectOptionLabel small\{margin-top:0;/,'the option hint resets the host sheet small rule');
 });
 
-test('both the customer form and the sales order pick through it',()=>{
+test('the customer form picks through the shared picker, and the sales order types straight into its own',()=>{
  assert.match(customerForm,/import SearchSelect from '\.\/SearchSelect\.jsx';/,'the customer form imports the shared picker');
  assert.match(customerForm,/<SearchSelect value=\{form\.state\} options=\{customerStates\}/,'and still uses it for the place of supply over the plain string list');
- assert.match(salesFields,/import SearchSelect from '\.\/SearchSelect\.jsx';/,'the sales order imports the same control');
- assert.match(salesFields,/const customerOptions=customers\.filter\(entry=>entry\.status!=='Inactive'\)\.map\(entry=>\(\{value:entry\.id,label:entry\.name,hint:entry\.code\|\|entry\.email\|\|''\}\)\);/,'building record options from the active customers');
- assert.match(salesFields,/<SearchSelect value=\{form\.customerId\} options=\{customerOptions\} onChange=\{id=>chooseCustomer\(id\)\} placeholder="Search and select a customer" listLabel="Customers" searchLabel="Search customers"\/>/,'and committing the chosen id to the order');
+ assert.ok(!salesFields.includes("import SearchSelect"),'the sales order no longer mounts it: a search box with its matches under it is one gesture, where a trigger into a popover is two');
+ assert.match(salesFields,/function CustomerSearch\(\{customers,value,onSelect,onEditCustomer\}\)\{/,'so the sales order carries its own search box');
+ assert.match(salesFields,/role="listbox" aria-label="Customers"/,'keeping the listbox and option roles, so the keyboard and a screen reader behave the same');
+ assert.match(salesFields,/<input role="combobox" aria-label="Search customers" aria-expanded=\{open\} aria-autocomplete="list" aria-controls="so-customer-list"/,'and the same combobox contract on the field itself');
 });

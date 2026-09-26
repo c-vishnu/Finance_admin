@@ -48,7 +48,7 @@ html,body,#root{max-width:100%;min-height:100%}
 :where(.bankDialog,.opsDrawer,.soConfirm,.soDocument,.coaModal form,.pc-modal>section)>footer{position:sticky;bottom:0;z-index:2;background:#fff}
 
 /* Portal workspaces use the same dashboard geometry. */
-:where(.auditPortal,.settingsPortal,.helpPortal,.pc){left:270px;top:58px;right:0;bottom:0}
+:where(.auditPortal,.settingsPortal,.helpPortal,.pc){left:250px;top:58px;right:0;bottom:0}
 .auditPortal{padding:24px}
 
 /* Toolbars wrap before controls collide. */
@@ -69,7 +69,7 @@ html,body,#root{max-width:100%;min-height:100%}
   :where(.purchaseHeading,.bankHead,.opsHead,.ivHeading,.itemsHeading,.je-heading,.gl-heading,.auditPage>header)>:last-child{max-width:100%;flex-wrap:wrap}
   :where(.bankAccountGrid,.opsSummary,.purchaseSummary,.cnApplySummary){grid-template-columns:repeat(2,minmax(0,1fr))}
   :where(.bankFormGrid,.vendorGrid,.purchaseFields,.opsFormGrid){grid-template-columns:minmax(0,1fr)}
-  :where(.auditPortal,.settingsPortal,.helpPortal,.pc){left:270px}
+  :where(.auditPortal,.settingsPortal,.helpPortal,.pc){left:250px}
 }
 @media(max-width:760px){
   :where(.auditPortal,.settingsPortal,.helpPortal,.pc){left:0;top:58px;padding:14px}
@@ -109,36 +109,19 @@ html,body,#root{max-width:100%;min-height:100%}
 }
 
 
-/* Organization context has its own row below the primary application header. */
+/* The working context lives in the sidebar under the brand, so the shell has no
+   second row below the application header. Keep the header selects hidden. */
 .headerActions>:is(.companySelect,.branchSelect,.yearSelect){display:none!important}
-.orgContextBar{
-  position:fixed;
-  z-index:44;
-  top:59px;
-  right:0;
-  left:270px;
-  height:46px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:18px;
-  padding:8px 24px;
-  border-bottom:1px solid #e2e8f0;
-  background:#fff;
-  box-shadow:0 2px 8px #1018280a;
-}
-.app>main{margin-top:46px}
 
 /* Stable ERP shell: only the working content scrolls. */
 html,body,#root{height:100%;overflow:hidden}
 .app{height:100dvh;overflow:hidden}
 .app>aside{height:100dvh;overflow:hidden}
-.app>main{height:calc(100dvh - 105px);overflow-x:clip;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
-:where(.transactionPortal,.auditPortal,.helpPortal,.settingsPortal,.pc,.budgetPage){top:105px!important}
+.app>main{height:calc(100dvh - 59px);overflow-x:clip;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+.app>main::-webkit-scrollbar{width:0;height:0;display:none}
+:where(.transactionPortal,.auditPortal,.helpPortal,.settingsPortal,.pc,.budgetPage){top:59px!important}
 @media(max-width:760px){
-  .orgContextBar{left:0;height:46px;padding:0 12px}
-  .app>main{margin-top:46px}
-  :where(.transactionPortal,.auditPortal,.helpPortal,.settingsPortal,.pc,.budgetPage){top:105px!important}
+  :where(.transactionPortal,.auditPortal,.helpPortal,.settingsPortal,.pc,.budgetPage){top:59px!important}
 }
 
 .am-coa-heading{margin-bottom:14px}
@@ -178,6 +161,27 @@ html,body,#root{height:100%;overflow:hidden}
 .am-enterprise-grid td:nth-child(4),.am-enterprise-grid td:nth-child(5){min-width:145px;white-space:normal}
 .am-control-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0;padding:18px 24px 22px}
 .am-entry-grid>.wide{grid-column:1/-1}
+/* Spacing scale from the design sheet: one rhythm for every section.
+   Sections pad at 20, their rows at 12/20, blocks sit 24 apart, and the sheet's
+   16/20/24 steps, #DFE3E6 line and 12px radius replace the legacy values. */
+.card{border-color:var(--wvb-line-400);border-radius:var(--wvb-radius-12)}
+@media(min-width:721px){
+  .exactDash{margin:-20px -24px -32px;padding:20px 24px 32px;background:var(--wvb-surface-100)}
+  .metricGrid{gap:var(--wvb-space-6);margin-bottom:var(--wvb-space-8)}
+  .metric{padding:var(--wvb-space-7) var(--wvb-space-7) 0;border-color:var(--wvb-line-400);border-radius:var(--wvb-radius-12)}
+  .exactGrid{gap:var(--wvb-space-6);margin-bottom:var(--wvb-space-8)}
+  .exactHead{height:48px;padding:0 var(--wvb-space-7)}
+  .exactDonut{padding:0 var(--wvb-space-7) var(--wvb-space-6)}
+  .exactBanks{padding:0 var(--wvb-space-7) var(--wvb-space-6)}
+  .exactTasks button{padding:0 var(--wvb-space-7)}
+  .exactTx p{padding:0 var(--wvb-space-7)}
+  .dashIntro{margin-bottom:var(--wvb-space-7)}
+  .stats{gap:var(--wvb-space-6);margin-bottom:var(--wvb-space-8)}
+  .stat{padding:var(--wvb-space-7)}
+  .grid{gap:var(--wvb-space-6);margin-bottom:var(--wvb-space-8)}
+  .head{padding:0 var(--wvb-space-7)}
+  .welcome{margin-bottom:var(--wvb-space-7)}
+}
 @media(max-width:760px){.am-control-grid{grid-template-columns:1fr}}
 .am-coa-grid{min-width:1120px}
 .am-system-label{display:inline-flex!important;align-items:center;gap:3px;margin-left:3px;padding:2px 6px;border-radius:999px;background:#f1f3f6;color:#667085!important;font-size:10px!important;font-weight:600;white-space:nowrap}.am-system-label svg{color:#98a2b3!important}.am-protection{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:999px;background:#f2f4f7;color:#667085;font-size:11px;font-weight:650}.am-protection.system{background:#eef1f5;color:#475467}.am-used-in dd{display:flex;flex-wrap:wrap;gap:6px}.am-used-in dd span{display:inline-flex;align-items:center;gap:4px;padding:4px 7px;border-radius:6px;background:#f2f4f7;color:#475467;font-size:11px}.am-used-in dd svg{color:#667085}.am-system-note{display:flex;align-items:flex-start;gap:8px;margin:14px 0!important;padding:11px;border:1px solid #e3e8ef;border-radius:8px;background:#f8fafc;color:#475467!important}.am-system-note span{display:flex;flex-direction:column}.am-system-note small{color:#667085}.am-report-link>span{display:flex;flex:1;flex-direction:column;align-items:flex-start}.am-report-link>span small{color:#667085;font-weight:400}

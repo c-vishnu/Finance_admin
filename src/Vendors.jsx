@@ -1,6 +1,7 @@
 import {useMemo,useState} from 'react';
 import {IconBuildingStore,IconPlus,IconSearch,IconFilter,IconEdit,IconReceipt,IconBook2,IconArrowLeft,IconInfoCircle,IconPaperclip,IconTrash,IconBuildingBank} from '@tabler/icons-react';
 import {readVendors,writeVendors,nextVendorCode,validateVendor,vendorDefaults} from './vendor-store.js';
+import {formatRupees} from './number-format.js';
 import {KEY,initial} from './invoice-engine.js';
 import {vendorOutstanding,vendorLedger} from './purchase-service.js';
 import {customerStates} from './Customers.jsx';
@@ -11,10 +12,13 @@ import VendorRowActions from './VendorRowActions.jsx';
 import './items.css';
 import './vendors.css';
 
+/* Vendor type is one of six, so it is a dropdown in the field grid rather than a radio group.
+   `status` is deliberately NOT on the create page: a new vendor is Active from vendorDefaults and
+   the lifecycle is changed from the register and the detail screen, never typed in here. */
 const types=['Supplier','Service Provider','Contractor','Manufacturer','Distributor','Other'];
 const terms=['Due Immediately','15 Days','30 Days','45 Days','60 Days'];
 const modes=['Bank Transfer','UPI','Cheque','Cash','Card','Other'];
-const money=n=>Number(n||0).toLocaleString('en-IN',{style:'currency',currency:'INR'});
+const money=n=>formatRupees(n);
 
 /* The create form is the shared Create Item / Create Customer page (`form.itemCreatePage` in
    src/items.css), so its structure, its control tokens and its field errors follow
@@ -79,8 +83,7 @@ export default function Vendors({accounts={},notify=()=>{},onNavigate=()=>{}}){
    <div className="itemDialogBody">
     <section className="itemSection">
      <div className="itemSectionTitle">Vendor details</div>
-     <fieldset className="itemTypeField"><legend>Vendor type *</legend><div className="itemRadioGroup">{types.map(value=><label key={value}><input type="radio" name="vendor-type" value={value} checked={form.type===value} onChange={()=>update('type',value)}/><span>{value}</span></label>)}</div></fieldset>
-     <div className="itemFormGrid">{field('name','Vendor name *',{autoFocus:!form.id})}{field('code','Vendor code',{hint:'Generated from the vendor register.'})}{field('displayName','Display name')}{field('status','Status',{options:['Active','Inactive','Blocked']})}{field('contactName','Contact person name')}{field('phone','Phone number *',{type:'tel'})}{field('email','Email address',{type:'email'})}{field('website','Website',{type:'url'})}</div>
+     <div className="itemFormGrid">{field('type','Vendor type *',{options:types})}{field('name','Vendor name *',{autoFocus:!form.id})}{field('code','Vendor code',{hint:'Generated from the vendor register.'})}{field('displayName','Display name')}{field('contactName','Contact person name')}{field('phone','Phone number *',{type:'tel'})}{field('email','Email address',{type:'email'})}{field('website','Website',{type:'url'})}</div>
     </section>
     <section className="itemSection">
      <div className="itemSectionTitle">Billing address</div>
@@ -100,7 +103,7 @@ export default function Vendors({accounts={},notify=()=>{},onNavigate=()=>{}}){
      <summary>More details <span>Optional</span></summary>
      <div className="itemAdvancedGroup">
       <div className="itemAdvancedTitle">Accounting</div>
-      <div className="itemFormGrid">{field('payableAccountId','Default payable account *',{options:[['2100','2100 - Accounts Payable'],...payable.filter(x=>x[0]!=='2100').map(x=>[x[0],x[0]+' - '+x[1]])]})}{field('purchaseAccountId','Purchase expense account',{options:[['','Use item/category mapping'],...expenses.map(x=>[x[0],x[0]+' - '+x[1]])]})}{field('currency','Currency',{options:[['INR','INR - Indian Rupee'],['USD','USD - US Dollar'],['AED','AED - UAE Dirham'],['Other','Other']]})}{field('branch','Branch',{options:['Kochi Branch','Kannur Branch','Coimbatore Branch']})}{field('costCentre','Cost centre',{options:['','Purchase Department','Operations','Administration']})}</div>
+      <div className="itemFormGrid">{field('payableAccountId','Default payable account *',{options:[['2100','2100 - Accounts Payable'],...payable.filter(x=>x[0]!=='2100').map(x=>[x[0],x[0]+' - '+x[1]])]})}{field('purchaseAccountId','Purchase expense account',{options:[['','Use item/category mapping'],...expenses.map(x=>[x[0],x[0]+' - '+x[1]])]})}{field('currency','Currency',{options:[['INR','INR - Indian Rupee'],['USD','USD - US Dollar'],['AED','AED - UAE Dirham'],['Other','Other']]})}{field('branch','Branch',{options:['Trivandrum Branch','Kochi Branch','Bengaluru Branch']})}{field('costCentre','Cost centre',{options:['','Purchase Department','Operations','Administration']})}</div>
       <p className="itemNotice"><IconBuildingBank size={16}/>The vendor is a sub-ledger of Accounts Payable, so no separate Chart of Accounts account is created and every purchase bill posts to the payable account above.</p>
      </div>
      <div className="itemAdvancedGroup">

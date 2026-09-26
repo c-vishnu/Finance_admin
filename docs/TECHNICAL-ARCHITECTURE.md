@@ -1,6 +1,6 @@
 # Technical Architecture
 
-**Last verified:** 2026-09-15  
+**Last verified:** 2026-09-22  
 **Primary sources:** `package.json`, `vite.config.mjs`, `Dockerfile`, `docker-compose.yml`, `src/App.jsx`, `src/main.jsx`, service modules under `src/`.
 
 ## Current runtime
@@ -29,7 +29,7 @@ In prose: `App.jsx` owns top-level navigation and renders feature components. Fe
 ## Application composition
 
 - `src/main.jsx` mounts the app.
-- `src/App.jsx` contains the shell, active-page state, header, navigation routing, and shared toast behavior.
+- `src/App.jsx` contains the shell, active-page state, header, navigation routing, shared toast behavior, and the desktop sidebar collapse preference (`localStorage['finance-erp-nav-collapsed']`, published as the `navCollapsed` class on `.app` and on `document.body` and rendered by `src/navigation.css` inside `@media(min-width:701px)`).
 - `src/Navigation.jsx` defines the sidebar information architecture.
 - Feature components own their interaction state and use domain services where available.
 - CSS is split by feature plus shared `styles.css`, `typography.css`, `ui-system.css`, and navigation/header styles.

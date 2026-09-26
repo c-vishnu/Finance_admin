@@ -47,7 +47,7 @@ assert.ok(styles.includes('@media(max-width:760px){')&&styles.includes('.itemCre
 
 test('the body is one card and the two Basic information grids are separated',()=>{
  assert.ok(styles.includes('.itemCreatePage .itemDialogBody{width:auto;margin-top:12px;padding:0;overflow:hidden'),'the body is a single card');
- assert.ok(styles.includes('.itemCreatePage .itemDialogFooter{position:fixed;left:calc(270px + clamp(16px,2.2vw,24px))'),'the actions stay accessible in one fixed card');
+ assert.ok(styles.includes('.itemCreatePage .itemDialogFooter{position:fixed;left:calc(250px + clamp(16px,2.2vw,24px))'),'the actions stay accessible in one fixed card');
  assert.ok(styles.includes('.itemCreatePage .itemFormGrid+.itemFormGrid{margin-top:10px}'),'two stacked grids are separated');
  assert.ok(screen.includes('</div><div className="itemFormGrid itemFormGrid3">'),'the name grid and the three-across grid are adjacent siblings');
  assert.ok(screen.includes('<div className="itemFormGrid itemFormGrid3">'),'SKU, HSN/SAC and Unit share one row');
@@ -94,7 +94,7 @@ test('the title sits beside the back arrow and section titles avoid the global h
 
 test('the page uses one document scroll surface and keeps fixed actions visible',()=>{
  for(const rule of [
-  '.itemCreatePage .itemDialogFooter{position:fixed;left:calc(270px + clamp(16px,2.2vw,24px));right:clamp(16px,2.2vw,24px);bottom:10px;z-index:18',
+  '.itemCreatePage .itemDialogFooter{position:fixed;left:calc(250px + clamp(16px,2.2vw,24px));right:clamp(16px,2.2vw,24px);bottom:10px;z-index:18',
   '.itemCreatePage{display:block;padding-bottom:88px;color:var(--ui-text)}',
  ])assert.ok(styles.includes(rule),rule);
  for(const rule of [
@@ -116,26 +116,24 @@ test('the item form exposes the requested dynamic controls without changing stor
  assert.ok(screen.includes("['Goods','Service']"),'Goods and Service are the two item types');
  assert.ok(screen.includes("form.type==='Goods'?'HSN':'SAC'"),'one hsnSac field receives a dynamic label');
  assert.ok(!screen.includes('placeholder="Enter item description"'),'Description is not rendered on Create Item');
- assert.equal((screen.match(/<summary>Opening stock/g)||[]).length,1,'only one opening stock disclosure renders');
- const advanced=screen.indexOf('<details className="itemAdvanced">');
- assert.ok(advanced<screen.indexOf('openingStockDetails&&',advanced),'advanced settings renders the opening stock disclosure');
- assert.ok(screen.indexOf('openingStockDetails&&',advanced)<screen.indexOf('Tax settings',advanced),'opening stock precedes tax settings inside Advanced settings');
+ assert.equal((screen.match(/<summary>Opening stock/g)||[]).length,0,'the opening stock disclosure is gone with the fields it collected');
+ assert.equal((screen.match(/openingStockDetails/g)||[]).length,0,'and nothing renders from the removed opening stock block');
+ const advanced=screen.indexOf('<div className="itemAdvanced">');
+ assert.ok(advanced>-1&&screen.indexOf('Tax settings',advanced)>advanced,'the advanced block stays, always visible, and still carries the tax settings');
  assert.ok(screen.includes("['Taxable','Non-taxable']"),'tax treatment uses the requested choices');
  assert.ok(styles.includes('.itemCreatePage .itemRadioGroup label:has(input:checked)'),'the selected item type has a clear Wayvida card state');
  assert.ok(styles.includes('grid-template-columns:repeat(2,minmax(0,1fr))'),'the radio choices stay balanced without horizontal overflow');
 });
 
-test('inventory accounts share one row and advanced settings owns opening stock, tax and the minimal image attachment surface',()=>{
+test('the advanced block stays visible and owns tax and the minimal image attachment surface',()=>{
  for(const value of ['IconPhotoPlus','itemImageUpload','Choose image','Replace image','Browse','JPG, PNG or WebP · Maximum 2 MB','Image ready','Tax settings'])assert.ok(screen.includes(value),value);
  assert.ok(screen.includes('accept="image/png,image/jpeg,image/webp" onChange={upload}'),'the existing upload handler and formats remain connected');
  for(const rule of ['.itemCreatePage .itemImageUpload{position:relative;display:grid','min-height:58px','border:1px solid #d7e0eb','.itemCreatePage .itemImageUpload:focus-within{','.itemCreatePage .itemImageChoose{display:inline-flex'])assert.ok(styles.includes(rule),rule);
- const advanced=screen.indexOf('<details className="itemAdvanced">');
- const asset=screen.indexOf("accountField('Inventory Asset Account'");
- const cogs=screen.indexOf("accountField('Cost of Goods Sold Account'");
- assert.ok(asset<cogs&&cogs<advanced,'Inventory Asset Account is left of COGS in the same Track inventory grid');
- assert.ok(screen.includes('<div className="itemFormGrid">{accountField(\'Inventory Asset Account\''),'the inventory accounts use the two-column form grid');
+ const advanced=screen.indexOf('<div className="itemAdvanced">');
+ assert.ok(!screen.includes('<details className="itemAdvanced">'),'the Advanced settings accordion is gone, so nothing needs opening to reach tax or the image');
+ assert.ok(!screen.includes("accountField('Inventory Asset Account'"),'the Track inventory grid left with the control that owned it');
  assert.ok(!screen.includes('Inventory accounting'),'the removed duplicate Advanced inventory group stays gone');
- assert.ok(screen.includes('itemAdvancedGroup itemOpeningStockGroup'),'Opening Stock is grouped inside Advanced settings');
+ assert.equal((screen.match(/itemOpeningStockGroup/g)||[]).length,0,'and the opening stock group went with the field');
  assert.ok(screen.indexOf('>Tax settings</div>',advanced)<screen.indexOf('>Item image</div>',advanced),'Tax settings precedes the minimal Item image field');
 });
 

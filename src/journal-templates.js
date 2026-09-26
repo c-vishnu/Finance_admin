@@ -1,5 +1,6 @@
 // Presentation-only helpers for the Journal Entries create page.
 // This module never touches the ledger, the journal store or the posting engine.
+import {formatMinor} from './number-format.js';
 
 const TEMPLATE_KEY = 'wayvida-journal-templates-v1';
 const PREF_KEY = 'wayvida-journal-account-prefs-v1';
@@ -225,5 +226,5 @@ export function postingChecks({ form, totals, accounts, difference, periodOk = t
 }
 
 export function formatDifference(minor) {
-  return ((Math.abs(Number(minor) || 0)) / 100).toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
+  return formatMinor(Math.abs(Number(minor) || 0));
 }

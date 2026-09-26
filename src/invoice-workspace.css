@@ -1,6 +1,6 @@
 .welcome:has(+.invoiceWorkspace){display:none}.invoiceWorkspace{font-size:14px;color:#243149;max-width:1600px;margin:auto}.invoiceWorkspace *{box-sizing:border-box}.invoiceWorkspace h2{font-size:23px;margin:0 0 7px}.invoiceWorkspace h3{font-size:16px}.invoiceWorkspace p,.invoiceWorkspace small{color:#758299}.invoiceWorkspace small{display:block;font-size:12px;margin-top:5px}.ivHeading{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:22px;flex-wrap:wrap}.ivHeading p{margin:0}.ivActions,.ivTools{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.invoiceWorkspace button{border:1px solid #dce3ee;border-radius:6px;padding:9px 13px;display:inline-flex;align-items:center;gap:6px;background:#fff;cursor:pointer;font:inherit;min-height:36px}.invoiceWorkspace button.primary{background:#3478f6;color:white;border-color:#3478f6}.invoiceWorkspace button:disabled{opacity:.4;cursor:not-allowed}.invoiceWorkspace button.ivLink{border:0;color:#286aee;background:transparent;padding:3px}.ivCard{background:white;border:1px solid #e3e9f2;border-radius:10px;padding:22px;margin-bottom:20px;box-shadow:0 3px 10px #25334d04}.ivFields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.invoiceWorkspace label{display:flex;flex-direction:column;gap:8px;font-size:13px}.invoiceWorkspace input,.invoiceWorkspace select,.invoiceWorkspace textarea{padding:10px;border:1px solid #dce3ee;border-radius:6px;background:#fff;color:#25334d;font:inherit;min-width:0;width:100%}.invoiceWorkspace input:focus,.invoiceWorkspace select:focus{outline:2px solid #9fc2ff;outline-offset:1px}.ivScroll{overflow:auto}.invoiceWorkspace table{width:100%;border-collapse:collapse;white-space:nowrap;font-size:13px}.invoiceWorkspace td,.invoiceWorkspace th{text-align:left;padding:14px 12px;border-bottom:1px solid #edf0f5}.invoiceWorkspace th{background:#f7f9fc;color:#687790;font-size:12px}.ivLineTable{min-width:1150px}.ivLineTable input{width:85px}.ivLineTable td:first-child input,.ivLineTable td:first-child select{width:210px}.ivTotals{max-width:400px;margin:24px 0 0 auto}.ivTotals>div{display:flex;justify-content:space-between;gap:20px;padding:9px 0}.ivTotals dd{margin:0;font-weight:600}.ivTotals>div:last-child{border-top:1px solid #e1e7f0;margin-top:8px;padding-top:15px;font-size:17px}.ivFooter{position:sticky;bottom:0;padding:16px;background:white;border-top:1px solid #e3e8ef;display:flex;justify-content:flex-end;gap:10px;z-index:2}.ivSummary{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;background:white;border:1px solid #e3e8ef;border-radius:10px;padding:24px;margin-bottom:22px}.ivSummary span{color:#748096}.ivSummary strong{display:block;font-size:19px;color:#26344c;margin-top:8px}.ivTabs{display:flex;gap:12px;margin-bottom:15px}.ivTabs button.active{color:#276dec;border-color:#7ea8ff;background:#eef4ff}.ivTools{margin-bottom:18px}.ivTools>input,.ivTools>select{width:auto;max-width:280px}.ivError{background:#fff0f0;color:#ae2635!important;padding:14px;border-radius:7px;margin-bottom:14px;display:flex;justify-content:space-between;gap:16px}.ivEmpty{text-align:center;padding:55px 15px}.ivPaymentRow{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid #e8edf3;gap:15px}.ivOverlay{position:fixed;inset:0;z-index:110;background:#17243c75;display:flex;align-items:center;justify-content:center;padding:20px}.ivModal{background:#fff;padding:28px;border-radius:12px;width:520px;max-height:90vh;overflow:auto;display:flex;flex-direction:column;gap:16px}.ivModal h2{margin:0}.ivModal p{margin:0;line-height:1.6}@media(max-width:900px){.ivFields,.ivSummary{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:540px){.ivFields,.ivSummary{grid-template-columns:1fr}.ivCard{padding:14px}.ivActions{width:100%}.ivHeading{align-items:flex-start}.ivTabs{gap:3px}.ivTabs button{padding:9px}.ivPaymentRow{align-items:flex-start;flex-direction:column}}
 .invoiceWorkspace{min-width:0;width:100%}.invoiceWorkspace .ivCard{min-width:0;max-width:100%;overflow:auto}.ivTabs{flex-wrap:wrap}.ivOverlay label{text-transform:none}.ivOverlay input:focus-visible,.ivOverlay select:focus-visible,.ivOverlay button:focus-visible{outline:2px solid #3478f6;outline-offset:2px}
-.invoiceWorkspace .ivLineTable{min-width:980px}.ivLineTable td{vertical-align:top}.ivDiscount{display:flex;gap:5px}.ivDiscount select{width:55px!important}.ivItemSearch{width:230px;white-space:normal}.ivSearchInput{position:relative}.ivSearchInput>svg{position:absolute;left:10px;top:12px;color:#7a8aa3}.invoiceWorkspace .ivSearchInput input{width:230px!important;padding-left:34px}.ivItemResults{border:1px solid #dce3ee;border-radius:7px;margin-top:6px;max-height:220px;overflow:auto;background:white}.invoiceWorkspace .ivItemResults button{width:100%;border:0;border-radius:0;text-align:left;font-size:13px}.ivItemResults button[aria-selected=true]{background:#eef4ff}.ivItemResults p{padding:10px}.ivTaxSelect{width:215px;white-space:normal}.ivTaxSelect summary{border:1px solid #dce3ee;border-radius:6px;padding:10px;cursor:pointer;display:flex;justify-content:space-between;gap:8px;font-size:13px;min-height:40px}.ivTaxOptions{border:1px solid #dce3ee;padding:12px;border-radius:6px;margin-top:6px;background:#f8faff}.ivTaxOptions p{font-size:12px;line-height:1.5;margin-top:0}.invoiceWorkspace .ivTaxOptions label{display:flex;flex-direction:row;align-items:center;justify-content:space-between;margin-bottom:8px;font-size:12px}.invoiceWorkspace .ivTaxOptions input{width:80px}.ivTaxOptions input:disabled{background:#eaf0f7;color:#8895aa}.ivTaxSelect summary:focus-visible{outline:2px solid #3478f6}
+.invoiceWorkspace .ivLineTable{min-width:980px}.ivLineTable td{vertical-align:top}.ivDiscount{display:flex;gap:5px}.ivDiscount select{width:55px!important}.ivItemSearch{width:230px;white-space:normal}.ivSearchInput{position:relative}.ivSearchInput>svg{position:absolute;left:10px;top:12px;color:#7a8aa3}.invoiceWorkspace .ivSearchInput input{width:230px!important;padding-left:34px}.ivItemResults{border:1px solid #dce3ee;border-radius:7px;margin-top:6px;max-height:220px;overflow:auto;background:white}.invoiceWorkspace .ivItemResults button{width:100%;border:0;border-radius:0;text-align:left;font-size:13px}.ivItemResults button[aria-selected=true]{background:#eef4ff}.ivItemResults p{padding:10px}.ivItemResults .ivAdHocOption{display:flex;align-items:center;gap:7px;color:#245fd9;font-weight:600}.ivTaxSelect{width:215px;white-space:normal}.ivTaxSelect summary{border:1px solid #dce3ee;border-radius:6px;padding:10px;cursor:pointer;display:flex;justify-content:space-between;gap:8px;font-size:13px;min-height:40px}.ivTaxOptions{border:1px solid #dce3ee;padding:12px;border-radius:6px;margin-top:6px;background:#f8faff}.ivTaxOptions p{font-size:12px;line-height:1.5;margin-top:0}.invoiceWorkspace .ivTaxOptions label{display:flex;flex-direction:row;align-items:center;justify-content:space-between;margin-bottom:8px;font-size:12px}.invoiceWorkspace .ivTaxOptions input{width:80px}.ivTaxOptions input:disabled{background:#eaf0f7;color:#8895aa}.ivTaxSelect summary:focus-visible{outline:2px solid #3478f6}
 
 /* Sales invoices register search: the magnifier sits inside the field, on the same
    control tokens as the Period Closing register search (.pc-filter-search) and the
@@ -19,8 +19,8 @@
    Additional details disclosure and the sticky action bar are the same rules the
    order page renders (src/sales-orders.css). Only what is genuinely the invoice
    page's own is declared here: how the workspace container is released inside the
-   shell, its form element, and the fact the invoice header has no `orgContextBar`
-   sibling of its own.
+   shell, its form element, and the fact the shell has no second row below the
+   application header any more: the working context sits in the sidebar.
    --------------------------------------------------------------------------- */
 .app main>.invoiceWorkspace.ivCreatePage{width:100%;max-width:none;margin:0;padding:0 0 28px}
 body:has(.ivCreatePage) .app main{max-width:none!important;padding:0!important}
@@ -68,16 +68,20 @@ body:has(.ivCreatePage) .app{height:auto;min-height:100vh;overflow:visible}
 .invoiceWorkspace .ivInvoiceTable{table-layout:fixed;width:100%;min-width:0;white-space:nowrap}
 .invoiceWorkspace .ivInvoiceTable th,.invoiceWorkspace .ivInvoiceTable td{padding:12px 10px;overflow:hidden;text-overflow:ellipsis;vertical-align:top}
 .invoiceWorkspace .ivInvoiceTable th{white-space:normal;line-height:1.3;font-weight:600}
-.invoiceWorkspace .ivInvoiceTable th:nth-child(1){width:15%}
-.invoiceWorkspace .ivInvoiceTable th:nth-child(2){width:17%}
-.invoiceWorkspace .ivInvoiceTable th:nth-child(3){width:12%}
-.invoiceWorkspace .ivInvoiceTable th:nth-child(4){width:16%}
+/* Nine columns now: the lifecycle Status sits beside the payment status, and organisation and branch
+   are cells of their own rather than one merged cell. The widths are positional, so they are restated
+   together - and the credit-note register overrides all nine for its own table. */
+.invoiceWorkspace .ivInvoiceTable th:nth-child(1){width:13%}
+.invoiceWorkspace .ivInvoiceTable th:nth-child(2){width:16%}
+.invoiceWorkspace .ivInvoiceTable th:nth-child(3){width:11%}
+.invoiceWorkspace .ivInvoiceTable th:nth-child(4){width:12%}
 .invoiceWorkspace .ivInvoiceTable th:nth-child(5){width:12%}
 .invoiceWorkspace .ivInvoiceTable th:nth-child(6){width:16%}
-.invoiceWorkspace .ivInvoiceTable th:nth-child(7){width:12%}
+.invoiceWorkspace .ivInvoiceTable th:nth-child(7){width:11%}
+.invoiceWorkspace .ivInvoiceTable th:nth-child(8){width:9%}
 .invoiceWorkspace .ivInvoiceTable td small{display:block;margin-top:3px;overflow:hidden;text-overflow:ellipsis;color:#667085;font-size:12px;font-weight:400;line-height:1.35}
 .invoiceWorkspace .ivInvoiceTable td:nth-child(4),.invoiceWorkspace .ivInvoiceTable th:nth-child(4){text-align:right}
-.invoiceWorkspace .ivInvoiceTable td:nth-child(7),.invoiceWorkspace .ivInvoiceTable th:nth-child(7){text-align:right;overflow:visible}
+.invoiceWorkspace .ivInvoiceTable td:nth-child(8),.invoiceWorkspace .ivInvoiceTable th:nth-child(8){text-align:right;overflow:visible}
 /* The filter panel is the sales order register's disclosure and grid; only the field reset has to be
    restated, because this page's own `.invoiceWorkspace label` rule is a 13px stacked field. */
 .invoiceWorkspace .soFiltersPanel label{display:flex;flex-direction:column;align-items:stretch;gap:7px;width:auto;max-width:none;min-width:0;padding:0;border:0;border-radius:0;background:transparent;color:#344054;font-size:12px;font-weight:600}
@@ -95,19 +99,21 @@ body:has(.ivCreatePage) .app{height:auto;min-height:100vh;overflow:visible}
 .invoiceWorkspace .ivRowActions button:hover:not(:disabled){border-color:#98a2b3;background:#f9fafb}
 .invoiceWorkspace .ivRowActions button:focus-visible{outline:2px solid #84adff;outline-offset:2px}
 .invoiceWorkspace .ivRowActions button.soMoreButton{margin-left:0;width:36px;height:36px;min-width:36px;min-height:36px;padding:0;color:#475467}
+/* The row View action is an icon: a square target the same size as the menu trigger it sits beside. */
+.invoiceWorkspace .ivRowActions button.ivIconButton{width:36px;height:36px;min-width:36px;min-height:36px;padding:0;color:#475467}
 /* The credit notes register carries ten columns on the same fixed-layout table the invoice register
    uses, so it declares its own widths: without them the last three columns collapsed to zero and
    their headers wrapped one character per line - a 258px header row, which is the height the user
    reported between the header and the first column. */
-.creditNotes .ivInvoiceTable th:nth-child(1){width:11%}
-.creditNotes .ivInvoiceTable th:nth-child(2){width:14%}
-.creditNotes .ivInvoiceTable th:nth-child(3){width:10%}
-.creditNotes .ivInvoiceTable th:nth-child(4){width:9%}
-.creditNotes .ivInvoiceTable th:nth-child(5){width:10%}
-.creditNotes .ivInvoiceTable th:nth-child(6){width:10%}
+.creditNotes .ivInvoiceTable th:nth-child(1){width:9%}
+.creditNotes .ivInvoiceTable th:nth-child(2){width:12%}
+.creditNotes .ivInvoiceTable th:nth-child(3){width:12%}
+.creditNotes .ivInvoiceTable th:nth-child(4){width:15%}
+.creditNotes .ivInvoiceTable th:nth-child(5){width:11%}
+.creditNotes .ivInvoiceTable th:nth-child(6){width:11%}
 .creditNotes .ivInvoiceTable th:nth-child(7){width:10%}
-.creditNotes .ivInvoiceTable th:nth-child(8){width:14%}
-.creditNotes .ivInvoiceTable th:nth-child(9){width:12%}
+.creditNotes .ivInvoiceTable th:nth-child(8){width:10%}
+.creditNotes .ivInvoiceTable th:nth-child(9){width:10%}
 /* A register number is a link, not a control: the shared 36px button minimum boxed the invoice and
    credit note numbers and pushed them below the header on a one-line row. */
 .invoiceWorkspace .ivInvoiceTable td>.ivLink{display:inline;min-height:0;padding:0}
@@ -119,27 +125,27 @@ body:has(.ivCreatePage) .app{height:auto;min-height:100vh;overflow:visible}
 /* The credit notes register puts Status and Actions side by side. The Actions cell inherits the
    invoice table overflow:hidden, and at 8% the row menu (two controls, about 84px) did not fit, so it
    drew over the Status column. The column is widened, allowed to overflow, and given its own gap. */
-.creditNotes .ivInvoiceTable th:nth-child(2){width:14%}
-.creditNotes .ivInvoiceTable th:nth-child(3){width:10%}
-.creditNotes .ivInvoiceTable th:nth-child(4){width:9%}
-.creditNotes .ivInvoiceTable th:nth-child(5){width:10%}
-.creditNotes .ivInvoiceTable th:nth-child(6){width:10%}
+.creditNotes .ivInvoiceTable th:nth-child(2){width:12%}
+.creditNotes .ivInvoiceTable th:nth-child(3){width:12%}
+.creditNotes .ivInvoiceTable th:nth-child(4){width:15%}
+.creditNotes .ivInvoiceTable th:nth-child(5){width:11%}
+.creditNotes .ivInvoiceTable th:nth-child(6){width:11%}
 .creditNotes .ivInvoiceTable th:nth-child(7){width:10%}
-.creditNotes .ivInvoiceTable th:nth-child(8){width:14%}
-.creditNotes .ivInvoiceTable th:nth-child(9){width:12%;text-align:right;padding-left:16px}
+.creditNotes .ivInvoiceTable th:nth-child(8){width:10%}
+.creditNotes .ivInvoiceTable th:nth-child(9){width:10%;text-align:right;padding-left:16px}
 /* The status cell holds a pill and, under it, the amount already refunded. The table nowrap would
    cut that line off mid-figure ("Refunded ₹2,950...."), so it wraps instead and the whole amount
    stays readable. The pill itself can never wrap - it is nowrap - which is why the column is wide
    enough for the longest status the module writes. */
-.creditNotes .ivInvoiceTable td:nth-child(8) small{white-space:normal;overflow-wrap:anywhere}
+.creditNotes .ivInvoiceTable td:nth-child(6) small{white-space:normal;overflow-wrap:anywhere}
 
 /* The merged first column shifts everything after it, so this table states its own alignment: the
    three money columns right, the rest left. Without it the invoice sheet own nth-child(4) and
    nth-child(7) right-alignment would land on the reason and remaining-credit columns. */
-.creditNotes .ivInvoiceTable td:nth-child(1),.creditNotes .ivInvoiceTable td:nth-child(3),.creditNotes .ivInvoiceTable td:nth-child(4),
-.creditNotes .ivInvoiceTable th:nth-child(1),.creditNotes .ivInvoiceTable th:nth-child(3),.creditNotes .ivInvoiceTable th:nth-child(4){text-align:left}
-.creditNotes .ivInvoiceTable td:nth-child(5),.creditNotes .ivInvoiceTable td:nth-child(6),.creditNotes .ivInvoiceTable td:nth-child(7),
-.creditNotes .ivInvoiceTable th:nth-child(5),.creditNotes .ivInvoiceTable th:nth-child(6),.creditNotes .ivInvoiceTable th:nth-child(7){text-align:right}
+.creditNotes .ivInvoiceTable td:nth-child(1),.creditNotes .ivInvoiceTable td:nth-child(2),.creditNotes .ivInvoiceTable td:nth-child(3),.creditNotes .ivInvoiceTable td:nth-child(4),.creditNotes .ivInvoiceTable td:nth-child(5),.creditNotes .ivInvoiceTable td:nth-child(6),
+.creditNotes .ivInvoiceTable th:nth-child(1),.creditNotes .ivInvoiceTable th:nth-child(2),.creditNotes .ivInvoiceTable th:nth-child(3),.creditNotes .ivInvoiceTable th:nth-child(4),.creditNotes .ivInvoiceTable th:nth-child(5),.creditNotes .ivInvoiceTable th:nth-child(6){text-align:left}
+.creditNotes .ivInvoiceTable td:nth-child(7),.creditNotes .ivInvoiceTable td:nth-child(8),
+.creditNotes .ivInvoiceTable th:nth-child(7),.creditNotes .ivInvoiceTable th:nth-child(8){text-align:right}
 .creditNotes .ivInvoiceTable td:last-child{overflow:visible;white-space:nowrap;padding-left:16px}
 
 /* Every tab body on the credit note detail sits in the sheet's own 18px gutter, so the cards, the
@@ -149,3 +155,27 @@ body:has(.ivCreatePage) .app{height:auto;min-height:100vh;overflow:visible}
    padding and only takes the sides. */
 .creditNotes .ivDetailSheet>:not(.ivDetailIdentityRow):not(.ivDetailStats):not(.itemDetailTabs){padding-left:18px;padding-right:18px}
 @media(max-width:720px){.creditNotes .ivDetailSheet>:not(.ivDetailIdentityRow):not(.ivDetailStats):not(.itemDetailTabs){padding-left:12px;padding-right:12px}}
+
+/* The price type a line is priced in, stated under the Rate field: it comes from the
+   Item master (or the line own choice for an ad hoc line), never from a silent default. */
+.ivRateCell{display:flex;flex-direction:column;gap:4px;min-width:0}
+.ivRateCell .ivPriceType{font-size:12px;font-weight:600;line-height:1.2;white-space:nowrap}
+.ivRateCell .ivPriceType.is-exclusive{color:#667085}
+.ivRateCell .ivPriceType.is-inclusive{color:#2f6fed}
+
+/* The customer block leads with the summary a salesperson needs and keeps the master data -
+   PAN, contact, credit limit and the full addresses - behind View customer details. */
+.soCustomerSummary{display:grid!important;gap:3px!important;padding:14px 16px!important;border:1px solid #e1e6ed!important;border-radius:10px!important;background:#f8fafc!important}
+.soCustomerSummary strong{color:#172033!important;font-size:14px!important;font-weight:650!important}
+.soCustomerSummary span{color:#667085!important;font-size:12px!important}
+.soCustomerMore{margin-top:12px!important}
+.soCustomerMore>summary{display:inline-flex!important;align-items:center!important;gap:6px!important;min-height:32px!important;color:#2463d4!important;font-size:12px!important;font-weight:600!important;cursor:pointer!important}
+.soCustomerMore[open]>summary{margin-bottom:8px!important}
+
+/* The order fields lead; the accounting fields sit behind one disclosure that opens itself
+   while any of its required values is still unanswered, so the total is never gated silently. */
+.soAdvancedAccounting{margin-top:12px!important;border:1px solid #e1e6ed!important;border-radius:10px!important;background:#f8fafc!important}
+.soAdvancedAccounting>summary{display:flex!important;align-items:center!important;gap:8px!important;min-height:44px!important;padding:0 14px!important;cursor:pointer!important;color:#344054!important;font-size:13px!important;font-weight:600!important}
+.soAdvancedAccounting>summary small{color:#667085!important;font-size:12px!important;font-weight:400!important}
+.soAdvancedAccounting[open]>summary{border-bottom:1px solid #e7ecf3!important}
+.soAdvancedAccounting>.soFieldRow{padding:14px!important}

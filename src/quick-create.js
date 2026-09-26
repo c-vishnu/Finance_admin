@@ -1,4 +1,10 @@
 export const QUICK_CREATE_KEY='wayvida-quick-create';
+/* A sales document hands the operator to the Item master and comes straight back to the draft, so the
+   marker is one-shot: Items opens its create form once and clears it as it reads it. */
+export const ITEM_CREATE_KEY='wayvida-open-item-create';
+/* The customer master handoff is the same one-shot marker, so a sales document can send the operator
+   to a blank customer form and find its draft waiting when the customer is saved. */
+export const CUSTOMER_CREATE_KEY='wayvida-open-customer-create';
 
 export const quickCreateActions=[
  {id:'invoice',label:'Invoice',category:'Sales',page:'Invoices',roles:['Admin','Sales Executive'],keywords:'sales customer'},

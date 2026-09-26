@@ -3,6 +3,19 @@
 .dpOverlay nav{height:auto;overflow:visible;padding:0;background:transparent}
 .dpOverlay aside{position:static;inset:auto;transform:none;background:#fff}
 .dpOverlay main{max-width:none;margin:0}
+/* The sheet owns its table geometry. A preview is mounted inside a register page, so the
+   host's table rules reach the printed document: `.itemsPage table` in src/items.css declares
+   min-width:800px, and src/ui-system.css pads every th/td with 16px 20px plus a 24px first-child
+   inset and holds th on one line. That measured 800px inside a 620px paper, so the eight-column
+   items table printed 150px past the right page edge and the squeezed columns wrapped their
+   headers. A host page may never reshape a printed sheet. */
+.dpPaper table{min-width:0!important}
+.dpPaper th{padding:10px 6px!important;white-space:normal!important}
+.dpPaper td{padding:12px 6px!important;white-space:normal!important}
+.dpPaper th:first-child,.dpPaper td:first-child{padding-left:6px!important}
+.dpPaper th:last-child,.dpPaper td:last-child{padding-right:6px!important}
+.dpPaper .dpItemsTable th{padding:12px 6px!important}
+.dpPaper .dpItemsTable td{padding:14px 6px!important}
 .dpEmbedded.dpOverlay{height:calc(100dvh - 92px);min-height:560px;border:1px solid #dfe5ed;border-radius:10px;background:#f3f5f8}
 .dpEmbedded .dpPreviewBar{min-height:62px;padding:10px 16px;flex-wrap:nowrap}
 .dpPreviewBar>div{min-width:0}.dpPreviewBar>div strong{font-size:16px;white-space:nowrap}.dpPreviewBar>div span{white-space:nowrap}

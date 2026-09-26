@@ -13,15 +13,17 @@ export function balanceSheet(state,{date='9999-12-31',branch='All'}={}){
     if(journal.status&&journal.status!=='Posted'||journal.date>date)continue;
     for(const line of journal.lines||[]){
       if(branch!=='All'&&(line.branch||journal.branch||journal.branchId)!==branch)continue;
-      movement.set(line.account,(movement.get(line.account)||0)+(line.debit||0)-(line.credit||0));
+      const current=movement.get(line.account)||{debit:0,credit:0};
+      movement.set(line.account,{debit:current.debit+(line.debit||0),credit:current.credit+(line.credit||0)});
     }
   }
   const rows=books.accounts.filter(a=>['Assets','Liabilities','Equity'].includes(a.type)&&!a.isGroup&&a.active).map(a=>{
-    const raw=movement.get(a.code)||0;
-    return {...a,section:sectionFor(a),amount:a.type==='Assets'?raw:-raw};
+    const activity=movement.get(a.code)||{debit:0,credit:0},raw=activity.debit-activity.credit;
+    const closing=a.type==='Assets'?raw:-raw;
+    return {...a,section:sectionFor(a),debit:activity.debit,credit:activity.credit,amount:Math.abs(closing),rawAmount:closing};
   });
-  const income=[...movement].reduce((sum,[code,value])=>books.accounts.find(a=>a.code===code)?.type==='Income'?sum-value:sum,0);
-  const expenses=[...movement].reduce((sum,[code,value])=>books.accounts.find(a=>a.code===code)?.type==='Expenses'?sum+value:sum,0);
+  const income=[...movement].reduce((sum,[code,value])=>books.accounts.find(a=>a.code===code)?.type==='Income'?sum+value.credit-value.debit:sum,0);
+  const expenses=[...movement].reduce((sum,[code,value])=>books.accounts.find(a=>a.code===code)?.type==='Expenses'?sum+value.debit-value.credit:sum,0);
   const currentEarnings=income-expenses;
   const assets=rows.filter(a=>a.type==='Assets').reduce((sum,a)=>sum+a.amount,0);
   const liabilities=rows.filter(a=>a.type==='Liabilities').reduce((sum,a)=>sum+a.amount,0);

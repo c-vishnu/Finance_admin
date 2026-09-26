@@ -58,27 +58,25 @@ test('chart of accounts filter toolbar renders every filter inside the Filters p
 });
 test('account details resolves multi-organisation scope and exposes all available branches',()=>{
   const state=normalizeAccounts(initial(),seed);
-  state.accounts[0]={...state.accounts[0],organizationId:'abc',organizationIds:['abc','northstar','malabar','bluewave'],scope:'Organisation Account'};
-  globalThis.localStorage={getItem:key=>key===KEY?JSON.stringify(state):key==='wayvida-coa-view'?JSON.stringify('accounting'):key==='wayvida-demo-company'?'abc':key==='wayvida-demo-branch'?'abc-kochi':key==='wayvida-context-companies'?JSON.stringify(['abc','northstar','malabar','bluewave']):null};
+  state.accounts[0]={...state.accounts[0],organizationId:'abc',organizationIds:['abc','northstar'],scope:'Organisation Account'};
+  globalThis.localStorage={getItem:key=>key===KEY?JSON.stringify(state):key==='wayvida-coa-view'?JSON.stringify('accounting'):key==='wayvida-demo-company'?'abc':key==='wayvida-demo-branch'?'abc-kochi':key==='wayvida-context-companies'?JSON.stringify(['abc','northstar']):null};
   globalThis.sessionStorage={getItem:key=>key==='wayvida-open-account'?'1000':null,removeItem(){}};
   const html=renderToString(React.createElement(Workspace,{seed,notify(){},onNavigate(){}}));
-  assert.match(html,/ABC Technologies Pvt Ltd/);
-  assert.match(html,/Northstar Retail LLP/);
-  assert.match(html,/Malabar Trading Co\./);
-  assert.match(html,/Bluewave Services Pvt Ltd/);
-  assert.match(html,/All branches \(9\)/);
+  assert.match(html,/Wayvida/);
+  assert.match(html,/Viskool/);
+  assert.match(html,/All branches \(5\)/);
   assert.match(html,/Kochi Branch/);
-  assert.match(html,/Pune Branch/);
+  assert.match(html,/Thrissur Branch/);
   assert.doesNotMatch(html,/Current organisation/);
   delete globalThis.localStorage;delete globalThis.sessionStorage;
 });
 test('legacy account scope follows the active multi-organisation header context for display',()=>{
   const state=normalizeAccounts(initial(),seed);
-  globalThis.localStorage={getItem:key=>key===KEY?JSON.stringify(state):key==='wayvida-coa-view'?JSON.stringify('accounting'):key==='wayvida-demo-company'?'abc':key==='wayvida-demo-branch'?'abc-kochi':key==='wayvida-context-companies'?JSON.stringify(['abc','northstar','malabar','bluewave']):null};
+  globalThis.localStorage={getItem:key=>key===KEY?JSON.stringify(state):key==='wayvida-coa-view'?JSON.stringify('accounting'):key==='wayvida-demo-company'?'abc':key==='wayvida-demo-branch'?'abc-kochi':key==='wayvida-context-companies'?JSON.stringify(['abc','northstar']):null};
   globalThis.sessionStorage={getItem:key=>key==='wayvida-open-account'?'1000':null,removeItem(){}};
   const html=renderToString(React.createElement(Workspace,{seed,notify(){},onNavigate(){}}));
-  assert.match(html,/All branches \(9\)/);
-  assert.match(html,/Bluewave Services Pvt Ltd/);
+  assert.match(html,/All branches \(5\)/);
+  assert.match(html,/Viskool/);
   delete globalThis.localStorage;delete globalThis.sessionStorage;
 });
 test('legacy account groups resolve to operational group names',()=>{

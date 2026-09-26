@@ -6,36 +6,36 @@ import {readFileSync} from 'node:fs';
 const source=await readFile(new URL('../src/SalesOrders.jsx',import.meta.url),'utf8');
 const styles=await readFile(new URL('../src/sales-orders.css',import.meta.url),'utf8');
 
-/* The row is one action now: Edit and Preview left it, and View details hands the order's invoice to
-   the Invoices module, which is the only detail screen a sales order has. */
-test('every sales order row carries one View details action that opens its invoice',()=>{
+/* The row is two icons now: an eye that opens THIS order preview - the only detail screen a sales
+   order has - and the action menu beside it, whose invoice entry hands the document to the Invoices module. */
+test('every sales order row carries one eye that opens the order preview, beside its action menu',()=>{
  assert.match(source,/New sales order/);
  assert.ok(!source.includes('/>Edit</button>')&&!source.includes('/>Preview</button>'),'the per-row Edit and Preview buttons are gone');
- assert.match(source,/<button className="soRowButton" disabled=\{!invoiceIdOf\(x\)\} title=\{invoiceIdOf\(x\)\?'Open the invoice for '\+x\.number:'This order has no invoice yet\. Use Convert to Invoice in the actions menu\.'\} onClick=\{\(\)=>openInvoice\(x\)\}><IconEye size=\{16\}\/>View details<\/button>/,'the one action reads View details and is offered once the order has an invoice');
+ assert.match(source,/<button className="soRowIconButton" aria-label=\{'Preview '\+x\.number\} title=\{'Preview '\+x\.number\} onClick=\{\(\)=>setPrintDoc\(x\)\}><IconEye size=\{17\}\/><\/button>/,'the row action is an icon-only eye that opens DocumentPreview for that order, so no order is unreachable for want of an invoice');
  assert.match(source,/function invoiceIdOf\(order\)\{if\(order\.invoice\?\.id\)return order\.invoice\.id;/,'the invoice is resolved from the order record first');
  assert.match(source,/return \(stored\.invoices\|\|\[\]\)\.find\(i=>i\.sourceOrder===order\.id\)\?\.id\|\|''\}catch\{return ''\}\}/,'and then from the invoice store by sourceOrder, the same lookup convertSalesOrder makes');
- assert.match(source,/function openInvoice\(order\)\{const id=invoiceIdOf\(order\);if\(!id\)return;sessionStorage\.setItem\('wayvida-open-invoice',id\);onNavigate\('Invoices'\)\}/,'and it hands the invoice over through the same key the row menu already uses');
+ assert.match(source,/function openInvoice\(order\)\{const id=invoiceIdOf\(order\);if\(!id\)return;sessionStorage\.setItem\('wayvida-open-invoice',id\);onNavigate\('Invoices'\)\}/,'and the row menu still hands the invoice over through the same sessionStorage key, which is why the icon is free to open the order itself');
  assert.ok(!styles.includes('.soPreviewButton'),'the Preview button rule is deleted rather than left dead');
  assert.match(styles,/\.soGridActions\{display:(?:inline-)?flex/);
- assert.match(styles,/\.soOrdersTable th:nth-child\(8\)\{width:13%\}/,'the Actions column gives back the width the two removed buttons freed');
+ assert.match(styles,/\.soOrdersTable th:nth-child\(8\)\{width:12%\}/,'the Actions column keeps the width the eye and the row menu need');
 });
 
 /* Removing the row button must not remove the capability, so editing moves into the row menu. */
 test('the row menu still offers editing, which the row button used to carry',()=>{
  const actions=readFileSync(new URL('../src/SalesOrderActions.jsx',import.meta.url),'utf8');
- assert.match(actions,/onPreview,onEdit,onDuplicate,onExport,onDelete\}/,'the menu receives the editor the row gave up');
+ assert.match(actions,/onPreview,onOpenInvoice,onEdit,onDuplicate,onExport,onDelete,role='Admin'\}/,'the menu receives the editor the row gave up, the invoice hand-off the eye no longer performs, and the acting role so a conversion carries its context');
  assert.match(actions,/<button role="menuitem" disabled=\{!!order\.invoice\|\|\['Completed','Cancelled'\]\.includes\(order\.status\)\} title=/,'Edit order leads the menu on the exact condition the row button was disabled by');
  assert.match(actions,/onClick=\{\(\)=>\{setMenu\(null\);onEdit\(\)\}\}><IconEdit size=\{17\} aria-hidden="true"\/><span>Edit order<\/span><\/button>/,'and it opens the same editor');
- assert.match(source,/<SalesOrderActions onPreview=\{\(\)=>setPrintDoc\(x\)\} onEdit=\{\(\)=>open\(x\)\}/,'wired to the page editor');
+ assert.match(source,/<SalesOrderActions role=\{role\} onPreview=\{\(\)=>setPrintDoc\(x\)\} onOpenInvoice=\{\(\)=>openInvoice\(x\)\} onEdit=\{\(\)=>open\(x\)\}/,'wired to the page editor, and given the acting role so a conversion carries its context');
 });
 
 test('sales order register lists the agreed eight columns',()=>{
- assert.match(source,/\['Order','Customer','Branch & Organisation','Amount','Status','Payment status','Created by','Actions'\]\.map/,'the recommended column set');
+ assert.match(source,/\['Order','Customer','Organisation','Branch','Amount','Status','Payment status','Actions'\]\.map/,'the recommended column set: organisation and branch apart, and no Created by');
  assert.ok(!/\['Order','Customer'[^\]]*Expected shipment/.test(source),'Expected shipment is no longer a column');
  assert.match(source,/<b className="soOrderNumber">\{x\.number\}<\/b><small>\{fmtDate\(x\.date\)\}<\/small>/,'the order number and date share one cell');
- assert.match(source,/<td>\{x\.branchName\|\|'Not recorded'\}<small>\{x\.organizationName\|\|'Not recorded'\}<\/small><\/td>/,'branch and organisation share one cell');
+ assert.match(source,/<td>\{x\.organizationName\|\|'Not recorded'\}<\/td><td>\{x\.branchName\|\|'Not recorded'\}<\/td>/,'organisation and branch are cells of their own, in that order, matching the invoices register');
  assert.match(source,/className="soAmount">\{money\(x\.total\)\}/,'the order value keeps its own cell');
- assert.match(source,/<td>\{x\.createdBy\|\|'Not recorded'\}<\/td>/,'Created by has its own cell');
+ assert.ok(!source.includes("<td>{x.createdBy||'Not recorded'}</td>"),'Created by has no cell in the grid - the register filter still offers it, because filtering by who raised an order is a search, not a column');
  assert.ok(!source.includes("'Reference'"),'the Reference column is gone from the grid');
 });
 
@@ -61,8 +61,13 @@ test('payment status comes from the linked invoice, never from a guess',()=>{
  assert.match(source,/payment:invoice\?paymentStatus\(live,invoice\):'Not invoiced'/,'an uninvoiced order says so instead of being called unpaid');
 });
 
-test('the register filters on order, date, statuses, customer, scope and shipment',()=>{
- for(const label of ['Payment status','Customer','Organisation','Branch','Created by','Order date from','Order date to','Expected shipment from','Expected shipment to'])
+test('the register filters on order, date, statuses, customer and scope',()=>{
+ /* The shipment filter went with the shipment fields the create page no longer records: it could
+    only ever return an empty register. */
+ assert.ok(!source.includes('Expected shipment'),'no filter asks for a shipment date nothing can set');
+ /* The shipment filter went with the shipment fields the create page no longer records: it could only
+    ever return an empty register. */
+ for(const label of ['Payment status','Customer','Organisation','Branch','Created by','Order date from','Order date to'])
   assert.ok(source.includes('aria-label="'+label+'"'),'the filter panel carries '+label);
  assert.match(source,/const activeFilters=\[/,'the panel reports how many filters are on');
  assert.match(source,/<\/summary><div className="soFiltersPanel">/,'the filters live behind one disclosure');
@@ -75,7 +80,6 @@ test('the register filters on order, date, statuses, customer, scope and shipmen
   "branchFilter==='All branches'||x.branchName===branchFilter",
   "creatorFilter==='All users'||x.createdBy===creatorFilter",
   '(!from||x.date>=from)&&(!to||x.date<=to)',
-  '(!shipFrom||(x.shipment&&x.shipment>=shipFrom))&&(!shipTo||(x.shipment&&x.shipment<=shipTo))'
  ];
  for(const clause of clauses)assert.ok(source.includes(clause),'the filter is applied: '+clause);
 });
@@ -118,7 +122,7 @@ test('the create page opens with a back arrow and title under the working-contex
  assert.ok(!source.includes('className="ivLink"'),'the inline back link is gone');
  assert.ok(!styles.includes('.soCreatePage .ivHeading'),'its rule is gone');
  assert.match(styles,/body:has\(\.soCreatePage\) \.app main\{max-width:none!important;padding:0!important\}/,'the shell box is given up so the head reaches the top');
- assert.match(styles,/\.soCreatePage>\.soCreateHead\{display:grid;grid-template-columns:minmax\(0,1fr\);align-items:center;gap:14px;width:100%;min-height:56px;margin:0;padding:8px 24px;background:#fff;border-top:1px solid #dfe6ef;border-bottom:1px solid #dfe6ef;border-radius:0;box-shadow:none\}/,'the head is the same 56px white bar the other create pages use');
+ assert.match(styles,/\.soCreatePage>\.soCreateHead\{display:grid;grid-template-columns:minmax\(0,1fr\) auto;align-items:center;gap:14px;width:100%;min-height:56px;margin:0;padding:8px 24px;background:#fff;border-top:1px solid #dfe6ef;border-bottom:1px solid #dfe6ef;border-radius:0;box-shadow:none\}/,'the head is the same 56px white bar the other create pages use');
  assert.match(styles,/\.soCreatePage>:not\(\.soCreateHead\)\{margin-left:clamp\(16px,2\.2vw,24px\)/,'every other child gets the gutter back');
  assert.match(styles,/\.soBack\{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;padding:0;border:1px solid #d7e0eb;border-radius:8px/,'the back button keeps the shared geometry');
  assert.match(styles,/@media\(max-width:760px\)\{\s+\.soCreateHead\{padding:8px 12px\}/,'the head narrows with the working-context bar');
@@ -126,23 +130,23 @@ test('the create page opens with a back arrow and title under the working-contex
 
 test('a selected customer shows the read-only tax facts and both addresses with an edit action',()=>{
  const fields=readFileSync(new URL('../src/SalesDocumentFields.jsx',import.meta.url),'utf8');
- assert.match(fields,/import \{useEffect,useState\} from 'react';/,'the editor needs local state, and the card pencil menu needs one effect to close itself');
+ assert.match(fields,/import \{useEffect,useRef,useState\} from 'react';/,'the editor needs local state, the card pencil menu needs one effect to close itself, and the customer search holds the field it releases the caret from');
  assert.match(fields,/const \[addressEdit,setAddressEdit\]=useState\(''\);/,'the editor opens on demand');
  assert.match(fields,/const selectedCustomer=customers\.find\(entry=>entry\.id===form\.customerId\)\|\|null;/,'the panel reads the selected customer');
- assert.ok(fields.includes('<div className="soOrderTop"><div className="ivCard soFormSection">'),'the two cards are one shared 40/60 row, used by the order and the invoice alike');
+ assert.ok(fields.includes('<div className="ivCard soFormSection"><div className="soSectionHead"><h3>Customer *</h3></div>'),'the customer card is the shared one, used by the order and the invoice alike');
  assert.ok(!fields.includes("kind==='order'?<>"),'the layout is no longer branched on kind, which is what kept the two create pages from drifting');
  assert.ok(fields.includes('<p className="soFactCaption">Read from the customer record.'),'the panel says where the facts come from, so a read-only value is never mistaken for an empty field');
  assert.match(fields,/<dl className="soFactList">/,'the read-only facts are a definition list, the same shape the Item Details page uses');
  assert.match(fields,/<div className="soFactItem"><dt>GST treatment<\/dt><dd>\{selectedCustomer\?\.gstTreatment\|\|'Not recorded'\}<\/dd><\/div>/,'the tax treatment is stated as a fact');
- assert.match(fields,/<div className="soFactItem"><dt>GSTIN<\/dt><dd>\{selectedCustomer\?\.gstin\|\|'Not registered'\}<\/dd><\/div>/,'the GSTIN is stated as a fact');
+ assert.match(fields,/<div className="soFactItem"><dt>GSTIN<\/dt><dd>\{selectedCustomer\?\.gstin\|\|'Not registered'\}/,'the GSTIN is stated as a fact');
  assert.match(fields,/<div className="soFactItem"><dt>PAN<\/dt><dd>\{selectedCustomer\?\.pan\|\|'Not recorded'\}<\/dd><\/div>/,'PAN completes the read-only row');
  assert.ok(!/<dt>(?:GST treatment|GSTIN|PAN)<\/dt><dd><input/.test(fields),'none of them is an input, because they are set on the customer');
  assert.match(fields,/<dt>Billing address<\/dt>.*<dt>Shipping address<\/dt>/,'both addresses are listed as facts in the customer strip');
  assert.match(fields,/<summary aria-label="Edit address" title="Edit address">/,'the card carries one pencil, at its top right, and it names what it edits because it is an icon on its own');
-  assert.ok(fields.includes('{selectedCustomer&&<details className="soFactEdit">'),'the pencil appears with a chosen customer only, because picking one overwrites both addresses from the master');
+ assert.ok(fields.includes('<div className="soCustomerActions"><details className="soFactEdit">'),'the pencil appears on the actions row with a chosen customer only, because picking one overwrites both addresses from the master and the row is inside that branch');
  assert.match(fields,/<dd>\{billingText\|\|'Not provided'\}\{sameAddress&&<small className="soAddressSameNote">/,'the address is the fact value, with its note as the line underneath it');
  assert.ok(!fields.includes('so-place-of-supply'),'Place of supply is not in the read-only panel at all');
- assert.match(fields,/<input placeholder="Automatic" value=\{form\.number\|\|''\}/,'the number field keeps its own field, with a placeholder short enough not to truncate in the narrower details column');
+ assert.match(fields,/<input placeholder=\{autoNumber\|\|'Automatic'\} value=\{form\.number\|\|''\}/,'the number field keeps its own field, stating the number the save will take and staying editable');
 
 });
 
@@ -166,10 +170,10 @@ test('the customer card shows an animated empty state until a customer is chosen
   const list=fields.indexOf('<dl className="soFactList">',branchOpen);
   assert.ok(list>branchOpen&&list<branchClose,'the definition list sits inside that branch, so no placeholder can render before a customer is chosen');
   for(const value of ["'Not recorded'","'Not registered'","'Not provided'","'Not set'"])
-    assert.ok(fields.indexOf(value)>branchOpen&&fields.indexOf(value)<branchClose,value+' is reachable only inside the branch');
-  assert.ok(css.includes('.soCreatePage .soCustomerEmpty{min-height:284px;padding:20px;gap:8px}'),'the block is bounded to the height the fact list takes, which is what keeps the two cards level');
+    assert.ok(fields.lastIndexOf(value)>branchOpen&&fields.lastIndexOf(value)<branchClose,value+' is reachable only inside the branch, and the one shared default outside it is the due-date read-out');
+  assert.ok(css.includes('.soCreatePage .soCustomerEmpty{grid-column:1/-1;min-height:168px;padding:16px;gap:8px}'),'the block is a slot in the card rather than a page-level empty screen, so a full-width card is not mostly whitespace');
   assert.ok(css.includes('.soCreatePage .soCustomerEmpty .emptyArt{width:78px;height:78px}'),'and its illustration is a size down inside the card');
-  assert.ok(css.includes('.soCreatePage .soFactList{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) repeat(2,minmax(0,2fr))'),'the fact read-out itself is unchanged for a chosen customer');
+  assert.ok(css.includes('.soCreatePage .soFactList{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))'),'the fact read-out is three columns of short facts on the full-width card, unchanged for a chosen customer');
 });
 
 test('the Billing summary closes the items card without a rule above it',()=>{
@@ -196,7 +200,7 @@ test('the address editor is an accessible popup that changes only this order',()
  assert.match(fields,/<p className="soAddressNote">This changes the address on this \{docWord\} only\./,'the note says the edit is local to the document, worded for whichever one is open');
  assert.match(fields,/'The customer master keeps its own address\.'/,'and that the master is untouched');
  assert.match(styles,/\.soAddressLayer\{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;padding:24px\}/,'the layer matches the account drawer recipe');
- assert.match(styles,/\.soCreatePage \.soFactList\{display:grid;grid-template-columns:repeat\(3,minmax\(0,1fr\)\) repeat\(2,minmax\(0,2fr\)\);align-items:start;gap:16px 24px;margin:0;padding:14px 18px;border:1px solid #e4e9f0;border-radius:10px;background:#fbfcfe\}/,'the three values and the two addresses share one bordered row, and align-items:start keeps a short value from leaving a tall empty box');
+ assert.match(styles,/\.soCreatePage \.soFactList\{display:grid;grid-template-columns:repeat\(3,minmax\(0,1fr\)\);align-items:start;gap:16px 24px;margin:0;padding:14px 18px;border:1px solid #e4e9f0;border-radius:10px;background:#fbfcfe\}/,'the short facts share one bordered panel three across, and align-items:start keeps a short value from leaving a tall empty box');
  assert.match(styles,/\.soCreatePage \.soFactItem dt\{display:flex;align-items:center;min-height:30px;color:#6b7789;font-size:12px;font-weight:500/,'a muted label over a strong value is the app read-only fact pattern');
  assert.match(styles,/\/\* Every label occupies the same 30px line[\s\S]*?instead of dropping below them\. \*\//,'and every label keeps the same 30px line, so an address label - whose row also carries the Edit button - sits on the same baseline as the values beside it');
  assert.match(styles,/\.soCreatePage \.soFactItem dd\{margin:0;color:#172033;font-size:13px;font-weight:600/,'with no per-field border, so nothing reads as an input');
@@ -208,7 +212,7 @@ test('the address editor is an accessible popup that changes only this order',()
 test('the order panel never renders a bare header element',()=>{
  const fields=readFileSync(new URL('../src/SalesDocumentFields.jsx',import.meta.url),'utf8');
  assert.ok(!/<header[ >]/.test(fields),'a bare <header> is painted as the fixed app bar by src/styles.css, so the card and dialog use divs');
- assert.match(fields,/<div className="soSectionHead soFactHead"><div className="soSectionHeadText">/,'the card head is a div, never a bare header element');
+ assert.match(fields,/<div className="soSectionHead"><h3>Customer \*<\/h3><\/div>/,'the card head is a div holding a heading, never a bare header element');
  assert.match(fields,/<div className="soAddressDialogHead"><h3 id="soAddressTitle">/,'the dialog head is a div');
  assert.match(styles,/\.soCreatePage \.soFactAddrHead\{display:flex/,'the address head is styled through its own class');
  assert.match(styles,/\.soAddressDialog>\.soAddressDialogHead\{display:flex/,'the dialog head is styled through its own class');
@@ -223,18 +227,39 @@ test('the create-page controls outrank the shared invoice button rule',()=>{
  assert.match(styles,/\.soCreatePage \.soAddressLayer \.soAddressBackdrop\{[^}]*backdrop-filter:none/,'and does not apply a backdrop filter');
 });
 
-test('the order page reads as a customer picker, a read-only fact row and two rows of four order fields',()=>{
+test('the order page leads with the document header, then the scope, every field carrying its mark',()=>{
  const fields=readFileSync(new URL('../src/SalesDocumentFields.jsx',import.meta.url),'utf8');
- assert.match(styles,/@media\(max-width:560px\)\{\.soCreatePage \.soFieldRow,\.soCreatePage \.soFieldRow2,\.soCreatePage \.soFieldRow3,\.soCreatePage \.soFieldRow4\{grid-template-columns:minmax\(0,1fr\)\}\}/,'and to one column on a narrow screen');
+ assert.match(styles,/@media\(max-width:560px\)\{\.soCreatePage \.soFieldRow,\.soCreatePage \.soFieldRow2,\.soCreatePage \.soFieldRow3,\.soCreatePage \.soFieldRow4\{grid-template-columns:minmax\(0,1fr\)\}\}/,'every field row folds to one column on a narrow screen');
  assert.match(styles,/\.soCreatePage \.soSectionHead h3\{margin:0;color:#172033;font-size:14px;font-weight:650\}/,'each section carries its own small heading');
- assert.match(styles,/\.soCreatePage \.soFieldRow4\{grid-template-columns:repeat\(4,minmax\(0,1fr\)\)\}/,'the eight order fields use a four-column grid, which is what makes them two complete rows of four');
- assert.ok(!styles.includes('soFieldRow5'),'the five-column row is gone entirely');
- assert.match(fields,/<div className="ivFields soFieldRow soFieldRow4"><label>Organisation \*<select value=\{form\.organizationId\|\|''\}/,'the order details grid leads with the organisation and the branch');
- assert.match(fields,/<label>Place of supply \*<select id="soPlaceOfSupply" required value=\{form\.place\|\|''\}/,'Place of supply is a real field of the document-details grid, right of the due date, never a fact in the read-only panel');
- assert.ok(!fields.includes('soPlaceField'),'the invoice no longer needs a place-of-supply class of its own, because both documents render the same eight-field grid');
- assert.ok(!fields.includes('soPlaceField'),'the invoice no longer needs a place-of-supply class of its own, because both documents render the same eight-field grid');
- assert.match(fields,/<div className="soCustomerRow"><div className="customerSelectField"><span className="customerSelectLabel">Customer \*<\/span><SearchSelect/,'the customer is picked with the shared searchable combobox');
- assert.match(styles,/\.soCreatePage \.soCustomerRow\{max-width:520px\}/,'which is given a comfortable reading width instead of being stretched across the card');
+ assert.match(fields,/<div className="ivFields soFieldRow soFieldRow4"><Field label=\{docTitle\+' ID'\} icon=\{IconHash\}>/,'the header row leads with the document ID, filled automatically and still editable');
+ assert.match(fields,/<input placeholder=\{autoNumber\|\|'Automatic'\} value=\{form\.number\|\|''\}/,'holding the automatic number as its placeholder so the operator sees the ID before it is taken, and still editable');
+ assert.match(fields,/\{field\('date',docTitle\+' date \*','date',IconCalendar\)\}/,'then the document date');
+ assert.match(fields,/\{field\('reference','Reference number','text',IconFileText\)\}/,'then the reference number');
+ assert.match(fields,/<Field label="Payment terms" icon=\{IconClock\}/,'closing the row on the payment terms');
+ assert.match(fields,/<div className="ivFields soFieldRow soFieldRow3"><Field label="Organisation \*" icon=\{IconBuildingBank\}>/,'and the scope row holds the organisation beneath the document header');
+ assert.match(fields,/<Field label="Branch \*" icon=\{IconSitemap\}>/,'beside the branch');
+ assert.match(fields,/<PlaceOfSupplyField form=\{form\} setForm=\{setForm\} customer=\{selectedCustomer\}\/><\/div>/,'and the place of supply sits on the same row, beside the branch, so the scope the tax is decided by is never behind a disclosure');
+ assert.match(fields,/function Field\(\{label,icon:Icon,hint,children\}\)\{/,'every field is the one Record Transaction control, so it is recognised by its mark as well as its word');
+ assert.match(styles,/\.soCreatePage \.soControl\{position:relative;display:flex;align-items:center;gap:10px;min-width:0;min-height:42px;padding:0 11px;border:1px solid #d6e0ec;border-radius:8px;background:#fff;color:#475467\}/,'on the same control tokens the journal create page uses');
+ assert.ok(!fields.includes('soFieldRow5'),'the five-field row is gone');
+ assert.ok(!fields.includes('soAdvancedAccounting'),'and so is the accounting disclosure, whose place of supply the host pages now render in Additional details');
+});
+
+test('the customer field is typed into directly, and the chosen customer reads as a profile',()=>{
+ const fields=readFileSync(new URL('../src/SalesDocumentFields.jsx',import.meta.url),'utf8');
+ assert.ok(!fields.includes("import SearchSelect"),'the dropdown picker is gone from this page');
+ assert.match(fields,/function CustomerSearch\(\{customers,value,onSelect,onEditCustomer\}\)\{/,'replaced by one search box');
+ assert.match(fields,/<input role="combobox" aria-label="Search customers" aria-expanded=\{open\} aria-autocomplete="list" aria-controls="so-customer-list" placeholder="Search a customer by name, phone or GSTIN"/,'that is typed into in place rather than a trigger that opens a panel');
+ assert.match(fields,/<div className="soCustomerResults" id="so-customer-list" role="listbox" aria-label="Customers">/,'with its matches listed under the field');
+ assert.match(fields,/<span className="soCustomerAvatar" aria-hidden="true">\{customerInitials\(selectedCustomer\?\.name\)\}<\/span>/,'and the chosen customer is led by a profile mark carrying their initials');
+ assert.match(fields,/const customerInitials=name=>String\(name\|\|''\)\.trim\(\)\.split\(\/\\s\+\/\)\.slice\(0,2\)/,'built from the name rather than a generic glyph');
+ assert.match(fields,/<span className="soCustomerAvatar" aria-hidden="true">\{customerInitials\(selectedCustomer\?\.name\)\}<\/span><div className="soCustomerLines"><span className="soCustomerHead"><strong className="soCustomerName">/,'the initials mark leads the strip, then the two lines');
+ assert.match(fields,/<span className="soCustomerAddress"><b>Billing Address:<\/b> \{addressLine\('billing'\)\|\|'Not provided'\}<\/span>/,'the second line names itself Billing Address and holds the whole address, in the format asked for');
+ assert.match(fields,/const addressLine=which=>\{const a=addressOf\(which\),clean=value=>String\(value\|\|''\)\.trim\(\),country=clean\(a\.country\);/,'built from the structured address the document already stores');
+ assert.match(fields,/filter\(part=>part&&part!==country\)/,'dropping a part that repeats the country, because a record can hold it in its city field and it would print twice');
+ assert.match(fields,/return \[\.\.\.body,\.\.\.\(country\?\[country\]:\[\]\)\]\.join\(', '\)\};/,'and closing the address with the country');
+ assert.ok(!fields.includes('soCustomerFacts'),'the separate facts strip is gone: the name and the address are the two lines the card shows');
+ assert.match(styles,/\.soCreatePage \.soCustomerProfile\{display:flex;align-items:center;gap:14px;max-height:80px;/,'inside the same 80px ceiling as before, so the card height does not change');
 });
 
 test('the address cards stay compact instead of stretching for a multi-line address',()=>{
@@ -248,7 +273,7 @@ test('the address cards stay compact instead of stretching for a multi-line addr
 test('the create page carries the same shell padding as the other create pages',()=>{
  assert.match(styles,/body:has\(\.soCreatePage\) \.app main\{max-width:none!important;padding:0!important\}/,'the shell box is given up');
  assert.match(styles,/body:has\(\.soCreatePage\) \.app>main\{height:auto;max-height:none;overflow:visible;scrollbar-gutter:auto\}/,'the scrollbar gutter is released, or the head bar stops 15px short of the right edge');
- assert.match(styles,/\.soCreatePage>\.soCreateHead\{display:grid;grid-template-columns:minmax\(0,1fr\);align-items:center;gap:14px;width:100%;min-height:56px;margin:0;padding:8px 24px/,'the head keeps the 24px gutter its own bar uses');
+ assert.match(styles,/\.soCreatePage>\.soCreateHead\{display:grid;grid-template-columns:minmax\(0,1fr\) auto;align-items:center;gap:14px;width:100%;min-height:56px;margin:0;padding:8px 24px/,'the head keeps the 24px gutter its own bar uses');
  assert.match(styles,/\.soCreatePage>:not\(\.soCreateHead\)\{margin-left:clamp\(16px,2\.2vw,24px\);margin-right:clamp\(16px,2\.2vw,24px\)\}/,'every other child sits on the shared 24px gutter');
  assert.match(styles,/\.soCreatePage \.salesOrderForm\{width:auto;max-width:none;margin-top:12px;margin-bottom:0;/,'the form fills the remaining width rather than 100% plus margins, and leaves the standard 12px under the head');
  assert.ok(!/\.soCreatePage \.salesOrderForm\{[^}]*margin:0\b/.test(styles),'and it must not set a margin shorthand: that resets the side margins and beats the .soCreatePage>:not(.soCreateHead) gutter, which left the order page flush against the sidebar and pushed the action bar 24px past the right edge');
@@ -295,7 +320,7 @@ test('matching billing and shipping addresses are shown once',()=>{
 
  assert.match(fields,/\.\.\.\(sameAddress&&which==='billing'\?\{\[addressKey\('shipping'\)\]:address,shipping:composed\}:\{\}\)/,'editing the shared card keeps the shipping parts in step too, through the same composer');
 
- assert.match(styles,/\.soCreatePage \.soFactItemWide\{grid-column:span 2\}/,'the single billing fact spans the two address tracks');
+ assert.match(styles,/\.soCreatePage \.soFactWide\{grid-column:1\/-1\}/,'each address takes a whole row of its own, because a street address is longer than a state name');
  assert.match(styles,/\.soCreatePage \.soAddressSameNote\{display:block;margin-top:6px;color:#667085;font-size:12px;font-weight:400/,'the note is a 12px muted line');
  assert.match(styles,/\.soCreatePage \.soAddressSplit\{[^}]*cursor:pointer/,'the split action is styled as a link');
 });
@@ -303,11 +328,13 @@ test('the order items table never scrolls sideways',()=>{
  assert.match(styles,/\.soCreatePage table\.ivLineTable\{table-layout:fixed;width:100%;min-width:0\}/,'a fixed layout with percentage columns cannot exceed its wrapper, whatever the content');
  assert.match(readFileSync(new URL('../src/invoice-workspace.css',import.meta.url),'utf8'),/\.invoiceWorkspace \.ivLineTable\{min-width:980px\}/,'the shared sheet carries the same class-level specificity, and it is imported after this file');
  assert.ok(!styles.includes('.soCreatePage .ivLineTable{table-layout:fixed'),'so the class-only selector would lose the min-width and the table kept a 980px floor that scrolled below 1440px');
- assert.match(styles,/\.soCreatePage \.ivLineTable th:nth-child\(3\),\.soCreatePage \.ivLineTable td:nth-child\(3\)\{padding-left:2px;padding-right:2px\}/,'the unit column gives up the gutter it does not need');
+ assert.match(styles,/\.soCreatePage \.ivLineTable \.ivQtyCell\{display:flex;align-items:center;gap:6px;min-width:0\}/,'the quantity and its unit share one cell, because they are one fact about the line');
+ assert.match(styles,/\.soCreatePage \.ivLineTable \.ivQtyCell>input\{width:auto!important;flex:1 1 0;min-width:32px\}/,'and the count yields inside it rather than pushing the unit out');
  assert.match(styles,/\.soCreatePage \.ivLineTable \.ivSearchInput input\{width:100%!important;max-width:100%\}/,'the search input is re-fitted over the shared 230px !important');
  assert.match(styles,/\.soCreatePage \.ivLineTable input,\.soCreatePage \.ivLineTable select\{width:100%;min-width:0;max-width:100%\}/,'the controls size to their column');
- for(const [n,pct] of [[1,'19'],[2,'7'],[3,'5.5'],[4,'8'],[5,'15.5'],[6,'29.5'],[7,'11'],[8,'4.5']])
+ for(const [n,pct] of [[1,'26'],[2,'13'],[3,'12'],[4,'15'],[5,'20'],[6,'10']])
   assert.ok(styles.includes('.soCreatePage .ivLineTable th:nth-child('+n+'){width:'+pct+'%}'),'column '+n+' is '+pct+'%');
+ assert.ok(styles.includes('.soCreatePage .ivLineTable th:nth-child(7){width:46px}'),'and the action column is a fixed 46px, wide enough for the remove target it holds');
  assert.match(styles,/\.soCreatePage \.ivItemSearch\{width:100%\}/,'the item search fills its column rather than the 230px the shared sheet gives it');
  assert.match(styles,/\.soCreatePage \.ivTaxSelect\{width:auto\}/,'and the tax selector takes its own width rather than a fixed 215px');
  assert.match(readFileSync(new URL('../src/invoice-workspace.css',import.meta.url),'utf8'),/\.ivItemSearch\{width:230px/,'those shared widths are what had to be overridden');
@@ -315,16 +342,17 @@ test('the order items table never scrolls sideways',()=>{
 
 test('the order items card is tightened',()=>{
  assert.match(styles,/\.soCreatePage \.ivCard\{padding:16px\}/,'the card padding drops from the shared 22px');
- assert.match(styles,/\.soCreatePage \.ivLineTable th,\.soCreatePage \.ivLineTable td\{padding:10px 8px;overflow:hidden\}/,'and the cell padding from 14px 12px');
- assert.match(styles,/\.soCreatePage \.salesOrderForm \.ivCard\+\.ivCard\{margin-top:14px\}/,'the gap between cards is reduced');
+ assert.match(styles,/\.soCreatePage \.ivLineTable th,\.soCreatePage \.ivLineTable td\{padding:10px 8px!important;height:auto!important;overflow:hidden\}/,'and the cell padding from 14px 12px, stated over the application-wide 16px 20px !important rule that was costing this grid 40px a cell');
+ assert.match(styles,/\.soCreatePage \.salesOrderForm \.ivCard\+\.ivCard\{margin-top:12px\}/,'the gap between cards is reduced');
  assert.match(styles,/\.soCreatePage \.ivCard \.ivHeading\{margin-bottom:12px\}/,'so is the heading gap');
 });
 
 test('the order line prints the unit instead of offering a second place to edit it',()=>{
  const fields=readFileSync(new URL('../src/SalesDocumentFields.jsx',import.meta.url),'utf8');
- assert.match(fields,/<td>\{kind==='order'\?<span className="soUnitValue" title="Unit from the Item master">\{l\.item\?\(l\.unit\|\|'\u2014'\):'\u2014'\}<\/span>:<input aria-label=\{'unit '\+\(n\+1\)\} value=\{l\.unit\}/,'the order line shows the unit as read-only text taken from the item it points at');
+ assert.ok(fields.includes("['Item','Quantity','Rate \u20b9','Discount','Tax','Amount','']"),'the unit is no longer a column of its own in the line header');
+ assert.match(fields,/<div className="ivQtyCell"><input aria-label=\{'qty '\+\(n\+1\)\} value=\{l\.qty\} onChange=\{e=>updateLine\(n,'qty',e\.target\.value\)\}\/>\{kind==='order'\?<span className="soUnitValue" title=\{l\.item\|\|l\.adHoc\?'Unit from the Item master':'No unit'\}>\{l\.item\|\|l\.adHoc\?\(l\.unit\|\|'\u2014'\):'\u2014'\}<\/span>:<input className="soUnitInput" aria-label=\{'unit '\+\(n\+1\)\} value=\{l\.unit\}/,'the order line shows the unit as read-only text beside the count it belongs to');
  assert.ok(!/<td><span className="soUnitValue"/.test(fields),'and only the order branch does it - the invoice page keeps the unit input it always had, because the engine refuses a line with no unit and a free-typed line has nothing to copy from');
- assert.match(styles,/\.soCreatePage \.ivLineTable \.soUnitValue\{display:flex;align-items:center;min-height:40px;/,'it keeps the row height so the cells beside it stay aligned');
+ assert.match(styles,/\.soCreatePage \.ivLineTable \.soUnitValue\{flex:0 1 auto;min-width:0;padding:0;color:#6b7789;font-size:12px;font-weight:600;/,'so it reads as the muted unit label beside the count, not a second field');
 });
 
 test('the discount number yields so the %/rupee selector stays visible',()=>{
@@ -345,16 +373,16 @@ test('the create page picks the organisation and branch the order is raised in',
  const fields=readFileSync(new URL('../src/SalesDocumentFields.jsx',import.meta.url),'utf8');
  assert.match(source,/import \{getAccessibleOrganizations,getCurrentOrganizationContext\} from '\.\/organisation-context\.js';/,'the working context is the source of the scope list');
  assert.match(source,/const organisations=getAccessibleOrganizations\(\);/,'read once for the form');
- assert.match(source,/<SalesDocumentFields kind="order" onEditCustomer=\{editCustomer\} form=\{form\} setForm=\{setForm\} customers=\{customers\} items=\{items\} config=\{config\} organisations=\{organisations\} creditOutstanding=\{form\.customerId\?customerCreditSummary\(live,form\.customerId\)\.outstanding:0\}\/>/,'and handed to the shared fields, with the customer credit exposure the limit warning needs and the detour to the customer master');
- assert.ok(fields.includes("<label>Organisation *<select value={form.organizationId||''} onChange={event=>changeScope(event.target.value,'')} required>"),'Organisation is a required picker in the Order details section');
- assert.ok(fields.includes("<label>Branch *<select value={form.branchId||''} onChange={event=>changeScope(form.organizationId,event.target.value)} required disabled={!selectedOrganisation}>"),'Branch requires an organisation first');
+ assert.match(source,/<SalesDocumentFields kind="order" onEditCustomer=\{editCustomer\} onCreateItem=\{createItem\} autoNumber=\{nextSalesOrderNumber\(orders\)\} form=\{form\} setForm=\{setForm\} customers=\{customers\} items=\{items\} config=\{config\} organisations=\{organisations\} creditOutstanding=\{form\.customerId\?customerCreditSummary\(live,form\.customerId\)\.outstanding:0\} onCreateCustomer=\{createCustomer\}>/,'and handed to the shared fields, with the customer credit exposure the limit warning needs and the detour to the customer master');
+ assert.ok(fields.includes('<Field label="Organisation *" icon={IconBuildingBank}><select value={form.organizationId||\'\'} onChange={event=>changeScope(event.target.value,\'\')} required>'),'Organisation is a required picker in the Order details section');
+ assert.ok(fields.includes('<Field label="Branch *" icon={IconSitemap}><select value={form.branchId||\'\'} onChange={event=>changeScope(form.organizationId,event.target.value)} required disabled={!selectedOrganisation}>'),'Branch requires an organisation first');
  assert.match(fields,/const selectedOrganisation=organisations\.find\(entry=>entry\.id===form\.organizationId\)\|\|null;/,'the branch list follows the chosen organisation');
  assert.match(fields,/function changeScope\(organisationId,branchId\)\{[\s\S]*?organizationId:organisationId,[\s\S]*?branchId:branchId\|\|''/,'switching organisation clears the branch so a stale one cannot be saved');
  assert.ok(source.includes("if(!order){const {company:seedCompany,branch:seedBranch}=getCurrentOrganizationContext();setForm({number:'',date:today(),organizationId:seedCompany?.id||'',organizationName:seedCompany?.name||'',branchId:seedBranch?.id||'',branchName:seedBranch?.name||'',"),'a new order is seeded from the working context');
 });
 
 test('an order cannot be saved against a scope the item is not set up for',()=>{
- assert.match(source,/import {ordersCsv,saveSalesOrder,orderScopeError} from '\.\/sales-order-service\.js';/,'the shared order check is imported');
+ assert.match(source,/import {nextSalesOrderNumber,ordersCsv,saveSalesOrder,orderScopeError} from '\.\/sales-order-service\.js';/,'the shared order check is imported, with the numbering the ID field states');
  assert.match(source,/const scopeOrganisation=organisations\.find\(x=>x\.id===form\.organizationId\);if\(!scopeOrganisation\)throw Error\("Select the organisation this order is raised in\."\);/,'the organisation is required');
  assert.match(source,/const scopeBranch=\(scopeOrganisation\.branches\|\|\[\]\)\.find\(x=>x\.id===form\.branchId\);if\(!scopeBranch\)throw Error\("Select the branch this order is raised in\."\);/,'so is the branch');
  assert.match(source,/const scopeError=orderScopeError\(form\.lines,items,\{organisationRefs:\[scopeOrganisation\.id,scopeOrganisation\.code\],branchRefs:\[scopeBranch\.id,scopeBranch\.name\],organisationName:scopeOrganisation\.name,branchName:scopeBranch\.name\}\);if\(scopeError\)throw Error\(scopeError\);/,'and every line is checked against the item master scope before saving');
@@ -364,23 +392,23 @@ test('an order cannot be saved against a scope the item is not set up for',()=>{
 
 test('the create page is one section per job, in the order the operator works',()=>{
  const fields=readFileSync(new URL('../src/SalesDocumentFields.jsx',import.meta.url),'utf8');
- const order=[fields.indexOf('<h3>Customer</h3>'),fields.indexOf("{kind==='order'?'Order details':'Invoice details'}"),fields.indexOf("{kind==='order'?'Order items':'Invoice items'}"),fields.indexOf('<h3>Billing summary</h3>')];
+  const order=[fields.indexOf('<h3>Customer *</h3>'),fields.indexOf("{kind==='order'?'Order details':'Invoice details'}"),fields.indexOf("{kind==='order'?'Order items':'Invoice items'}"),fields.indexOf('<h3>Billing summary</h3>')];
  assert.ok(order.every(i=>i>0),'all four headings exist');
- assert.deepEqual(order.slice().sort((a,b)=>a-b),order,'and they appear in that order');
-  assert.match(fields,/<div className="soSectionHead soFactHead"><div className="soSectionHeadText"><h3>Customer<\/h3><\/div>/,'the customer card is named by its heading alone - the picker under it already says what to do, so no caption repeats it');
- assert.match(fields,/<div className="ivCard soFormSection"><div className="soSectionHead"><h3>\{kind==='order'\?'Order details':'Invoice details'\}<\/h3>/,'the right-hand card is the document details card on both pages');
-
- assert.match(readFileSync(new URL('../src/SalesOrders.jsx',import.meta.url),'utf8'),/<details className="ivCard soMoreCard"><summary><span className="soMoreTitle">Additional details<\/span><span className="soMoreHint">Optional &mdash; shipment, notes, terms and documents<\/span><\/summary>/,'and Additional details is the last card, collapsed, with a hint instead of a bare title');
+ assert.deepEqual(order.slice().sort((a,b)=>a-b),order,'and they appear in that order: the scope and the header first, then the customer, then the lines, then what it is worth');
+ assert.match(fields,/<div className="ivCard soFormSection"><div className="soSectionHead"><h3>\{kind==='order'\?'Order details':'Invoice details'\}<\/h3>/,'the document details card leads the page on both documents');
+ assert.match(fields,/<div className="soSectionHead"><h3>Customer \*<\/h3><\/div>/,'the customer card leads the page and carries the required mark on its heading alone, so the label is not repeated on the field below it');
+ assert.match(readFileSync(new URL('../src/SalesOrders.jsx',import.meta.url),'utf8'),/<section className="soMoreGroup"><div className="ivFields soFieldRow soFieldRow1">/,'and the terms travel into the summary card as a child, with no Additional details card left to hold them');
 });
-
-test('the billing summary is its own block after the lines',()=>{
+test('the billing summary is its own card after the lines',()=>{
  const fields=readFileSync(new URL('../src/SalesDocumentFields.jsx',import.meta.url),'utf8');
- assert.match(fields,/<section className="soBillingSummary"><div className="soSummaryHead"><h3>Billing summary<\/h3><\/div>\{preview\?totals\(preview\):/,'the totals are labelled on both documents, not only the order');
+ assert.match(fields,/<section className="ivCard soBillingSummary"><div className="soSummaryGrid"><div className="soSummaryLeft"><label className="soSummaryNote"><span>Customer note<\/span>/,'the summary closes the page like an invoice footer, with the customer note and the panels the host passes on the left');
+ assert.match(fields,/<\/label>\{children\}<\/div><div className="soSummaryRight"><div className="soSummaryHead"><h3>Billing summary<\/h3><span className="soCurrencyChip"/,'and the host panels and the heading and figures close the card, the heading directly above the currency and the totals');
+ assert.match(styles,/\.soCreatePage \.soSummaryMoney\{display:flex;flex-direction:column;align-items:flex-end;gap:8px\}/,'as the first line of the right-aligned money block');
  assert.match(fields,/\{preview\?totals\(preview\):<p role="status">\{previewError\|\|'Select an item and place of supply to calculate totals\.'\}<\/p>\}\{kind!=='order'&&<small>Item tax and price treatment are filled from the Item master\./,'and the Item master note is kept on the invoice page only, not the order page');
-  assert.ok(styles.includes('.soCreatePage .soBillingSummary{display:block;width:min(420px,100%);margin:18px 0 0 auto}'),'the block is the width of the totals panel and right-aligned with it, with no rule drawn above the heading');
- assert.match(styles,/\.soCreatePage \.soBillingSummary \.ivTotals\{width:100%;max-width:none;margin:0;padding:12px 16px;border:1px solid #eef1f6;border-radius:9px;background:#fbfcfe\}/,'and the totals fill it as a tinted panel, not loose lines');
+ assert.ok(styles.includes('.soCreatePage .soBillingSummary{display:block;width:100%;margin:0}'),'the summary is a card of its own in the stack, taking its chrome from .ivCard');
+ assert.match(styles,/\.soCreatePage \.soBillingSummary \.ivTotals\{width:min\(420px,100%\);max-width:none;margin:0 0 0 auto;/,'with the figures holding a readable measure at the right rather than stretching across the page');
+ assert.match(fields,/<p className="soPostingNote">\{kind==='order'\?'A sales order is an operational record: it posts nothing to the ledger\./,'and one quiet line saying when, if ever, the document reaches the ledger');
 });
-
 test('the order action bar stays on screen while the form scrolls',()=>{
  assert.match(source,/className="ivFooter soActionBar"/,'the footer carries the page action bar class');
   assert.ok(styles.includes('.soCreatePage .soActionBar{position:sticky;bottom:0;z-index:6;display:flex;align-items:center;justify-content:space-between;gap:10px;'),'which is pinned to the foot of the viewport, so Cancel, Save draft and Save & confirm are never scrolled out of reach');
@@ -401,37 +429,24 @@ test('documents upload through a drop zone with a file list, not a bare file inp
  assert.match(source,/<span className="soUploadCopy"><b>Drag files here or choose from your computer<\/b><small>\{fileLimitText\}<\/small><\/span><span className="soUploadChoose">Choose files<\/span>/,'the copy is built from the enforced budget, not a promise the store cannot keep');
  assert.match(source,/const fileSize=bytes=>\{const n=Number\(bytes\)\|\|0;return n>=1024\*1024\?\(n\/1024\/1024\)\.toFixed\(1\)\+' MB':Math\.max\(1,Math\.round\(n\/1024\)\)\+' KB'\};/,'the file list prints a readable size');
  assert.match(source,/<ul className="soFileList">\{form\.files\.map\(f=><li key=\{f\.id\}><span className="soFileIcon"><IconFileText size=\{15\}\/><\/span><span className="soFileMeta"><b>\{f\.name\}<\/b><small>\{fileSize\(f\.size\)\}<\/small><\/span><button type="button" aria-label=\{'Remove '\+f\.name\}/,'each attachment is a row with its name, size and its own remove');
- assert.match(styles,/\.soCreatePage \.soUploadDrop\{position:relative;display:grid;grid-template-columns:36px minmax\(0,1fr\) auto;align-items:center;gap:12px;min-height:64px;padding:12px 14px;border:1px dashed #cfd8e5;border-radius:9px;background:#fbfcfe/,'styled on the same tile the Create Item page uses for its image');
+ assert.match(styles,/\.soCreatePage \.soUploadDrop\{position:relative;display:grid;grid-template-columns:32px minmax\(0,1fr\) auto;align-items:center;gap:10px;min-height:54px;padding:10px 12px;border:1px dashed #cfd8e5;border-radius:9px;background:#fbfcfe/,'styled on the same tile the Create Item page uses for its image');
  assert.match(styles,/\.soCreatePage \.soUploadDrop\.isActive\{border-style:solid;border-color:var\(--ui-primary\);background:#eef4ff/,'with a visible drag-over state');
  assert.match(styles,/\.soCreatePage \.soFileList>li\{display:grid;grid-template-columns:30px minmax\(0,1fr\) auto;align-items:center;gap:10px;/,'and the file list is a plain row list');
  assert.ok(!source.includes('<label>Attachments<input type="file"'),'the bare file input label is gone');
 });
 
-test('the customer takes 60% beside the document at 40%, folding to one column when that cannot hold a field',()=>{
+test('the create page is one stacked column, with no second column to hunt through',()=>{
  const fields=readFileSync(new URL('../src/SalesDocumentFields.jsx',import.meta.url),'utf8');
- assert.match(styles,/\.soCreatePage \.soOrderTop\{display:grid;grid-template-columns:minmax\(0,60fr\) minmax\(0,40fr\);align-items:stretch;gap:14px\}/,'the customer gets 60% and the document 40%, and the two cards are one height');
- assert.match(styles,/@media\(max-width:1240px\)\{\s*\.soCreatePage \.soOrderTop\{grid-template-columns:minmax\(0,1fr\)\}/,'stacking into one column below 1240px, because the narrower 40% column squeezed its two field tracks to about 137px at 1180px and truncated every organisation select');
-
- assert.ok(!styles.includes('.soCreatePage .soOrderTop>.ivCard{align-self:start}'),'and neither card is released to its own height any more: they are one height, and their content is close enough that the stretch leaves only a line of slack');
- assert.match(styles,/\.soCreatePage \.soOrderTop \.soFactList\{grid-template-columns:repeat\(3,minmax\(0,1fr\)\);gap:12px 14px;padding:12px 14px\}/,'the customer facts read as one compact strip across the card, two rows of three');
-
- assert.match(styles,/\.soCreatePage \.soOrderTop \.soFactItem\{flex-direction:column;align-items:flex-start;gap:3px;padding:0;border-top:0;min-height:0\}/,'each fact is a label over its value, which is what lets three of them share one row without colliding');
-
- assert.match(styles,/\.soCreatePage \.soOrderTop \.soFieldRow4\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)\}/,'the order fields pair up in the narrower right column');
- assert.match(styles,/@media\(max-width:1240px\)\{[\s\S]{0,160}?\.soCreatePage \.soOrderTop \.soFieldRow4\{grid-template-columns:repeat\(4,minmax\(0,1fr\)\)\}/,'where the document fields return to four across on the full width');
-
- assert.match(styles,/\.soCreatePage \.soOrderTop>\.ivCard\+\.ivCard\.ivCard\{margin-top:0\}/,'the stacked-card margin is dropped inside the row, because a grid item stretches its margin box and the 14px margin left the right card 14px shorter than the left one');
- assert.match(styles,/@media\(max-width:1240px\)\{[\s\S]{0,200}?\.soCreatePage \.soOrderTop \.soFactWide\{grid-column:1\/-1\}/,'where the address facts still take the full row, on the width the card now has to itself');
-
- assert.match(fields,/<div className="soOrderTop">/,'and the markup really wraps the two cards');
- assert.ok(!fields.includes('ivCard ivFields'),'the invoice no longer renders its own flat single field card beside the shared row');
-
- assert.ok(!styles.includes('.soCreatePage .soOrderTop>.ivCard{align-self:start}'),'and neither card is released to its own height any more: they are one height, and their content is close enough that the stretch leaves only a line of slack');
+ assert.ok(!fields.includes('soDocGrid')&&!fields.includes('soDocRail'),'the summary rail is gone from the markup');
+ assert.ok(!styles.includes('soDocGrid')&&!styles.includes('soDocRail'),'and so are its rules, rather than left dead');
+ assert.ok(!styles.includes('soOrderTop'),'as is the 60/40 row that put the customer beside the document');
+ assert.ok(styles.includes('Create page: one stacked column.'),'with the reason recorded beside the rules');
+ assert.match(fields,/<div className="soCustomerRow"><div className="soField soFieldSearch">/,'every block is the full width of the page');
+ assert.ok(!fields.includes('ivCard ivFields'),'the invoice no longer renders its own flat single field card');
 });
-
 test('the register row menu carries Duplicate, Export and a guarded Delete',()=>{
  const actions=readFileSync(new URL('../src/SalesOrderActions.jsx',import.meta.url),'utf8');
- assert.match(actions,/onDuplicate,onExport,onDelete\}/,'the menu receives the three handlers');
+ assert.match(actions,/onDuplicate,onExport,onDelete,role='Admin'\}/,'the menu receives the three handlers and the acting role');
  assert.match(actions,/<IconCopy size=\{17\} aria-hidden="true"\/><span>Duplicate<\/span>/,'Duplicate is offered');
  assert.match(actions,/<IconDownload size=\{17\} aria-hidden="true"\/><span>Export<\/span>/,'Export is offered');
  assert.match(actions,/<button role="menuitem" className="soActionDanger" disabled=\{!!order\.invoice\} title=\{order\.invoice\?'This order has a linked invoice\. Cancel or remove the invoice first\.':'Delete this order'\}/,'Delete is destructive, comes last, and is disabled with the reason when an invoice already exists');
@@ -457,7 +472,7 @@ test('the order warns when it would take the customer past their credit limit',(
 });
 
 test('every order write leaves a visible audit trail',()=>{
- assert.match(source,/function trail\(order,action\)\{return \{\.\.\.order,auditTrail:\[\.\.\.\(order\.auditTrail\|\|\[\]\),\{id:crypto\.randomUUID\(\),action,at:new Date\(\)\.toISOString\(\),by:order\.createdBy\|\|role\}\]\}\}/,'the trail is the additive optional shape the customer record uses');
+ assert.match(source,/function trail\(order,action,from\)\{return \{\.\.\.order,auditTrail:\[\.\.\.\(order\.auditTrail\|\|\[\]\),\{id:crypto\.randomUUID\(\),action,at:new Date\(\)\.toISOString\(\),by:role,fromStatus:from\|\|'',toStatus:order\.status\}\]\}\}/,'the trail records the acting role and the status transition, not the order creator');
  assert.match(source,/,action=!before\.invoice&&order\.invoice\?'Invoice '\+\(order\.invoice\.number\|\|''\)\+' created':before\.status!==order\.status\?'Status '\+order\.status:'Order updated',next=/,'a status change, a conversion and a plain edit each record what happened');
  assert.match(source,/saved=trail\(output\.order,form\.id\?'Order updated':'Order created'\)/,'and the save records created or updated');
  assert.match(source,/\{form\.auditTrail\?\.length>0&&<div className="soOrderHistory">/,'the history renders in Additional details for an existing order');
@@ -475,18 +490,19 @@ test('the attachment budget is what the browser store can actually hold',()=>{
 test('the place of supply is derived on the document and only overridden on purpose',()=>{
  const fields=readFileSync(new URL('../src/SalesDocumentFields.jsx',import.meta.url),'utf8');
  assert.match(fields,/const placeIsManual=source=>source\.placeSource===PLACE_OF_SUPPLY_SOURCE\.MANUAL\|\|\(!!String\(source\.place\|\|''\)\.trim\(\)&&!source\.placeSource\)/,'a stored document carrying a place but no source predates the field and counts as the operator own value, so opening an old document and editing an address never silently moves its tax treatment');
- assert.match(fields,/const applyPlace=\(next,force=false\)=>\{[\s\S]{0,120}?if\(!force&&placeIsManual\(next\)\)return next;[\s\S]{0,120}?const suggestion=placeSuggestionFor\(next\);[\s\S]{0,140}?return \{\.\.\.next,place:suggestion\.state,placeSource:suggestion\.source,placeCode:gstStateCode\(suggestion\.state\)\};/,'a derived value is recalculated and a manual one is left exactly where the operator put it');
+ assert.match(fields,/const applyPlaceFor=\(next,customerState,force=false\)=>\{if\(!force&&placeIsManual\(next\)\)return next;const suggestion=placeSuggestionOf\(next,customerState\);return \{\.\.\.next,place:suggestion\.state,placeSource:suggestion\.source,placeCode:gstStateCode\(suggestion\.state\)\}\};/,'a derived value is recalculated and a manual one is left exactly where the operator put it, at module scope because the field is rendered by the host pages');
+ assert.match(fields,/export function PlaceOfSupplyField\(\{form,setForm,customer\}\)\{/,'the field is exported for the Additional details block on both host pages');
  assert.ok(fields.includes('<option value="">Select Place of Supply</option>'),'an underived field asks for a value rather than guessing one');
  assert.match(fields,/onChange=\{e=>setForm\(\{\.\.\.form,place:e\.target\.value,placeSource:PLACE_OF_SUPPLY_SOURCE\.MANUAL,placeCode:gstStateCode\(e\.target\.value\)\}\)\}/,'choosing a value by hand marks it manual');
- assert.match(fields,/const resetPlace=\(\)=>setForm\(current=>applyPlace\(current,true\)\);/,'and the reset is the one path that is allowed to overwrite it');
- assert.match(fields,/const placeStatus=placeOfSupplyStatus\(form\.placeSource,placeSuggestionFor\(form\)\);/,'the helper line is computed from the stored source and the current addresses');
- assert.match(fields,/<small className="soPlaceHint" role="status">\{placeStatus\.text\}\{placeStatus\.reset&&<> &middot; <button type="button" className="soPlaceReset" onClick=\{resetPlace\}>\{placeStatus\.reset\}<\/button><\/>}<\/small>/,'and it is announced under the control, naming the reset when there is one');
+ assert.match(fields,/const reset=\(\)=>setForm\(current=>applyPlaceFor\(current,customer\?\.state\|\|'',true\)\);/,'and the reset is the one path that is allowed to overwrite it');
+ assert.match(fields,/const status=placeOfSupplyStatus\(form\.placeSource,suggestion\);/,'the helper line is computed from the stored source and the current addresses, inside the exported field');
+ assert.match(fields,/<small className="soPlaceHint" role="status">\{status\.text\}\{status\.reset&&<> &middot; <button type="button" className="soPlaceReset" onClick=\{reset\}>\{status\.reset\}<\/button><\/>}<\/small>/,'and it is announced under the control, naming the reset when there is one');
  assert.match(fields,/suggestion=placeOfSupplySuggestion\(c,customerStates\);setForm\(\{\.\.\.form,customerId:id[^}]*place:suggestion\.state,placeSource:suggestion\.source,placeCode:gstStateCode\(suggestion\.state\)/,'selecting a customer fills the field in and records the source');
  assert.ok(!fields.includes('<label>Place of supply *<select required value={form.place}'),'and the field no longer sits in the document-details grid');
 });
 
 test('the place of supply is styled as the foot of the address card it is derived from',()=>{
- assert.match(styles,/\.soCreatePage \.soFieldRow4 \.soPlaceHint\{gap:4px;line-height:1\.4\}/,'the source line sits under the control inside the grid cell, on the shared 12px tokens');
+ assert.match(styles,/\.soCreatePage \.soField \.soPlaceHint\{gap:4px;line-height:1\.4\}/,'the source line sits under the control inside the field, on the shared 12px tokens');
 
 
 
@@ -499,14 +515,15 @@ test('the addresses are facts in the customer card, with one pencil for both',()
  const fields=readFileSync(new URL('../src/SalesDocumentFields.jsx',import.meta.url),'utf8');
  assert.match(fields,/<div className="soFactItem soFactWide"><dt>Billing address<\/dt><dd>\{billingText\|\|'Not provided'\}/,'the billing address is a fact in the customer strip, in the same read-out as the tax identity beside it');
  assert.match(fields,/\{!sameAddress&&<div className="soFactItem soFactWide"><dt>Shipping address<\/dt><dd>\{inlineAddress\(form\.shipping\)\|\|'Not provided'\}<\/dd><\/div>\}/,'and the shipping address joins it whenever the two differ');
- assert.match(styles,/\.soCreatePage \.soOrderTop \.soFactWide\{grid-column:1\/-1\}/,'each address spans the strip, because an address is longer than a state name');
- assert.match(styles,/\.soCreatePage \.soOrderTop \.soFactWide>dt\{margin-bottom:3px\}/,'on the same 12px label and 13px value tokens the other facts use');
+ assert.match(styles,/\.soCreatePage \.soFactWide\{grid-column:1\/-1\}/,'each address spans the strip, because an address is longer than a state name');
+ assert.match(styles,/\.soCreatePage \.soFactWide>dt\{margin-bottom:3px\}/,'on the same 12px label and 13px value tokens the other facts use');
  assert.ok(!fields.includes('soAddressCard'),'and the separate address card is gone rather than left empty');
  assert.ok(!styles.includes('.soAddressGrid'),'with its layout rules deleted, not left dead');
  assert.match(styles,/\.soCreatePage \.soFactEdit>summary\{display:grid;place-items:center;width:32px;height:32px;min-height:0;padding:0;border:0;border-radius:7px;background:transparent;color:#667085;cursor:pointer/,'the one pencil sits at the card top right as a quiet 32px icon button');
  assert.match(styles,/\.soCreatePage \.soFactEditMenu\{position:absolute;right:0;top:calc\(100% \+ 6px\);z-index:80;[^}]*min-width:196px;padding:6px;border:1px solid #e1e6ed;border-radius:9px;background:#fff;box-shadow:0 12px 30px #1018281f\}/,'its menu is the canonical register menu geometry');
  assert.match(fields,/const closeFactEditMenus=\(\)=>document\.querySelectorAll\('\.soFactEdit\[open\]'\)\.forEach\(node=>node\.removeAttribute\('open'\)\);/,'one named closer owns the menu');
- assert.match(fields,/if\(event\.key==='Escape'\)closeFactEditMenus\(\)/,'Escape closes it, and taking an entry closes it too');
+ assert.match(fields,/const closeAddItemMenus=\(\)=>document\.querySelectorAll\('\.soAddItem\[open\]'\)\.forEach\(node=>node\.removeAttribute\('open'\)\);/,'and the add-item menu has its own named closer on the same pattern');
+ assert.match(fields,/if\(event\.key==='Escape'\)\{closeFactEditMenus\(\);closeAddItemMenus\(\)\}/,'Escape closes both, and taking an entry closes it too');
 });
 
 test('the action bar states the running total beside the actions',()=>{
@@ -517,4 +534,105 @@ test('the action bar states the running total beside the actions',()=>{
  assert.match(styles,/\.soCreatePage \.ivFooter\.soActionBar\{justify-content:space-between\}/,'the totals take the left of the bar and the actions the right, the way a sales document reads');
   assert.ok(styles.includes('.soCreatePage .soBarActions{display:flex;align-items:center;gap:10px;flex:none;margin-left:auto}'),'with the actions kept together as one group, pushed to the right side whether or not the totals render beside them');
 });
+});
+
+/* The create page reads left to right: what is being sold, then what it is worth. The summary holds
+   the right column and follows the reader, and the two documents share the one grid, so the order
+   and the invoice can never drift into two different layouts. */
+test('the customer card keeps the master data behind one disclosure',()=>{
+ const fields=readFileSync(new URL('../src/SalesDocumentFields.jsx',import.meta.url),'utf8');
+ assert.match(fields,/<button type="button" className="soCustomerMoreToggle" aria-label="View customer details" title="View customer details" aria-expanded=\{customerMore\} onClick=\{\(\)=>setCustomerMore\(!customerMore\)\}><IconEye size=\{17\}\/><\/button>/,'the rest of the master data sits behind one disclosure, an eye icon button beside the pen');
+ assert.match(fields,/<p className="soFactCaption">Read from the customer record\./,'which says where the facts come from, so a read-only value is never mistaken for an empty field');
+ assert.match(styles,/\.soCreatePage \.soCustomerActions\{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:0\}/,'and the pen and the disclosure read together from the card trailing edge');
+});test('the add-item control offers exactly two ways to start a line',()=>{
+ const fields=readFileSync(new URL('../src/SalesDocumentFields.jsx',import.meta.url),'utf8');
+ assert.match(fields,/<details className="soAddItem"><summary className="soAddItemMain"><IconPlus size=\{16\}\/>Add item<\/summary><div className="soAddItemMenu">/,'Add item is one control with its own menu, not a bare button');
+ assert.ok(fields.includes('>Add item row</button>'),'a blank line, whose one item box searches the master and names an ad hoc line, is the first way');
+ assert.ok(fields.includes('>Create new item</button>'),'and the way out to the Item master is the second');
+ assert.ok(!fields.includes('Add an ad hoc item'),'the separate ad hoc entry is gone, because the line item box already offers the typed text as an ad hoc item');
+ assert.ok(fields.includes('const addLine=()=>setForm(current=>({...current,lines:[...current.lines,blankLine()]}));'),'and there is one shape of new line to add, with no kind for the operator to choose');
+ assert.ok(fields.includes('onAdHoc={text=>setForm(f=>({...f,lines:f.lines.map((x,k)=>k===n?{...blankLine(),adHoc:true,description:text}:x)}))}'),'and the same search box turns the typed text into an ad hoc line, so a line never has to change kind to be named');
+ assert.ok(fields.includes("onType={l.adHoc?text=>updateLine(n,'description',text):undefined}"),'typing edits the stored name only on a line already marked ad hoc');
+ assert.ok(!fields.includes('soAdHocName'),'so the separate ad hoc name input, and the second kind of row it needed, are gone');
+ assert.match(fields,/\{l\.adHoc&&<small className="soAdHocNote">Ad hoc line: no item master record\./,'with the line saying why it has to be configured by hand');
+ assert.match(styles,/\.soCreatePage \.soAddItemMenu\{position:absolute;right:0;top:calc\(100% \+ 6px\);z-index:80;/,'the menu floats under its control on the register menu tokens');
+ assert.match(styles,/\.soCreatePage \.soAddItemMain\{[^}]*border:1px solid #bcd0f5;border-radius:7px;background:#eef4ff;color:#245fd9/,'and the control is the light primary variant - primary text and border on a tinted fill - so the primary Save action keeps the solid fill');
+});
+
+test('Additional details is one labelled block per job',()=>{
+ assert.ok(!source.includes('soMoreGroupTitle">Tax'),'the place of supply left the Additional details card for the details row, so the card no longer needs a Tax block');
+ assert.ok(!source.includes('soMoreCard'),'the Additional details card is gone, and its panels live in the summary card so nothing is duplicated');
+ assert.ok(!source.includes('soMoreGroupTitle">Shipment'),'with the shipment block removed from the create page Additional details');
+ assert.ok(!source.includes('Delivery method')&&!source.includes('Salesperson'),'along with the delivery method and the salesperson');
+ assert.match(source,/<\/section><\/SalesDocumentFields>/,'and the panels close the shared component rather than a card of their own');
+ assert.match(source,/<section className="soMoreGroup"><div className="ivFields soFieldRow soFieldRow1">/,'with the terms as their own block');
+ assert.ok(!source.includes('>Customer notes<textarea'),'because the customer note moved to the Billing summary, where an invoice prints it');
+ assert.match(source,/<h4 className="soMoreGroupTitle soUploadLabel">Documents<\/h4>/,'and the documents tile keeps a heading on the same token');
+ assert.match(source,/<h4 className="soMoreGroupTitle soUploadLabel">History<\/h4>/,'so does the history list, which only renders for a saved document');
+ assert.match(styles,/\.soCreatePage \.soMoreGroup\+\.soMoreGroup\{padding-top:12px;border-top:1px solid #eef1f6\}/,'the blocks are divided by one hairline rather than a full-width rule');
+ assert.match(styles,/\.soCreatePage \.soMoreGroupTitle\{margin:0;color:#344054;font-size:12px;font-weight:650;letter-spacing:\.04em;text-transform:uppercase\}/,'on the section-heading tokens, at the twelve pixel floor');
+});
+
+test('the line tax states one rate, with the split inside the menu',()=>{
+ const controls=readFileSync(new URL('../src/InvoiceLineControls.jsx',import.meta.url),'utf8');
+ assert.match(controls,/total=percent\('cgst'\)\+percent\('sgst'\)\+percent\('igst'\)/,'the rate is summed from the components the engine reads, so an intra-state pair still reads as one GST rate');
+ assert.ok(controls.includes("const summary=[total?`GST ${total}%`:'',percent('cess')?`Cess ${percent('cess')}%`:''].filter(Boolean).join(' + ')||'No tax';"),'and the line states it as one rate, the way the operator sets it');
+ assert.ok(!controls.includes("Object.entries(rates).filter(([,v])=>Number(v)>0)"),'the component-by-component label is gone from the collapsed line - it stays inside the menu, where each rate is labelled as it is entered');
+});
+
+test('the create-customer action, the customer type and the net receivable sit on the customer card',()=>{
+ const fields=readFileSync(new URL('../src/SalesDocumentFields.jsx',import.meta.url),'utf8');
+ const styles=readFileSync(new URL('../src/sales-orders.css',import.meta.url),'utf8');
+ const orders=readFileSync(new URL('../src/SalesOrders.jsx',import.meta.url),'utf8');
+ const invoices=readFileSync(new URL('../src/InvoiceWorkspace.jsx',import.meta.url),'utf8');
+ const quick=readFileSync(new URL('../src/quick-create.js',import.meta.url),'utf8');
+ const customers=readFileSync(new URL('../src/Customers.jsx',import.meta.url),'utf8');
+ const has=(hay,needle,msg)=>assert.ok(hay.includes(needle),msg);
+ has(fields,'<button type="button" className="soCustomerCreate" aria-label="Create customer" title="Create customer" disabled={!onCreateCustomer} onClick={()=>onCreateCustomer&&onCreateCustomer()}><IconPlus size={18} stroke={1.8} aria-hidden="true"/></button>','a create-customer icon button stands beside the customer search box');
+ has(styles,'.soCreatePage .soCustomerRow{display:flex;align-items:center;gap:10px;max-width:none}','on the row that holds the field, so the two read together');
+ has(quick,"export const CUSTOMER_CREATE_KEY='wayvida-open-customer-create';",'the handoff is a one-shot session marker like the Item master one');
+ has(orders,"function createCustomer(){try{sessionStorage.setItem(DRAFT_KEY,JSON.stringify(form));sessionStorage.setItem(CUSTOMER_CREATE_KEY,'1');sessionStorage.setItem('wayvida-return-to','Sales Orders')}catch{}onNavigate('Customers')}",'and the order stashes its draft before leaving for the customer master');
+ has(invoices,"'wayvida-return-to','Invoices'","as does the invoice page, so both return to the document they left");
+ has(customers,'sessionStorage.removeItem(CUSTOMER_CREATE_KEY);start()','the customer master reads the marker once and opens a blank create form');
+ has(orders,'onCreateCustomer={createCustomer}>','the handler reaches the shared component');
+ has(fields,"<span className=\"soCustomerHead\"><strong className=\"soCustomerName\">{selectedCustomer?.name||'Customer'}</strong><span className=\"soCustomerType\">{customerTypeOf(selectedCustomer)}</span></span>",'the customer type reads as a chip beside the name, resolved by the master own rule');
+ has(fields,'<div className="soCustomerMeta" title="What this customer still owes the business"><span>Net receivable</span><strong>{money(creditOutstanding)}</strong></div>','and the net receivable is a stat in the same strip');
+ has(invoices,'creditOutstanding={form.customerId?customerCreditSummary(db,form.customerId).outstanding:0}','with the invoice page reading the same credit summary the order page does');
+ has(fields,'<div className="soSummaryHead"><h3>Billing summary</h3><span className="soCurrencyChip"','the currency chip shares the heading row, so the footer is not two lines');
+ has(styles,'.soCreatePage .soSummaryHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}','pushed to the two ends of that row');
+ assert.ok(!orders.includes('soMoreGroupTitle">Terms')&&!invoices.includes('soMoreGroupTitle">Terms'),'and the redundant Terms heading is gone from both pages, because the field already labels itself');
+});
+test('the item box searches the master and offers the typed text as an ad hoc line at the same time',()=>{
+ const controls=readFileSync(new URL('../src/InvoiceLineControls.jsx',import.meta.url),'utf8');
+ assert.match(controls,/export function ItemSearch\(\{items,line,onSelect,onAdHoc,onType,index\}\)/,'the one item control takes both callbacks');
+ assert.ok(controls.includes("const rows=[...matches.map(item=>({kind:'item',item})),...(onAdHoc&&typed?[{kind:'adHoc',text:typed}]:[])];"),'the master matches and the ad hoc offer are ONE option list, so the arrow keys and Enter walk both');
+ assert.ok(controls.includes("if(row.kind==='adHoc')onAdHoc(row.text);else onSelect(row.item)"),'and choosing either row commits the right thing');
+ assert.ok(controls.includes('const move=d=>setActive(a=>Math.max(0,Math.min(a+d,rows.length-1)));'),'with the active row clamped to the combined list, which an empty result set would otherwise run past');
+ assert.ok(controls.includes('className="ivAdHocOption"'),'the ad hoc row is styled apart from the master rows');
+ assert.ok(controls.includes('Search or type an item'),'and the placeholder says the one box does both');
+ assert.match(readFileSync(new URL('../src/invoice-workspace.css',import.meta.url),'utf8'),/\.ivItemResults \.ivAdHocOption\{display:flex;align-items:center;gap:7px;color:#245fd9;font-weight:600\}/,'in the primary colour, so it reads as the action rather than a product');
+ assert.ok(!readFileSync(new URL('../src/sales-orders.css',import.meta.url),'utf8').includes('soAdHocName'),'and the old ad hoc name field is deleted from the stylesheet with it');
+});
+
+test('the customer type reads the same on the create page as in the customer master',()=>{
+ const customers=readFileSync(new URL('../src/Customers.jsx',import.meta.url),'utf8');
+ const fields=readFileSync(new URL('../src/SalesDocumentFields.jsx',import.meta.url),'utf8');
+ assert.ok(customers.includes("export const customerTypeOf=row=>row?.type==='Individual'?'Individual':'Business';"),'ONE exported rule decides the customer type');
+ assert.ok(customers.includes('const type=customerTypeOf(row);'),'which the customer form normaliser already used, so the two cannot disagree');
+ assert.ok(fields.includes("import {customerStates,customerTypeOf} from './Customers.jsx';"),'and the create page reads it from the master module rather than keeping a second default');
+ assert.ok(fields.includes('<span className="soCustomerType">{customerTypeOf(selectedCustomer)}</span>'),'so the type chip always shows, including for a stored customer that predates the field');
+});
+
+test('the item code the master holds is carried onto the line and printed',()=>{
+ const fields=readFileSync(new URL('../src/SalesDocumentFields.jsx',import.meta.url),'utf8');
+ const preview=readFileSync(new URL('../src/DocumentPreview.jsx',import.meta.url),'utf8');
+ const previewCss=readFileSync(new URL('../src/document-preview.css',import.meta.url),'utf8');
+ assert.ok(fields.includes("hsnSac:item.hsnSac||''"),'choosing an item copies the HSN/SAC code the Item master holds');
+ assert.ok(fields.includes("itemType:item.type||'Goods'"),'with the item type, because goods print an HSN and a service prints an SAC');
+ assert.ok(fields.includes("<small className=\"soHsnValue\">{(l.itemType==='Service'?'SAC':'HSN')+' '+l.hsnSac}</small>"),'and the create-page line states it under the box that chose it');
+ assert.ok(fields.includes('{l.hsnSac?'),'only when the line has one, so an ad hoc line shows no empty code');
+ assert.ok(preview.includes("{['#','Item','HSN / SAC','Qty / Unit','Rate','Discount','Tax','Amount'].map"),'the printed document carries an HSN / SAC column beside the item, which is what the order details, the invoice and a printout all read');
+ assert.ok(preview.includes("<td>{l.hsnSac||'—'}</td>"),'printing an em dash rather than a blank cell when a line has none');
+ assert.match(previewCss,/\.dpItemsTable th:nth-child\(7\)\{width:10%\}/,'and the eight column widths were restated, because those rules are positional and a new column shifts every one of them; the Tax column gave 2% back to HSN / SAC and Qty / Unit on 2026-09-26 so both two-word headers print on one line');
+ assert.match(previewCss,/\.dpItemsTable th:nth-child\(n\+5\),\.dpItemsTable td:nth-child\(n\+5\)\{text-align:right/, 'with the alignment moved so the qty and its unit stay left-aligned and the money columns stay right-aligned');
 });

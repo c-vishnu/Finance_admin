@@ -12,7 +12,7 @@
    Create Budget plans over the second one, because a plan may cover any
    organisation the user can work with, while the journal lines stay on the
    first: the working context is a view filter, a planning scope is a choice. */
-import {demoOrganizations} from './HeaderOrgSelectors.jsx';
+import {demoOrganizations} from './demo-organisations.js';
 
 export const readOrgSetting=(key,fallback)=>{try{return localStorage.getItem(key)||fallback}catch{return fallback}};
 export const readOrgList=(key,fallback)=>{try{const value=JSON.parse(localStorage.getItem(key));return Array.isArray(value)&&value.length?value:fallback}catch{return fallback}};

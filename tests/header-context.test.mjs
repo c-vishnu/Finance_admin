@@ -2,19 +2,23 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
-test('working context renders as a compact shared bar with a right drawer',()=>{
- const component=readFileSync('src/HeaderOrgSelectors.jsx','utf8');
- for(const token of ['document.body','orgContextBar','Change / Customize','Choose organisations and branches','role="checkbox"','data-summary','Apply Context','wayvida-working-context-change'])assert.ok(component.includes(token),token);
+test('the working context is one sidebar multi-select switcher',()=>{
+ const component=readFileSync('src/WorkingContextSwitcher.jsx','utf8');
+ const switcher=readFileSync('src/org-switcher.js','utf8');
+ for(const token of ['document.body','workingContext','role="checkbox"','data-summary'])assert.ok(component.includes(token),token);
+ for(const token of ['wayvida-working-context-change','wayvida-organization-change'])assert.ok(switcher.includes(token),'the switcher module owns '+token);
  for(const removed of ['type="radio"','Single Selection','Consolidated reporting','Multi-selection enabled','wcEyebrow','wcSelectionNote'])assert.ok(!component.includes(removed),removed);
- for(const removed of ['Financial year','wayvida-demo-year','hosSelector'])assert.ok(!component.includes(removed),removed);
+ for(const removed of ['Financial year','wayvida-demo-year','hosSelector','orgContextBar'])assert.ok(!component.includes(removed),removed);
  assert.ok(!component.includes("document.querySelector('.headerActions')"));
+ assert.ok(readFileSync('src/Navigation.jsx','utf8').includes('<WorkingContextSwitcher theme="light"/></div></nav>'),'the light switcher follows the theme control at the foot of navigation');
 });
 
-test('context bar sits below the header and shifts portal workspaces',()=>{
+test('the shell has one row below the header and the portal workspaces start at it',()=>{
  const css=readFileSync('src/ui-quality-polish.css','utf8');
- for(const token of ['top:59px','left:270px','height:46px','.app>main{margin-top:46px}', 'top:105px!important'])assert.ok(css.includes(token),token);
- const drawer=readFileSync('src/header-org-selectors.css','utf8');
- for(const token of ['justify-content:flex-end','.wcDrawer','width:min(540px,100vw)','.wcHoverSummary','.wcBox'])assert.ok(drawer.includes(token),token);
+ for(const token of ['top:59px','left:250px','top:59px!important','.app>main{height:calc(100dvh - 59px)'])assert.ok(css.includes(token),token);
+ for(const removed of ['.orgContextBar','margin-top:46px','top:105px'])assert.ok(!css.includes(removed),'the working-context row and its offsets are gone: '+removed);
+ const drawer=readFileSync('src/working-context.css','utf8');
+ for(const token of ['.wcMenu{position:fixed','.wcTrigger::after','.wcMenuBox'])assert.ok(drawer.includes(token),token);
 });
 
 test('the header profile menu owns the terminology view switch',()=>{
@@ -36,3 +40,4 @@ test('the header profile menu owns the terminology view switch',()=>{
  const sizes=[...styles.matchAll(/\.profileMenu[^{]*\{[^}]*font-size:([\d.]+)px/g)].map(match=>Number(match[1]));
  assert.ok(sizes.length>=3&&Math.min(...sizes)>=12,'profile menu text stays at least 12px');
 });
+

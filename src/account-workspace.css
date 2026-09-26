@@ -177,13 +177,16 @@
 .am-coa-page .am-coa-grid tbody tr.selected>td,.am-coa-page .am-coa-grid tbody tr.selected:hover>td{background:#eff5ff}
 .am-coa-page .am-coa-grid th:last-child,.am-coa-page .am-coa-grid td:last-child{text-align:right}
 .am-coa-page .am-coa-grid th:last-child{width:1%}
-/* The row carries one visible Edit action beside the row menu, on the register row-button tokens the
-   other modules use, so the button and the trigger read as one control pair rather than a lone kebab. */
+/* The row action is the canonical three-dot menu; Edit is its first item so the register keeps one
+   compact, predictable control per row. */
 .am-coa-page .am-coa-grid .am-row-actions{display:flex;align-items:center;justify-content:flex-end;gap:6px}
-.am-coa-page .am-coa-grid .am-row-edit{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;padding:0 10px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;font-weight:600;cursor:pointer}
-.am-coa-page .am-coa-grid .am-row-edit:hover{border-color:#98a2b3;background:#f9fafb}.am-coa-page .am-coa-grid .am-row-actions-cell{width:1%;white-space:nowrap}/* The first header cell lines up with the account names, which start after the 27px tree spacer and its 7px gap, so the column reads as one stack. */.am-coa-page .am-coa-grid thead th:first-child{padding-left:48px}
+.am-coa-page .am-coa-grid .am-row-actions-cell{width:1%;white-space:nowrap}/* The first header cell lines up with the account names. A name starts after the cell's 24px
+   inset plus the 27px tree slot and its 7px gap, and ui-system.css pins every first cell to 24px
+   with !important, so the full inset is restated here at the same weight. */
+.am-coa-page .am-coa-grid thead th:first-child{padding-left:58px!important}
 .am-coa-page .am-coa-grid .am-row-actions-cell .am-more{display:inline-block}
 .am-coa-page .am-coa-grid td:nth-child(2){color:#5b6b81;font-variant-numeric:tabular-nums}
+.am-coa-page .am-coa-grid .am-scope-summary{display:block;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .am-coa-page .am-tree-name>button{color:#1d293d;font-size:13px;font-weight:600}
 .am-coa-page .am-tree-name>button:hover{color:#245fd9}
 /* The account name is the register link every other table opens a record with, not a boxed button:
@@ -193,7 +196,7 @@
 .am-coa-page .am-coa-grid .am-tree-name>button:last-child{border:0;background:transparent;padding:0;min-height:0;color:#1849a9;font-size:13px;font-weight:600;cursor:pointer}
 .am-coa-page .am-coa-grid .am-tree-name>button:last-child:hover{color:#245fd9;text-decoration:underline}
 .am-coa-page .am-coa-grid td>.am-tree-name+small,.am-coa-page .am-coa-grid td>small{color:#69778c;font-size:12px}
-.am-coa-page .am-coa-grid .am-coa-page .am-coa-grid .am-tree-name>button:focus-visible,.am-coa-page .am-coa-grid .am-row-edit:focus-visible,.am-coa-page .am-coa-grid .am-more>summary:focus-visible{outline:2px solid #245fd9;outline-offset:-2px}
+.am-coa-page .am-coa-grid .am-coa-page .am-coa-grid .am-tree-name>button:focus-visible,.am-coa-page .am-coa-grid .am-more>summary:focus-visible{outline:2px solid #245fd9;outline-offset:-2px}
 .am-coa-page .am-coa-grid tbody tr:last-child>td{border-bottom:0}
 /* The account-group accordion. The row is one full-width button on a 48px rhythm: a chevron in a
    bordered chip that reads as a control rather than loose text, the type name, then the account

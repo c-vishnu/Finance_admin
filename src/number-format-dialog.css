@@ -1,0 +1,41 @@
+/* The Number and Currency Format dialog: the fixed layer, backdrop and card the address editor and the
+   account drawer already use, so a modal in the create page looks like every other modal in the app. */
+.nfLayer{position:fixed;inset:0;z-index:1300;display:grid;place-items:center;padding:24px}
+.nfBackdrop{position:absolute;inset:0;width:100%;height:100%;min-height:0;padding:0;border:0;border-radius:0;background:rgba(15,23,42,.28);cursor:default}
+.nfDialog{position:relative;width:min(600px,100%);max-height:calc(100dvh - 48px);overflow:auto;border:1px solid #e4e9f0;border-radius:12px;background:#fff;box-shadow:0 24px 60px #10182833}
+.nfHead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid #eef1f6}
+.nfHead h3{margin:0;color:#172033;font-size:15px;font-weight:650}
+.nfClose{display:inline-grid;place-items:center;flex:none;width:32px;height:32px;min-height:0;padding:0;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#475467;cursor:pointer}
+.nfClose:hover{background:#eef4ff;border-color:#bcd0f5;color:#2463d4}
+.nfBody{display:flex;flex-direction:column;gap:10px;padding:16px 18px}
+.nfGroupTitle{margin:0;color:#5b6b81;font-size:12px;font-weight:650;letter-spacing:.04em;text-transform:uppercase}
+.nfLabel{margin:6px 0 0;color:#172033;font-size:13px;font-weight:650}
+/* The create pages carry `.invoiceWorkspace`, whose own `label` rule is a 13px stacked field with one
+   class more specificity than a bare `.nfFormat`, so every label this dialog lays out as a row is
+   scoped through the layer and states its direction. */
+.nfFormats{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+.nfLayer .nfFormat{display:flex;flex-direction:row;align-items:center;gap:12px;padding:12px 14px;border:1px solid #e4e9f0;border-radius:10px;background:#fff;cursor:pointer}
+.nfLayer .nfFormat.isActive{border-color:#bcd0f5;background:#f5f8ff}
+.nfLayer .nfFormat input{flex:none;width:16px;height:16px;margin:0;accent-color:#2463d4}
+.nfLayer .nfFormat>span{display:block;min-width:0}
+.nfLayer .nfFormat strong{display:block;color:#172033;font-size:14px;font-weight:650;font-variant-numeric:tabular-nums}
+.nfLayer .nfFormat small{display:block;margin-top:3px;color:#667085;font-size:12px}
+.nfLayer .nfCountry{display:flex;flex-direction:column;gap:6px;color:#344054;font-size:12px;font-weight:600}
+.nfCountry select{width:100%;height:40px;padding:0 10px;border:1px solid #d7e0eb;border-radius:8px;background:#fff;color:#26354b;font:inherit;font-size:13px}
+.nfCountry select:focus-visible{outline:2px solid #84adff;outline-offset:1px}
+.nfDigits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 18px}
+.nfLayer .nfDigits label,.nfLayer .nfSwitches label{display:flex;flex-direction:row;align-items:center;gap:8px;color:#26354b;font-size:13px;font-weight:400;cursor:pointer}
+.nfLayer .nfDigits input,.nfLayer .nfSwitches input{flex:none;width:16px;height:16px;margin:0;accent-color:#2463d4}
+.nfSwitches{display:flex;flex-direction:column;gap:8px;margin-top:2px}
+.nfSymbol{width:min(180px,100%);height:40px;padding:0 10px;border:1px solid #d7e0eb;border-radius:8px;background:#fff;color:#26354b;font:inherit;font-size:14px}
+.nfSymbol:focus-visible{outline:2px solid #84adff;outline-offset:1px}
+.nfPreview{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0;padding:10px 12px;border:1px solid #eef1f6;border-radius:8px;background:#f7f9fc;color:#5b6b81;font-size:12px;font-weight:600}
+.nfPreview strong{color:#172033;font-size:15px;font-weight:650;font-variant-numeric:tabular-nums}
+.nfNote{margin:0;color:#667085;font-size:12px;line-height:1.45}
+.nfError{margin:0;color:#b42318;font-size:12px}
+.nfActions{display:flex;justify-content:flex-end;gap:10px;padding:14px 18px;border-top:1px solid #eef1f6}
+.nfActions button{min-height:38px;padding:0 14px;border:1px solid #d7e0eb;border-radius:8px;background:#fff;color:#344054;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.nfActions button:hover{background:#f5f8ff;border-color:#bcd0f5}
+.nfActions button.primary{border-color:#2463d4;background:#2463d4;color:#fff}
+.nfActions button.primary:hover{background:#1d4fbb;border-color:#1d4fbb}
+@media(max-width:560px){.nfDigits{grid-template-columns:repeat(2,minmax(0,1fr))}.nfLayer{padding:14px}}

@@ -1,11 +1,16 @@
 # Data Model
 
-**Last verified:** 2026-09-21  
+**Last verified:** 2026-09-26  
 **Primary sources:** `invoice-engine.js`, `account-master.js`, `receipt-engine.js`, `credit-note-service.js`, `period-locking.js`, `organisation-scope.js`, `organisation-context.js`.
 
 ### Additive account-master fields
 
 Current browser records may include `reportingCategory`, `applicableBranches[]`, `moduleMappings[]`, `taxTreatment`, `defaultTaxRate`, `currency`, `createdBy`, `createdAt`, `modifiedBy`, and `modifiedAt`. These are additive prototype contracts. `branchId` remains the first applicable branch for backward compatibility, and account `code` remains the journal/ledger reference key.
+
+
+### Simple transaction records
+
+A transaction recorded through `src/simple-journal-transaction.js` and stored under `wayvida-manual-journals-v2` (the shared `MANUAL_JOURNAL_KEY`) keeps `id`, `number` (`JE-<financial year>-<six digits>`), `date`, `type: 'Business Transaction'`, `reference`, `narration` (the transaction name), `attachments[]`, `status` (Draft, Pending Approval, Approved, Rejected, Reversed or Cancelled), `createdBy`/`createdAt`/`modifiedAt`, `organizationId`/`organizationName`/`branchId`/`branchName`, `amount` in integer paise, `lines[]` carrying rupee amounts in the same shape the advanced editor writes, `simpleTransaction` (`transactionType`, `label`, `name`, `moneyAccount`, `toAccount`, `categoryAccount`, `categoryLabel`, `counterpartyAccount`, `partyId`, `partyName`, `documentId`, `documentNumber`, `description`, `externalReference` and the rupee `amount` string), `audit[]`, and, where they apply, `submittedBy`/`submittedAt`, `publishedBy`/`publishedAt`, `rejectedBy`/`rejectedAt`/`rejectionReason`, `cancelledBy`/`cancelledAt`/`cancellationReason`, `ledgerJournalId`, `reversalOf` and `reversalJournalId`/`reversalReason`/`reversedBy`/`reversedAt`. `automatic: true` marks a row projected from another module (an invoice or purchase payment), which the register shows with Preview only. Earlier rows may still carry the retired vocabulary; `normaliseStatus()` maps it on read and nothing rewrites stored records.
 
 ## Current persistence
 
@@ -48,7 +53,7 @@ The 2026-09-18 Create / Edit Customer rework adds only optional keys:
 
 `wayvida-accounting-v1` holds credit notes in `creditNotes`, their invoice applications in `creditApplications` and their refunds in `creditRefunds`. The stored lifecycle is `status` (Draft, Pending Approval, Approved, Issued, Cancelled); everything that has happened to the money is derived by `creditNoteStatus()` from the applications and refunds, never stored twice.
 
-The refactor added only optional keys to a note: `type` (`Against Invoice` / `Without Invoice`), `reason` from the structured vocabulary (a note written earlier keeps its own string and is read through `canonicalReason`), `reasonNote` for `Other`, `notes`, and `salesReturnId`, which links the note to a Sales Return document and is validated to belong to the same customer and invoice. A refund is an additive record: `{id, number, creditNoteId, customerId, customerName, amount, date, bank, method, reference, journalId, token, createdAt, createdBy}` - posting a balanced journal like every other ledger entry and never editing the note or the invoice.
+The refactor added only optional keys to a note: `type` (`Against Invoice` / `Standalone Credit Note`, with the earlier `Without Invoice` still read through `noteType`), `creditMethod` (`Item Based Credit` / `Amount Based Credit`), `inventoryImpact` (`Return Stock To Inventory` / `Financial Adjustment Only`), `adjustmentAmount`, `adjustmentTax`, `adjustmentAccount`, `companyId` / `companyName` / `branchId` / `branchName` for the posting scope, `internalNote`, `reason` from the structured vocabulary (a note written earlier keeps its own string and is read through `canonicalReason`), `reasonNote` for `Other`, `notes`, and `salesReturnId`, which links the note to a Sales Return document and is validated to belong to the same customer and invoice. A refund is an additive record: `{id, number, creditNoteId, customerId, customerName, amount, date, bank, method, reference, journalId, token, createdAt, createdBy}` - posting a balanced journal like every other ledger entry and never editing the note or the invoice.
 
 A credit note never moves stock. The inventory side belongs to the Sales Return document, which is not built yet; until it is, no credit note can create an inventory movement.
 
@@ -140,4 +145,8 @@ Required properties:
 - Optimistic concurrency uses a revision/version column.
 - Period status validation and journal creation occur in the same database transaction.
 Item records may include `taxApplicable`, `taxRate`, `interStateTaxRate`, `cessRate`, `taxPreference` and `priceTaxMode` (`exclusive` or `inclusive`). `taxRate` is the total GST of an intra-state supply and is what a sales or purchase line splits into CGST + SGST, while `interStateTaxRate` is the IGST rate of an inter-state supply; both are stored as strings and both are zeroed when the item is not taxable, which is recorded as `taxApplicable:false` with a `taxPreference` of `Non-taxable`, `Exempt`, `Zero Rated` or `Non-GST`. The selectable rates and treatments come from the shared `src/item-master.js` masters (`ITEM_TAX_RATES`, `ITEM_CESS_RATES`, `ITEM_TAX_TREATMENTS`) rather than a second tax-rate source. These are defaults copied into a sales-order or invoice line and may be overridden on that document. Item creation no longer collects a preferred vendor; production vendor relationships belong to purchasing/vendor-price agreements rather than the item’s core sales tax configuration.
+## Document line tax identity and the format preference (2026-09-25)
 
+A sales or invoice LINE now carries the tax identity it inherited from the Item master: `hsnSac` (the 4-8 digit code `src/item-master.js` validates) and `itemType` (`Goods` or `Service`, which decides whether that code is printed as an HSN or an SAC). `itemDefaults(item)` in `src/SalesDocumentFields.jsx` copies both, `calculate()` passes unknown line keys through untouched, and the printed sheet reads `l.hsnSac` directly because it has the document but not the Item master. An ad-hoc line carries neither, so the code prints as an em dash rather than a blank.
+
+The number and currency format is an ORGANISATION preference, stored with the other settings under `wayvida-settings-v1` in `organization`: `numberFormat` (a locale id such as `en-IN` or `en-US`), `currencySymbol`, `decimalPlaces` (0-4, `Default` being 2), `roundOffQuantity` and `roundOffRate`. Nothing on a document stores the format it was raised with, so a reprint follows the current setting - that is deliberate, and the round-off switches never move a posted amount, only how a quantity or a rate is written.

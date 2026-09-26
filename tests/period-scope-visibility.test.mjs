@@ -123,7 +123,7 @@ test('an approved unlock expires, re-locks automatically and audits both events'
  assert.equal(reclosed.audit[0].user,'System');
  assert.equal(reclosed.audit[1].user,'System');
  assert.equal(reclosed.audit[0].requestId,reclosed.requests[0].id,'the audit trail keeps the related request id');
- assert.equal(reclosed.audit[1].organisation,'ABC Technologies Pvt Ltd');
+ assert.equal(reclosed.audit[1].organisation,'Wayvida Learning');
 });
 
 test('unlocking until manually re-locked never auto expires',()=>{

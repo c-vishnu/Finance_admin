@@ -16,13 +16,14 @@ test('the New sales invoice page is the Create Sales Order page, not a second de
  const salesOrders=fs.readFileSync(new URL('../src/SalesOrders.jsx',import.meta.url),'utf8'),invoiceCss=fs.readFileSync(new URL('../src/invoice-workspace.css',import.meta.url),'utf8'),salesOrderCss=fs.readFileSync(new URL('../src/sales-orders.css',import.meta.url),'utf8');
  assert.match(workspace,/const createOpen=!!form;/,'the create marker is derived from the open form');
  assert.match(workspace,/return <section className=\{"invoiceWorkspace"\+\(detailOpen\?" ivDetailOpen":""\)\+\(createOpen\?" soCreatePage ivCreatePage":""\)\}>/,'and the create page carries the same shell class the order page uses, so every shared shell rule applies by construction');
- assert.match(workspace,/<div className="soCreateHead"><div className="soHeadIdentity"><button type="button" className="soBack" aria-label="Back to invoices" onClick=\{\(\)=>setForm\(null\)\}><IconArrowLeft size=\{19\}\/><\/button><div className="soHeadText"><h2 id="ivCreateTitle">\{form\.id\?'Edit invoice':'New sales invoice'\}<\/h2>\{form\.id&&<small className="soHeadHint">Editing \{form\.number\}<\/small>\}<\/div><\/div><\/div>/,'the head is the same arrow-led full-bleed bar, with an edit-only hint');
+ assert.match(workspace,/<div className="soCreateHead"><div className="soHeadIdentity"><button type="button" className="soBack" aria-label="Back to invoices" onClick=\{\(\)=>setForm\(null\)\}><IconArrowLeft size=\{19\}\/><\/button><div className="soHeadText"><h2 id="ivCreateTitle">\{form\.id\?'Edit invoice':'New sales invoice'\}<\/h2>\{form\.id&&<small className="soHeadHint">Editing \{form\.number\}<\/small>\}<\/div><\/div><NumberFormatControl\/><\/div>/,'the head is the same arrow-led full-bleed bar, with an edit-only hint and the Number and Currency Format control at its right end');
  assert.ok(!workspace.includes('className="ivHeading"')||!workspace.includes('<button className="ivLink" onClick={()=>setForm(null)}><IconArrowLeft size={16}/> Invoices</button>'),'the old inline back link and its heading block are gone from the create page');
  assert.match(workspace,/<form className="ivCreateForm" onSubmit=/,'the form is its own element, as the order form is');
- assert.match(workspace,/<SalesDocumentFields kind="invoice" onEditCustomer=\{editCustomer\} form=\{form\} setForm=\{setForm\} customers=\{customers\} items=\{items\} config=\{db\.config\} organisations=\{organisations\}\/>/,'the fields come from the shared component, told it is an invoice, with the same scope universe the order page offers and the detour to the customer master');
+ assert.match(workspace,/<SalesDocumentFields kind="invoice" onEditCustomer=\{editCustomer\} onCreateItem=\{createItem\} autoNumber=\{nextInvoiceNumber\(db\.invoices\)\} form=\{form\} setForm=\{setForm\} customers=\{customers\} items=\{items\} config=\{db\.config\} organisations=\{organisations\} onCreateCustomer=\{createCustomer\} creditOutstanding=\{form\.customerId\?customerCreditSummary\(db,form\.customerId\)\.outstanding:0\}>/,'the fields come from the shared component, told it is an invoice, with the same scope universe the order page offers and the detour to the customer master');
 
- assert.match(workspace,/<details className="ivCard soMoreCard"><summary><span className="soMoreTitle">Additional details<\/span><span className="soMoreHint">Optional &mdash; notes and terms<\/span><\/summary>/,'Additional details is the same collapsed card the order page uses');
- assert.match(workspace,/<div className="soBarActions"><button type="button" onClick=\{\(\)=>setForm\(null\)\}>Cancel<\/button><button className="primary">Save draft<\/button><\/div><\/div><\/form><\/>:/,'the footer keeps the invoice verbs - it drafts, it never posts from the create page');
+ assert.match(workspace,/<section className="soMoreGroup"><div className="ivFields soFieldRow soFieldRow1">/,'the terms travel into the summary card as a child, the same way the order page carries them');
+ assert.ok(!workspace.includes('soMoreCard'),'and with no Additional details card left to hold them');
+ assert.match(workspace,/<div className="soBarActions"><button type="button" onClick=\{\(\)=>setForm\(null\)\}>Cancel<\/button><button type="submit" className=\{invoiceAllowed\(role,'submit'\)\?'':'primary'\}>Save draft<\/button>\{invoiceAllowed\(role,'submit'\)&&<button type="button" className="primary" onClick=\{\(\)=>saveInvoice\('Pending Approval'\)\}>Submit for approval<\/button>\}<\/div><\/div><\/form><\/>:/,'the footer carries the three invoice verbs: cancel, save draft, and submit for approval as the primary action');
  assert.match(workspace,/className="ivFooter soActionBar">\{preview&&<dl className="soBarTotals"><div><dt>Total amount<\/dt>/,'and it pins the running total, so the figure is in view while the lines are entered');
 
  assert.match(workspace,/function create\(demo=false\)\{setError\(''\);\/\* The scope is seeded from the working context exactly as the sales order seeds it/,'a new invoice is seeded with the working-context organisation and branch, the way the order is');
@@ -39,15 +40,16 @@ test('the New sales invoice page is the Create Sales Order page, not a second de
 
 test('the Customer card and the document details card are one shared pair of cards',()=>{
  const fields=fs.readFileSync(new URL('../src/SalesDocumentFields.jsx',import.meta.url),'utf8');
- assert.match(fields,/<div className="soOrderTop"><div className="ivCard soFormSection"><div className="soSectionHead soFactHead">/,'the customer card is the shared one, and carries the one pencil that changes its addresses');
+ assert.match(fields,/<div className="ivCard soFormSection"><div className="soSectionHead"><h3>Customer \*<\/h3><\/div>/,'the customer card is the shared one, and carries the one pencil that changes its addresses');
 
  assert.match(fields,/<div className="ivCard soFormSection"><div className="soSectionHead"><h3>\{kind==='order'\?'Order details':'Invoice details'\}<\/h3>/,'and so is the details card, named for the document');
- for(const shared of ['Organisation *','Branch *','Place of supply *','Payment terms','Due date'])
+ assert.ok(fields.includes('<small className="soDueHint">Due {shortDate(form.dueDate)}</small>'),'the invoice states the same derived due date under the same payment terms');
+ for(const shared of ['Organisation *','Branch *','Place of supply *','Payment terms'])
   assert.ok(fields.includes(shared),'the invoice carries the '+shared+' field the order carries');
- assert.match(fields,/<label>\{docTitle\} number<input placeholder="Automatic"/,'the number field is the same control, labelled for the document');
+ assert.match(fields,/<Field label=\{docTitle\+' ID'\} icon=\{IconHash\}><input placeholder=\{autoNumber\|\|'Automatic'\}/,'the number field is the same control, labelled for the document, carrying its own mark and stating the number the save will take');
 
- assert.match(fields,/\{field\('date',docTitle\+' date','date'\)\}/,'and so is the date');
- assert.match(fields,/<span className="customerSelectLabel">Customer \*<\/span><SearchSelect/,'the customer is the shared searchable combobox, never a native select');
+ assert.match(fields,/\{field\('date',docTitle\+' date \*','date',IconCalendar\)\}/,'and so is the date, with its calendar mark');
+ assert.match(fields,/<div className="soField soFieldSearch"><CustomerSearch customers=\{customers\}/,'the customer is typed into directly, never a native select, and the card heading is the only label it needs');
  assert.match(fields,/<dt>GST treatment<\/dt>|<dt>GSTIN<\/dt>/,'with the same read-only tax facts beside it');
  assert.match(fields,/\{addressEdit&&<div className="soAddressLayer"/,'and the same address editor');
 });
@@ -98,7 +100,7 @@ test('the four figures and the tabs live inside that card',()=>{
 });
 
 test('an invoice records the scope it was raised in, and the overview states it',()=>{
- assert.match(workspace,/const \{company,branch\}=getCurrentOrganizationContext\(\);const saved=run\('save',\{\.\.\.form,organizationId:form\.organizationId\|\|company\?\.id\|\|''/,'save stamps the order scope the way a sales order does, keeping any stored value');
+ assert.match(workspace,/const \{company,branch\}=getCurrentOrganizationContext\(\);\s*const saved=run\('save',\{\.\.\.form,organizationId:form\.organizationId\|\|company\?\.id\|\|''/,'save stamps the order scope the way a sales order does, keeping any stored value');
  assert.match(workspace,/const organisation=organisations\.find\(row=>row\.id===invoice\.organizationId\|\|row\.code===invoice\.organizationId\)\|\|null;/,'resolving a name from the header list, because an invoice may hold an id or a code');
  assert.match(workspace,/\['Organisation',organisation\?\.name\|\|invoice\.organizationName\],\['Branch',branch\?\.name\|\|invoice\.branchName\]/,'and the overview states both inside More details');
 });
@@ -197,16 +199,19 @@ test('the invoice tab row is the Item Details row, value for value',()=>{
  assert.match(css,/@media\(max-width:520px\)\{\.ivDetailSheet \.itemDetailTabs\{padding:0\}\.ivDetailSheet \.itemDetailTabs button\{flex:1 1 0;padding:0 8px;gap:5px;font-size:12px\}\}/,'and the narrow-viewport fallback');
 });
 
-test('the invoices register is seven columns that never scroll sideways',()=>{
- assert.match(workspace,/<table className="ivInvoiceTable"><thead><tr>\{\['Invoice','Customer','Order ID','Invoice amount','Payment status','Organisation and branch','Actions'\]\.map\(/,'the register names the seven columns the register asks for, in that order');
- assert.match(workspace,/onClick=\{\(\)=>\{setSelected\(i\.id\);setTab\('Overview'\)\}\}>\{i\.number\}<\/button><small>\{i\.date\} · \{i\.status\}<\/small>/,'the invoice number and its date share one cell, with the lifecycle status beside the date');
- assert.match(workspace,/<td>\{orderNumberOf\(i\)\|\|'Not linked'\}<\/td>/,'the Order ID column resolves the linked sales order and says when there is none');
- assert.match(workspace,/<StatusPill status=\{paymentStatus\(db,i\)\} tone=\{PAYMENT_TONES\[paymentStatus\(db,i\)\]\|\|'neutral'\}\/>/,'payment status uses the shared pill every other register uses, with the same tones');
- assert.match(workspace,/<td>\{i\.branchName\|\|'Not recorded'\}<small>\{i\.organizationName\|\|'Not recorded'\}<\/small><\/td>/,'organisation and branch share one cell, branch over organisation, exactly as the sales order register reads');
+test('the invoices register is eight columns that never scroll sideways',()=>{
+ assert.match(workspace,/<table className="ivInvoiceTable"><thead><tr>\{\['Invoice','Customer','Status','Invoice amount','Payment status','Organisation','Branch','Actions'\]\.map\(/,'the register names eight columns: the invoice, its customer, the lifecycle status AHEAD of the amount, the payment status, organisation and branch apart, and the row actions - the Order ID has no column here');
+ assert.match(workspace,/onClick=\{\(\)=>\{setSelected\(i\.id\);setTab\('Overview'\)\}\}>\{i\.number\}<\/button><small>\{i\.date\}<\/small>/,'the invoice number and its date share one cell, and the lifecycle status lives in its own column rather than beside the date');
+ assert.match(workspace,/<td>\{i\.customerName\}<\/td><td><StatusPill status=\{invoiceDisplayStatus\(i\)\} tone=\{invoiceDisplayTone\(i\)\}\/><\/td><td>\{money\(i\.totals\.total\)\}/,'the lifecycle status sits between the customer and the amount, and it reads through invoiceDisplayStatus - Draft, Pending or Published, from the stored record and its posted flag');
+ assert.ok(!workspace.includes("<td>{orderNumberOf(i)||'Not linked'}</td>"),'the Order ID has no cell in the register - it is read on the invoice detail page, and only its filter remains here');
+ assert.match(workspace,/<StatusPill status=\{paymentStatus\(db,i\)\} tone=\{PAYMENT_TONES\[paymentStatus\(db,i\)\]\|\|'neutral'\}\/>/, 'payment status uses the shared pill every other register uses, with the same tones');
+ assert.match(workspace,/<td>\{i\.organizationName\|\|'Not recorded'\}<\/td><td>\{i\.branchName\|\|'Not recorded'\}<\/td>/,'organisation and branch are columns of their own instead of one merged cell');
+ assert.match(workspace,/<button className="ivIconButton" aria-label=\{'View '\+i\.number\} title=\{'View '\+i\.number\} onClick=\{\(\)=>\{setSelected\(i\.id\);setTab\('Overview'\)\}\}><IconEye size=\{17\}\/><\/button>/,'and the row View action is an eye icon, labelled for a screen reader');
  const css=fs.readFileSync(new URL('../src/invoice-workspace.css',import.meta.url),'utf8');
  assert.ok(css.includes('.invoiceWorkspace .ivInvoiceTable{table-layout:fixed;width:100%;min-width:0;white-space:nowrap}'),'the table takes the card width, which is what stops the sideways scroll the eight-column layout had');
- for(const [n,w] of [[1,'15%'],[2,'17%'],[3,'12%'],[4,'16%'],[5,'12%'],[6,'16%'],[7,'12%']])
-  assert.ok(css.includes('.invoiceWorkspace .ivInvoiceTable th:nth-child('+n+'){width:'+w+'}'),'column '+n+' is '+w+' of the table');
+ for(const [n,w] of [[1,'13%'],[2,'16%'],[3,'11%'],[4,'12%'],[5,'12%'],[6,'16%'],[7,'11%'],[8,'9%']])
+ assert.ok(css.includes('.invoiceWorkspace .ivInvoiceTable th:nth-child('+n+'){width:'+w+'}'),'column '+n+' is '+w+' of the table, restated for eight');
+ assert.ok(css.includes('.invoiceWorkspace .ivInvoiceTable td:nth-child(8),.invoiceWorkspace .ivInvoiceTable th:nth-child(8){text-align:right;overflow:visible}'),'with the actions column - now the last - still right-aligned and released from the cell clipping');
  assert.ok(css.includes('.invoiceWorkspace .ivInvoiceTable th,.invoiceWorkspace .ivInvoiceTable td{padding:12px 10px;overflow:hidden;text-overflow:ellipsis;vertical-align:top}'),'a long value ellipses inside its own cell instead of widening the grid');
  assert.ok(css.includes('.invoiceWorkspace .ivCard.ivRegisterCard{overflow:visible}'),'and the register card releases its overflow so the Filters panel is not clipped at the card edge');
 });

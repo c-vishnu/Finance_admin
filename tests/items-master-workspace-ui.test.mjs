@@ -20,7 +20,7 @@ test('the register shows item identity and uses View Details plus a three-dot me
 });
 
 test('item details exposes saved data, transactions and audit history',()=>{
- for(const text of ['Item Details','Basic data','Organisations','Branches','Sales account','Purchase account','Inventory asset','Cost of goods sold','Opening stock','Transactions','Audit log / History','No transactions reference this item yet.'])assert.ok(screen.includes(text),text);
+ for(const text of ['Item Details','Basic data','Organisations','Branches','Sales account','Purchase account','Transactions','Audit log / History','No transactions reference this item yet.'])assert.ok(screen.includes(text),text);
  assert.match(screen,/accountingState\.inventoryAdjustments/);
  assert.match(screen,/auditTrail:\[\.\.\.\(form\.auditTrail\|\|\[\]\),audit\(isNew\?'Item created':'Item updated'\)\]/);
  assert.match(styles,/\.itemDetailFacts\{display:grid;grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
@@ -29,7 +29,7 @@ test('item details exposes saved data, transactions and audit history',()=>{
 test('item details follows the full-width document header and tabbed information pattern',()=>{
   assert.match(screen,/<div className="itemDetailHead"><button type="button" className="itemBack" aria-label="Back to Items"/);
   assert.match(screen,/<h1>Item Details<\/h1><\/div><div className="itemDetailBody">/);
-  assert.match(screen,/className="itemDetailActions"><span className=\{'itemStatus '/);
+  assert.match(screen,/className="itemDetailNameRow"><h2>\{selected\.name\}<\/h2><span className=\{'itemStatus '/,'the lifecycle badge sits on the name line, not in the action row');
   assert.match(screen,/className="itemMore itemDetailMore"><summary aria-label="More item actions">/);
   assert.match(screen,/\['Basic Data','Transactions','History'\]\.map/);
   assert.match(screen,/aria-current=\{detailTab===tab\?'page':undefined\}/);

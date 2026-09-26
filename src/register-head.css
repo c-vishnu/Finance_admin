@@ -10,7 +10,7 @@
    so a page keeps its old header until it is migrated and the rollout can move one
    page at a time.
    --------------------------------------------------------------------------- */
-.registerHead{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;position:sticky;top:0;z-index:9;padding:10px 0;background:#f6f8fb;transition:transform .22s ease}
+.registerHead{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;position:sticky;top:0;z-index:9;padding:10px 0;background:#f6f8fb;transition:none}
 .registerHead>.registerHeadText{flex:1 1 260px;min-width:0}
 .registerHead>.registerHeadText h1,.registerHead>.registerHeadText h2{margin:0}
 .registerHead>.registerHeadText p{margin:6px 0 0;color:#667085}
@@ -28,7 +28,7 @@
    makes it a two-column grid, so the merged row restates the opaque background it needs in order
    to stick and cover the content beneath it, and takes a third column for the actions. The extra
    column is scoped above the mobile fold, where that file already stacks the heading. */
-.je-page .je-heading.registerHead{background:#fff!important;min-height:0!important;margin:0!important;padding:12px 16px!important;border:1px solid #e1e6ed!important;border-bottom:1px solid #e1e6ed!important;border-radius:10px 10px 0 0!important;box-shadow:none!important}
+.je-page .je-heading.registerHead{background:#fff!important;min-height:0!important;margin:0!important;padding:12px 24px 0!important;border:1px solid #e1e6ed!important;border-bottom:0!important;border-radius:10px 10px 0 0!important;box-shadow:none!important}
 /* The heading bar is the top of the register card, so the page reads as one card exactly like the
    Chart of Accounts: the bar carries the card border and the top radius, the table card beneath it
    gives up its top border and its top corners and takes the bottom radius, and the bar keeps a
@@ -164,7 +164,7 @@
 @media(max-width:760px){
  .registerHead:has(.soFiltersMore[open]),.registerHead:has(.customerFilters[open]){position:static}
 }
-.registerHead.isHidden{transform:translateY(calc(-100% - 24px))}
+.registerHead.isHidden{transform:translateY(calc(-100% - 24px));transition:transform .22s ease}
 /* ---------------------------------------------------------------------------
    The column heading row pins under the page heading row.
 
@@ -176,7 +176,11 @@
    not declared here: every shell already paints its `th` opaquely, and a sticky cell must stay
    opaque to cover the rows passing under it.
    --------------------------------------------------------------------------- */
-[data-sticky-head] thead th{position:sticky;top:calc(var(--register-head-h,0px) - var(--register-head-pad,22px));z-index:6;box-shadow:inset 0 -1px 0 #e6ecf6;transition:top .22s ease}
+[data-sticky-head] thead th{position:sticky;top:calc(var(--register-head-h,0px) - var(--register-head-pad,22px));z-index:6;box-shadow:inset 0 -1px 0 #e6ecf6;transition:none}
+/* The row slides away on a downward scroll, but it comes straight back on the first upward one:
+   while the row and its column headings both animated, the 220ms return showed the rows through
+   the band between them. Only the hide is animated now, so both land in the same frame. */
+body:has(.registerHead.isHidden) [data-sticky-head] thead th{transition:top .22s ease}
 /* A sticky offset is measured from the scroll port content box, but the scroll port carries a top
    padding of its own, so a heading pinned at 0 sat that padding below the visible top edge and the
    rows scrolled through the band it left. The offset subtracts that padding, which puts the pinned
@@ -202,4 +206,29 @@ body:has(.am-coa-page.am-coa-bar-hidden) [data-sticky-head] thead th::before{con
  .je-page .registerHead .je-tools{flex:1 1 100%!important;flex-wrap:wrap!important}
  .je-page .registerHead .je-tools>label{flex:1 1 100%!important;max-width:none!important;margin-left:0!important}
  .je-page .je-heading.registerHead{grid-template-columns:minmax(0,1fr)!important}
+}
+
+/* One search width in every register, table, data grid and list toolbar: the
+   search sits directly beside the Filters button and is 300px wide, so the
+   same control is the same size in every module. Narrow screens keep the
+   full-width search stated in the media block above, which is why this lives
+   behind min-width:761px. The module sheets state their own flex values, some
+   of them important, so each selector repeats its module wording with the
+   width bound. */
+@media(min-width:761px){
+  .registerHead .ivTools>label,.registerHead .itemsTools>label,
+  .je-page .registerHead .je-tools>label,
+  .budgetV3Head.registerHead .budgetFilterSearch,
+  .pc-register-tabs>.pc-filters>.pc-filter-search,
+  .iaHeading.registerHead>.iaRegisterBar .iaSearch,
+  .am-coa-page>.am-filter-toolbar .am-search,
+  .am-filter-toolbar .am-search{flex:0 0 300px!important;width:300px!important;max-width:300px!important;min-width:0!important}
+  .ivTools>.ivToolSearch,.itemsTools>label,.je-tools>label{flex:0 0 300px;width:300px;max-width:300px;min-width:0}
+  .gl-filter-toolbar .gl-search{flex:0 0 300px;width:300px;max-width:300px;min-width:0}
+  .pc .pc-filters>.pc-filter-search{flex:0 0 300px;width:300px;max-width:300px;min-width:0}
+  .auditTools>label,.trTools>label,.tabletools>label,.bankTools>label,.bankTools .bankSearch,
+  .purchaseTools>label,.opsTools>label,.coaTools>label,.coaSimpleTools>label{flex:0 0 300px;width:300px;max-width:300px;min-width:0}
+  .day-filter-row .day-search{flex:0 0 300px;width:300px;max-width:300px}
+  .swSearch{width:300px;max-width:300px}
+  .budgetSelectionTools .budgetFilterSearch{flex:0 0 300px;width:300px;max-width:300px;min-width:0}
 }

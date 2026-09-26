@@ -1,13 +1,24 @@
 /* Final shared UI layer. Keeps every feature usable when legacy feature styles compete. */
 :root {
-  --ui-bg: #f6f8fb;
+  --ui-bg: #F4F7F9;
   --ui-surface: #fff;
   --ui-text: #172033;
   --ui-muted: #667085;
-  --ui-border: #dfe6ef;
+  --ui-border: #DFE3E6;
   --ui-primary: #3478f6;
-  --ui-radius: 10px;
+  --ui-radius: 12px;
   --ui-shadow: 0 4px 16px rgba(16, 24, 40, .06);
+  /* Spacing scale from the design sheet: one rhythm for every section.
+     4 / 6 / 8 / 10 / 12 / 16 / 20 / 24 / 30 / 32 / 60. */
+  --wvb-space-1: 4px; --wvb-space-2: 6px; --wvb-space-3: 8px; --wvb-space-4: 10px;
+  --wvb-space-5: 12px; --wvb-space-6: 16px; --wvb-space-7: 20px; --wvb-space-8: 24px;
+  --wvb-space-9: 30px; --wvb-space-10: 32px; --wvb-space-11: 60px;
+  /* Ink, surface, line, blue and radius values from the same sheet. */
+  --wvb-ink-1400: #0C0C0D; --wvb-ink-1200: #1D252B; --wvb-ink-1000: #3C4249;
+  --wvb-ink-800: #575F6C; --wvb-ink-700: #B0B8B9; --wvb-ink-600: #A3AEB8;
+  --wvb-surface-100: #F4F7F9; --wvb-surface-200: #E9ECEF; --wvb-line-400: #DFE3E6;
+  --wvb-blue-500: #1279FF; --wvb-blue-100: #EAF3FF; --wvb-blue-300: #CDE2FD;
+  --wvb-radius-8: 8px; --wvb-radius-10: 10px; --wvb-radius-12: 12px;
 }
 
 html { min-width: 320px; background: var(--ui-bg); }
@@ -23,7 +34,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
 img, svg { max-width: 100%; }
 .app, .app main, .app main > *, .app header > *, .headerActions > *,
 .card, section, article, form, fieldset, label, td, th { min-width: 0; }
-.app main { width: 100%; max-width: 1680px; padding: 22px clamp(16px, 2.2vw, 32px) 40px; }
+.app main { width: 100%; max-width: 1680px; padding: 20px 24px 32px; }
 
 /* Header: preserve controls without letting labels collide. */
 .app > header { min-width: 0; }
@@ -171,3 +182,71 @@ textarea { resize: vertical; }
   width: auto !important;
   height: auto !important;
 }
+/* Global Table Spacing & Alignment System */
+table { width: 100%; border-collapse: collapse; text-align: left; }
+th { padding: 16px 20px; height: 52px; box-sizing: border-box; white-space: nowrap; }
+td { padding: 16px 20px; height: 64px; box-sizing: border-box; vertical-align: middle; }
+th:first-child, td:first-child { padding-left: 24px; }
+th:last-child, td:last-child { padding-right: 24px; text-align: right; }
+.pagination-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--ui-border);
+  background: #fff;
+  font-size: 13px;
+  color: #667085;
+}
+.pagination-footer .pagination-left {
+  display: flex;
+  align-items: center;
+}
+.pagination-footer .pagination-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.pagination-footer select {
+  border: none;
+  background: transparent;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0 4px;
+}
+.pagination-footer .pagination-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.pagination-footer button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #d7e0eb;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  color: #344054;
+}
+.pagination-footer button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.pagination-footer button.active {
+  background: #f1f5fa;
+  border-color: #b0c4df;
+}
+/* Global Table Spacing & Alignment System */
+table { width: 100%; border-collapse: collapse; text-align: left; }
+th { padding: 16px 20px !important; height: 52px; box-sizing: border-box; white-space: nowrap; }
+td { padding: 16px 20px !important; height: 64px; box-sizing: border-box; vertical-align: middle; }
+th:first-child, td:first-child { padding-left: 24px !important; }
+th:last-child, td:last-child { padding-right: 24px !important; text-align: right; }
+
+table th:first-child, table td:first-child { padding-left: 24px !important; }
+table th:last-child, table td:last-child { padding-right: 24px !important; }
+

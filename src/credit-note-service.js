@@ -3,22 +3,35 @@ import {purchaseTaxDocuments} from './purchase-service.js';
 import {lineTaxes} from './invoice-tax.js';
 /* The credit note is a financial adjustment against a customer, not a negative invoice: it always
    names a type, a structured reason and (when it adjusts a sale) the invoice it belongs to. */
-export const CREDIT_NOTE_TYPES=['Against Invoice','Without Invoice'];
+export const CREDIT_NOTE_TYPES=['Against Invoice','Standalone Credit Note'];
 export const DEFAULT_CREDIT_NOTE_TYPE='Against Invoice';
-export const CREDIT_REASONS=['Sales Return','Damaged Goods','Wrong Item','Excess Quantity','Pricing Correction','Post-Sale Discount','Tax Correction','Other'];
+/* A credit note either reverses a posted sale line by line, or adjusts a value with no item behind
+   it. The method is stored on the note so the form, the validation and the posting read one field. */
+export const CREDIT_METHODS=['Item Based Credit','Amount Based Credit'];
+export const DEFAULT_CREDIT_METHOD='Item Based Credit';
+export const creditMethod=value=>CREDIT_METHODS.includes(value)?value:DEFAULT_CREDIT_METHOD;
+/* Whether a goods note takes the stock back or is a financial adjustment only. A pricing correction
+   never moves stock; a sales return normally does. The choice is stored on the note. */
+export const INVENTORY_IMPACTS=['Return Stock To Inventory','Financial Adjustment Only'];
+export const DEFAULT_INVENTORY_IMPACT='Financial Adjustment Only';
+export const inventoryImpact=value=>INVENTORY_IMPACTS.includes(value)?value:DEFAULT_INVENTORY_IMPACT;
+export const CREDIT_REASONS=['Sales Return','Pricing Correction','Wrong Billing','Discount Adjustment','Damaged Goods','Service Cancellation','GST Correction','Other'];
 /* Labels the earlier prototype wrote are still readable: a stored note keeps its own string, and a
    new one is always written in the current vocabulary. */
-const LEGACY_REASONS={'Price Adjustment':'Pricing Correction','Other Customer Adjustment':'Other','Tax Adjustment':'Tax Correction'};
+const LEGACY_REASONS={'Price Adjustment':'Pricing Correction','Other Customer Adjustment':'Other','Tax Adjustment':'GST Correction','Tax Correction':'GST Correction','Post-Sale Discount':'Discount Adjustment','Wrong Item':'Wrong Billing','Excess Quantity':'Sales Return'};
 export const canonicalReason=value=>CREDIT_REASONS.includes(value)?value:LEGACY_REASONS[value]||'';
 export const reasons=CREDIT_REASONS;
-export const noteType=value=>CREDIT_NOTE_TYPES.includes(value)?value:DEFAULT_CREDIT_NOTE_TYPE;
+/* "Without Invoice" is what the earlier prototype called a standalone note: a stored one still reads
+   as itself and is normalised on the way through this one function. */
+const LEGACY_NOTE_TYPES={'Without Invoice':'Standalone Credit Note','Standalone':'Standalone Credit Note'};
+export const noteType=value=>CREDIT_NOTE_TYPES.includes(value)?value:LEGACY_NOTE_TYPES[value]||DEFAULT_CREDIT_NOTE_TYPE;
 /* A tax-only correction must never reduce revenue, and a goods reason must never credit more than
    the invoice still allows. Both rules read the reason, in one place. */
-export const isTaxOnlyReason=value=>canonicalReason(value)==='Tax Correction';
-export const isReturnReason=value=>['Sales Return','Damaged Goods','Wrong Item','Excess Quantity'].includes(canonicalReason(value));
+export const isTaxOnlyReason=value=>canonicalReason(value)==='GST Correction';
+export const isReturnReason=value=>['Sales Return','Damaged Goods'].includes(canonicalReason(value));
 /* The reason picks the configured account mapping role. A tax correction keeps a role of its own so
    it can be mapped to a tax adjustment account instead of a revenue one. */
-export function creditMappingRole(value){const reason=canonicalReason(value);if(reason==='Sales Return')return 'salesReturn';if(reason==='Tax Correction')return 'taxAdjustment';if(['Pricing Correction','Post-Sale Discount','Excess Quantity','Wrong Item','Damaged Goods'].includes(reason))return 'salesAdjustment';return 'otherAdjustment'}
+export function creditMappingRole(value){const reason=canonicalReason(value);if(reason==='Sales Return')return 'salesReturn';if(reason==='GST Correction')return 'taxAdjustment';if(['Pricing Correction','Discount Adjustment','Wrong Billing','Damaged Goods','Service Cancellation'].includes(reason))return 'salesAdjustment';return 'otherAdjustment'}
 const copy=x=>JSON.parse(JSON.stringify(x));
 const dateOK=d=>/^\d{4}-\d{2}-\d{2}$/.test(d||'')&&!Number.isNaN(Date.parse(d))&&new Date(d).toISOString().slice(0,10)===d;
 export const issued=s=>(s.creditNotes||[]).filter(c=>c.posted&&c.status!=='Cancelled');
@@ -30,11 +43,12 @@ export const adjustmentStatus=(s,c)=>!applied(s,c)?'Unapplied':available(s,c)?'P
 /* The statuses the register filters on and the detail page prints. The stored field stays the
    lifecycle the approval workflow writes (Draft / Pending Approval / Approved / Issued / Cancelled);
    what has happened to the money is derived, so the two can never disagree. */
-export const CREDIT_NOTE_STATUSES=['Draft','Pending Approval','Issued','Partially Applied','Fully Applied','Partially Refunded','Refunded','Cancelled'];
+export const CREDIT_NOTE_STATUSES=['Draft','Pending Approval','Approved','Issued','Partially Applied','Fully Applied','Partially Refunded','Refunded','Cancelled'];
 export function creditNoteStatus(s,c){
  if(c.status==='Cancelled')return 'Cancelled';
  if(c.status==='Draft')return 'Draft';
  if(c.status==='Pending Approval')return 'Pending Approval';
+ if(c.status==='Approved'&&!c.posted)return 'Approved';
  const total=c.totals.total,used=applied(s,c),back=refunded(s,c);
  if(used>=total&&total>0)return 'Fully Applied';
  if(back>0&&available(s,c)<=0)return 'Refunded';
@@ -74,6 +88,12 @@ export function returnableQuantity(s,invoice,index){
 }
 export const creditReturns=(s,c)=>issued(s).filter(other=>other.id!==c.id&&other.originalInvoiceId===c.originalInvoiceId&&isReturnReason(other.reason)).reduce((n,other)=>n+other.totals.total,0);
 export function creditLine(invoice,index){const l=invoice.lines[index];return {...copy(l),invoiceItemIndex:index,description:l.description,unit:l.unit,taxes:lineTaxes(l,invoice.totals.intra)}}
+/* The tax a value-only adjustment reverses: the invoice's own blended component rates, so an
+   amount-based credit on a single-rate invoice reverses exactly what the invoice charged. */
+export const billedTaxRates=invoice=>{const t=(invoice&&invoice.totals)||{},taxable=Number(t.taxable||0),pct=k=>taxable?Math.round(Number(t[k]||0)/taxable*100*1e6)/1e6:0;return t.intra?{cgst:pct('cgst'),sgst:pct('sgst'),igst:0,cess:pct('cess')}:{cgst:0,sgst:0,igst:pct('igst'),cess:pct('cess')}};
+/* A standalone note has no invoice to inherit from, so the operator's Tax treatment decides: the
+   rate splits into CGST + SGST inside the company state and becomes IGST outside it. */
+export function chosenTaxRates(form,taxPolicy){const intra=String(form.place||'').trim().toLowerCase()===String((taxPolicy||{}).state||'').trim().toLowerCase(),rate=Number(String(form.adjustmentTax||'').replace(/[^0-9.]/g,''))||0;return intra?{cgst:rate/2,sgst:rate/2,igst:0,cess:0}:{cgst:0,sgst:0,igst:rate,cess:0}}
 export function calculateCredit(s,form){
  const type=noteType(form.type),reason=canonicalReason(form.reason);
  if(!reason)throw Error('Select a credit note reason.');
@@ -89,11 +109,31 @@ export function calculateCredit(s,form){
  }else{
   if(!form.customerId||!String(form.customerName||'').trim())throw Error('Select a customer.');
   if(!form.place)throw Error('Select the place of supply.');
-  if(!(form.lines||[]).length)throw Error('Add at least one credit line.');
+  if(creditMethod(form.creditMethod)==='Amount Based Credit'){
+   if(!(minor(form.adjustmentAmount||'0')>0))throw Error('Enter an adjustment amount greater than zero.');
+  }else if(!(form.lines||[]).length)throw Error('Add at least one credit line.');
  }
  // A note against an invoice reverses that invoice's own tax treatment: stale or edited component
  // rates carried by the form are ignored. A note without an invoice keeps the rates the operator
  // chose, and both go through the one tax engine.
+ const method=creditMethod(form.creditMethod);
+ /* An amount-based credit adjusts a value, not quantities, so it has no invoice item to point at: the
+    tax is the invoice's own blended rate (or the rate chosen for a standalone note) and the caps are
+    checked in total, per tax component, instead of line by line. */
+ if(method==='Amount Based Credit'){
+  const amount=minor(form.adjustmentAmount||'0'),taxPolicy=(invoice&&invoice.taxPolicy)||s.config;
+  if(!(amount>0))throw Error('Enter an adjustment amount greater than zero.');
+  if(type==='Against Invoice'&&invoice.companyId&&form.companyId&&invoice.companyId!==form.companyId)throw Error('The credit note organisation must be the invoice organisation.');
+  const rates=type==='Against Invoice'?billedTaxRates(invoice):chosenTaxRates(form,taxPolicy);
+  const totals=calculate({...form,lines:[{description:reason,unit:'NOS',qty:1,rate:String(amount/100),taxes:rates,invoiceItemIndex:-1,priceTaxMode:'exclusive'}]},taxPolicy);
+  if(type==='Against Invoice'){
+   const previous=issued(s).filter(c=>c.originalInvoiceId===invoice.id&&c.id!==form.id);
+   for(const k of ['taxable','cgst','sgst','igst','cess']){const used=previous.reduce((n,c)=>n+Number(c.totals[k]||0),0),left=Math.max(0,Number(invoice.totals[k]||0)-used);if(Number(totals[k]||0)+used>Number(invoice.totals[k]||0))throw Error('This adjustment exceeds the '+money(left)+' of '+(k==='taxable'?'taxable value':'GST')+' still creditable on '+invoice.number+'. Reduce the amount.');}
+   if(totals.total+previous.reduce((n,c)=>n+c.totals.total,0)>invoice.totals.total)throw Error('Credit must be within the remaining original invoice amount.');
+  }
+  if(totals.total<=0)throw Error('Credit must be positive.');
+  return totals;
+ }
  const taxOnly=isTaxOnlyReason(reason),returns=isReturnReason(reason);
  const calculationForm=taxOnly||type!=='Against Invoice'?form:{...form,lines:form.lines.map(line=>{const source=invoice.lines[line.invoiceItemIndex];return source?{...line,taxes:lineTaxes(source,invoice.totals.intra)}:line})};
  const totals=calculate(calculationForm,(invoice&&invoice.taxPolicy)||s.config);
@@ -110,6 +150,40 @@ export function calculateCredit(s,form){
  if(totals.total<=0)throw Error('Credit must be positive.');
  return totals;
 }
+/* The accounts one credit note posts to, in the order the journal states them, derived from the same
+   mapping resolution issue() uses. Pure: it reads the note, its invoice and the configured mappings and
+   writes nothing, so the Accounting Preview on the form and the posting itself cannot disagree. `expects`
+   is the account type the resolver must accept, and `complete` is false when a mapping the note needs is
+   missing - which is exactly when the posting refuses, so the preview can say why before the operator tries. */
+export function creditPostingPlan(s,note,totals){
+ const invoice=s.invoices.find(i=>i.id===note.originalInvoiceId),mapping=s.config.creditMappings||{},role=creditMappingRole(note.reason);
+ /* The revenue or adjustment account is the only mapping a credit note cannot do without, and an
+    invoice-backed note already knows which income account it is reversing, so the resolution ends at
+    the invoice line own income account and then at the configured sales account rather than refusing.
+    A configured role account - salesReturn, taxAdjustment, otherAdjustment or the shared
+    salesAdjustment - still wins, which is how an accountant keeps a dedicated sales-return ledger. */
+ const lineIncome=(totals.lines||[]).map(l=>invoice?.lines?.[l.invoiceItemIndex]?.income||invoice?.totals?.lines?.[l.invoiceItemIndex]?.income).filter(Boolean),salesAccount=note.adjustmentAccount||mapping[role]||mapping.salesAdjustment||lineIncome[0]||s.config.sales,gstAccount=mapping[role+'Gst']||mapping.gstAdjustment,receivable=mapping.ar||invoice?.arAccount||s.config.ar;
+ const tax=[['cgst','CGST'],['sgst','SGST'],['igst','IGST'],['cess','Cess']].filter(([k])=>totals[k]).map(([k,label])=>({k,label,accountRef:gstAccount||mapping[k]||s.config[k],amount:totals[k]}));
+ const lines=[];
+ if(totals.taxable)lines.push({role:'revenue',label:note.reason,accountRef:salesAccount,expects:['Income'],debit:totals.taxable,credit:0});
+ for(const row of tax)lines.push({role:row.k,label:row.label+' reversal',accountRef:row.accountRef,expects:['Liabilities'],debit:row.amount,credit:0});
+ if(totals.roundOff)lines.push({role:'roundOff',label:'Round off',accountRef:s.config.round,expects:['Expenses'],debit:Math.max(totals.roundOff,0),credit:Math.max(-totals.roundOff,0)});
+ lines.push({role:'receivable',label:'Customer receivable',accountRef:receivable,expects:['Assets'],debit:0,credit:totals.total});
+ const missing=[];
+ if(totals.taxable&&!salesAccount)missing.push('the revenue adjustment account');
+ if(tax.length&&!tax.every(row=>row.accountRef))missing.push('the GST adjustment account');
+ if(!receivable)missing.push('the customer receivable account');
+ return {lines,tax,mappings:{role,salesAccount,gstAccount,receivable},complete:!missing.length,missing};
+}
+/* What the Credit account mapping dialog opens with: the accounts the engine already falls back to, so
+   an operator reads the effective mapping instead of five empty selects. A stored value always wins. */
+/* What the Credit account mapping dialog opens with: the accounts the engine already falls back to, so
+   an operator reads the effective mapping instead of blank selects. TWO routes are offered side by side:
+   the shared sales-adjustment account, which every reason uses unless it names an account of its own, and
+   the three reason-specific accounts (Sales Return, Tax Adjustment, Other Adjustment). A reason-specific
+   account wins for its own reason - which is how a dedicated sales-return ledger is kept - and a blank
+   one means "use the shared account". A stored value always wins over these defaults. */
+export function creditMappingDefaults(s){const mapping=s.config.creditMappings||{};return {salesAdjustment:mapping.salesAdjustment||s.config.sales||'',gstAdjustment:mapping.gstAdjustment||s.config.cgst||s.config.sgst||s.config.igst||s.config.cess||'',ar:mapping.ar||s.config.ar||'',inventoryAsset:mapping.inventoryAsset||'',stockAdjustment:mapping.stockAdjustment||'',salesReturn:mapping.salesReturn||'',taxAdjustment:mapping.taxAdjustment||'',otherAdjustment:mapping.otherAdjustment||''}}
 export function creditCommand(state,action,payload){const s=copy(state),p=copy(payload);s.creditNotes||=[];s.creditApplications||=[];s.creditRefunds||=[];let c=s.creditNotes.find(c=>c.id===p.id);const now=new Date().toISOString();let entry;
  if(action==='save'){
   if(c&&(c.status!=='Draft'||c.revision!==p.revision))throw Error('Only the latest draft can be edited.');if(!dateOK(p.date))throw Error('Enter a valid credit note date.');
@@ -118,19 +192,16 @@ export function creditCommand(state,action,payload){const s=copy(state),p=copy(p
   /* A linked sales return is its own document, written by the inventory side: the note points at it
      and never creates one, so nothing moves stock here. */
   if(p.salesReturnId){const linked=(s.salesReturns||[]).find(r=>r.id===p.salesReturnId);if(!linked)throw Error('The linked sales return was not found.');if(linked.customerId&&p.customerId&&linked.customerId!==p.customerId)throw Error('The linked sales return belongs to a different customer.');if(linked.invoiceId&&p.originalInvoiceId&&linked.invoiceId!==p.originalInvoiceId)throw Error('The linked sales return belongs to a different invoice.');}
-  const totals=calculateCredit(s,{...p,type,reason});let n=1;while(s.creditNotes.some(c=>c.number===`CN-${String(n).padStart(4,'0')}`))n++;const number=p.number?.trim()||`CN-${String(n).padStart(4,'0')}`;if(s.creditNotes.some(x=>x.id!==p.id&&x.number.toLowerCase()===number.toLowerCase()))throw Error('Credit note number already exists.');const old=c;c={...p,type,reason,salesReturnId:p.salesReturnId||'',originalInvoiceId:type==='Against Invoice'?p.originalInvoiceId:'',customerName:p.customerName||invoice?.customerName||'',id:c?.id||crypto.randomUUID(),number,totals,revision:(c?.revision||0)+1,posted:false,status:'Draft',createdAt:c?.createdAt||now,createdBy:c?.createdBy||'Admin',updatedAt:now,updatedBy:'Admin'};s.creditNotes=old?s.creditNotes.map(x=>x.id===c.id?c:x):[...s.creditNotes,c];
+  const totals=calculateCredit(s,{...p,type,reason});let n=1;while(s.creditNotes.some(c=>c.number===`CN-${String(n).padStart(4,'0')}`))n++;const number=p.number?.trim()||`CN-${String(n).padStart(4,'0')}`;if(s.creditNotes.some(x=>x.id!==p.id&&x.number.toLowerCase()===number.toLowerCase()))throw Error('Credit note number already exists.');const old=c;c={...p,type,reason,creditMethod:creditMethod(p.creditMethod),inventoryImpact:type==='Against Invoice'&&p.originalInvoiceId&&isReturnReason(reason)?'Return Stock To Inventory':'Financial Adjustment Only',salesReturnId:p.salesReturnId||'',originalInvoiceId:type==='Against Invoice'?p.originalInvoiceId:'',customerName:p.customerName||invoice?.customerName||'',id:c?.id||crypto.randomUUID(),number,totals,revision:(c?.revision||0)+1,posted:false,status:'Draft',createdAt:c?.createdAt||now,createdBy:c?.createdBy||'Admin',updatedAt:now,updatedBy:'Admin'};s.creditNotes=old?s.creditNotes.map(x=>x.id===c.id?c:x):[...s.creditNotes,c];
  }else{
   if(!c)throw Error('Credit note not found.');
   if(action==='submit'){if(c.status!=='Draft')throw Error('Only drafts may be submitted.');c.status='Pending Approval';}
   else if(action==='approve'){if(c.status==='Approved')return {state:s,result:c};if(c.status!=='Pending Approval')throw Error('Submit for approval first.');calculateCredit(s,c);Object.assign(c,{status:'Approved',approvedAt:now,approvedBy:'Admin'});}
   else if(action==='issue'){
-   if(c.posted&&c.status!=='Cancelled')return {state:s,result:c};if(c.status!=='Approved')throw Error('Approve the credit note before issuing.');const t=calculateCredit(s,c),invoice=s.invoices.find(i=>i.id===c.originalInvoiceId);const mapping=s.config.creditMappings||{};const role=creditMappingRole(c.reason);const lines=[];
-   const salesAccount=mapping[role]||mapping.salesAdjustment,gstAccount=mapping[role+'Gst']||mapping.gstAdjustment,receivable=mapping.ar||invoice?.arAccount||s.config.ar,taxTotal=t.cgst+t.sgst+t.igst+t.cess;
-   if((t.taxable&&!salesAccount)||(taxTotal&&!gstAccount&&!['cgst','sgst','igst','cess'].every(k=>!t[k]||mapping[k]||s.config[k]))||!receivable)throw Error('Credit Note account mapping is incomplete. Configure account mapping before posting.');
-   if(t.taxable)lines.push({account:account(s,salesAccount,['Income']),debit:t.taxable,credit:0,description:c.reason});
-   for(const k of ['cgst','sgst','igst','cess'])if(t[k])lines.push({account:account(s,gstAccount||mapping[k]||s.config[k],['Liabilities']),debit:t[k],credit:0,description:k.toUpperCase()});
-   if(t.roundOff)lines.push({account:account(s,s.config.round,['Expenses']),debit:Math.max(t.roundOff,0),credit:Math.max(-t.roundOff,0),description:'Round off'});
-   const ar=account(s,receivable,['Assets']);lines.push({account:ar,debit:0,credit:t.total});entry=journal(s,{...c,creditNoteId:c.id},'Credit Note',lines,c.date,'credit-note:'+c.id);Object.assign(c,{posted:true,status:'Issued',totals:t,arAccount:ar,journalId:entry.id,issuedAt:now,issuedBy:'Admin'});
+   if(c.posted&&c.status!=='Cancelled')return {state:s,result:c};if(c.status!=='Approved')throw Error('Approve the credit note before issuing.');const t=calculateCredit(s,c),plan=creditPostingPlan(s,c,t),lines=[];
+   if(!plan.complete)throw Error('Credit Note account mapping is incomplete. Configure account mapping before posting.');
+    for(const row of plan.lines)lines.push({account:account(s,row.accountRef,row.expects),debit:row.debit,credit:row.credit,description:row.label});
+    const ar=lines[lines.length-1].account;entry=journal(s,{...c,creditNoteId:c.id},'Credit Note',lines,c.date,'credit-note:'+c.id);Object.assign(c,{posted:true,status:'Issued',totals:t,arAccount:ar,journalId:entry.id,issuedAt:now,issuedBy:'Admin'});
    if(p.salesReturnId)c.salesReturnId=p.salesReturnId;
   }else if(action==='apply'){
    if(c.status!=='Issued'||!c.posted)throw Error('Only issued credit notes can be applied.');if(!p.token)throw Error('Application request ID is required.');if(s.creditApplications.some(a=>a.token===p.token))return {state:s,result:c};if(!dateOK(p.date)||p.date<c.date)throw Error('Application date cannot precede the credit note.');if(!p.allocations?.length)throw Error('Select at least one invoice.');let total=0;const seen=new Set();

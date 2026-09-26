@@ -1,7 +1,14 @@
-import {calculate,command} from './invoice-engine.js';
+import {calculate,command,today} from './invoice-engine.js';
+/* The invoice is dated when it is raised, not when the order was taken: dating it back to the order
+   puts revenue in the wrong period, and a period that has since closed would silently block the
+   posting later. The due date follows from the invoice date and the order payment terms. */
+const addDays=(date,days)=>{const d=new Date(date+'T12:00:00Z');if(Number.isNaN(d.getTime()))return '';d.setUTCDate(d.getUTCDate()+Number(days||0));return d.toISOString().slice(0,10)};
 import {itemOrganisationIds} from './item-master.js';
 const clone=x=>JSON.parse(JSON.stringify(x));
 const validDate=d=>/^\d{4}-\d{2}-\d{2}$/.test(d||'')&&!Number.isNaN(Date.parse(d))&&new Date(d).toISOString().slice(0,10)===d;
+/* The next number the save will assign. The page shows it beside the ID field so the operator sees
+   the number before it is taken, and `saveSalesOrder` reads the same function rather than a copy. */
+export function nextSalesOrderNumber(orders=[]){let n=1;while(orders.some(order=>order.number===`SO-${String(n).padStart(5,'0')}`))n++;return `SO-${String(n).padStart(5,'0')}`}
 export function saveSalesOrder(orders,input,config,status){
  const form=clone(input),existing=orders.find(o=>o.id===form.id);
  if(existing&&(existing.invoice||['Cancelled','Completed'].includes(existing.status)))throw Error('This order is locked. Its linked invoice is managed separately.');
@@ -9,24 +16,28 @@ export function saveSalesOrder(orders,input,config,status){
  if(!form.customerId||!form.customerName)throw Error('Select an active customer.');
  if(!validDate(form.date)||!validDate(form.dueDate)||form.dueDate<form.date)throw Error('Enter a valid order date and due date.');
  if(form.shipment&&(!validDate(form.shipment)||form.shipment<form.date))throw Error('Shipment cannot be before the order date.');
- let n=1;while(orders.some(o=>o.number===`SO-${String(n).padStart(5,'0')}`))n++;
- const number=form.number.trim()||`SO-${String(n).padStart(5,'0')}`;
+ const number=form.number.trim()||nextSalesOrderNumber(orders);
  if(orders.some(o=>o.id!==form.id&&o.number.toLowerCase()===number.toLowerCase()))throw Error('Sales order number must be unique.');
  const totals=calculate(form,config);
  const order={...form,id:form.id||crypto.randomUUID(),number,schemaVersion:2,customer:form.customerId,status,totals,total:totals.total/100,taxPolicy:{state:config.state,roundRupee:config.roundRupee},updatedAt:new Date().toISOString()};
  return {order,orders:existing?orders.map(o=>o.id===order.id?order:o):[order,...orders]};
 }
-export function convertSalesOrder(state,order){
+export function convertSalesOrder(state,order,ctx={}){
  const linked=state.invoices.find(i=>i.sourceOrder===order.id);if(linked)return {state,result:linked};
  if(order.status==='Cancelled')throw Error('Cancelled orders cannot generate invoices.');
+ /* Only a confirmed order is a customer commitment. Invoicing a draft would turn an unapproved
+    quantity and price into a legal document. */
+ if(order.status!=='Confirmed')throw Error('Confirm the order before generating its invoice.');
  if(order.schemaVersion!==2)throw Error('Open and save this legacy order in the new form before generating its invoice.');
  if(Number(order.taxRate||0)!==0||Number(order.adjustment||0)!==0)throw Error('This order carries a TDS/TCS withholding that the invoice form cannot post. Re-record the order in the current form, or post the invoice and adjust the withholding separately.');
  const config={...state.config,...order.taxPolicy};
+ const invoiceDate=today(),billedDue=addDays(invoiceDate,Number(String(order.terms||'').trim())||0);
+ const invoiceDueDate=billedDue&&billedDue>=invoiceDate?billedDue:(order.dueDate&&order.dueDate>=invoiceDate?order.dueDate:invoiceDate);
  /* The invoice keeps the order's own organisation and branch rather than the working context the
     operator happens to be in when they convert it: period locking resolves the posting period from
     these, so a lock on the order's branch has to be the one that applies. The customer's receivable
     ledger travels too, so posting can post to the customer's own account. */
- const output=command({...state,config},'save',{sourceOrder:order.id,sourceOrderNumber:order.number,reference:order.reference||order.number,customerId:order.customerId,customerName:order.customerName,date:order.date,dueDate:order.dueDate,terms:order.terms,billing:order.billing,shipping:order.shipping,place:order.place,placeSource:order.placeSource||'',placeCode:order.placeCode||'',lines:clone(order.lines),notes:order.notes||'',termsAndConditions:order.termsAndConditions||'',organizationId:order.organizationId||'',organizationName:order.organizationName||'',branchId:order.branchId||'',branchName:order.branchName||'',receivableAccount:order.receivableAccount||''});
+ const output=command({...state,config},'save',{sourceOrder:order.id,sourceOrderNumber:order.number,reference:order.reference||order.number,customerId:order.customerId,customerName:order.customerName,date:invoiceDate,dueDate:invoiceDueDate,terms:order.terms,billing:order.billing,shipping:order.shipping,place:order.place,placeSource:order.placeSource||'',placeCode:order.placeCode||'',lines:clone(order.lines),notes:order.notes||'',termsAndConditions:order.termsAndConditions||'',organizationId:order.organizationId||'',organizationName:order.organizationName||'',branchId:order.branchId||'',branchName:order.branchName||'',receivableAccount:order.receivableAccount||''},ctx);
  output.state.config=state.config;
  return output;
 }

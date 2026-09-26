@@ -19,7 +19,7 @@ function posted(qty){
 test('a sales return posts stock through the inventory engine and links to its invoice',()=>{
  const {state,invoice}=posted(10);
  const before=(state.inventoryAdjustments||[]).length,journals=(state.journals||[]).length;
- const out=raiseSalesReturn({state,payload:{invoiceId:invoice.id,date:'2026-09-20',condition:'Resalable',warehouseId:'wh-1',lines:[{invoiceItemIndex:0,qty:2}]},items,settings,scope:{companyId:'C1',companyName:'ABC Technologies',branchId:'wh-1',branchName:'Kochi Branch'}});
+ const out=raiseSalesReturn({state,payload:{invoiceId:invoice.id,date:'2026-09-20',condition:'Resalable',warehouseId:'wh-1',lines:[{invoiceItemIndex:0,qty:2}]},items,settings,scope:{companyId:'C1',companyName:'Wayvida',branchId:'wh-1',branchName:'Kochi Branch'}});
  const record=out.result;
  assert.equal(record.number,'SR-0001');
  assert.equal(record.status,'Posted');

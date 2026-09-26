@@ -217,8 +217,8 @@ test('the adjustment account comes from the settings mapping or the Chart of Acc
 });
 
 test('stored locations resolve to the branch ids the register works in',()=>{
-  const branches=[{id:'abc-kochi',code:'KOC01',name:'Kochi Branch'},{id:'abc-pune',code:'PUN02',name:'Pune Branch'}];
-  assert.deepEqual(canonicalItems([{id:'item-1',warehouseId:'Kochi Branch'},{id:'item-2',warehouseId:'KOC01'},{id:'item-3',warehouseId:'abc-pune'},{id:'item-4',warehouseId:''}],branches).map(item=>item.warehouseId),['abc-kochi','abc-kochi','abc-pune','']);
+  const branches=[{id:'abc-kochi',code:'KOC01',name:'Kochi Branch'},{id:'abc-trivandrum',code:'TVM03',name:'Trivandrum Branch'}];
+  assert.deepEqual(canonicalItems([{id:'item-1',warehouseId:'Kochi Branch'},{id:'item-2',warehouseId:'KOC01'},{id:'item-3',warehouseId:'abc-trivandrum'},{id:'item-4',warehouseId:''}],branches).map(item=>item.warehouseId),['abc-kochi','abc-kochi','abc-trivandrum','']);
 });
 
 test('the exported register row carries what the list needs to print',()=>{
@@ -244,7 +244,7 @@ test('the module posts through the shared journal engine and never a cash accoun
 });
 
 test('the sidebar and the route expose Inventory > Inventory Adjustments',()=>{
-  assert.match(navigation,/\{label:'Inventory',icon:IconPackage,children:\[leaf\('Items'\),leaf\('Inventory Adjustments'\)\]\}/);
+  assert.match(navigation,/\{label:'Settings',icon:IconSettings,children:\[leaf\('Settings Center'\),leaf\('Company'\),leaf\('Branch','Branches'\),\{label:'Other',children:\[leaf\('Budgets'\),leaf\('Period Lock'\),leaf\('Inventory Adjustments'\)\]\}\]\}/,'Inventory Adjustments is reachable through Settings > Other, with Items now a destination of its own');
   assert.match(app,/import InventoryAdjustments from '\.\/InventoryAdjustments\.jsx'/);
   assert.match(app,/a==='Inventory Adjustments'\?<InventoryAdjustments seed=\{coaSeed\} notify=\{notify\} onNavigate=\{setA\}\/>/);
 });

@@ -34,14 +34,17 @@ test('basic and contact information are one Vendor details section',()=>{
   assert.ok(page.includes('<div className="itemSectionTitle">Vendor details</div>'),'the first block merges the two old cards');
   assert.ok(!page.includes('Basic information')&&!page.includes('Contact information'),'the old Basic and Contact information headings are gone');
   const details=page.slice(at('<div className="itemSectionTitle">Vendor details</div>'),at('<div className="itemSectionTitle">Billing address</div>'));
-  for(const field of ["field('name','Vendor name *'","field('code','Vendor code'","field('displayName','Display name'","field('status','Status'","field('contactName','Contact person name'","field('phone','Phone number *'","field('email','Email address'","field('website','Website'"])
+  for(const field of ["field('name','Vendor name *'","field('code','Vendor code'","field('displayName','Display name'","field('contactName','Contact person name'","field('phone','Phone number *'","field('email','Email address'","field('website','Website'"])
    assert.ok(details.includes(field),'Vendor details carries '+field);
 });
 
-test('Vendor type leads the form as the shared radio group',()=>{
-  assert.ok(page.includes('<fieldset className="itemTypeField"><legend>Vendor type *</legend><div className="itemRadioGroup">'),'the type choice is the shared themed radio group');
-  assert.ok(page.includes("<input type=\"radio\" name=\"vendor-type\" value={value} checked={form.type===value} onChange={()=>update('type',value)}/>"),'and it still writes the stored type value');
-  assert.ok(at('<fieldset className="itemTypeField">')<at("<div className=\"itemFormGrid\">{field('name'"),'the name grid follows the type fieldset');
+test('Vendor type is a dropdown in the four-across field grid',()=>{
+ assert.ok(page.includes("field('type','Vendor type *',{options:types})"),'the type is one select over the six vendor types');
+ assert.ok(!page.includes('itemTypeField')&&!page.includes('itemRadioGroup'),'the radio group it replaced is gone from the form');
+ assert.ok(!page.includes("field('status','Status'"),'and Status is no longer asked for on the create page');
+ assert.ok(!page.includes('vendor-type'),'with no radio left behind to write the same key twice');
+ assert.ok(at("field('type','Vendor type *'")<at("field('name','Vendor name *'"),'the type leads the grid, ahead of the vendor name');
+ assert.ok(readFileSync(new URL('../src/vendor-store.js',import.meta.url),'utf8').includes("status:'Active'"),'and a new vendor still starts Active from vendorDefaults, so dropping the field never drops the lifecycle value');
 });
 
 test('Billing address owns the shipping-address toggle',()=>{
@@ -97,13 +100,13 @@ test('attachments keep the stored name list and can be removed',()=>{
 });
 
 test('the create page styles add structure only',()=>{
-  assert.ok(css.includes('.vendorsPage .itemCreatePage .itemFormGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 16px}'),'three fields per row, like Create Customer');
-  assert.ok(css.includes('.vendorsPage .itemCreatePage .itemRadioGroup{grid-template-columns:repeat(3,minmax(0,1fr));max-width:none}'),'the six type choices read in three columns');
+ assert.ok(css.includes('.vendorsPage .itemCreatePage .itemFormGrid{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px 16px}'),'four fields per row');
+ assert.ok(!css.includes('.itemRadioGroup{')&&!css.includes('.itemTypeField{'),'and the vendor stylesheet no longer carries the dead radio-group rules');
   assert.ok(css.includes('.vendorsPage .vendorSameAddress{gap:11px;margin:14px 0 0;padding:11px 12px;border:1px solid #e3e9f1;border-radius:8px;background:#fbfcfe}'),'the switch sits in a quiet card on the shared tokens');
   assert.ok(css.includes('.vendorsPage .vendorSwitchRow{justify-content:space-between;padding:11px 12px;border:1px solid #e1e7ef;border-radius:8px;background:#fbfcfe}'),'and so do the tax switches');
   assert.ok(css.includes('.vendorsPage .itemAdvancedGroup .itemNotice{align-items:flex-start;margin:12px 0 0;color:#667085;line-height:1.5}'),'a note inside More details aligns with the group title');
-  assert.match(css,/@media\(max-width:1100px\)\{\s+\.vendorsPage \.itemCreatePage \.itemFormGrid,\.vendorsPage \.itemCreatePage \.itemRadioGroup\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)\}/,'two columns below 1100px');
-  assert.match(css,/@media\(max-width:700px\)\{\s+\.vendorsPage \.itemCreatePage \.itemFormGrid,\.vendorsPage \.vendorSwitchGrid,\.vendorsPage \.itemCreatePage \.itemRadioGroup\{grid-template-columns:minmax\(0,1fr\)\}/,'one column below 700px');
+ assert.match(css,/@media\(max-width:1100px\)\{\s+\.vendorsPage \.itemCreatePage \.itemFormGrid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)\}/,'two columns below 1100px');
+ assert.match(css,/@media\(max-width:700px\)\{\s+\.vendorsPage \.itemCreatePage \.itemFormGrid,\.vendorsPage \.vendorSwitchGrid\{grid-template-columns:minmax\(0,1fr\)\}/,'one column below 700px');
   assert.ok(!css.includes('.vendorUpload')&&!css.includes('.vendorToggleRow')&&!css.includes('.vendorControlNote'),'the superseded stylesheet rules are deleted');
 });
 

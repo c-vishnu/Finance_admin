@@ -32,3 +32,24 @@ test('preview isolates semantic elements from legacy fixed shell styles',()=>{
  assert.ok(css.includes('position:static'));
  assert.ok(css.includes('.dpEmbedded .dpPaper'));
 });
+
+/* A preview is mounted INSIDE a register page, so the host's table rules reach the printed
+   sheet: `src/items.css` declares `.itemsPage table{min-width:800px}` and `src/ui-system.css`
+   pads every th/td with 16px 20px (plus a 24px first-child inset and a 24px last-child inset)
+   under !important. Measured live, that printed the eight-column items table 800px wide inside
+   a 620px paper, so it broke 150px past the right page edge and squeezed the headers onto two
+   lines. The sheet must restate its own table geometry, because a host page may never reshape
+   a printed document. */
+test('preview keeps host register and shell table geometry out of the printed sheet',()=>{
+ const css=readFileSync('src/document-preview-fix.css','utf8');
+ for(const rule of ['.dpPaper table{min-width:0!important}','.dpPaper th{padding:10px 6px!important;white-space:normal!important}','.dpPaper td{padding:12px 6px!important;white-space:normal!important}','.dpPaper th:first-child,.dpPaper td:first-child{padding-left:6px!important}','.dpPaper th:last-child,.dpPaper td:last-child{padding-right:6px!important}','.dpPaper .dpItemsTable th{padding:12px 6px!important}','.dpPaper .dpItemsTable td{padding:14px 6px!important}'])assert.ok(css.includes(rule),rule);
+});
+
+test('the eight item columns add up to the sheet width and keep the quantity header on one line',()=>{
+ const css=readFileSync('src/document-preview.css','utf8');
+ const columns=['.dpPaper .dpItemsTable th:first-child,.dpPaper .dpItemsTable td:first-child{width:4%;color:#76869c}','.dpItemsTable th:nth-child(2){width:21%}','.dpItemsTable th:nth-child(3){width:13%}','.dpItemsTable th:nth-child(4){width:12%}','.dpItemsTable th:nth-child(5){width:12%}','.dpItemsTable th:nth-child(6){width:12%}','.dpItemsTable th:nth-child(7){width:10%}','.dpItemsTable th:last-child{width:16%}'];
+ for(const rule of columns)assert.ok(css.includes(rule),rule);
+ assert.equal(columns.reduce((total,rule)=>total+Number(rule.match(/width:(\d+)%/)[1]),0),100,'the eight columns share the sheet width exactly');
+ assert.ok(Number(columns[3].match(/width:(\d+)%/)[1])>=12,'Qty / Unit needs 12% so its two-word header stays on one line');
+ assert.ok(Number(columns[2].match(/width:(\d+)%/)[1])>=13,'HSN / SAC needs 13% so its three-word header stays on one line');
+});

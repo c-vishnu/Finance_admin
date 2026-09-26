@@ -224,3 +224,16 @@
  .customersPage .itemsTools .customerFilters>summary{width:100%;justify-content:space-between}
  .customersPage .customerFilterPanel{position:static;grid-template-columns:minmax(0,1fr);width:100%;max-width:none;max-height:none;margin-top:10px}
 }
+
+/* The row action is one icon-only control: a square target holding the eye, with the customer
+   name in its label and a plain title, so the table stays compact and the action is announced. */
+.customersPage .customerRowActions .customerView{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:34px!important;height:34px!important;min-width:34px!important;padding:0!important}
+
+/* The lifecycle status sits with the customer name rather than among the action buttons, and
+   every facts section reads five to a line, folding to three, then two, then one. */
+.customersPage .customerDetailName .customerNameRow{display:flex!important;align-items:center!important;gap:10px!important;flex-wrap:wrap!important}
+.customersPage .customerDetailName .customerNameRow h2{margin:0!important}
+.customersPage .customerDetailFacts{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:14px 20px!important}
+@media(max-width:1280px){.customersPage .customerDetailFacts{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:1050px){.customersPage .customerDetailFacts{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:700px){.customersPage .customerDetailFacts{grid-template-columns:1fr!important}}

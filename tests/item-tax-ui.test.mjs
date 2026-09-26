@@ -5,7 +5,7 @@ import {blankItem,gstSplit,validateItem} from '../src/item-master.js';
 
 test('item form states both GST rates, derives the split and no longer asks for a category',()=>{
  const source=readFileSync('src/Items.jsx','utf8');
- const kept=['taxApplicable','taxRate','cessRate','priceTaxMode','Price includes tax?','No, add tax separately','Default tax'];
+ const kept=['taxApplicable','taxRate','cessRate','priceTaxMode','Price type *','Tax Exclusive','Tax Inclusive','Default tax'];
  const added=['Taxable','Intra-State Tax Rate','Inter-State Tax Rate','This item is not subject to GST.','Intra-state transactions use CGST + SGST. Inter-state transactions use IGST.','itemFormGrid3','itemSegmented','itemTaxPreview','Tax treatment'];
  for(const value of [...kept,...added])assert.ok(source.includes(value),value);
  assert.ok(!source.includes('Select vendor'));
@@ -19,6 +19,11 @@ test('item form states both GST rates, derives the split and no longer asks for 
 test('sales document lines inherit item tax and allow a document override',()=>{
  const source=readFileSync('src/SalesDocumentFields.jsx','utf8');
  for(const value of ['itemDefaults(item)','item.taxRate','item.cessRate','item.priceTaxMode','Price tax treatment','Tax exclusive','Tax inclusive'])assert.ok(source.includes(value),value);
+ assert.ok(source.includes('className="ivRateCell"'),'the rate cell wraps its input so the price type can sit under it');
+ assert.ok(source.includes("className={'ivPriceType '+(l.priceTaxMode==='inclusive'?'is-inclusive':'is-exclusive')}>{l.priceTaxMode==='inclusive'?'Incl. Tax':'Excl. Tax'}"),'the price type is stated under the Rate field, read from the line');
+ assert.match(source,/priceTaxMode:item\.priceTaxMode\|\|'exclusive'/,'and it comes from the Item master when the item has one');
+ assert.ok(source.includes("priceTaxMode:'exclusive'"),'a new line - and therefore an ad hoc item - starts tax exclusive, which the operator can switch to inclusive on the line; without this the engine refused the save with Choose whether each line rate includes tax');
+ assert.ok(source.includes('<option value="">Select price type</option>'),'and the line offers the choice explicitly');
 });
 
 test('the intra-state rate is the CGST + SGST total and the inter-state rate is IGST',()=>{

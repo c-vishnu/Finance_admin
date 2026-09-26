@@ -17,6 +17,7 @@ export function validateItem(form,items,accounts){
  if(form.sku&&items.some(item=>item.id!==form.id&&overlaps(item)&&String(item.sku).toLowerCase()===form.sku.trim().toLowerCase()))errors.sku='This SKU is already used in this organisation.';
  if(!itemOrganisationIds(form).length)errors.organizationIds='Select at least one organisation.';
  if(!['Goods','Service'].includes(form.type))errors.type='Select Goods or Service.';
+ if(form.priceTaxMode!==undefined&&!['exclusive','inclusive'].includes(form.priceTaxMode))errors.priceTaxMode='Choose whether the rate you enter already includes tax.';
  if(!form.unit)errors.unit='Select a unit.';
  if(form.hsnSac&&!/^\d{4,8}$/.test(form.hsnSac))errors.hsnSac=`Enter a valid ${form.type==='Goods'?'HSN':'SAC'} code (4–8 digits).`;
  if(form.sales){if(form.price===''||!Number.isFinite(Number(form.price))||Number(form.price)<0)errors.price='Enter a valid, non-negative selling price.';if(!exists('Income',form.salesAccount))errors.salesAccount='Select an Income account.'}

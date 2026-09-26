@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import {IconAlertTriangle,IconCalendar,IconCheck,IconInfoCircle,IconPlus,IconX} from '@tabler/icons-react';
-import {demoOrganizations} from './HeaderOrgSelectors.jsx';
+import {demoOrganizations} from './demo-organisations.js';
 import {LOCK_FREQUENCIES,SCHEDULE_CHOICES,generatedSchedule,normalisePeriodSettings,policyChangeGuard,settingsWarnings,writePeriodSettings} from './period-locking.js';
 import {NO_BRANCH,branchReference,getBranchesForOrganisation,normaliseScope,scopeVisibility} from './organisation-scope.js';
 import './period-lock-settings.css';

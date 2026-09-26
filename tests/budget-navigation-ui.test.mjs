@@ -6,15 +6,19 @@ const navigation=readFileSync(new URL('../src/Navigation.jsx',import.meta.url),'
 const workspace=readFileSync(new URL('../src/BudgetWorkspace.jsx',import.meta.url),'utf8');
 const css=readFileSync(new URL('../src/budget-workspace.css',import.meta.url),'utf8');
 
-test('Budgets is one flat destination inside Accounting',()=>{
-  assert.match(navigation,/\{label:'Accounting',icon:IconBook,children:\[leaf\('Chart of Accounts'\),leaf\('Journal Entries'\),leaf\('Budgets'\),leaf\('Period Lock'\)\]\}/,'Accounting holds one Budgets leaf between Journal Entries and Period Lock');
+test('Budgets and Period Lock are one section of their own, out of Accounting',()=>{
+  assert.match(navigation,/\{label:'Accounting',icon:IconBook,children:\[leaf\('Chart of Accounts'\),leaf\('Journal','Journal Entries'\)\]\}/,'Accounting holds the chart of accounts and the journal only');
+  assert.match(navigation,/\{label:'Other',children:\[leaf\('Budgets'\),leaf\('Period Lock'\),leaf\('Inventory Adjustments'\)\]\}/,'Budgets, Period Lock and Inventory Adjustments are declared together in the Other group Settings carries');
   assert.ok(!navigation.includes("{label:'Budget',"),'the Budget sub-group is gone from the sidebar');
   assert.ok(!navigation.includes('Budget Reports')&&!navigation.includes('Budget Settings'),'the reports and settings destinations are gone from the sidebar');
-  const journal=navigation.indexOf("leaf('Journal Entries')");
+  const accounting=navigation.indexOf("{label:'Accounting'");
+  const other=navigation.indexOf("{label:'Other'");
   const budgets=navigation.indexOf("leaf('Budgets')");
   const closing=navigation.indexOf("leaf('Period Lock')");
-  assert.ok(journal>-1&&journal<budgets&&budgets<closing,'Budgets sits between Journal Entries and Period Lock');
-  assert.equal((navigation.match(/leaf\('Budgets'\)/g)||[]).length,1);
+  assert.ok(accounting>-1&&other>accounting,'the Other group is declared after Accounting, inside the Settings section that follows the reports');
+  assert.ok(budgets>other&&budgets<closing,'Budgets sits above Period Lock inside Other');
+  assert.equal((navigation.match(/leaf\('Budgets'\)/g)||[]).length,1,'Budgets is declared once');
+  assert.ok(budgets>navigation.indexOf("{label:'Accounting'")+60,'Budgets is no longer inside the Accounting group');
 });
 
 test('the sidebar owns budget navigation and no budget screen renders a section tab row',()=>{

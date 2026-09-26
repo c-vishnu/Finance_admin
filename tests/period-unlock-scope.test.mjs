@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {ENFORCED_OPERATIONS,PERIOD_MODULES,assertOperationAllowed,lockPeriod,blockingLocksFor,cancelUnlockRequest,decideUnlockRequest,normalisePeriodSettings,recordPolicyChange,relockExpiredPeriods,requestPeriodUnlock,unlockWindowFor,validatePeriodAction} from '../src/period-locking.js';
 
 const settings=normalisePeriodSettings({lockingMode:'Manual',approval:true,unlockScope:'Selected date range',maximumUnlockDuration:'24 Hours'});
-const locked=overrides=>({id:'L1',companyId:'ABC01',organisationName:'ABC Technologies Pvt Ltd',year:'2026-27',name:'September 2026',start:'2026-09-01',end:'2026-09-30',frequency:'Month',scopeType:'Organisation',branchIds:[],modules:['Accounting'],status:'Hard Locked',lockType:'Hard Lock',lockedBy:'Admin',lockedAt:'2026-10-01T09:00:00',reason:'Monthly closing completed',...overrides});
+const locked=overrides=>({id:'L1',companyId:'ABC01',organisationName:'Wayvida',year:'2026-27',name:'September 2026',start:'2026-09-01',end:'2026-09-30',frequency:'Month',scopeType:'Organisation',branchIds:[],modules:['Accounting'],status:'Hard Locked',lockType:'Hard Lock',lockedBy:'Admin',lockedAt:'2026-10-01T09:00:00',reason:'Monthly closing completed',...overrides});
 const base=()=>({version:1,periods:[locked()],requests:[],audit:[]});
 const pending=(extra={})=>requestPeriodUnlock(base(),{periodId:'L1',reason:'GST correction',user:'Accountant',duration:'8 Hours',unlockScope:'Selected date range',startDate:'2026-09-10',endDate:'2026-09-12',...extra});
 const approved=()=>decideUnlockRequest(pending(),{requestId:'ULR-0001',decision:'Approved',user:'Admin',now:'2026-09-10T09:00:00.000Z'});

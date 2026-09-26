@@ -27,14 +27,14 @@ test('account organisation scope preserves every selected organisation while ret
 
 test('branch-specific accounts require an owner and reject another branch posting',()=>{
   assert.throws(()=>changeAccount(base(),'save',{name:'HDFC',type:'Assets',accountNature:'Bank',scope:'Branch Specific Account'}),/applicable branch/);
-  const made=changeAccount(base(),'save',{name:'HDFC Chennai',type:'Assets',accountNature:'Bank',scope:'Branch Specific Account',branchId:'Chennai Branch'}).state;
+  const made=changeAccount(base(),'save',{name:'HDFC Chennai',type:'Assets',accountNature:'Bank',scope:'Branch Specific Account',branchId:'Trivandrum Branch'}).state;
   assert.throws(()=>journal(made,{number:'T-1',branch:'Kochi Branch'},'Bank Transfer',[{account:'1000',debit:100,credit:0},{account:'1001',debit:0,credit:100}], '2026-09-08','wrong-branch'),/restricted to applicable branches/);
 });
 
 test('enterprise account metadata validates category, mapping and multiple branches',()=>{
-  const first=changeAccount(base(),'save',{name:'Branch Bank',type:'Assets',accountNature:'Bank',reportingCategory:'Bank',scope:'Branch Specific Account',applicableBranches:['Chennai Branch','Kochi Branch'],allowDirectTransactions:true,moduleMappings:['Banking · Bank Ledger'],currency:'USD',taxApplicable:false}).state;
+  const first=changeAccount(base(),'save',{name:'Branch Bank',type:'Assets',accountNature:'Bank',reportingCategory:'Bank',scope:'Branch Specific Account',applicableBranches:['Trivandrum Branch','Kochi Branch'],allowDirectTransactions:true,moduleMappings:['Banking · Bank Ledger'],currency:'USD',taxApplicable:false}).state;
   const bank=first.accounts.find(a=>a.name==='Branch Bank');
-  assert.deepEqual(bank.applicableBranches,['Chennai Branch','Kochi Branch']);
+  assert.deepEqual(bank.applicableBranches,['Trivandrum Branch','Kochi Branch']);
   assert.equal(bank.currency,'USD');
   assert.doesNotThrow(()=>journal(first,{number:'T-2',branch:'Kochi Branch'},'Bank Transfer',[{account:'1000',debit:100,credit:0},{account:bank.code,debit:0,credit:100}],'2026-09-08','allowed-branch'));
   assert.throws(()=>changeAccount(first,'save',{name:'Bad category',type:'Assets',accountNature:'Bank',reportingCategory:'Salary'}),/category/);

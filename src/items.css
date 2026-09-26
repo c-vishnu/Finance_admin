@@ -144,7 +144,7 @@ body:has(.itemCreatePage) .app>main{height:auto;max-height:none;overflow:visible
 .itemCreatePage .itemTaxHead+.itemFormGrid,.itemCreatePage .itemTaxPreview+.itemFormGrid{margin-top:10px}
 .itemCreatePage .itemTaxNote{margin:8px 0 0}
 .itemCreatePage .itemTaxPreview{margin:6px 0 0}
-.itemCreatePage .itemDialogFooter{position:fixed;left:calc(270px + clamp(16px,2.2vw,24px));right:clamp(16px,2.2vw,24px);bottom:10px;z-index:18;display:flex;justify-content:flex-end;gap:9px;min-height:62px;margin:0;padding:11px 14px;border:1px solid var(--ui-border);border-radius:var(--ui-radius);background:rgba(255,255,255,.96);box-shadow:0 8px 26px rgba(16,24,40,.14);backdrop-filter:blur(8px)}
+.itemCreatePage .itemDialogFooter{position:fixed;left:calc(250px + clamp(16px,2.2vw,24px));right:clamp(16px,2.2vw,24px);bottom:10px;z-index:18;display:flex;justify-content:flex-end;gap:9px;min-height:62px;margin:0;padding:11px 14px;border:1px solid var(--ui-border);border-radius:var(--ui-radius);background:rgba(255,255,255,.96);box-shadow:0 8px 26px rgba(16,24,40,.14);backdrop-filter:blur(8px)}
 .itemCreatePage .itemDialogFooter button{flex:none;min-width:0;min-height:40px;padding:0 15px;border:1px solid #d0d8e3;border-radius:7px;background:#fff;color:#344054;font-weight:600}
 .itemCreatePage .itemDialogFooter button:hover{background:#f5f8fc}
 .itemCreatePage .itemDialogFooter .primary{min-width:150px}
@@ -152,9 +152,8 @@ body:has(.itemCreatePage) .app>main{height:auto;max-height:none;overflow:visible
  .itemCreatePage>*:not(.itemDialogHead){margin-left:16px;margin-right:16px}
  .itemCreatePage .itemFormGrid3{grid-template-columns:minmax(0,1fr)}
 }
-/* The 24px head gutter is the Organisation / Branch bar's own padding, so the back button
-   lines up with its building icon; both bars narrow to 12px at the same 760px breakpoint
-   (.orgContextBar is fixed at 270px left / 24px padding above it in src/ui-quality-polish.css). */
+/* The 24px head gutter is the page's own padding and narrows to 12px at the 760px
+   breakpoint. The working context lives in the sidebar, so no bar is fixed above it. */
 @media(max-width:760px){
  .itemCreatePage .itemDialogHead{padding:8px 12px}
  .itemCreatePage .itemDialogFooter{left:12px;right:12px}
@@ -220,7 +219,10 @@ body:has(.itemCreatePage) .app>main{height:auto;max-height:none;overflow:visible
 .itemDetailPage .itemDetailPanel{background:#fff;border:1px solid #e6ebf2;border-radius:10px}
 .itemDetailPage .itemDetailIdentity{display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:16px;padding:14px 16px}
 .itemDetailPage .itemDetailIdentity>img,.itemDetailPage .itemDetailIdentity>span{width:48px;height:48px;border-radius:10px;object-fit:cover;background:#eef4ff;color:#245fd9;display:grid;place-items:center}
-.itemDetailName{min-width:0}.itemDetailName h2{margin:0;color:#172033;font-size:17px;font-weight:700;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.itemDetailName p{margin:5px 0 0;color:#667085;font-size:12px;font-weight:500}
+.itemDetailName{min-width:0}
+/* The lifecycle badge sits on the name line, so the reader sees what the item is and whether it is in
+   use without looking across to the action row. */
+.itemDetailNameRow{display:flex;align-items:center;gap:10px;min-width:0}.itemDetailName h2{margin:0;color:#172033;font-size:17px;font-weight:700;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.itemDetailName p{margin:5px 0 0;color:#667085;font-size:12px;font-weight:500}
 .itemDetailActions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
 .itemDetailEdit{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 14px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s ease}
 .itemDetailEdit:hover{background:#f8fafc;border-color:#b8c2d3;color:#1d2939}

@@ -207,25 +207,25 @@ test('the budget scope uses the shared multi-select organisation and branch cont
   const sizes=[...scopeCss.matchAll(/font-size:([\d.]+)px/g)].map(match=>Number(match[1]));
   assert.ok(sizes.length>=4&&Math.min(...sizes)>=12,'every multi-select style stays at 12px or larger');
   const organisations=[
-    {id:'abc',code:'ABC01',name:'ABC Technologies Pvt Ltd',branches:[{id:'abc-kochi',name:'Kochi Branch'},{id:'abc-bengaluru',name:'Bengaluru Branch'}]},
-    {id:'nsr',code:'NSR02',name:'Northstar Retail LLP',branches:[{id:'nsr-chennai',name:'Chennai Branch'}]}
+    {id:'abc',code:'ABC01',name:'Wayvida',branches:[{id:'abc-kochi',name:'Kochi Branch'},{id:'abc-bengaluru',name:'Bengaluru Branch'}]},
+    {id:'nsr',code:'NSR02',name:'Viskool',branches:[{id:'nsr-chennai',name:'Trivandrum Branch'}]}
   ];
   const state=scope.scopePickerState({organisations,companyIds:['ABC01','NSR02'],branchIds:['abc-kochi'],label:'Budget scope'});
   assert.equal(state.showOrganisation,true,'two available organisations keep the organisation control');
   assert.equal(state.showBranch,true,'two available organisations keep the branch control');
   const rows=scope.scopePickerRows(state);
-  assert.deepEqual(rows.organisationRows.map(row=>row.label),['All organisations','ABC Technologies Pvt Ltd','Northstar Retail LLP'],'every available organisation stays selectable');
-  assert.deepEqual(rows.organisationRows.filter(row=>row.checked).map(row=>row.label),['ABC Technologies Pvt Ltd','Northstar Retail LLP'],'the organisations in scope read as ticked');
-  assert.deepEqual(rows.branchRows.map(row=>row.label),['All branches','Kochi Branch','Bengaluru Branch','Chennai Branch'],'every branch of the organisations in scope is offered');
+  assert.deepEqual(rows.organisationRows.map(row=>row.label),['All organisations','Wayvida','Viskool'],'every available organisation stays selectable');
+  assert.deepEqual(rows.organisationRows.filter(row=>row.checked).map(row=>row.label),['Wayvida','Viskool'],'the organisations in scope read as ticked');
+  assert.deepEqual(rows.branchRows.map(row=>row.label),['All branches','Kochi Branch','Bengaluru Branch','Trivandrum Branch'],'every branch of the organisations in scope is offered');
   assert.deepEqual(rows.branchRows.filter(row=>row.checked).map(row=>row.label),['Kochi Branch'],'only the explicitly chosen branch reads as ticked');
-  assert.deepEqual(rows.branchRows.filter(row=>row.label==='Chennai Branch').map(row=>row.meta),['Northstar Retail LLP'],'each branch names the organisation that owns it');
+  assert.deepEqual(rows.branchRows.filter(row=>row.label==='Trivandrum Branch').map(row=>row.meta),['Viskool'],'each branch names the organisation that owns it');
   assert.deepEqual(scope.toggleScopePicker(state,rows.branchRows[3]),{companyIds:['ABC01','NSR02'],branchIds:['abc-kochi','nsr-chennai']},'a branch of a second organisation can be added');
   assert.deepEqual(scope.toggleScopePicker(state,{kind:'branch',ref:''}),{companyIds:['ABC01','NSR02'],branchIds:[]},'All branches clears the branch narrowing');
   assert.deepEqual(scope.toggleScopePicker(state,{kind:'organisation',ref:'NSR02'}),{companyIds:['ABC01'],branchIds:['abc-kochi']},'an organisation can be taken out of scope');
   assert.deepEqual(scope.toggleScopePicker(state,{kind:'organisation',ref:''}),{companyIds:[],branchIds:['abc-kochi']},'All organisations puts every organisation back in scope');
   const narrowed=scope.scopePickerState({organisations,companyIds:['ABC01'],branchIds:[],label:'Budget scope'});
   assert.deepEqual(scope.scopePickerRows(narrowed).branchRows.map(row=>row.label),['All branches','Kochi Branch','Bengaluru Branch'],'a narrowed organisation never offers another organisation branch');
-  assert.deepEqual(scope.scopePickerRows(narrowed).organisationRows.filter(row=>row.checked).map(row=>row.label),['ABC Technologies Pvt Ltd'],'the organisation left in scope is the ticked one');
+  assert.deepEqual(scope.scopePickerRows(narrowed).organisationRows.filter(row=>row.checked).map(row=>row.label),['Wayvida'],'the organisation left in scope is the ticked one');
   const oneAvailable=scope.scopePickerState({organisations:[organisations[1]],companyIds:['NSR02'],branchIds:[],label:'Budget scope'});
   assert.equal(oneAvailable.showOrganisation,false,'one available organisation hides the organisation control');
   assert.equal(oneAvailable.showBranch,false,'a one branch organisation hides the branch control too');

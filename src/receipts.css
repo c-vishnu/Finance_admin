@@ -1,13 +1,8 @@
 .receiptWorkspace .receiptNotes{margin-top:22px}.receiptAmount{max-width:140px}.receiptMore{position:relative}.receiptMore summary{cursor:pointer;list-style:none;padding:8px;border:1px solid #dce3ee;border-radius:6px;display:inline-flex}.receiptMore>div{position:absolute;right:0;z-index:20;background:white;border:1px solid #dce3ee;border-radius:8px;box-shadow:0 8px 24px #16274320;min-width:175px;padding:5px}.receiptMore>div button{width:100%;border:0;text-align:left;white-space:nowrap}.receiptMore>div button:hover{background:#eff5ff}.receiptWorkspace .ivScroll{padding-bottom:14px}.receiptWorkspace .ivScroll:has(details[open]){padding-bottom:230px}.receiptStatus{padding:5px 8px;border-radius:5px;background:#edf2fa;font-size:12px}.receiptStatus.Posted,.receiptStatus.Approved{background:#e4f7ed;color:#186641}.receiptStatus.Reversed,.receiptStatus.Cancelled{background:#fce9eb;color:#9d2635}.receiptRole{display:flex;align-items:center;gap:20px;padding:14px 0}.receiptRole label{max-width:260px}.receiptPrintHeader{display:none}.receiptWorkspace button:focus-visible,.receiptMore summary:focus-visible{outline:2px solid #3478f6;outline-offset:3px}@media(max-width:650px){.receiptRole{align-items:flex-start;flex-direction:column}}@media print{body:has(.receiptWorkspace) .app>aside,body:has(.receiptWorkspace) .app>header,body:has(.receiptWorkspace) .welcome,.receiptNoPrint,.receiptMore{display:none!important}body:has(.receiptWorkspace) .app{display:block!important}body:has(.receiptWorkspace) main{margin:0!important;padding:0!important}.receiptPrintHeader{display:block}.receiptWorkspace .ivCard,.receiptWorkspace .ivScroll{overflow:visible;box-shadow:none;border:0}.receiptWorkspace table{white-space:normal}.receiptWorkspace thead{display:table-header-group}.receiptWorkspace tr{break-inside:avoid}.receiptWorkspace button{border:0;padding:0}.receiptWorkspace .ivDetailBody{margin:0}.receiptWorkspace .ivDetailSheet{border:0;border-radius:0;box-shadow:none}@page{margin:14mm}}
 .receiptWorkspace .ivDetailSheet>.receiptTabsRow{display:flex;align-items:center;gap:12px;padding:0 4px;border-top:1px solid #e6ebf2}.receiptWorkspace .ivDetailSheet>.receiptTabsRow>.itemDetailTabs{flex:1 1 auto;min-width:0;border-top:0}.receiptViewSwitch{flex:0 0 auto;padding:0 14px 0 0}.receiptViewSwitch label{display:flex;flex-direction:row;align-items:center;gap:8px;margin:0;color:#5c6b80;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer}.receiptViewSwitch input{width:16px;height:16px;margin:0}.receiptWorkspace.ivDetailOpen .ivDetailSheet>.receiptDetailBody{padding:18px;min-width:0}.receiptJournal+ .receiptJournal{margin-top:24px;border-top:1px solid #e1e7ef;padding-top:16px}.receiptCurrentRow{background:#f0f6ff}.receiptSuggestion{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 16px;background:#f4f8ff;border:1px solid #dfe9fa;border-radius:8px;margin:10px 0}.receiptSuggestion small{display:block;margin-top:5px}.receiptWorkspace .ivScroll:has(details[open]){padding-bottom:370px}.receiptWorkspace tfoot th{border-top:1px solid #dce3ee}.receiptWorkspace .receiptLedgerTabs{margin-bottom:14px}.receiptWorkspace .receiptRole small{max-width:660px;line-height:1.6}@media(max-width:650px){.receiptSuggestion{align-items:flex-start;flex-direction:column}}@media print{.receiptRole,.receiptViewSwitch{display:none!important}}
 
-/* Keep receipt row actions in normal table flow so every action is visible vertically. */
-.receiptWorkspace .receiptMore[open]{min-width:218px}
-.receiptWorkspace .receiptMore>div{position:static;right:auto;top:auto;width:218px;min-width:218px;margin-top:6px;display:flex;flex-direction:column;gap:2px;overflow:visible;box-shadow:0 8px 22px #16274318}
-.receiptWorkspace .receiptMore>div button{display:flex;flex:none;width:100%;min-width:0;justify-content:flex-start;padding:9px 10px;white-space:nowrap;text-align:left}
-.receiptWorkspace .receiptMore>div button svg{flex:none}
-.receiptWorkspace .ivScroll:has(.receiptMore[open]){padding-bottom:14px}
-.receiptWorkspace table td:last-child{vertical-align:top;min-width:230px}
+
+
 .receiptBankEmpty{display:flex;align-items:flex-start;gap:12px;margin-top:14px;padding:16px;border:1px solid #b2ccff;border-radius:8px;background:#f5f8ff;color:#175cd3}.receiptBankEmpty p{margin:5px 0 12px;color:#475467;line-height:1.5}.receiptBankEmpty button{display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border:1px solid #84adff;border-radius:6px;background:#fff;color:#175cd3;font-weight:600}
 
 /* These widths carry `.receiptWorkspace table.receiptTable` rather than a bare `.receiptTable`
@@ -30,7 +25,9 @@
    the sheet ellipsis stays as the last resort. */
 .receiptWorkspace table.receiptTable td:nth-child(2),
 .receiptWorkspace table.receiptTable td:nth-child(5),
-.receiptWorkspace table.receiptTable td:nth-child(7) small{white-space:normal;overflow-wrap:anywhere}
+/* The payment type sits under the status pill, and a fixed nowrap on the cell was cutting "Customer
+   payment" short - the wrap is stated for every small in this register, not for one column number. */
+.receiptWorkspace table.receiptTable td small{display:block;white-space:normal;overflow-wrap:anywhere}
 
 /* The row carries one visible View details action beside the row menu, on the register row-button
    tokens the invoices and sales orders registers use, so the button and the trigger read as one
@@ -43,14 +40,112 @@
 .receiptWorkspace .receiptMore{display:inline-block;vertical-align:top;margin-left:6px}
 .receiptWorkspace .receiptMore>summary{display:inline-grid;place-items:center;width:36px;height:36px;min-height:36px;padding:0;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#475467}
 .receiptWorkspace .receiptMore>summary:hover{background:#f9fafb;border-color:#98a2b3}
-.receiptWorkspace table.receiptTable th:nth-child(1){width:12%}
-.receiptWorkspace table.receiptTable th:nth-child(2){width:9%}
-.receiptWorkspace table.receiptTable th:nth-child(3){width:12%}
-.receiptWorkspace table.receiptTable th:nth-child(4){width:12%}
+.receiptWorkspace table.receiptTable th:nth-child(1){width:14%}
+.receiptWorkspace table.receiptTable th:nth-child(2){width:14%}
+.receiptWorkspace table.receiptTable th:nth-child(3){width:13%}
+.receiptWorkspace table.receiptTable th:nth-child(4){width:15%}
 .receiptWorkspace table.receiptTable th:nth-child(5){width:14%}
-.receiptWorkspace table.receiptTable th:nth-child(6){width:13%}
-.receiptWorkspace table.receiptTable th:nth-child(7){width:13%}
-.receiptWorkspace table.receiptTable th:nth-child(8){width:15%}
+.receiptWorkspace table.receiptTable th:nth-child(6){width:14%}
+.receiptWorkspace table.receiptTable th:nth-child(7){width:16%}
+.receiptWorkspace 
 .receiptTable td small{display:block;margin-top:3px;overflow:hidden;text-overflow:ellipsis;color:#667085;font-size:12px;font-weight:400;line-height:1.35}
 .receiptTable td:last-child,.receiptTable th:last-child{text-align:right;overflow:visible}
 @media(max-width:720px){.receiptWorkspace.ivDetailOpen .ivDetailSheet>.receiptDetailBody{padding:12px}}
+/* The receipt more-action trigger is stated larger than the shared default: on this page the icon
+   read as missing beside the row figures and in the detail header. Both the register rows and the
+   detail head wear it. */
+.receiptWorkspace .soMoreButton{width:38px;height:38px;border-radius:8px;margin-left:0}
+.receiptWorkspace .soMoreButton svg{width:22px;height:22px}
+.receiptWorkspace .soActionMenu button[role=menuitem] svg{width:18px;height:18px}
+/* The customer search panel must float above the card instead of being clipped by it, and the
+   attachment control takes the shared control look the other create pages use. */
+.receiptWorkspace .soFormSection{overflow:visible}
+.receiptWorkspace .soCustomerRow{position:relative;z-index:6}
+.receiptWorkspace .soField.soFieldSearch{flex:0 0 auto;height:max-content;align-items:flex-start}
+/* flex-basis is the MAIN axis, and this field sits in a column flex parent, so the old
+   `flex:0 1 640px` was setting the field 640px TALL. It states the inline axis explicitly instead. */
+.receiptWorkspace .soCustomerSearch{flex:0 0 auto;width:100%;min-width:0;height:42px;overflow:visible}
+.receiptWorkspace .soCustomerResults,.receiptWorkspace .soCustomerList,.receiptWorkspace .soCustomerSearch>ul,.receiptWorkspace .soCustomerSearch>div.soCustomerPanel{position:absolute;left:0;right:0;top:46px;z-index:60;min-width:min(420px,92vw);margin:0;padding:6px;list-style:none;background:#fff;border:1px solid #dfe6ef;border-radius:10px;box-shadow:0 12px 30px #10182824;max-height:300px;overflow:auto}
+.receiptWorkspace .soCustomerResults button,.receiptWorkspace .soCustomerList button,.receiptWorkspace .soCustomerSearch>ul button,.receiptWorkspace .soCustomerSearch>ul li{display:block;width:100%;text-align:left;padding:9px 10px;border:0;background:#fff;border-radius:6px;color:#172033;font-size:13px;white-space:normal}
+.receiptWorkspace .soCustomerResults button:hover,.receiptWorkspace .soCustomerList button:hover,.receiptWorkspace .soCustomerSearch>ul button:hover,.receiptWorkspace .soCustomerSearch>ul li:hover{background:#f2f7ff}
+.receiptWorkspace .soCustomerResults small,.receiptWorkspace .soCustomerSearch>ul small{display:block;margin-top:2px;color:#667085;font-size:12px}
+.receiptWorkspace input[type=file]{width:100%;padding:9px 10px;border:1px dashed #cfd8e5;border-radius:7px;background:#fbfcfe;color:#475467;font-size:12px}
+.receiptWorkspace input[type=file]:hover{border-color:#98a2b3;background:#f7faff}
+/* The create head is stated here because the receipt page did not inherit the invoice's tokens: its
+   head measured transparent with 12px side padding and 69px tall against the invoice's white, 24px and
+   58px, which is what made the page look cramped beside Create Invoice. */
+.receiptWorkspace .soCreateHead{min-height:58px;padding:8px 24px;background:#fff;border-bottom:1px solid #dbe2ed;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.receiptWorkspace .soCreateHead .soHeadIdentity{display:flex;align-items:center;gap:14px;min-width:0}
+.receiptWorkspace .soCreateHead .soHeadText{display:flex;flex-direction:column;gap:3px;min-width:0}
+.receiptWorkspace .soCreateHead .soHeadText h2{margin:0;color:#172033;font-size:16px;font-weight:650}
+.receiptWorkspace .soCreateHead .soHeadHint{color:#667085;font-size:12px}
+/* Receipt type: the segmented pill the operator supplied - a light track with the active segment as a
+   white pill and a blue label - rather than the underline tab row it first wore. */
+.soSegmented{display:inline-flex;align-items:center;gap:4px;padding:4px;border:1px solid #e4e9f0;border-radius:11px;background:#eef2f7}
+.soSegmented .soSegment{min-height:36px;padding:0 16px;border:0;border-radius:8px;background:transparent;color:#475467;font-size:13px;font-weight:600;cursor:pointer}
+.soSegmented .soSegment:hover{color:#1d4ed8}
+.soSegmented .soSegment.active{background:#fff;color:#2563eb;font-weight:700;box-shadow:0 1px 3px #1018281f}
+.soSegmented .soSegment:focus-visible{outline:2px solid #3478f6;outline-offset:2px}
+@media(max-width:520px){.soSegmented{display:flex;width:100%}.soSegmented .soSegment{flex:1;padding:0 10px}}
+/* Create Receipt layout: the head runs the full page width with no side padding, the first card
+   clears the header, the type control is given room under it, and the customer suggestion floats
+   above the cards instead of being clipped by them. */
+.receiptWorkspace .soCreateHead{padding:8px 0;min-height:64px}
+.receiptWorkspace form>.soCreateHead+.soFormSection{margin-top:20px}
+.receiptWorkspace .soSegmented{margin:12px 0 16px}
+.receiptWorkspace .soFormSection:has(.soCustomerSearch){position:relative;z-index:6;overflow:visible}
+.receiptWorkspace .soCustomerRow,.receiptWorkspace .soField,.receiptWorkspace .soFieldSearch{overflow:visible}
+.receiptWorkspace .soCustomerResults{z-index:200}
+/* Create Receipt fields wear the Create Invoice control tokens exactly: the label is a `.soField`
+   (13px/600, #24334c, 6px gap) and the control is a `.soControl` (42px tall, 11px side padding,
+   1px solid #d6e0ec, 8px radius, white fill, 13px value). The receipt page builds its fields from
+   its own helper rather than the shared Field component, so the tokens are restated here instead. */
+.receiptWorkspace form label{display:flex;flex-direction:column;gap:6px;color:#24334c;font-size:13px;font-weight:600}
+.receiptWorkspace form input,.receiptWorkspace form select{min-height:42px;padding:0 11px;border:1px solid #d6e0ec;border-radius:8px;background:#fff;color:#172033;font-size:13px;font-weight:500}
+.receiptWorkspace form textarea{min-height:104px;padding:11px;border:1px solid #d6e0ec;border-radius:8px;background:#fff;color:#172033;font-size:13px;line-height:1.5}
+.receiptWorkspace form input::placeholder,.receiptWorkspace form textarea::placeholder{color:#98a2b3;font-weight:400}
+.receiptWorkspace form input:focus,.receiptWorkspace form select:focus,.receiptWorkspace form textarea:focus{border-color:#3478f6;outline:2px solid #dbe8ff;outline-offset:0}
+.receiptWorkspace form .cnSectionHint,.receiptWorkspace form .soSectionHead p{font-size:12px;font-weight:500}
+/* The Tax deducted control is a toggle switch; its account dropdown appears only while it is on. */
+.receiptWorkspace .soToggle{position:relative;display:inline-flex;align-items:center;width:54px;height:30px;min-height:30px;padding:0;border:1px solid #d6e0ec;border-radius:999px;background:#e9eef6;cursor:pointer;transition:background .18s ease,border-color .18s ease,box-shadow .18s ease}
+.receiptWorkspace .soToggle i{position:absolute;left:4px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #10182833,0 0 0 1px #e4e9f0;transition:left .18s ease}
+.receiptWorkspace .soToggle.on{background:#2563eb;border-color:#1d4ed8;box-shadow:0 1px 2px #1d4ed833}
+.receiptWorkspace .soToggle.on i{left:28px}
+.receiptWorkspace .soToggle:focus-visible{outline:2px solid #3478f6;outline-offset:2px}
+/* Caveat text under a field reads light and small; the attachment control reads as a drop zone. */
+.receiptWorkspace .cnFieldHint{display:block;margin-top:4px;color:#98a2b3;font-size:11px;font-weight:400;line-height:1.4}
+.receiptWorkspace input[type=file]{width:100%;min-height:86px;padding:14px;border:1px dashed #b9c6da;border-radius:10px;background:#f7f9fc;color:#475467;font-size:12px;font-weight:500;cursor:pointer}
+.receiptWorkspace input[type=file]:hover{border-color:#3478f6;background:#f2f7ff}
+/* The create head runs edge to edge like the invoice and budget create heads: the shell gives up its
+   horizontal padding on this page and every other child hands the gutter back, so the head is the
+   only full-bleed row and the cards keep their normal inset. */
+.app main:has(section.receiptWorkspace.soCreatePage){padding-left:0;padding-right:0}
+/* The head bar has to touch both page edges, so the gutter belongs to the cards, not to the section
+   that wraps them. `width:auto` is stated with the margin because the cards carry width:100%, and a
+   margin on a 100% box is what overflowed the page the first time this was attempted. */
+.receiptWorkspace.soCreatePage>*:not(form):not(.soCreateHead){width:auto;margin-left:clamp(16px,2.2vw,32px);margin-right:clamp(16px,2.2vw,32px)}
+.receiptWorkspace.soCreatePage>form>*:not(.soCreateHead){width:auto;margin-left:clamp(16px,2.2vw,32px);margin-right:clamp(16px,2.2vw,32px)}
+.receiptWorkspace .soCreateHead{padding-left:0;padding-right:0;margin-left:0;margin-right:0}
+/* The Tax deducted switch states its ON position in the action colour, including its label, so an
+   enabled withholding reads as a live control rather than a pale one. */
+/* Stated twice on purpose: the shared button hover keeps a pale fill, and the ON position must stay
+   the action blue even while the pointer rests on it after the click. */
+.receiptWorkspace form .soToggle.on,.receiptWorkspace form .soToggle.on:hover,.receiptWorkspace form .soToggle.on:focus,.receiptWorkspace form .soToggle.on:active{background:#1d4ed8!important;border-color:#1d4ed8!important;box-shadow:0 1px 3px #1d4ed84d}
+.receiptWorkspace .soToggle.on i{left:28px;background:#fff}
+.receiptWorkspace form label:has(.soToggle.on){color:#1d4ed8}
+/* The ON state is carried by the blue fill and the blue label; the stray "On" word that sat to the left of the switch overlapped the neighbouring field and is removed. */
+/* The 12px that still held the head off the page edge came from a wrapper between the shell and the
+   head, so the section and the form both give up their horizontal padding as well - the cards keep
+   their gutter from the rule below, which is what lets the head bar touch both edges. */
+.receiptWorkspace.soCreatePage{padding-left:0;padding-right:0}
+.receiptWorkspace.soCreatePage>form{padding-left:0;padding-right:0;margin-left:0;margin-right:0}
+/* The create head is stated to the Create Invoice measurements taken from that page in the same
+   browser pane: a 58px white bar with 24px side padding and a #dfe6ef bottom border, a 36x36 back
+   control at a 6px radius carrying a 19px arrow, and a 16px/650 title in #172033. */
+.receiptWorkspace .soCreateHead{padding:8px 24px;min-height:56px;background:#fff;border-bottom:1px solid #dfe6ef}
+.receiptWorkspace .soCreateHead .soBack{width:36px;height:36px;min-width:36px;min-height:36px;border:1px solid #dce3ee;border-radius:6px;background:#fff;color:#475467}
+.receiptWorkspace .soCreateHead .soBack:hover{background:#f5f7fa;border-color:#cfd8e5}
+.receiptWorkspace .soCreateHead .soBack svg{width:19px;height:19px}
+.receiptWorkspace .soCreateHead .soHeadIdentity{gap:14px}
+.receiptWorkspace .soCreateHead .soHeadText h2{font-size:16px;font-weight:650;color:#172033}
+.receiptWorkspace .soCreateHead .soHeadHint{font-size:12px;color:#667085}

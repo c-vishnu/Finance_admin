@@ -13,7 +13,14 @@ new Function('require','module','exports',output.outputFiles[0].text)(require,mo
 
 test('professional ledger keeps the register simple and exposes report controls',()=>{
   globalThis.sessionStorage={getItem(){return '1010'}};
-  const html=renderToString(React.createElement(module.exports.default,{accounts:[],notify(){},onNavigate(){}})).replace(/<!--.*?-->/g,'');
+  /* The screen reads the real journal store now that its fabricated sample ledger is gone: a report
+     an accountant reads must not invent rows. The fixture supplies one posted line instead. */
+  const journal={id:'j1',date:'2026-09-25',createdAt:'2026-09-25T10:00:00.000Z',source:'Customer Receipt',reference:'RCPT-00041',number:'JE-000001',status:'Posted',lines:[{account:'1010',debit:5000000,credit:0,description:'Payment received from ABC Retail Ltd',reconciled:true}]};
+  globalThis.localStorage={getItem:()=>JSON.stringify({accounts:[],journals:[journal]})};
+  /* The account picker reads the chart handed to the screen, which used to be topped up with a
+     hardcoded sample list. The fixture now supplies the real shape. */
+  const chart=[{code:'1010',name:'HDFC Bank',type:'Assets',normalBalance:'Debit',parentName:'Bank Accounts',openingBalance:0,active:true}];
+  const html=renderToString(React.createElement(module.exports.default,{accounts:chart,notify(){},onNavigate(){}})).replace(/<!--.*?-->/g,'');
   for(const label of ['Selected account','Normal Debit','Opening balance','Debit movement','Credit movement','Closing balance','Date','Voucher','Debit','Credit','Balance','Status','View details','Export Excel','Export PDF','Print ledger','Email report'])assert.ok(html.includes(label),label);
   const table=html.match(/<table class="gl-ledger-table gl-ledger-simple gl-ledger-compact">([\s\S]*?)<\/table>/)?.[1]||'';
   for(const hiddenDetail of ['Description','Branch','Cost centre','Reconciliation'])assert.ok(!table.includes(`>${hiddenDetail}<`),hiddenDetail);

@@ -51,8 +51,14 @@
 .je-create > header h2 { margin: 0 !important; font-size: 22px !important; line-height: 1.25 !important; letter-spacing: -.35px !important; }
 .je-create > header p { margin: 4px 0 0 !important; color: var(--je-muted) !important; font-size: 13px !important; }
 .je-create > header.je-header-compact { min-height: 56px !important; padding: 8px 12px !important; }
-.je-create > header .je-header-spacer { min-width: 0 !important; }
+.je-create > header .je-header-spacer {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important; min-width: 0 !important; }
 .je-create > header .je-compact-title { color: #172033 !important; font-size: 16px !important; font-weight: 650 !important; line-height: 1.25 !important; }
+.je-create > header .je-header-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;min-width:0}
+.je-create > header .je-simple-mode{min-height:36px;padding:0 12px;border:1px solid #d7e0eb;border-radius:8px;background:#fff;color:#344054;font:600 13px/1.2 "Instrument Sans",Arial,sans-serif;white-space:nowrap;cursor:pointer}
+.je-create > header .je-simple-mode:hover{background:#eef4ff;border-color:#bcd0f5;color:#2463d4}
 .je-status {
   display: inline-flex !important;
   align-items: center !important;
@@ -87,6 +93,10 @@
 .je-status.cancelled { background: #fff0f1 !important; color: #ad3542 !important; }
 .je-status.cancelled>i { background: #d65261 !important; }
 .je-status.reversed { background: #fff0f1 !important; color: #ad3542 !important; }
+.je-status.pending { background: #fff4df !important; color: #8a5d08 !important; }
+.je-status.pending>i { background: #e6a117 !important; }
+.je-status.published { background: #e7f6ed !important; color: #22734a !important; }
+.je-status.published>i { background: #28a26b !important; }
 
 .je-create .je-form-card,
 .je-create .je-lines-card {
@@ -645,6 +655,9 @@ body:has(.je-create:not(.je-business)) {
 }
 .je-create > header > div,
 .je-create > header .je-header-spacer {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
   flex: 1 1 auto !important;
   width: 100% !important;
   min-width: 0 !important;
@@ -956,7 +969,7 @@ body:has(.je-create:not(.je-business)) {
 
 @media (max-width: 1180px) {
   .app main:has(> .je-create:not(.je-business)) .je-create .je-form-card .je-form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
-  .je-create .je-line { grid-template-columns: minmax(190px, 1.4fr) 150px 130px 112px 112px minmax(130px, 1fr) 40px !important; }
+  .je-create .je-line { grid-template-columns: minmax(210px, 1.4fr) 130px 130px minmax(150px, 1fr) 42px !important; min-width: 850px !important; }
   .je-create .je-line.head { font-size: 11.5px !important; }
 }
 
@@ -1001,19 +1014,361 @@ body:has(.je-create:not(.je-business)) {
   .je-create > footer { flex-wrap: wrap !important; }
 }
 
-/* The Journal lines grid drops the Organisation and/or Branch column whenever the
-   working context makes that choice implicit: one accessible organisation hides
-   Organisation, and a single branch under it hides Branch as well. The variant
-   templates keep the Debit, Credit, Description and row action columns sized the
-   same as the seven-column grid, and the mobile card layout is untouched because
-   every variant collapses to one column at the same breakpoint. */
-@media (min-width: 761px) {
-  .je-create .je-line.no-organization { grid-template-columns: minmax(210px, 1.4fr) 150px 130px 130px minmax(150px, 1fr) 42px !important; min-width: 980px !important; }
-  .je-create .je-line.no-branch { grid-template-columns: minmax(210px, 1.4fr) 170px 130px 130px minmax(150px, 1fr) 42px !important; min-width: 990px !important; }
-  .je-create .je-line.no-organization.no-branch { grid-template-columns: minmax(210px, 1.4fr) 130px 130px minmax(150px, 1fr) 42px !important; min-width: 850px !important; }
+
+.je-create-compact .je-form-card,
+.je-create-compact .je-lines-card {
+  margin-left: 24px !important;
+  margin-right: 24px !important;
 }
-@media (min-width: 761px) and (max-width: 1180px) {
-  .je-create .je-line.no-organization { grid-template-columns: minmax(190px, 1.4fr) 130px 112px 112px minmax(130px, 1fr) 40px !important; }
-  .je-create .je-line.no-branch { grid-template-columns: minmax(190px, 1.4fr) 150px 112px 112px minmax(130px, 1fr) 40px !important; }
-  .je-create .je-line.no-organization.no-branch { grid-template-columns: minmax(190px, 1.4fr) 112px 112px minmax(130px, 1fr) 40px !important; }
+@media (max-width: 760px) {
+  .je-create-compact .je-form-card,
+  .je-create-compact .je-lines-card {
+    margin-left: 12px !important;
+    margin-right: 12px !important;
+  }
 }
+
+
+.je-create-compact .je-scope-override .pc-scope-picker {
+  margin-top: 0;
+}
+.je-create-compact .je-scope-override .pc-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+@media (max-width: 760px) {
+  .je-create-compact .je-scope-override .pc-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.je-create-compact .je-scope-override .pc-field {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  color: #344054 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+.je-create-compact .je-scope-override select {
+  display: block !important;
+  width: 100% !important;
+  height: 40px !important;
+  padding: 0 11px !important;
+  border: 1px solid #d8dee8 !important;
+  border-radius: 6px !important;
+  background-color: #fff !important;
+  color: #1d2939 !important;
+  font-size: 13.5px !important;
+  font-family: 'Instrument Sans', sans-serif !important;
+}
+
+/* Prevent the compact transaction controls from inheriting the square back-button rule. */
+.je-simple-transaction > header .je-header-actions { display:flex!important; flex:0 0 auto!important; width:auto!important; }
+.je-simple-transaction > header .je-secondary-action { display:inline-flex!important; align-items:center!important; justify-content:center!important; width:auto!important; min-width:0!important; min-height:36px!important; padding:0 10px!important; border:0!important; border-radius:6px!important; background:transparent!important; color:#245fc5!important; font:600 13px/1.2 "Instrument Sans",Arial,sans-serif!important; white-space:nowrap!important; }
+.je-simple-transaction > header .je-secondary-action:hover { background:#eef4ff!important; }
+@media(max-width:650px){.je-simple-transaction>header{align-items:flex-start!important}.je-simple-transaction>header .je-header-actions{margin-left:auto!important}.je-simple-transaction>header .je-secondary-action{white-space:normal!important;text-align:right!important}}
+
+/* Create Journal Entry: consistent page gutter and labelled form sections. */
+.app main:has(> .je-simple-transaction) > .je-simple-transaction { padding:0 24px 24px!important; }
+.app main:has(> .je-simple-transaction) > .je-simple-transaction > header { margin-left:-24px!important; margin-right:-24px!important; width:calc(100% + 48px)!important; }
+.app main:has(> .je-simple-transaction) .je-simple-transaction .je-form-card,
+.app main:has(> .je-simple-transaction) .je-simple-transaction .je-lines-card { margin:0!important; padding:18px 20px!important; }
+.je-simple-transaction .je-simple-section-title { margin:0 0 16px!important; padding:0 0 12px!important; border-bottom:1px solid #edf0f4!important; color:#172033!important; font:700 16px/1.3 "Instrument Sans",Arial,sans-serif!important; }
+.je-simple-transaction .je-reference-summary { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:12px 14px;border:1px solid #e1e7ef;border-radius:8px;background:#f8fafc;color:#5b6b81;font-size:12px; }
+.je-simple-transaction .je-reference-summary span { display:flex;flex-direction:column;gap:3px; }
+.je-simple-transaction .je-reference-summary b { color:#172033;font-size:13px; }
+@media(max-width:700px){.je-simple-transaction .je-reference-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.app main:has(> .je-simple-transaction) .je-simple-transaction > footer { padding:12px 20px!important; }
+@media(max-width:760px){
+  .app main:has(> .je-simple-transaction) > .je-simple-transaction { padding:0 16px 20px!important; }
+  .app main:has(> .je-simple-transaction) > .je-simple-transaction > header { margin-left:-16px!important; margin-right:-16px!important; width:calc(100% + 32px)!important; }
+  .app main:has(> .je-simple-transaction) .je-simple-transaction .je-form-card,
+  .app main:has(> .je-simple-transaction) .je-simple-transaction .je-lines-card { padding:16px!important; }
+}
+
+
+
+/* Reset grid-template-areas for SimpleTransactionForm so cards stack vertically in normal flow */
+.app main:has(> .je-create:not(.je-business)) .je-create.je-simple-transaction,
+.app main .je-create.je-simple-transaction {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+  grid-template-columns: none !important;
+  grid-template-rows: none !important;
+  grid-template-areas: none !important;
+}
+
+.app main:has(> .je-create:not(.je-business)) .je-create.je-simple-transaction > *,
+.app main .je-create.je-simple-transaction > * {
+  grid-area: auto !important;
+}
+
+.je-create.je-simple-transaction .je-form-card,
+.je-create.je-simple-transaction .je-lines-card,
+.je-create.je-simple-transaction .je-summary-card {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 20px 22px !important;
+  background: #fff !important;
+  border: 1px solid #dfe6ef !important;
+  border-radius: 10px !important;
+  box-shadow: 0 2px 8px rgba(16, 24, 40, .04) !important;
+}
+
+/* Fix for SimpleTransactionForm: Vertical stack layout and no grid collision */
+.app main:has(> .je-simple-transaction) > .je-simple-transaction,
+.app main > .je-simple-transaction,
+.je-create.je-simple-transaction {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 18px !important;
+  width: 100% !important;
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding: 0 24px 32px !important;
+}
+
+.app main:has(> .je-simple-transaction) > .je-simple-transaction > *,
+.app main > .je-simple-transaction > *,
+.je-create.je-simple-transaction > * {
+  grid-area: auto !important;
+}
+
+.je-create.je-simple-transaction .je-form-card,
+.je-create.je-simple-transaction .je-lines-card,
+.je-create.je-simple-transaction .je-summary-card {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 22px 24px !important;
+  background: #fff !important;
+  border: 1px solid #dfe6ef !important;
+  border-radius: 10px !important;
+  box-shadow: 0 2px 8px rgba(16, 24, 40, .04) !important;
+}
+
+.je-create.je-simple-transaction .je-simple-section-title {
+  margin: 0 !important;
+  padding-bottom: 12px !important;
+  border-bottom: 1px solid #edf0f4 !important;
+  color: #172033 !important;
+  font: 700 15px/1.3 "Instrument Sans", Arial, sans-serif !important;
+}
+
+.je-create.je-simple-transaction .je-form-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 14px 18px !important;
+}
+
+.je-create.je-simple-transaction .je-form-grid > .je-col-full {
+  grid-column: 1 / -1 !important;
+}
+
+.je-create.je-simple-transaction .je-form-grid > .je-col-2 {
+  grid-column: span 2 !important;
+}
+
+.je-create.je-simple-transaction .je-form-grid > .je-col-3 {
+  grid-column: span 3 !important;
+}
+
+@media (max-width: 1024px) {
+  .je-create.je-simple-transaction .je-form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  .je-create.je-simple-transaction .je-form-grid > .je-col-2,
+  .je-create.je-simple-transaction .je-form-grid > .je-col-3 {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+@media (max-width: 650px) {
+  .je-create.je-simple-transaction .je-form-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .je-create.je-simple-transaction .je-form-grid > * {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+.je-create.je-simple-transaction .je-scope-pill-container {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+}
+
+.je-create.je-simple-transaction .je-scope-label {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #344054 !important;
+}
+
+.je-create.je-simple-transaction .je-scope-readonly-pill {
+  display: flex !important;
+  align-items: center !important;
+  height: 38px !important;
+  padding: 0 12px !important;
+  background: #f8fafc !important;
+  border: 1px solid #d0d5dd !important;
+  border-radius: 7px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #1e293b !important;
+}
+
+.je-create.je-simple-transaction .je-doc-summary-card {
+  grid-column: 1 / -1 !important;
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
+  gap: 14px !important;
+  padding: 16px 18px !important;
+  background: #f8fbff !important;
+  border: 1px solid #bfdbfe !important;
+  border-radius: 8px !important;
+}
+
+.je-create.je-simple-transaction .je-doc-summary-item {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
+.je-create.je-simple-transaction .je-doc-summary-item span {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: #64748b !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+}
+
+.je-create.je-simple-transaction .je-doc-summary-item strong {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+}
+
+.je-create.je-simple-transaction .je-doc-summary-item.highlight strong {
+  color: #2563eb !important;
+}
+
+.je-create.je-simple-transaction .je-info-banner {
+  grid-column: 1 / -1 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 12px 16px !important;
+  background: #eff6ff !important;
+  border: 1px solid #93c5fd !important;
+  border-radius: 8px !important;
+  color: #1e40af !important;
+  font-size: 13px !important;
+}
+
+.je-create.je-simple-transaction .je-summary-card {
+  background: #fcfdfe !important;
+  border-color: #cbd5e1 !important;
+}
+
+.je-create.je-simple-transaction .je-summary-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+  gap: 16px 22px !important;
+}
+
+.je-create.je-simple-transaction .je-summary-grid > div {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  border-bottom: 1px dashed #e2e8f0 !important;
+  padding-bottom: 10px !important;
+}
+
+.je-create.je-simple-transaction .je-summary-grid span {
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  color: #64748b !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.03em !important;
+}
+
+.je-create.je-simple-transaction .je-summary-grid strong {
+  font-size: 14px !important;
+  font-weight: 650 !important;
+  color: #0f172a !important;
+}
+
+.je-create.je-simple-transaction > footer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 12px !important;
+  padding: 16px 24px !important;
+  background: #fff !important;
+  border: 1px solid #dfe6ef !important;
+  border-radius: 10px !important;
+}
+
+/* Advanced mode wears the same page header as Simple mode: same 70px row, same back button,
+   same 16px/650 title, and the Simple / Advanced control in the same trailing position.
+   Only the negative bleed is dropped, because this page container has its own gutter. */
+
+/* The advanced header fields wear the same tokens as Simple mode: one three column grid,
+   a 13px/600 label, a 42px control on an 8px radius with the #d6e0ec border and the
+   #3478f6 focus ring, inside the same 22px/24px card on a 12px radius. */
+.je-create.je-create-compact .je-form-card{padding:22px 24px!important;border:1px solid #e1e7f0!important;border-radius:12px!important;background:#fff!important;box-shadow:0 2px 8px #10182809!important}
+.je-create.je-create-compact .je-form-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px 18px!important}
+.je-create.je-create-compact .je-form-grid>label{display:flex!important;flex-direction:column!important;gap:6px!important;min-width:0!important;color:#24334c!important;font-size:13px!important;font-weight:600!important}
+.je-create.je-create-compact .je-form-grid>label>input,.je-create.je-create-compact .je-form-grid>label>select{display:block!important;width:100%!important;min-width:0!important;min-height:42px!important;padding:0 11px!important;border:1px solid #d6e0ec!important;border-radius:8px!important;background:#fff!important;color:#17233a!important;font-size:13px!important;font-weight:500!important}
+.je-create.je-create-compact .je-form-grid>label>input:focus,.je-create.je-create-compact .je-form-grid>label>select:focus{outline:0!important;border-color:#7da9f5!important;box-shadow:0 0 0 3px #3478f61a!important}
+@media(max-width:1050px){.je-create.je-create-compact .je-form-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:700px){.je-create.je-create-compact .je-form-grid{grid-template-columns:1fr!important}}
+
+/* The advanced page carried its own page-scoped layout (a four column grid and 14px/16px
+   padding) written for that page alone. Simple mode is three columns of the same field, so
+   the same specificity is restated here, later in the cascade, to make the two modes measure
+   identically. Reverting to the denser four column layout means deleting these two rules. */
+.app main:has(> .je-create:not(.je-business)) .je-create .je-form-card{padding:22px 24px!important}
+.app main:has(> .je-create:not(.je-business)) .je-create .je-form-card .je-form-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px 18px!important}
+@media(max-width:1050px){.app main:has(> .je-create:not(.je-business)) .je-create .je-form-card .je-form-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:700px){.app main:has(> .je-create:not(.je-business)) .je-create .je-form-card .je-form-grid{grid-template-columns:1fr!important}}
+
+/* Narrow screens: Simple drops its card padding and has no header badge, so the advanced
+   page does the same and its header stays a single 56px row instead of wrapping. */
+@media(max-width:760px){.app main:has(> .je-create:not(.je-business)) .je-create .je-form-card{padding:16px!important}}
+@media(max-width:760px){.je-create .rt-header{min-height:56px!important}.je-create .rt-header>.je-status{display:none!important}}
+.je-create .rt-header>h1{min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+
+/* The page scoped layout gave the advanced header a narrower track than the cards under it,
+   and its line grid columns touched each other. Both are restated at the specificity that
+   actually wins (the same :has() chain the page layout uses), so the header spans the
+   content width with its mode control and badge on the trailing edge, and each line column
+   is separated and stretches across the section instead of bunching on the left. */
+.app main:has(> .je-create:not(.je-business)) .app main:has(> .je-create:not(.je-business)) .je-create .je-line{column-gap:14px!important;width:100%!important}
+.app main:has(> .je-create:not(.je-business)) .je-create .je-line>.je-cell{padding-left:0!important;padding-right:0!important;min-width:0!important}
+.app main:has(> .je-create:not(.je-business)) .je-create .je-line.head{gap:14px!important}
+.app main:has(> .je-create:not(.je-business)) .je-create .je-line .je-cell input,.app main:has(> .je-create:not(.je-business)) .je-create .je-line .je-cell select{width:100%!important}
+
+
+/* The form and lines cards sit 22px to the left of the header at the same width, so the header
+   bar was visibly offset from the cards under it. A left-only shift lands it exactly on them:
+   width is untouched (still 100% of the container), so both edges move together. */
+
+
+/* The advanced header now wears Simple mode treatment in full: it keeps the shared .rt-header
+   bleed (negative side margins plus 24px padding) so the white bar spans the whole content
+   area and sits flush against the page edges, and the form and lines cards stay inset. The
+   earlier inset override and the painted translate that aligned the header with those cards
+   are removed - on this page the header is meant to be the wider, full bleed element. */
+
+/* Simple mode header bleeds 24px past the page gutter on both sides and the cards sit inset,
+   while this page set the header 22px INSIDE the cards - which is why it read as the wrong
+   width next to them. The header now takes Simple bleed in full, so the white bar spans the
+   content area and touches the page edges on both sides, with the cards under it inset. */
+.app main:has(> .je-create:not(.je-business)) .je-create .rt-header{margin-left:-24px!important;margin-right:-24px!important}
+@media(max-width:760px){.app main:has(> .je-create:not(.je-business)) .je-create .rt-header{margin-left:-12px!important;margin-right:-12px!important}}

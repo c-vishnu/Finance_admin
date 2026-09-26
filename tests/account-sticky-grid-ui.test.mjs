@@ -13,7 +13,7 @@ const rule=selector=>{
 };
 
 test('the working content is the only scroll port, so the filter row pins at its top',()=>{
-  assert.match(polish,/\.app>main\{[^}]*height:calc\(100dvh - 105px\)[^}]*overflow-x:clip;overflow-y:auto/);
+  assert.match(polish,/\.app>main\{[^}]*height:calc\(100dvh - 59px\)[^}]*overflow-x:clip;overflow-y:auto/);
   assert.match(rule('.am-coa-page>.am-filter-toolbar'),/position:sticky;top:0;z-index:9/);
 });
 
@@ -114,7 +114,7 @@ test('the one-row toolbar keeps its tokens and folds below the 851px line',()=>{
 /* The account grid keeps the shared .am-table bones and only sharpens them. */
 test('the account grid reads as one stack with a live row',()=>{
   for(const token of [
-    '.am-coa-page .am-coa-grid thead th:first-child{padding-left:48px}',
+    '.am-coa-page .am-coa-grid thead th:first-child{padding-left:58px!important}',
     '.am-coa-page .am-coa-grid th:last-child{width:1%}',
     '.am-coa-page .am-coa-grid th:last-child,.am-coa-page .am-coa-grid td:last-child{text-align:right}',
     '.am-coa-page .am-coa-grid tbody tr:hover>td{background:#f8fbff}',
@@ -122,24 +122,24 @@ test('the account grid reads as one stack with a live row',()=>{
     '.am-coa-page .am-coa-grid tbody tr:last-child>td{border-bottom:0}',
   ]) assert.ok(css.includes(token),'the grid keeps '+token);
   assert.ok(css.includes('.am-coa-page .am-coa-grid tbody tr.selected>td,.am-coa-page .am-coa-grid tbody tr.selected:hover>td{background:#eff5ff}'),'a selected row keeps its tint through the hover state');
-  assert.ok(css.includes('.am-coa-page .am-coa-grid .am-tree-name>button:focus-visible,.am-coa-page .am-coa-grid .am-row-edit:focus-visible,.am-coa-page .am-coa-grid .am-more>summary:focus-visible{outline:2px solid #245fd9;outline-offset:-2px}'),'the row controls keep a visible focus ring');
+  assert.ok(css.includes('.am-coa-page .am-coa-grid .am-tree-name>button:focus-visible,.am-coa-page .am-coa-grid .am-more>summary:focus-visible{outline:2px solid #245fd9;outline-offset:-2px}'),'the row controls keep a visible focus ring');
   const sizes=[...css.slice(css.indexOf('/* Chart of Accounts - account grid polish.')).matchAll(/font-size:([\d.]+)px/g)].map(m=>Number(m[1]));
   assert.ok(sizes.length&&Math.min(...sizes)>=12,'every grid polish rule stays at or above the 12px floor');
-  assert.ok(css.includes('.am-coa-page .am-coa-grid .am-row-edit{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;padding:0 10px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;font-weight:600;cursor:pointer}'),'and the visible row action wears the register row-button tokens');
+  assert.ok(!css.includes('.am-coa-page .am-coa-grid .am-row-edit{'),'the obsolete visible row action styling is gone');
 });
  
 /* The grid is one flat table: the type that used to head an accordion section is a column, and
-   every row carries the same visible Edit action beside its menu. */
-test('the account grid is one flat table with a visible row action',()=>{
+   every row carries Edit inside the same More actions menu. */
+test('the account grid is one flat table with menu-only row actions',()=>{
   for(const token of [
     ".am-coa-page .am-coa-grid .am-row-actions{display:flex;align-items:center;justify-content:flex-end;gap:6px}",
     ".am-coa-page .am-coa-grid .am-row-actions-cell{width:1%;white-space:nowrap}",
   ]) assert.ok(css.includes(token),'the row action cluster keeps '+token);
-  assert.ok(css.includes('.am-coa-page .am-coa-grid .am-row-edit:hover{border-color:#98a2b3;background:#f9fafb}'),'and the Edit button hovers like the register row buttons');
+  assert.ok(!css.includes('.am-coa-page .am-coa-grid .am-row-edit:hover'),'the duplicate visible Edit hover rule is gone');
   assert.ok(!css.includes('am-group-toggle')&&!css.includes('am-group-row'),'no accordion rule is left behind');
   assert.ok(!css.includes('.am-row-more'),'and the old actions cell class is gone with it, not left dead');
   assert.match(workspace,/const flatRows=typeGroups\.flatMap\(group=>group\.rows\.map\(row=>\(\{\.\.\.row,type:group\.name\}\)\)\)/,'the body is one flat list in chart order');
-  assert.match(workspace,/className="am-row-edit" onClick=\{\(\)=>start\(a\)\}/,'each row opens its editor from a visible button');
+  assert.match(workspace,/<IconEdit size=\{16\}\/>Edit<\/button><button type="button" onClick=\{menuRun\(\(\)=>start\(a,true\)\)\}/,'each row opens its editor from the first menu item');
   assert.doesNotMatch(workspace,/openGroups|onToggleGroup|am-group-toggle/,'and the accordion state and markup are gone');
 });
 

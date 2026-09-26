@@ -5,7 +5,7 @@ import {matchesAccountQuery,readAccountPrefs,toggleFavouriteAccount} from './jou
 const TYPE_ORDER=['Assets','Liabilities','Equity','Income','Expenses'];
 const optionId=code=>'je-account-option-'+code;
 
-export default function JournalAccountPicker({value,accounts,onChange,onCommit}){
+export default function JournalAccountPicker({value,accounts,onChange,onCommit,placeholder='Search and select account'}){
  const [open,setOpen]=useState(false),[query,setQuery]=useState(''),[active,setActive]=useState(0),[prefs,setPrefs]=useState(readAccountPrefs);
  const rootRef=useRef(null),inputRef=useRef(null),list=accounts||[],selected=list.find(account=>account.code===value)||null;
  const {rows,keys}=useMemo(()=>{
@@ -44,8 +44,8 @@ export default function JournalAccountPicker({value,accounts,onChange,onCommit})
  },[open]);
  const activeCode=rows[active]?.account?.code;
  return <div className={'je-account-picker'+(open?' open':'')} ref={rootRef}>
-  <button type="button" className="je-account-field" role="combobox" aria-expanded={open} aria-controls="je-account-listbox" aria-haspopup="listbox" aria-label={value?'Account '+selected?.name:'Search and select account'} onClick={()=>open?closeList():openList()} onKeyDown={event=>{if(!open&&(event.key==='ArrowDown'||event.key==='Enter')){event.preventDefault();openList()}}}>
-   {selected?<span className="je-account-value"><b>{selected.name}</b><small>{selected.code} · {selected.type}</small></span>:<span className="je-account-placeholder">Search and select account</span>}
+  <button type="button" className="je-account-field" role="combobox" aria-expanded={open} aria-controls="je-account-listbox" aria-haspopup="listbox" aria-label={value?'Account '+selected?.name:placeholder} onClick={()=>open?closeList():openList()} onKeyDown={event=>{if(!open&&(event.key==='ArrowDown'||event.key==='Enter')){event.preventDefault();openList()}}}>
+   {selected?<span className="je-account-value"><b>{selected.name}</b><small>{selected.code} · {selected.type}</small></span>:<span className="je-account-placeholder">{placeholder}</span>}
    <IconChevronDown size={15}/>
   </button>
   {value&&<button type="button" className="je-account-clear-button" aria-label="Clear account" onClick={()=>{onChange('');onCommit?.('')}}><IconX size={13}/></button>}

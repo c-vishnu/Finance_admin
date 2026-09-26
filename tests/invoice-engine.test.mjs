@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {initial,seedAccounts,command,reports,outstanding,paymentStatus,calculate} from '../src/invoice-engine.js';
+import {initial,seedAccounts,command,journal,reports,outstanding,paymentStatus,calculate} from '../src/invoice-engine.js';
 const seed={Assets:[['1100','Accounts Receivable'],['1010','HDFC Bank']],Income:[['4100','Service Income']],Liabilities:[['2100','GST Payable']],Expenses:[['5900','Rounding']]};
 const draft={customerId:'abc',customerName:'ABC Technologies',date:'2026-09-04',dueDate:'2026-10-04',place:'Kerala',lines:[{description:'Website Development',qty:'1',unit:'service',rate:'100000',discount:'0',discountType:'%',tax:'18',cess:'0'}]};
 function saved(){return command(seedAccounts(initial(),seed),'save',draft)}
@@ -9,6 +9,7 @@ test('invoice posting repairs reserved 1100 Accounts Receivable in legacy data',
 test('invoice posting repairs reserved 4100 Income and 2100 GST accounts',()=>{let {state:s,result:i}=saved();s.accounts=s.accounts.map(a=>['4100','2100'].includes(a.code)?{...a,active:false,isGroup:true,type:'Assets'}:a);const posted=command(s,'post',{id:i.id}).state,income=posted.accounts.find(a=>a.code==='4100'),gst=posted.accounts.find(a=>a.code==='2100');assert.deepEqual([income.active,income.isGroup,income.type,income.nature],[true,false,'Income','Credit']);assert.deepEqual([gst.active,gst.isGroup,gst.type,gst.nature,gst.controlAccount],[true,false,'Liabilities','Credit',true]);assert.equal(posted.journals[0].lines.reduce((n,l)=>n+l.debit-l.credit,0),0)});
 test('invoice posting provisions reserved 4000 Sales for item revenue',()=>{let s=seedAccounts(initial(),seed),savedInvoice=command(s,'save',{...draft,lines:[{...draft.lines[0],income:'4000'}]});s=savedInvoice.state;const posted=command(s,'post',{id:savedInvoice.result.id}).state,sales=posted.accounts.find(a=>a.code==='4000');assert.deepEqual([sales.active,sales.isGroup,sales.type,sales.nature],[true,false,'Income','Credit']);assert.ok(posted.journals[0].lines.some(l=>l.account==='4000'&&l.credit===10000000));assert.equal(posted.journals[0].lines.reduce((n,l)=>n+l.debit-l.credit,0),0)});
 test('partial, overdue and excess payment protection',()=>{let {state:s,result:i}=saved();s=command(s,'post',{id:i.id}).state;s=command(s,'pay',{id:i.id,amount:'50000',date:'2026-09-05',bank:'1010',token:'p2'}).state;i=s.invoices[0];assert.equal(outstanding(s,i),6800000);assert.equal(paymentStatus(s,i,'2026-09-06'),'Partially Paid');assert.equal(paymentStatus(s,i,'2026-11-01'),'Overdue');assert.throws(()=>command(s,'pay',{id:i.id,amount:'70000',date:'2026-09-05',bank:'1010',token:'p3'}),/exceed/);assert.throws(()=>command(s,'cancel',{id:i.id,reason:'Cancel'}),/payments/)});
+test('a wallet account can receive an invoice-linked payment',()=>{let {state:s,result:i}=saved();s.accounts.push({code:'1020',name:'Business Wallet',type:'Assets',nature:'Debit',active:true,isGroup:false});s=command(s,'post',{id:i.id}).state;s=command(s,'pay',{id:i.id,amount:'1000',date:'2026-09-05',bank:'1020',token:'wallet-1'}).state;assert.equal(s.payments[0].bank,'1020');assert.ok(s.journals.at(-1).lines.some(line=>line.account==='1020'&&line.debit===100000));});
 test('reversal retains original journal, missing mapping is atomic',()=>{let {state:s,result:i}=saved();s.config.sales='';assert.throws(()=>command(s,'post',{id:i.id}),/Configure/);assert.equal(s.journals.length,0);s.config.sales='4100';s=command(s,'post',{id:i.id}).state;assert.throws(()=>command(s,'save',{...i,customerName:'changed'}),/draft/);s=command(s,'cancel',{id:i.id,reason:'Duplicate order'}).state;assert.equal(s.journals.length,2);assert.equal(reports(s).assets,0);assert.equal(reports(s).revenue,0)});
 test('interstate tax, discounts, cess, duplicate number and invalid lines',()=>{const t=calculate({...draft,place:'Karnataka'},initial().config);assert.equal(t.igst,1800000);assert.equal(t.cgst,0);assert.equal(t.sgst,0);assert.throws(()=>calculate({...draft,lines:[{...draft.lines[0],qty:'0'}]},initial().config),/quantity/);const {state:s,result:i}=saved();assert.throws(()=>command(s,'save',{...draft,number:i.number}),/already exists/);const c=calculate({...draft,lines:[{...draft.lines[0],discount:'10',cess:'1'}]},initial().config);assert.equal(c.taxable,9000000);assert.equal(c.cess,90000)});
 test('tax-inclusive item prices are converted to taxable value without double charging tax',()=>{const result=calculate({...draft,lines:[{...draft.lines[0],rate:'1180',priceTaxMode:'inclusive',taxes:{cgst:9,sgst:9,igst:0,cess:0}}]},initial().config);assert.equal(result.taxable,100000);assert.equal(result.cgst,9000);assert.equal(result.sgst,9000);assert.equal(result.total,118000)});
@@ -49,4 +50,49 @@ test('a recurring schedule is a setting on a posted invoice, refused elsewhere a
  assert.equal(off.state.audit.at(-1).action,'recurring');
  const cancelled=command(off.state,'cancel',{id:i.id,reason:'Duplicate invoice'}).state;
  assert.throws(()=>command(cancelled,'recurring',{id:i.id,frequency:'Monthly',nextDate:'2026-11-04'}),/cancelled/,'a cancelled invoice cannot be scheduled');
+});
+
+test('a journal line repairs the reserved 1010 Bank ledger instead of stopping the load',()=>{
+ let {state:s,result:i}=saved();s=command(s,'post',{id:i.id}).state;
+ const deactivated={...s,accounts:s.accounts.map(a=>a.code==='1010'?{...a,active:false}:a)};
+ journal(deactivated,{number:'JE-BANK-FIX'},'Journal Entry',[{account:'1010',debit:100000,credit:0},{account:'4100',debit:0,credit:100000}],'2026-09-10','repair-bank');
+ const bank=deactivated.accounts.find(a=>a.code==='1010');
+ assert.deepEqual([bank.active,bank.isGroup,bank.type,bank.nature],[true,false,'Assets','Debit'],'a deactivated system bank ledger is reactivated for the posting');
+ assert.equal(bank.name,'HDFC Bank','the ledger keeps the name the operator gave it');
+ const removed={...s,accounts:s.accounts.filter(a=>a.code!=='1010')};
+ journal(removed,{number:'JE-BANK-NEW'},'Journal Entry',[{account:'1010',debit:100000,credit:0},{account:'4100',debit:0,credit:100000}],'2026-09-10','recreate-bank');
+ const recreated=removed.accounts.find(a=>a.code==='1010');
+ assert.deepEqual([recreated.active,recreated.isGroup,recreated.type,recreated.group],[true,false,'Assets','Cash and Bank'],'a deleted system bank ledger is provisioned for the posting');
+ assert.ok(removed.journals.at(-1).lines.some(line=>line.account==='1010'&&line.debit===100000),'and the entry still posts through it');
+});
+
+test('an inactive account outside the reserved set is refused and names its own type',()=>{
+ const {state:s}=saved();
+ s.accounts.push({code:'5300',name:'Utilities',type:'Expenses',nature:'Debit',active:false,isGroup:false});
+ assert.throws(()=>journal(s,{number:'JE-TEST'},'Journal Entry',[{account:'5300',debit:100,credit:0},{account:'4000',debit:0,credit:100}],'2026-09-10','inactive-5300'),/Configure an active posting Expenses account for 5300/);
+});
+
+test('an inclusive line is split into taxable value and tax, and mixes with exclusive lines',()=>{
+ const config={state:'Kerala',roundRupee:false};
+ const line=(rate,mode)=>({description:'Consulting',unit:'service',qty:'2',rate,discount:'0',discountType:'%',tax:'18',cess:'0',income:'4100',priceTaxMode:mode});
+ const inclusive=calculate({place:'Kerala',lines:[line('5900','inclusive')]},config);
+ assert.equal(inclusive.taxable,1000000,'two units at 5,900 including 18% is 10,000 before tax');
+ assert.equal(inclusive.cgst+inclusive.sgst,180000,'and 1,800 of tax');
+ assert.equal(inclusive.total,1180000,'so the line total is the inclusive amount the operator typed');
+ const exclusive=calculate({place:'Kerala',lines:[line('5900','exclusive')]},config);
+ assert.equal(exclusive.taxable,1180000,'an exclusive line keeps the full entered value as taxable');
+ assert.equal(exclusive.cgst+exclusive.sgst,212400);
+ assert.equal(exclusive.total,1392400,'and the tax is added on top');
+ const mixed=calculate({place:'Kerala',lines:[line('5900','inclusive'),line('5000','exclusive')]},config);
+ assert.equal(mixed.taxable,2000000,'the summary totals the two treatments');
+ assert.equal(mixed.total,1180000+1180000,'and the document total is the sum of the line totals');
+});
+
+test('an ad hoc line must state its price type, while an absent key keeps the old reading',()=>{
+ const config={state:'Kerala',roundRupee:false};
+ const line=()=>({description:'Ad hoc item',unit:'pcs',qty:'1',rate:'1000',discount:'0',discountType:'%',tax:'18',cess:'0'});
+ assert.throws(()=>calculate({place:'Kerala',lines:[{...line(),priceTaxMode:''}]},config),/includes tax/,'a line with no price type cannot be priced');
+ const absent=calculate({place:'Kerala',lines:[line()]},config);
+ assert.equal(absent.taxable,100000,'a line that never states a price type keeps the long standing tax exclusive reading');
+ assert.equal(absent.total,118000);
 });

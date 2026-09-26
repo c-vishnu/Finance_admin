@@ -3,3 +3,67 @@
 /* Keep record state with its identity and reserve the far edge for actions. */
 .je-detail>header>div:not(.je-detail-actions){order:1}.je-detail>header>.je-status{order:2;margin-left:0!important;margin-right:8px}.je-detail>header>.je-detail-actions{order:3;margin-left:auto!important}
 @media(max-width:700px){.je-detail>header>.je-status{order:2;margin-left:54px!important}.je-detail>header>.je-detail-actions{order:3;width:auto;margin-left:auto!important}}
+
+/* One detail section instead of four tabs: the record keeps the width and the audit log holds a side column. */
+.je-detail-single{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,3fr);gap:16px;align-items:start;margin-top:12px}
+.je-detail-main{display:grid;gap:14px;min-width:0}
+.je-detail-facts{padding:18px 20px;border:1px solid #e1e6ed;border-radius:14px;background:#fff;box-shadow:0 3px 14px #1018280a}
+.je-detail-facts>h3{margin:0 0 6px;color:#172033;font-size:13px;font-weight:650}
+.je-detail-facts>dl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0 20px;margin:0;padding:0}
+.je-detail-facts>dl>div{min-width:0;padding:14px 0;border-bottom:1px solid #edf0f4}
+.je-detail-facts>dl>div.wide{grid-column:1/-1}
+.je-detail-facts>dl dt{display:flex;align-items:center;gap:8px;margin:0 0 4px;color:#667085;font-size:12px;font-weight:500}
+.je-detail-facts>dl dt svg{flex:none;color:#667085}
+.je-detail-facts>dl dd{margin:0;color:#1d2939;font-size:14px;font-weight:600;overflow-wrap:anywhere}
+.je-impact{border:1px solid #e1e6ed;border-radius:14px;background:#fff;box-shadow:0 3px 14px #1018280a}
+.je-impact>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:48px;padding:0 18px;color:#172033;font-size:13px;font-weight:600;cursor:pointer;list-style:none}
+.je-impact>summary::-webkit-details-marker{display:none}
+.je-impact>summary svg{flex:none;color:#667085;transition:transform .16s}
+.je-impact[open]>summary{border-bottom:1px solid #edf1f6}
+.je-impact[open]>summary svg{transform:rotate(180deg)}
+.je-impact-body{padding:0 18px 16px;overflow-x:auto}
+.je-impact-body table{width:100%;border-collapse:collapse}
+.je-impact-body th,.je-impact-body td{padding:10px 8px;border-top:1px solid #edf1f6;font-size:12px;text-align:left}
+.je-impact-body th:not(:first-child),.je-impact-body td:not(:first-child){text-align:right;white-space:nowrap}
+.je-detail-docs{display:grid;gap:10px;margin-top:4px;padding-top:16px;border-top:1px solid #edf1f6}
+@media(max-width:700px){.je-detail-audit{padding:16px}}
+.je-detail-docs>h3{margin:0;color:#172033;font-size:13px;font-weight:650}
+.je-detail-audit{position:sticky;top:12px;padding:24px;border:1px solid #e1e6ed;border-radius:14px;background:#fff;box-shadow:0 3px 14px #1018280a}
+.je-detail-audit>h3{margin:0 0 8px;color:#172033;font-size:13px;font-weight:650}
+@media(max-width:1050px){.je-detail-single{grid-template-columns:1fr}.je-detail-audit{position:static}}
+
+.je-permission-note{display:flex;align-items:center;gap:7px;margin:12px 0 0;padding:10px 14px;border:1px solid #ffe0b2;border-radius:9px;background:#fff8ec;color:#8a4b09;font-size:12px}
+@media(max-width:1280px){.je-detail-facts>dl{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:700px){.je-detail-facts>dl{grid-template-columns:1fr}}
+
+@media(max-width:1050px){.je-detail-facts>dl{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* The history card is a clean vertical timeline: a fixed 40px icon column, a thin
+   connector running through the badge centres, and one scannable entry per event. */
+.je-timeline{position:relative;margin:0;padding:0;list-style:none}
+.je-timeline>li{position:relative;display:flex;gap:12px;padding-bottom:24px}
+.je-timeline>li:last-child{padding-bottom:0}
+.je-timeline>li:not(:last-child)::before{content:"";position:absolute;left:19.5px;top:46px;bottom:6px;width:1px;background:#e4e9f0}
+.je-timeline-mark{position:relative;z-index:1;flex:0 0 40px;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:#eef2ff;color:#4f46e5}
+.je-timeline-mark.is-created{background:#eef2ff;color:#4f46e5}
+.je-timeline-mark.is-approved{background:#e6f7ee;color:#157f4a}
+.je-timeline-mark.is-posted{background:#e6f7ee;color:#157f4a}
+.je-timeline-mark.is-pending,.je-timeline-mark.is-submitted,.je-timeline-mark.is-resubmitted{background:#eaf1ff;color:#2f6fed}
+.je-timeline-mark.is-rejected{background:#fdeaea;color:#b42318}
+.je-timeline-mark.is-reversed{background:#fff5e6;color:#b26a00}
+.je-timeline-mark.is-cancelled{background:#f2f4f7;color:#667085}
+.je-timeline-body{flex:1;min-width:0;padding-top:7px}
+.je-timeline-body>p{display:block;margin:0;color:#344054;font-size:13px;font-weight:400;line-height:1.5}
+.je-timeline-actor{color:#172033;font-weight:600;white-space:nowrap}
+.je-timeline-body>p.je-timeline-note{margin-top:8px;padding:8px 10px;border:1px solid #eef1f6;border-radius:8px;background:#f8fafc;color:#475467;font-size:12px}
+.je-timeline time{display:block;margin-top:6px;color:#98a2b3;font-size:12px}
+.je-timeline-empty{margin:0;color:#667085;font-size:12px}
+.je-status-badge{display:inline-flex;align-items:center;margin:0 2px;padding:2px 8px;border-radius:999px;background:#eef2f7;color:#475467;font-size:11px;font-weight:600;line-height:1.6;white-space:nowrap}
+.je-status-badge.is-approved{background:#e6f7ee;color:#157f4a}
+.je-status-badge.is-rejected{background:#fdeaea;color:#b42318}
+.je-status-badge.is-pending{background:#eaf1ff;color:#2f6fed}
+.je-status-badge.is-reversed{background:#fff5e6;color:#b26a00}
+.je-status-badge.is-cancelled{background:#f2f4f7;color:#667085}
+/* With nothing attached the section states it in one quiet line under its heading, so it never reads as another field row. */
+.je-docs-empty{display:flex;align-items:center;gap:7px;margin:0;color:#667085;font-size:12px}
+.je-docs-empty svg{flex:none;color:#98a2b3}

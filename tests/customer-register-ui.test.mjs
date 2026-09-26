@@ -27,9 +27,9 @@ assert.ok(screen.includes("placeholder=\"Search name, code, contact or email…\
 });
 
 test('each row offers View Customer plus the canonical three-dot menu',()=>{
- for(const label of ['View Customer','Edit Customer','Activate Customer','Deactivate Customer','Duplicate Customer','Delete Customer'])
+ for(const label of ['Edit Customer','Activate Customer','Deactivate Customer','Duplicate Customer','Delete Customer'])
   assert.ok(screen.includes(label),label);
- assert.match(screen,/className="customerView" onClick=\{\(\)=>openDetail\(x\)\}/,'View Customer opens the detail page');
+ assert.match(screen,/className="customerView" aria-label=\{"View "\+x\.name\} title="View customer" onClick=\{\(\)=>openDetail\(x\)\}><IconEye size=\{17\}\/><\/button>/,'the row action is one icon-only control that opens the detail page');
  assert.match(screen,/className="customerKebab"><summary aria-label=\{'More actions for '\+x\.name\}>/,'the row menu is a details disclosure named for its customer');
  assert.match(screen,/customerDanger" onClick=\{\(\)=>deleteCustomer\(x\)\}/,'delete is the destructive entry');
  assert.ok(screen.includes("<td className=\"customerActionsCell\">"),'the actions cell is the right-aligned last column');

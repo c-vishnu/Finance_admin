@@ -7,9 +7,9 @@ const state={accounts:[
   {code:'2000',name:'Accounts Payable',type:'Liabilities',accountNature:'Accounts Payable',active:true},
   {code:'4000',name:'Sales',type:'Income',accountNature:'Sales Income',active:true}
 ],journals:[{date:'2026-09-08',status:'Posted',lines:[
-  {account:'1010',debit:10000,credit:0,branch:'Chennai Branch'},
-  {account:'2000',debit:0,credit:4000,branch:'Chennai Branch'},
-  {account:'4000',debit:0,credit:6000,branch:'Chennai Branch'}
+  {account:'1010',debit:10000,credit:0,branch:'Trivandrum Branch'},
+  {account:'2000',debit:0,credit:4000,branch:'Trivandrum Branch'},
+  {account:'4000',debit:0,credit:6000,branch:'Trivandrum Branch'}
 ]}]};
 
 test('Balance Sheet classifies accounts and includes current earnings in equity',()=>{
@@ -25,5 +25,5 @@ test('Balance Sheet classifies accounts and includes current earnings in equity'
 test('Balance Sheet respects date and branch filters',()=>{
   assert.equal(balanceSheet(state,{date:'2026-09-07'}).assets,0);
   assert.equal(balanceSheet(state,{date:'2026-09-08',branch:'Kochi Branch'}).assets,0);
-  assert.equal(balanceSheet(state,{date:'2026-09-08',branch:'Chennai Branch'}).assets,10000);
+  assert.equal(balanceSheet(state,{date:'2026-09-08',branch:'Trivandrum Branch'}).assets,10000);
 });

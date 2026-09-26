@@ -9,8 +9,8 @@ const css=read('src/invoice-workspace.css');
 const credits=read('src/CreditNotes.jsx');
 const engine=read('src/invoice-engine.js');
 
-test('every invoice row carries the register row menu beside its View link',()=>{
- assert.match(workspace,/<td><div className="ivRowActions"><button onClick=\{\(\)=>\{setSelected\(i\.id\);setTab\('Overview'\)\}\}>View<\/button><InvoiceRowActions invoice=\{i\} outstanding=\{outstandingAmount\}/,'the actions cell is the View link and the row menu');
+test('every invoice row carries the register row menu beside its View icon',()=>{
+ assert.match(workspace,/<td><div className="ivRowActions"><button className="ivIconButton" aria-label=\{'View '\+i\.number\} title=\{'View '\+i\.number\} onClick=\{\(\)=>\{setSelected\(i\.id\);setTab\('Overview'\)\}\}><IconEye size=\{17\}\/><\/button><InvoiceRowActions invoice=\{i\} outstanding=\{outstandingAmount\}/,'the actions cell is the eye icon for View, which is labelled for a screen reader, and the row menu');
  assert.ok(css.includes('.ivRowActions{display:flex;align-items:center;justify-content:flex-end;gap:6px;white-space:nowrap}'),'kept on one line and right-aligned in the cell');
  assert.ok(menu.includes("import './sales-order-actions.css';"),'the menu reuses the sales order register menu sheet rather than inventing a second one');
  assert.ok(menu.includes('createPortal'),'and is portalled, because the register is an .ivScroll box that would clip an absolutely positioned menu');

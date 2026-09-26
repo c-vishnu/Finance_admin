@@ -1,0 +1,78 @@
+/* Business transaction composer. Keep this isolated from the legacy journal editor. */
+.welcome:has(+.rt-page){display:none}
+.app main:has(>.rt-page){max-width:none;padding:0}
+.rt-page{min-width:0;padding:0 24px 28px;color:#17233a;font:13px/1.4 'Instrument Sans',sans-serif}
+.rt-page *{box-sizing:border-box}
+.rt-page button,.rt-page input,.rt-page select,.rt-page textarea{font:inherit}
+.rt-header{display:flex;align-items:center;gap:14px;min-height:70px;margin:0 -24px 16px;padding:8px 24px;background:#fff;border-bottom:1px solid #e2e8f0}
+.rt-header h1{margin:0;color:#17233a;font-size:16px;font-weight:650;line-height:1.25}
+.rt-back{display:grid;place-items:center;flex:none;width:40px;height:40px;padding:0;border:1px solid #d7e0eb;border-radius:8px;background:#fff;color:#475467;cursor:pointer}
+.rt-back:hover{background:#eef4ff;border-color:#bcd0f5;color:#2463d4}
+.rt-back:focus-visible,.rt-page button:focus-visible,.rt-page summary:focus-visible{outline:2px solid #3478f6;outline-offset:2px}
+/* One Simple / Advanced segmented toggle, shared by both editors. */
+.rt-mode-toggle{display:inline-flex;align-items:center;gap:4px;margin-left:auto;padding:4px;border:1px solid #d7e0eb;border-radius:9px;background:#f2f5fa}
+.rt-mode-toggle button{min-height:30px;padding:0 14px;border:1px solid transparent;border-radius:7px;background:transparent;color:#56647b;font-size:12px;font-weight:650;white-space:nowrap;cursor:pointer}
+.rt-mode-toggle button:hover:not(.active){color:#2463d4}
+.rt-mode-toggle button.active{border-color:#d7e0eb;background:#fff;color:#175cd3;box-shadow:0 1px 2px #10182814}
+/* The form is one card of fields, three to a line, closed by a static footer. */
+.rt-shell{display:grid;gap:16px;width:100%;max-width:1220px;margin:0 auto}
+.rt-form-card{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 18px;min-width:0;padding:22px 24px;border:1px solid #e1e7f0;border-radius:12px;background:#fff;box-shadow:0 2px 8px #10182809}
+.rt-section-head{grid-column:1/-1;display:flex;flex-direction:column;gap:4px;padding-bottom:14px;border-bottom:1px solid #edf1f6}
+.rt-section-head h3{margin:0;font-size:14px;font-weight:650;color:#172033}
+.rt-section-head p{margin:0;font-size:12px;color:#667085}
+.rt-field{display:flex;flex-direction:column;gap:6px;min-width:0;color:#24334c;font-size:13px;font-weight:600}
+.rt-field>span:first-child{line-height:1.35}
+.rt-control{display:flex;align-items:center;gap:10px;min-width:0;min-height:42px;padding:0 11px;border:1px solid #d6e0ec;border-radius:8px;background:#fff;color:#475467}
+.rt-control:focus-within{border-color:#7da9f5;box-shadow:0 0 0 3px #3478f61a}
+.rt-control>svg{flex:none;color:#526785}
+.rt-control input,.rt-control select,.rt-control textarea{display:block;width:100%;min-width:0;min-height:40px;padding:0;border:0;outline:0;background:transparent;color:#17233a;font-size:13px;font-weight:500}
+.rt-control select{cursor:pointer}
+.rt-control select:disabled{cursor:not-allowed;color:#8090a7}
+.rt-control input[readonly]{color:#667085}
+.rt-control textarea{min-height:76px;padding:10px 0;resize:vertical}
+.rt-control input::placeholder,.rt-control textarea::placeholder{color:#8995a8}
+.rt-control .rt-currency{font-size:15px;font-weight:650;color:#24334c}
+.rt-field small{color:#b42318;font-size:12px;font-weight:500}
+.rt-field small.rt-hint{color:#71809a;font-weight:400}
+.rt-document-facts{display:grid;grid-column:1/-1;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0;padding:12px 14px;border:1px solid #e1e7f0;border-radius:9px;background:#f8fbff}
+.rt-document-facts>div{min-width:0}
+.rt-document-facts dt{color:#68778f;font-size:12px}
+.rt-document-facts dd{margin:3px 0 0;color:#17233a;font-size:13px;font-weight:600;overflow-wrap:anywhere}
+.rt-details{grid-column:1/-1;margin-top:2px;border-top:1px solid #e8edf3}
+.rt-details>summary,.rt-accounting>summary{display:flex;align-items:center;gap:9px;min-height:38px;list-style:none;color:#2463d4;font-size:13px;font-weight:650;cursor:pointer}
+.rt-details>summary::-webkit-details-marker,.rt-accounting>summary::-webkit-details-marker{display:none}
+.rt-details>summary small{color:#71809a;font-size:12px;font-weight:400}
+.rt-details>summary svg{margin-left:auto;transition:transform .15s}
+.rt-details[open]>summary svg,.rt-accounting[open]>summary svg:last-child{transform:rotate(180deg)}
+.rt-details>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px 18px;padding:10px 0 2px}
+.rt-details .rt-note,.rt-details .rt-selected-files{grid-column:1/-1}
+.rt-attach-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;justify-self:start;width:100%;min-height:42px;padding:0 12px;border:1px dashed #b9c8dc;border-radius:8px;background:#fafcff;color:#2463d4;font-size:13px;font-weight:600;cursor:pointer}
+.rt-attach-button:hover{border-color:#9bbcf8;background:#f6f9ff}
+.rt-attach-button input{display:none}
+.rt-selected-files{display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.rt-selected-files li{display:flex;align-items:center;gap:8px;min-height:34px;padding:0 6px 0 11px;border:1px solid #e1e7f0;border-radius:7px;background:#fff;color:#344054;font-size:12px;overflow-wrap:anywhere}
+.rt-selected-files li button{display:grid;place-items:center;flex:none;width:24px;height:24px;margin-left:auto;padding:0;border:0;border-radius:6px;background:transparent;color:#68778f;cursor:pointer}
+.rt-selected-files li button:hover{background:#fdecec;color:#b42318}
+/* The tax note states where GST is decided without adding GST fields to the
+   normal journey. */
+.rt-note{margin:0;padding:10px 12px;border:1px solid #e1e7f0;border-radius:8px;background:#f7f9fc;color:#5b6b81;font-size:12px;line-height:1.45}
+/* The actions never float: the footer is the last block of the page itself. */
+.rt-footer{position:sticky;bottom:0;z-index:40;display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:16px 24px;border:1px solid #e1e7f0;border-radius:12px;background:#fff;box-shadow:0 -6px 18px #10182814}
+.rt-footer-note{display:grid;gap:6px;flex:1 1 340px;min-width:0}
+.rt-footer .rt-summary{margin:0;color:#1f2d45;font-size:13px;font-weight:600;line-height:1.45;overflow-wrap:anywhere}
+.rt-accounting{position:relative;display:inline-flex;min-width:0}
+.rt-accounting-trigger{display:inline-flex;align-items:center;gap:7px;min-height:32px;padding:0;border:0;background:transparent;color:#2463d4;font-size:12px;font-weight:650;cursor:pointer}
+.rt-accounting-trigger:hover{text-decoration:underline}
+.rt-accounting-tip{position:absolute;left:0;bottom:calc(100% + 8px);z-index:60;display:grid;gap:6px;min-width:260px;padding:10px 12px;border:1px solid #e1e6ed;border-radius:9px;background:#fff;box-shadow:0 12px 30px #1018281f}
+.rt-accounting-tip>span{display:grid;grid-template-columns:26px minmax(0,1fr) auto;gap:9px;align-items:center;color:#344054;font-size:12px}
+.rt-accounting-tip b{color:#526785}
+.rt-accounting-tip em{font-style:normal;font-weight:650}
+.rt-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:10px;margin-left:auto}
+.rt-actions button{min-height:42px;padding:0 15px;border:1px solid #d3deeb;border-radius:8px;background:#fff;color:#344054;font-size:13px;font-weight:650;cursor:pointer}
+.rt-actions button:hover{border-color:#bcd0f5;background:#eef4ff;color:#2463d4}
+.rt-actions .primary{border-color:#3478f6;background:#3478f6;color:#fff;box-shadow:0 3px 8px #3478f62b}
+.rt-actions .primary:hover{background:#2463d4;color:#fff}
+.rt-error{flex:1 1 100%;margin:0;padding:9px 10px;border-radius:7px;background:#fff1f0;color:#b42318;font-size:12px}
+@media(max-width:1050px){.rt-form-card{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.rt-form-card{grid-template-columns:1fr}.rt-details>div{grid-template-columns:1fr}.rt-document-facts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.rt-page{padding:0 12px 20px}.rt-header{margin:0 -12px 12px;padding:8px 12px;min-height:56px}.rt-back{width:36px;height:36px}.rt-form-card,.rt-footer{padding:16px}.rt-details>summary{flex-wrap:wrap}.rt-details>summary small{flex-basis:calc(100% - 25px)}.rt-actions{width:100%;margin-left:0}.rt-actions button{flex:1 1 auto}}

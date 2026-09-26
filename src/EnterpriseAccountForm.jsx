@@ -2,7 +2,7 @@ import {useEffect,useState} from 'react';
 import {IconBuildingStore,IconCheck,IconChevronDown,IconX} from '@tabler/icons-react';
 import {ACCOUNT_PURPOSES,ACCOUNT_SCOPES,CATEGORY,accountPurposeDefaults,nextCode} from './account-master.js';
 import AccountGroupPicker from './AccountGroupPicker.jsx';
-import {demoOrganizations} from './HeaderOrgSelectors.jsx';
+import {demoOrganizations} from './demo-organisations.js';
 import {NO_BRANCH,findOrganisation,getScopeVisibility,getBranchesForOrganisation,normaliseScope,organisationBranches,selectedOrganisations,validateScope} from './organisation-scope.js';
 import './account-type-picker.css';
 import './account-type-picker-polish.css';
@@ -157,7 +157,7 @@ export default function EnterpriseAccountForm({form,setForm,db,error,setError,lo
             <h2>{form.id?'Edit Account':'Create Account'}</h2>
             <p>{form.id?'Update how this account is classified and used.':'Create an account to track money in your books.'}</p>
           </div>
-          <button type="button" className="am-create-drawer-close" aria-label="Close create account" onClick={close}><IconX size={18}/></button>
+          <button type="button" className="am-create-drawer-close" aria-label="Close create account" onClick={close}><IconX size={20}/></button>
         </div>
         <form className="am-create-drawer-form" onSubmit={submit}>
           <div className="am-create-drawer-body">
@@ -170,8 +170,8 @@ export default function EnterpriseAccountForm({form,setForm,db,error,setError,lo
                   {duplicate&&<small className="am-inline-error">An account with this name already exists.</small>}
                 </Field>
                 <Field label="Account Code">
-                  <span className="am-code-badge">{form.code||nextCode(db.accounts,type)}</span>
-                  <small>Auto-generated</small>
+                  <input value={form.code||''} placeholder={nextCode(db.accounts,type)} maxLength={24} disabled={locked} onChange={event=>set('code',event.target.value)}/>
+                  <small>{locked?'A posted account keeps its code.':'Optional. Leave blank to use '+nextCode(db.accounts,type)+'.'}</small>
                 </Field>
                 <Field label="Account Group *">
                   <AccountGroupPicker groups={groupOptions} value={`${type}::${purpose}`} disabled={locked} onChange={next=>{const [nextType,nextPurpose]=next.split('::');applyGroup(nextType,nextPurpose)}}/>

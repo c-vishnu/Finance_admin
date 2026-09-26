@@ -1,7 +1,7 @@
 import {createContext,useContext,useMemo,useState} from 'react';
 
 export const TERMINOLOGY={
-  accountant:{chartOfAccounts:'Chart of Accounts',chartSubtitle:'Manage the account hierarchy used by ledgers and financial statements.',accountName:'Account Name',accountCode:'Account Code',accountType:'Account Type',accountGroup:'Account Group',balance:'Balance',status:'Status',journalEntries:'Journal Entries',generalLedger:'General Ledger',periodClosing:'Period Lock',addAccount:'Add Account',viewLedger:'View Ledger',asset:'Asset',liability:'Liability',equity:'Equity',income:'Income',expense:'Expense'},
+  accountant:{chartOfAccounts:'Charts of Accounts',chartSubtitle:'Manage the account hierarchy used by ledgers and financial statements.',accountName:'Account Name',accountCode:'Account Code',accountType:'Account Type',accountGroup:'Account Group',balance:'Balance',status:'Status',journalEntries:'Journal Entries',generalLedger:'General Ledger',periodClosing:'Period Lock',addAccount:'Add Account',viewLedger:'View Ledger',asset:'Asset',liability:'Liability',equity:'Equity',income:'Income',expense:'Expense'},
   business:{chartOfAccounts:'Money Categories',chartSubtitle:'Manage your business money categories and balances.',accountName:'Category Name',accountCode:'Reference Code',accountType:'Money Type',accountGroup:'Category Group',balance:'Balance',status:'Status',journalEntries:'Financial Adjustments',generalLedger:'Account History',periodClosing:'Financial Lock',addAccount:'Add Category',viewLedger:'View Money History',asset:'What You Own',liability:'What You Owe',equity:'Owner Investment',income:'Money Earned',expense:'Money Spent'}
 };
 

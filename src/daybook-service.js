@@ -1,5 +1,5 @@
 // Reporting projection only: never writes, recalculates or posts accounting entries.
-export const TRANSACTION_TYPES=['Sales Invoice','Purchase Bill','Receipt','Payment','Expense','Credit Note','Debit Note','Journal Entry','Bank Transaction','Opening Balance'];
+export const TRANSACTION_TYPES=['Sales Invoice','Purchase Invoice','Receipt','Payment','Journal Entry','Credit Note','Debit Note','Transfer'];
 export const UNASSIGNED='Unassigned';
 const list=(s,key)=>Array.isArray(s[key])?s[key]:[];
 const value=v=>v==null||v===''?UNASSIGNED:String(v);
@@ -7,12 +7,12 @@ export function transactionType(source=''){
   if(/Credit Note/i.test(source))return 'Credit Note';
   if(/Debit Note/i.test(source))return 'Debit Note';
   if(/Invoice/i.test(source))return 'Sales Invoice';
-  if(/Bill|Purchase/i.test(source))return 'Purchase Bill';
+  if(/Bill|Purchase/i.test(source))return 'Purchase Invoice';
   if(/Customer Payment|Receipt|Payment Received/i.test(source))return 'Receipt';
   if(/Payment|Refund/i.test(source))return 'Payment';
   if(/Expense/i.test(source))return 'Expense';
   if(/Opening/i.test(source))return 'Opening Balance';
-  if(/Bank/i.test(source))return 'Bank Transaction';
+  if(/Transfer|Bank|Cash/i.test(source))return 'Transfer';
   return 'Journal Entry';
 }
 export function fiscalYear(date){const y=Number(date?.slice(0,4)),m=Number(date?.slice(5,7));return y&&m?'FY '+(m<4?y-1:y)+'–'+String(m<4?y:y+1).slice(2):UNASSIGNED;}
@@ -36,7 +36,8 @@ export function daybookRows(s){
     const company=value(j.companyId??j.company??doc?.companyId??doc?.company);
     const debit=amount('debit'),credit=amount('credit');
     const voucher=doc?.number||j.reference||j.number||'Missing voucher';
-    return {id:j.id,journal:j,doc,collection,date:j.date||'',voucher,journalNumber:j.number||'—',type:transactionType(j.source),source:j.source||'Journal Entry',reference:doc?.reference||j.reference||'—',party:doc?.customerName||doc?.vendorName||doc?.partyName||invoice?.customerName||'—',description:doc?.narration||doc?.description||doc?.reference||lines.map(l=>l.description).filter(Boolean).join(' · ')||j.source||'Journal entry',debit,credit,amount:debit,company,year:fiscalYear(j.date),dimensions:dims,createdBy:j.createdBy||'Not recorded',createdAt:j.createdAt||'',approvedBy:doc?.approvedBy||j.approvedBy||'Not recorded',approval:doc?.approvalStatus||j.approvalStatus||(doc?.approvedBy?'Approved':'Not recorded'),status:reversal?'Reversal':doc?.status==='Cancelled'?'Cancelled':'Posted',reversal,balanced:!invalid&&debit===credit,invalid,missingSource:collection!=='journals'&&!doc,posted:true};
+    const party=doc?.customerName||doc?.vendorName||doc?.partyName||invoice?.customerName||'—';
+    return {id:j.id,journal:j,doc,collection,date:j.date||'',voucher,journalNumber:j.number||'—',type:transactionType(j.source),source:j.source||'Journal Entry',reference:doc?.reference||j.reference||'—',party,customer:doc?.customerName||invoice?.customerName||'',supplier:doc?.vendorName||'',description:doc?.narration||doc?.description||doc?.reference||lines.map(l=>l.description).filter(Boolean).join(' · ')||j.source||'Journal entry',debit,credit,amount:debit,company,year:fiscalYear(j.date),dimensions:dims,accounts:lines.map(l=>String(l.account)),createdBy:j.createdBy||'Not recorded',createdAt:j.createdAt||'',modifiedBy:doc?.modifiedBy||j.modifiedBy||'',modifiedAt:doc?.modifiedAt||j.modifiedAt||'',approvedBy:doc?.approvedBy||j.approvedBy||'Not recorded',approval:doc?.approvalStatus||j.approvalStatus||(doc?.approvedBy?'Approved':'Not recorded'),status:reversal?'Reversal':doc?.status==='Cancelled'?'Cancelled':'Posted',reversal,balanced:!invalid&&debit===credit,invalid,missingSource:collection!=='journals'&&!doc,posted:true};
   }).sort((a,b)=>a.date.localeCompare(b.date)||String(a.createdAt).localeCompare(String(b.createdAt))||a.id.localeCompare(b.id));
 }
 export function unpostedRows(s){
@@ -46,7 +47,9 @@ export function filterDaybook(rows,f={}){
   if(f.from&&f.to&&f.from>f.to)throw Error('Start date must be on or before end date.');
   return rows.filter(r=>{
     if(f.from&&r.date<f.from||f.to&&r.date>f.to)return false;
-    for(const key of ['company','year','type','status','createdBy','approval'])if(f[key]&&f[key]!=='All'&&r[key]!==f[key])return false;
+    for(const key of ['company','year','type','status','createdBy','approval','customer','supplier'])if(f[key]&&f[key]!=='All'&&r[key]!==f[key])return false;
+    if(f.account&&f.account!=='All'&&!r.accounts?.includes(f.account))return false;
+    if(!f.includeCancelled&&r.status==='Cancelled')return false;
     // Match dimensions together on a line, but retain the complete voucher for balanced totals.
     if(['branch','costCentre','department','project'].some(k=>f[k]&&f[k]!=='All')&&!r.dimensions.some(d=>['branch','costCentre','department','project'].every(k=>!f[k]||f[k]==='All'||d[k]===f[k])))return false;
     return !f.search||[r.voucher,r.journalNumber,r.reference,r.party,r.description].join(' ').toLowerCase().includes(f.search.toLowerCase());

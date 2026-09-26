@@ -1,3 +1,11 @@
+const DEMO_BUDGETS = [
+  {id: 'b1', name: 'FY 2026–27 Operating Budget', financialYear: '2026-27', period: 'Yearly', startDate: '2026-04-01', endDate: '2027-03-31', type: 'Profit & Loss Budget', scope: {type: 'Entire Organisation', companyIds: ['abc', 'northstar'], branchIds: []}, amount: 4800000, actual: 2175400, variance: 2624600},
+  {id: 'b2', name: 'FY 2026–27 Sales Budget', financialYear: '2026-27', period: 'Yearly', startDate: '2026-04-01', endDate: '2027-03-31', type: 'Profit & Loss Budget', scope: {type: 'Entire Organisation', companyIds: ['abc', 'northstar'], branchIds: []}, amount: 12000000, actual: 5480000, variance: 6520000},
+  {id: 'b3', name: 'Q2 Marketing Budget', financialYear: '2026-27', period: 'Quarterly', startDate: '2026-07-01', endDate: '2026-09-30', type: 'Profit & Loss Budget', scope: {type: 'Entire Organisation', companyIds: ['abc', 'northstar'], branchIds: []}, amount: 600000, actual: 425000, variance: 175000},
+  {id: 'b4', name: 'Q3 Operating Expenses', financialYear: '2026-27', period: 'Quarterly', startDate: '2026-10-01', endDate: '2026-12-31', type: 'Profit & Loss Budget', scope: {type: 'Entire Organisation', companyIds: ['abc', 'northstar'], branchIds: []}, amount: 1800000, actual: 0, variance: 1800000},
+  {id: 'b5', name: 'Kochi Branch Budget', financialYear: '2026-27', period: 'Yearly', startDate: '2026-04-01', endDate: '2027-03-31', type: 'Profit & Loss Budget', scope: {type: 'Branch', companyIds: ['abc'], branchIds: ['abc-kochi']}, amount: 3000000, actual: 1480000, variance: 1520000},
+  {id: 'b6', name: 'Bengaluru Branch Budget', financialYear: '2026-27', period: 'Yearly', startDate: '2026-04-01', endDate: '2027-03-31', type: 'Profit & Loss Budget', scope: {type: 'Branch', companyIds: ['abc'], branchIds: ['abc-bengaluru']}, amount: 1800000, actual: 695400, variance: 1104600}
+];
 export const BUDGET_STORAGE='wayvida-budgets-v4';
 export const LEGACY_BUDGET_STORAGE='wayvida-budgets-v3';
 export const ACCOUNTING_KEY='wayvida-accounting-v1';
@@ -273,7 +281,7 @@ export function readBudgets(store=globalThis.localStorage){
     if(legacy&&Array.isArray(legacy.budgets)){
       return {...emptyBudgetState(),budgets:legacy.budgets.map(migrateLegacyBudget)};
     }
-    return emptyBudgetState();
+    return {...emptyBudgetState(), budgets: DEMO_BUDGETS};
   }catch{return emptyBudgetState()}
 }
 
@@ -421,4 +429,6 @@ export function parseBudgetCSV(text,availableAccounts=[]){
 export function settingsFor(state){
   return state?.settings||emptyBudgetState().settings;
 }
+
+
 

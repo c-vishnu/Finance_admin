@@ -1,10 +1,17 @@
 .salesOrderDialog{width:1060px}.salesOrdersPage .itemFormGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.soLines{overflow:auto}.soLine{display:grid;grid-template-columns:minmax(220px,1fr) 90px 110px 110px 30px;gap:12px;align-items:start;padding:12px 0;border-bottom:1px solid #e4e9f0;min-width:650px}.soLineHead{font-size:12px;color:#667085;background:#f8fafc;padding:12px 6px}.soLine input,.soLine select,.soTotals input,.soTotals select{font:inherit;border:1px solid #d0d5dd;border-radius:6px;height:38px;padding:0 8px;width:100%;background:#fff;min-width:0}.soLine>div input{margin-top:7px}.soLine strong{padding-top:10px;text-align:right}.soLine button,.soFile button{border:0;background:none;color:#b42318;padding:8px}.soRowActions{display:flex;gap:10px;margin-top:12px}.soRowActions button{border:1px solid #d0d5dd;border-radius:6px;background:#fff;color:#175cd3;padding:8px 12px}.soBottom{display:grid;grid-template-columns:1fr 340px;gap:32px;margin-top:28px}.soNotes{display:flex;flex-direction:column;gap:18px;min-width:0}.soNotes label{display:flex;flex-direction:column;gap:8px}.soNotes textarea{font:inherit;border:1px solid #d0d5dd;border-radius:6px;padding:10px;min-height:80px;resize:vertical}.soNotes small{font-size:12px}.soNotes input[type=file]{max-width:100%}.soTotals{padding:18px;background:#f8fafc;border:1px solid #e4e9f0;border-radius:8px;align-self:start}.soTotals p{display:flex;justify-content:space-between;gap:10px}.soTotals label{display:flex;flex-direction:column;gap:8px;margin:15px 0}.soTotals label>div{display:flex;gap:8px}.soGrand{border-top:1px solid #d0d5dd;padding-top:16px;font-size:16px}.soFile{display:flex;justify-content:space-between;align-items:center;gap:8px}.soFile a{overflow-wrap:anywhere;color:#175cd3}.salesOrdersPage input:focus-visible,.salesOrdersPage select:focus-visible,.salesOrdersPage textarea:focus-visible{outline:2px solid #b2ccff;outline-offset:1px}@media(max-width:720px){.salesOrdersPage .itemFormGrid,.soBottom{grid-template-columns:minmax(0,1fr)}.salesOrdersPage .itemDialogFooter{flex-wrap:wrap;gap:6px}.salesOrdersPage .itemDialogFooter button{padding:0 10px;font-size:12px}}
-.soCreatePage .salesOrderForm{width:auto;max-width:none;margin-top:12px;margin-bottom:0;background:transparent;box-shadow:none;border:0;padding:0}.soCreatePage .ivFields{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.soCreatePage .soLine{align-items:center;grid-template-columns:minmax(240px,1fr) 110px 140px 140px 42px}.soCreatePage .soLine strong{padding-top:0}.soCreatePage .soLineHead{border-radius:6px 6px 0 0}.soCreatePage .soTotals{background:white;border:0;padding:0}.soCreatePage .soBottom{margin-top:0}.soCreatePage .ivFooter{margin-top:20px}.soCreatePage .soNotes small{line-height:1.5}.soCreatePage .soRowActions button{color:#286aee}@media(max-width:1180px){.soCreatePage .ivFields{grid-template-columns:repeat(2,minmax(0,1fr))}.soCreatePage .soBottom{grid-template-columns:1fr}}@media(max-width:640px){.soCreatePage .ivFields{grid-template-columns:1fr}.soCreatePage .ivFooter{flex-wrap:wrap}}
+.soCreatePage .salesOrderForm{width:auto;max-width:none;margin-top:12px;margin-bottom:0;background:transparent;box-shadow:none;border:0;padding:0}.soCreatePage .ivFields{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.soCreatePage .soLine{align-items:center;grid-template-columns:minmax(240px,1fr) 110px 140px 140px 42px}.soCreatePage .soLine strong{padding-top:0}.soCreatePage .soLineHead{border-radius:6px 6px 0 0}.soCreatePage .soTotals{background:white;border:0;padding:0}.soCreatePage .soBottom{margin-top:0}.soCreatePage .ivFooter{margin-top:20px}.soCreatePage .soNotes small{line-height:1.5}.soCreatePage .soRowActions button{color:#286aee}@media(max-width:1180px){.soCreatePage .ivFields{grid-template-columns:repeat(2,minmax(0,1fr))}.soCreatePage .soBottom{grid-template-columns:1fr}}@media(max-width:640px){.soCreatePage .ivFields{grid-template-columns:1fr}.soCreatePage .ivFooter{flex-wrap:wrap}}
 .salesOrdersPage{max-width:100%}.soPageHeading{padding:2px 0}.salesOrdersPage .soCreateButton{display:inline-flex;align-items:center;gap:8px;padding:0 17px}/* The shared .itemsCard clips its own corners with overflow:hidden. The register card must not,
    because the Filters panel opens inside its toolbar and would be cut off at the card edge -
    the same reason the Inventory Adjustments and Budgets register cards are visible. */
-.soListCard{overflow:visible;box-shadow:0 8px 24px rgba(16,24,40,.045)}.salesOrdersPage .itemsTools label{width:min(430px,100%)}.soOrdersTable{width:100%;min-width:920px!important;table-layout:fixed}.soOrdersTable th,.soOrdersTable td{padding-left:11px;padding-right:11px;overflow:hidden;text-overflow:ellipsis}.soOrdersTable th:nth-child(1){width:13%}.soOrdersTable th:nth-child(2){width:16%}.soOrdersTable th:nth-child(3){width:17%}.soOrdersTable th:nth-child(4){width:10%}.soOrdersTable th:nth-child(5){width:10%}.soOrdersTable th:nth-child(6){width:12%}.soOrdersTable th:nth-child(7){width:9%}.soOrdersTable th:nth-child(8){width:13%}.soOrdersTable th:last-child,.soOrdersTable td:last-child{text-align:right;overflow:visible}.soOrdersTable td:last-child{padding-right:12px}.soOrderNumber{color:#1849a9;font-weight:650}.soAmount{font-weight:650;font-variant-numeric:tabular-nums}.soGridActions{display:flex;align-items:center;justify-content:flex-end;gap:6px;white-space:nowrap}.soRowButton{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:36px;padding:0 9px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;font-weight:600;transition:border-color .15s,background .15s,color .15s}.soRowButton:hover:not(:disabled){border-color:#98a2b3;background:#f9fafb}.soRowButton:focus-visible{outline:2px solid #84adff;outline-offset:2px}.soRowButton:disabled{opacity:.48;cursor:not-allowed}.salesOrdersPage .soMoreButton{margin-left:0;width:36px;height:36px;border-radius:7px}.salesOrdersPage .itemsEmpty button{display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:10px 14px}@media(max-width:1000px){.soOrdersTable{min-width:920px!important}}@media(max-width:680px){.salesOrdersPage .itemsTools{align-items:stretch}.salesOrdersPage .itemsTools select{flex:1}.soGridActions{gap:5px}}
-.soOrdersTable th,.soOrdersTable td{padding-left:10px;padding-right:10px}.soOrdersTable th{white-space:normal;line-height:1.25}.soOrdersTable th:nth-child(1){width:11.5%}.soOrdersTable th:nth-child(2){width:12.5%}.soOrdersTable th:nth-child(3){width:16%}.soOrdersTable th:nth-child(4){width:10%}.soOrdersTable th:nth-child(5){width:10%}.soOrdersTable th:nth-child(6){width:11%}.soOrdersTable th:nth-child(7){width:9%}.soOrdersTable th:nth-child(8){width:13%}
+.soListCard{overflow:visible;box-shadow:0 8px 24px rgba(16,24,40,.045)}.salesOrdersPage .itemsTools label{width:min(430px,100%)}.soOrdersTable{width:100%;min-width:920px!important;table-layout:fixed}.soOrdersTable th,.soOrdersTable td{padding-left:11px;padding-right:11px;overflow:hidden;text-overflow:ellipsis}.soOrdersTable th:last-child,.soOrdersTable td:last-child{text-align:right;overflow:visible}.soOrdersTable td:last-child{padding-right:12px}.soOrderNumber{color:#1849a9;font-weight:650}.soAmount{font-weight:650;font-variant-numeric:tabular-nums}.soGridActions{display:flex;align-items:center;justify-content:flex-end;gap:6px;white-space:nowrap}.soRowButton{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:36px;padding:0 9px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;font-weight:600;transition:border-color .15s,background .15s,color .15s}
+/* The row actions are both icons now - the order preview and the action menu - so each is a square the same size. */
+.soRowIconButton{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;min-width:36px;min-height:36px;padding:0;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;cursor:pointer;transition:border-color .15s,background .15s,color .15s}
+.soRowIconButton:hover{border-color:#98a2b3;background:#f9fafb}
+.soRowIconButton:focus-visible{outline:2px solid #84adff;outline-offset:2px}.soRowButton:hover:not(:disabled){border-color:#98a2b3;background:#f9fafb}.soRowButton:focus-visible{outline:2px solid #84adff;outline-offset:2px}.soRowButton:disabled{opacity:.48;cursor:not-allowed}.salesOrdersPage .soMoreButton{margin-left:0;width:36px;height:36px;border-radius:7px}.salesOrdersPage .itemsEmpty button{display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:10px 14px}@media(max-width:1000px){.soOrdersTable{min-width:920px!important}}@media(max-width:680px){.salesOrdersPage .itemsTools{align-items:stretch}.salesOrdersPage .itemsTools select{flex:1}.soGridActions{gap:5px}}
+.soOrdersTable th,.soOrdersTable td{padding-left:10px;padding-right:10px}.soOrdersTable th{white-space:normal;line-height:1.25}/* Organisation and Branch are columns of their own and Created by has left the grid, so the widths are
+   restated together - they are positional, and an earlier copy of this run further up the sheet was
+   entirely overridden by this one and has been removed rather than left to disagree with it. */
+.soOrdersTable th:nth-child(1){width:12%}.soOrdersTable th:nth-child(2){width:15%}.soOrdersTable th:nth-child(3){width:17%}.soOrdersTable th:nth-child(4){width:12%}.soOrdersTable th:nth-child(5){width:11%}.soOrdersTable th:nth-child(6){width:10%}.soOrdersTable th:nth-child(7){width:11%}.soOrdersTable th:nth-child(8){width:12%}
 
 /* ---------------------------------------------------------------------------
    Sales order register: the filter bar and the merged identity cells.
@@ -60,9 +67,14 @@ body:has(.soCreatePage) .app{height:auto;min-height:100vh;overflow:visible}
 body:has(.soCreatePage) .app>main{height:auto;max-height:none;overflow:visible;scrollbar-gutter:auto}
 .app main>.itemsPage.salesOrdersPage>.soCreatePage{max-width:none;margin:0;padding:0 0 28px}
 .salesOrdersPage:has(.soCreatePage){background:#f6f8fb;min-height:100%}
-.soCreatePage>.soCreateHead{display:grid;grid-template-columns:minmax(0,1fr);align-items:center;gap:14px;width:100%;min-height:56px;margin:0;padding:8px 24px;background:#fff;border-top:1px solid #dfe6ef;border-bottom:1px solid #dfe6ef;border-radius:0;box-shadow:none}
+.soCreatePage>.soCreateHead{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:14px;width:100%;min-height:56px;margin:0;padding:8px 24px;background:#fff;border-top:1px solid #dfe6ef;border-bottom:1px solid #dfe6ef;border-radius:0;box-shadow:none}
 .soCreatePage>:not(.soCreateHead){margin-left:clamp(16px,2.2vw,24px);margin-right:clamp(16px,2.2vw,24px)}
 .soHeadIdentity{display:grid;grid-template-columns:40px minmax(0,1fr);align-items:center;gap:14px;min-width:0}
+/* The settings control takes the light primary variant: the one solid primary fill on this page is
+   Save, so a header action is tinted rather than filled. */
+.soHeadSettings{display:inline-grid;place-items:center;width:40px;height:40px;min-height:0;padding:0;border:1px solid #bcd0f5;border-radius:8px;background:#eef4ff;color:#245fd9;cursor:pointer;transition:background-color .15s ease,border-color .15s ease,color .15s ease}
+.soHeadSettings:hover{border-color:#8fb4f2;background:#e2ecff;color:#1d4fbb}
+.soHeadSettings:focus-visible{outline:2px solid #84adff;outline-offset:2px}
 .soBack{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;padding:0;border:1px solid #d7e0eb;border-radius:8px;background:#fff;color:#475467;cursor:pointer;transition:background-color .15s ease,border-color .15s ease,color .15s ease}
 .soBack:hover{background:#eef4ff;border-color:#bcd0f5;color:#2463d4}
 .soBack:focus-visible{outline:2px solid #245fd9;outline-offset:2px}
@@ -77,22 +89,26 @@ body:has(.soCreatePage) .app>main{height:auto;max-height:none;overflow:visible;s
    page's other fields so the one interactive thing is obvious. Every rule is prefixed with the
    page class because src/invoice-workspace.css is imported after this sheet and styles bare
    p / small / h3 / label / select inside the workspace. */
-.soCreatePage .soCustomerRef{margin-top:14px}
+.soCreatePage .soCustomerRef{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;margin-top:14px}.soCreatePage .soCustomerRef>.soCreditNotice{grid-column:1/-1}
 .soCreatePage .soFactCaption{margin:0 0 8px;color:#667085;font-size:12px;line-height:1.45}
 /* Until a customer is chosen the card carries no facts at all. Eight placeholders - Not recorded,
    Not registered, Not provided - read as a customer whose tax identity is simply missing, so the
    empty state stands in their place and the filled read-out appears only once there is a record to
-   read. The block is bounded to the height the fact list takes, which is what keeps the two cards
-   level, and the illustration drops a size so it reads as a slot in a card rather than a page-level
-   empty screen. The motion comes from the shared empty-state stylesheet, including its own
-   prefers-reduced-motion escape. */
-.soCreatePage .soCustomerEmpty{min-height:284px;padding:20px;gap:8px}
+   read. It is a slot in a card on a full-width page, not a page-level empty screen: the block is
+   bounded well below the shared 250px default and the illustration drops a size, because a card
+   that is mostly whitespace pushes the items and the summary off the fold for no gain. The motion
+   comes from the shared empty-state stylesheet, including its prefers-reduced-motion escape. */
+.soCreatePage .soCustomerEmpty{grid-column:1/-1;min-height:168px;padding:16px;gap:8px}
 .soCreatePage .soCustomerEmpty .emptyArt{width:78px;height:78px}
-/* `align-items:start` keeps each fact at its natural height: the four short values and the two
-   addresses stay on one baseline without a tall empty box under the single-line ones. */
-.soCreatePage .soFactList{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) repeat(2,minmax(0,2fr));align-items:start;gap:16px 24px;margin:0;padding:14px 18px;border:1px solid #e4e9f0;border-radius:10px;background:#fbfcfe}
+/* The read-out is a fact panel across a full-width card: the short facts take three columns - a
+   label over its value - and the two addresses each take a whole row of their own, because a street
+   address is longer than any state name beside it. `align-items:start` keeps each fact at its
+   natural height, so a single-line value leaves no tall empty box under it. */
+.soCreatePage .soFactList{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;gap:16px 24px;margin:0;padding:14px 18px;border:1px solid #e4e9f0;border-radius:10px;background:#fbfcfe}
 .soCreatePage .soFactItem{display:flex;flex-direction:column;gap:4px;min-width:0}
-.soCreatePage .soFactItemWide{grid-column:span 2}
+.soCreatePage .soFactWide{grid-column:1/-1}
+.soCreatePage .soFactWide>dt{margin-bottom:3px}
+.soCreatePage .soFactWide>dd{line-height:1.5}
 /* Every label occupies the same 30px line, so an address label - whose row also carries the Edit
    button - sits on the same baseline as the plain values beside it instead of dropping below them. */
 .soCreatePage .soFactItem dt{display:flex;align-items:center;min-height:30px;color:#6b7789;font-size:12px;font-weight:500;line-height:1.3}
@@ -122,9 +138,9 @@ body:has(.soCreatePage) .app>main{height:auto;max-height:none;overflow:visible;s
 .soAddressDialog>footer button:hover{background:#f5f8fc}
 .soAddressDialog>footer .primary{border-color:#3478f6;background:#3478f6;color:#fff}
 .soAddressDialog>footer .primary:hover{background:#2f6be0;border-color:#2f6be0}
-@media(max-width:1100px){.soCreatePage .soFactList{grid-template-columns:repeat(2,minmax(0,1fr))}.soCreatePage .soFactItemWide{grid-column:span 2}}
-@media(max-width:820px){.soCreatePage .soFactList{grid-template-columns:repeat(2,minmax(0,1fr))}.soCreatePage .soFactItemWide{grid-column:span 2}}
-@media(max-width:560px){.soCreatePage .soFactList{grid-template-columns:minmax(0,1fr)}.soCreatePage .soFactItemWide{grid-column:span 1}}
+@media(max-width:1100px){.soCreatePage .soFactList{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:820px){.soCreatePage .soFactList{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.soCreatePage .soFactList{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:760px){
  .soCreateHead{padding:8px 12px}
  .soHeadIdentity{grid-template-columns:36px minmax(0,1fr);gap:10px}
@@ -165,16 +181,18 @@ body:has(.soCreatePage) .app>main{height:auto;max-height:none;overflow:visible;s
    carries min-width:980px at the same class-level specificity and is imported after this file, so
    only the extra element in the selector keeps the fixed layout and lets the table fit its wrapper. */
 .soCreatePage table.ivLineTable{table-layout:fixed;width:100%;min-width:0}
-.soCreatePage .ivLineTable th,.soCreatePage .ivLineTable td{padding:10px 8px;overflow:hidden}
+/* src/ui-system.css pads every table cell 16px 20px with !important - 40px a cell, which on this
+   seven-column grid spent more than a third of the section on whitespace and forced the tax and
+   amount cells to truncate. The line grid is the one table that states its own density. */
+.soCreatePage .ivLineTable th,.soCreatePage .ivLineTable td{padding:10px 8px!important;height:auto!important;overflow:hidden}
 .soCreatePage .ivLineTable input,.soCreatePage .ivLineTable select{width:100%;min-width:0;max-width:100%}
-.soCreatePage .ivLineTable th:nth-child(1){width:19%}
-.soCreatePage .ivLineTable th:nth-child(2){width:7%}
-.soCreatePage .ivLineTable th:nth-child(3){width:5.5%}
-.soCreatePage .ivLineTable th:nth-child(4){width:8%}
-.soCreatePage .ivLineTable th:nth-child(5){width:15.5%}
-.soCreatePage .ivLineTable th:nth-child(6){width:29.5%}
-.soCreatePage .ivLineTable th:nth-child(7){width:11%}
-.soCreatePage .ivLineTable th:nth-child(8){width:4.5%}
+.soCreatePage .ivLineTable th:nth-child(1){width:26%}
+.soCreatePage .ivLineTable th:nth-child(2){width:13%}
+.soCreatePage .ivLineTable th:nth-child(3){width:12%}
+.soCreatePage .ivLineTable th:nth-child(4){width:15%}
+.soCreatePage .ivLineTable th:nth-child(5){width:20%}
+.soCreatePage .ivLineTable th:nth-child(6){width:10%}
+.soCreatePage .ivLineTable th:nth-child(7){width:46px}
 /* Both widgets carry a fixed width in the shared sheet that is wider than their column: the item
    search 230px and the tax selector 215px. Sized to their columns, the tax selector now takes its
    own natural width instead of 215, which is what lets the two tax controls share one line. */
@@ -183,17 +201,23 @@ body:has(.soCreatePage) .app>main{height:auto;max-height:none;overflow:visible;s
    and clipped the item name, so the input is re-fitted to the cell. */
 .soCreatePage .ivLineTable .ivSearchInput input{width:100%!important;max-width:100%}
 .soCreatePage .ivTaxSelect{width:auto}
-.soCreatePage .ivLineTable th:last-child,.soCreatePage .ivLineTable td:last-child{padding-left:6px;padding-right:6px;text-align:center}
-/* The unit column holds one short word, so it does not need the full cell gutter, and the width it
-   gives up keeps "box" readable at the narrowest desktop width. */
-.soCreatePage .ivLineTable th:nth-child(3),.soCreatePage .ivLineTable td:nth-child(3){padding-left:2px;padding-right:2px}
-/* The unit is a value from the Item master, so the line prints it instead of offering a second
-   place to edit it. It keeps the row's height so the cells beside it stay aligned. */
-.soCreatePage .ivLineTable .soUnitValue{display:flex;align-items:center;min-height:40px;padding:0 2px;color:#44536b;font-size:13px}
+.soCreatePage .ivLineTable th:last-child,.soCreatePage .ivLineTable td:last-child{padding:10px 6px!important;text-align:center;overflow:visible}
+/* The quantity and its unit are one fact about a line, so they share one cell: the count leads and
+   the unit follows it. On an order the unit is read from the Item master rather than offered as a
+   second place to edit it; on an invoice, where nothing is copied from, it stays an input. */
+.soCreatePage .ivLineTable .ivQtyCell{display:flex;align-items:center;gap:6px;min-width:0}
+.soCreatePage .ivLineTable .ivQtyCell>input{width:auto!important;flex:1 1 0;min-width:32px}
+.soCreatePage .ivLineTable .soUnitValue{flex:0 1 auto;min-width:0;padding:0;color:#6b7789;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.soCreatePage .ivLineTable .soUnitInput{flex:0 1 52px;width:52px!important;min-width:38px}
+/* A line with no item behind it is named in the SAME search box the master items are searched from,
+   and says why it has to be configured. */
+.soCreatePage .soItemCell{display:flex;flex-direction:column;gap:5px;min-width:0}
+.soCreatePage .soAdHocNote{color:#6b7789;font-size:12px;line-height:1.45}
+.soCreatePage .soHsnValue{color:#667085;font-size:12px;line-height:1.45;font-variant-numeric:tabular-nums}
 
-/* The place of supply is a field of the document-details grid, right of the due date, with its
-   source line under the control as a 12px sentence. */
-.soCreatePage .soFieldRow4 .soPlaceHint{gap:4px;line-height:1.4}
+/* Place of supply is a field of the create page control now, rendered by the host pages in their
+   Additional details block, with its source line under the control as a 12px sentence. */
+.soCreatePage .soField .soPlaceHint{gap:4px;line-height:1.4}
 .soCreatePage .soPlaceHint{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:0;color:#667085;font-size:12px;line-height:1.45}
 .soCreatePage .soPlaceReset{padding:0;border:0;background:none;color:#245fd9;font:inherit;font-size:12px;font-weight:600;cursor:pointer;text-decoration:underline}
 .soCreatePage .soPlaceReset:hover{color:#1849a9}
@@ -217,7 +241,7 @@ body:has(.soCreatePage) .app>main{height:auto;max-height:none;overflow:visible;s
 .soCreatePage .ivLineTable td:last-child button{width:32px;min-width:32px;height:32px;min-height:32px;padding:0;display:inline-flex;align-items:center;justify-content:center;color:#b42318;background:#fff5f4;border-color:#f0c8c4;border-radius:7px}
 .soCreatePage .ivLineTable td:last-child button:hover:not(:disabled){color:#912018;background:#fde8e6;border-color:#e3a49e}
 .soCreatePage .ivCard{padding:16px}
-.soCreatePage .salesOrderForm .ivCard+.ivCard{margin-top:14px}
+.soCreatePage .salesOrderForm .ivCard+.ivCard{margin-top:12px}
 .soCreatePage .ivCard .ivHeading{margin-bottom:12px}
 /* ---------------------------------------------------------------------------
    Create / Edit Sales Order - section heads, field rows, billing summary,
@@ -229,35 +253,10 @@ body:has(.soCreatePage) .app>main{height:auto;max-height:none;overflow:visible;s
    details. Every rule is prefixed with .soCreatePage because
    src/invoice-workspace.css loads after this sheet and styles bare elements.
    --------------------------------------------------------------------------- */
-.soCreatePage .soFormSection{padding:18px 20px}
-.soCreatePage .soSectionHead{display:flex;flex-direction:column;gap:3px;margin-bottom:14px}
+.soCreatePage .soFormSection{padding:14px 16px}
+.soCreatePage .soSectionHead{display:flex;flex-direction:column;gap:3px;margin-bottom:10px}
 .soCreatePage .soSectionHead h3{margin:0;color:#172033;font-size:14px;font-weight:650}
 .soCreatePage .soSectionHead p{margin:0;color:#667085;font-size:12px;line-height:1.45}
-/* The order opens on the two things the operator works with: the customer on the left (60%) and the
-   order itself on the right (40%). Putting the customer beside the order fields instead of above them
-   removes a full-width band from the page - the summary is read where the customer is chosen, and the
-   order fields get a column of their own. The wider customer card carries the tax identity, the two
-   addresses and the picker, so the two cards end level under align-items:stretch. */
-.soCreatePage .soOrderTop{display:grid;grid-template-columns:minmax(0,60fr) minmax(0,40fr);align-items:stretch;gap:14px}
-/* In the 60% column the customer's facts read as rows - one fact per line, hairlines between them -
-   because five facts across 420px would crush every value. The three-per-row grid returns as soon as
-   the two cards stack at full width. */
-/* One fact per line as label-left / value-right, which is what makes a 400px column readable; the two
-   address facts keep the stacked shape because their value is long and their row also carries Edit.
-   `grid-column:auto` is essential: a `span 2` item inside a one-column grid creates an implicit second
-   column, which silently turned this list back into two columns. */
-.soCreatePage .soOrderTop .soFactList{grid-template-columns:minmax(0,1fr);gap:0;padding:4px 14px}
-.soCreatePage .soOrderTop .soFactItem{flex-direction:row;align-items:center;justify-content:space-between;gap:14px;padding:9px 0;border-top:1px solid #eef1f6;min-height:0}
-.soCreatePage .soOrderTop .soFactItem:first-child{border-top:0}
-.soCreatePage .soOrderTop .soFactItem dt{min-height:0}
-.soCreatePage .soOrderTop .soFactItem dd{text-align:right}
-.soCreatePage .soOrderTop .soFactItemWide{grid-column:auto}
-.soCreatePage .soOrderTop .soCustomerRow{max-width:none}
-/* The stacked-card margin is dropped inside the row: a grid item stretches its MARGIN box, so the
-   14px margin that separates stacked cards left the right card 14px shorter than the left one. The
-   extra class raises this above `.soCreatePage .salesOrderForm .ivCard+.ivCard`, which ties on
-   class count and would otherwise win by order. */
-.soCreatePage .soOrderTop>.ivCard+.ivCard.ivCard{margin-top:0}
 /* The right column is narrower than the full page, so the eight order fields pair up instead of
    running four across; they go back to four when the cards stack. */
 /* The action bar states the running total on the left and keeps the actions on the right, the way a
@@ -287,12 +286,6 @@ body:has(.soCreatePage) .app>main{height:auto;max-height:none;overflow:visible;s
 .soCreatePage .soAddressFields input,.soCreatePage .soAddressFields select{width:100%;min-width:0;min-height:40px;padding:0 10px;border:1px solid #d7e0eb;border-radius:7px;background:#fff;color:#172033;font:inherit;font-size:13px}
 .soCreatePage .soAddressFields input:focus-visible,.soCreatePage .soAddressFields select:focus-visible{outline:2px solid #3478f6;outline-offset:1px}
 @media(max-width:560px){.soCreatePage .soAddressFields{grid-template-columns:minmax(0,1fr)}}
-/* The order facts keep the customer's whole address and state name readable: the wide cell spans the
-   row so a value is never cut shorter than a state name, and the only thing that changes them is the
-   one pencil at the top right of the card. */
-.soCreatePage .soOrderTop .soFactWide{grid-column:1/-1}
-.soCreatePage .soOrderTop .soFactWide>dt{margin-bottom:3px}
-.soCreatePage .soOrderTop .soFactWide>dd{line-height:1.5}
 .soCreatePage .soSectionHead.soFactHead{flex-direction:row;align-items:flex-start;justify-content:space-between;gap:12px}
 .soCreatePage .soSectionHeadText{display:flex;flex-direction:column;gap:3px;min-width:0}
 .soCreatePage .soFactEdit{position:relative;flex:none}
@@ -304,27 +297,10 @@ body:has(.soCreatePage) .app>main{height:auto;max-height:none;overflow:visible;s
 .soCreatePage .soFactEditMenu{position:absolute;right:0;top:calc(100% + 6px);z-index:80;display:flex;flex-direction:column;min-width:196px;padding:6px;border:1px solid #e1e6ed;border-radius:9px;background:#fff;box-shadow:0 12px 30px #1018281f}
 .soCreatePage .soFactEditMenu button{display:flex;align-items:center;min-height:36px;padding:0 10px;border:0;border-radius:6px;background:transparent;color:#344054;font-size:13px;text-align:left;white-space:nowrap;cursor:pointer}
 .soCreatePage .soFactEditMenu button:hover{background:#f4f7ff;color:#245fd9}
-.soCreatePage .soOrderTop .soFieldRow4{grid-template-columns:repeat(2,minmax(0,1fr))}
-/* The three tax facts read as one strip across the card instead of three sparse label/value lines:
-   a label over its value in each of three columns, then the two addresses on their own full-width
-   rows. It saves about 100px of card height and reads as a fact panel rather than a list. */
-.soCreatePage .soOrderTop .soFactList{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 14px;padding:12px 14px}
-.soCreatePage .soOrderTop .soFactItem{flex-direction:column;align-items:flex-start;gap:3px;padding:0;border-top:0;min-height:0}
-.soCreatePage .soOrderTop .soFactItem dt{min-height:0}
-.soCreatePage .soOrderTop .soFactItem dd{text-align:left}
 
 /* The two cards are one height. They are close enough in content that the stretch leaves only a
    line or two of slack, and a paired row that ends level reads as one block rather than two. */
-/* The two cards sit side by side only while the narrower 40% column can still hold a readable
-   field: below this they stack, and the document-details grid goes back to four across on the full
-   width. The customer at 60% asks for more room than the old 58/42 split did, so the fold moved up
-   with it - at 1180px the details column was 333px and its two field columns were 137px, which
-   truncated every organisation select and every placeholder. */
-@media(max-width:1240px){
- .soCreatePage .soOrderTop{grid-template-columns:minmax(0,1fr)}
- .soCreatePage .soOrderTop .soFieldRow4{grid-template-columns:repeat(4,minmax(0,1fr))}
- .soCreatePage .soOrderTop .soFactWide{grid-column:1/-1}
-}
+
 /* One row per section: three fields in Additional details, and the eight Order details fields on a
    four-column grid, which lays them out as two complete rows of four. */
 .soCreatePage .soFieldRow{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -332,55 +308,36 @@ body:has(.soCreatePage) .app>main{height:auto;max-height:none;overflow:visible;s
 /* The customer picker is a searchable combobox (src/SearchSelect.jsx), so it is given a comfortable
    reading width instead of being stretched across the whole card; the read-only facts below keep the
    full width. */
-.soCreatePage .soCustomerRow{max-width:520px}
+.soCreatePage .soCustomerRow{display:flex;align-items:center;gap:10px;max-width:none}
+.soCreatePage .soCustomerRow>.soFieldSearch{flex:0 1 640px}
+.soCreatePage .soCustomerCreate{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;padding:0;border:1px solid #d7e0eb;border-radius:8px;background:#fff;color:#475467;cursor:pointer}
+.soCreatePage .soCustomerCreate:hover{border-color:#bcd0f5;background:#f4f8ff;color:#245fd9}
+.soCreatePage .soCustomerCreate:focus-visible{outline:2px solid #84adff;outline-offset:2px}
+.soCreatePage .soCustomerCreate:disabled{opacity:.55;cursor:not-allowed}
 .soCreatePage .soFieldRow2{grid-template-columns:repeat(2,minmax(0,1fr))}
 @media(max-width:1080px){.soCreatePage .soFieldRow4{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:820px){.soCreatePage .soFieldRow,.soCreatePage .soFieldRow3{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.soCreatePage .soFieldRow,.soCreatePage .soFieldRow2,.soCreatePage .soFieldRow3,.soCreatePage .soFieldRow4{grid-template-columns:minmax(0,1fr)}}
-/* Below 560px the stacked top row is a single narrow card, so the five-column fact row and the
-   four-column field row cannot hold a readable value - "Not recorded" wrapped one character per
-   line. The fold has to be restated here at the same class depth as the `@media(max-width:1080px)`
-   block above, because `.soCreatePage .soOrderTop .soFactList` (three classes) outranks the
-   two-class `.soCreatePage .soFactList` breakpoint regardless of source order, and media queries
-   add no specificity. */
-@media(max-width:560px){
- .soCreatePage .soOrderTop .soFactList{grid-template-columns:minmax(0,1fr);gap:0;padding:12px 14px}
- .soCreatePage .soOrderTop .soFactItem{flex-direction:column;align-items:stretch;gap:4px;min-height:0;padding:10px 0;border-top:1px solid #eef1f6}
- .soCreatePage .soOrderTop .soFactItem:first-child{border-top:0;padding-top:0}
- .soCreatePage .soOrderTop .soFactItem dt{min-height:0}
- .soCreatePage .soOrderTop .soFactItemWide{grid-column:auto}
- .soCreatePage .soOrderTop .soFieldRow4{grid-template-columns:minmax(0,1fr)}
-}
 
 /* Billing summary closes the order items card. The block is the same width as the totals panel and
    right-aligned with it, so its heading sits directly above the figures instead of stranded at the far
    left of a full-width band. */
-.soCreatePage .soBillingSummary{display:block;width:min(420px,100%);margin:18px 0 0 auto}
-.soCreatePage .soSummaryHead{margin-bottom:10px}
+.soCreatePage .soBillingSummary{display:block;width:100%;margin:0}
+.soCreatePage .soSummaryHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
 .soCreatePage .soSummaryHead h3{margin:0;color:#172033;font-size:14px;font-weight:650}
 /* The summary is a block of its own, not eight loose lines on the card: a tinted panel on the
    right with slightly tighter rows so it reads as a statement without dominating the section. */
-.soCreatePage .soBillingSummary .ivTotals{width:100%;max-width:none;margin:0;padding:12px 16px;border:1px solid #eef1f6;border-radius:9px;background:#fbfcfe}
+.soCreatePage .soBillingSummary .ivTotals{width:min(420px,100%);max-width:none;margin:0 0 0 auto;padding:12px 16px;border:1px solid #eef1f6;border-radius:9px;background:#fbfcfe}
 .soCreatePage .soBillingSummary .ivTotals>div{padding:7px 0}
 .soCreatePage .soBillingSummary .ivTotals>div:last-child{margin-top:5px;padding-top:12px;font-size:16px}
 .soCreatePage .soBillingSummary>small{color:#667085;font-size:12px;line-height:1.5}
-
-/* Additional details: a collapsed card with a title, a hint and a CSS chevron. */
-.soCreatePage .soMoreCard{padding:0;overflow:visible}
-.soCreatePage .soMoreCard>summary{display:flex;align-items:center;gap:10px;padding:16px 20px;color:#172033;font-size:14px;font-weight:650;cursor:pointer;list-style:none}
-.soCreatePage .soMoreCard>summary::-webkit-details-marker{display:none}
-.soCreatePage .soMoreCard>summary::after{content:"";flex:none;width:8px;height:8px;margin-left:auto;border-right:2px solid #667085;border-bottom:2px solid #667085;transform:rotate(45deg) translateY(-2px);transition:transform .16s ease}
-.soCreatePage .soMoreCard[open]>summary::after{transform:rotate(-135deg) translateY(-2px)}
-.soCreatePage .soMoreCard>summary:focus-visible{outline:2px solid #245fd9;outline-offset:-2px}
-.soCreatePage .soMoreHint{color:#667085;font-size:12px;font-weight:400}
-.soCreatePage .soMoreBody{display:flex;flex-direction:column;gap:16px;padding:0 20px 20px}
 
 /* Document upload: the same tile the Create Item page uses for its image (36px tinted icon, one
    hairline, the blue focus ring), with a drop zone and a file list. Drag and drop is real - the
    handlers on the label feed the same reader the file input uses. */
 .soCreatePage .soUploadField{display:flex;flex-direction:column;gap:8px;min-width:0}
 .soCreatePage .soUploadLabel{color:#344054;font-size:12px;font-weight:600}
-.soCreatePage .soUploadDrop{position:relative;display:grid;grid-template-columns:36px minmax(0,1fr) auto;align-items:center;gap:12px;min-height:64px;padding:12px 14px;border:1px dashed #cfd8e5;border-radius:9px;background:#fbfcfe;cursor:pointer;transition:border-color .16s,background .16s,box-shadow .16s}
+.soCreatePage .soUploadDrop{position:relative;display:grid;grid-template-columns:32px minmax(0,1fr) auto;align-items:center;gap:10px;min-height:54px;padding:10px 12px;border:1px dashed #cfd8e5;border-radius:9px;background:#fbfcfe;cursor:pointer;transition:border-color .16s,background .16s,box-shadow .16s}
 .soCreatePage .soUploadDrop:hover{border-color:#7aa7f8;background:#f8faff}
 .soCreatePage .soUploadDrop:focus-within{border-color:var(--ui-primary);box-shadow:0 0 0 3px rgba(52,120,246,.12)}
 .soCreatePage .soUploadDrop.isActive{border-style:solid;border-color:var(--ui-primary);background:#eef4ff;box-shadow:0 0 0 3px rgba(52,120,246,.12)}
@@ -422,3 +379,152 @@ body:has(.soCreatePage) .app>main{height:auto;max-height:none;overflow:visible;s
 .soCreatePage .soOrderHistory>ul>li{display:flex;flex-direction:column;gap:2px;padding:8px 10px;border:1px solid #e4e9f0;border-radius:8px;background:#fff}
 .soCreatePage .soOrderHistory b{color:#26354b;font-size:13px;font-weight:600}
 .soCreatePage .soOrderHistory small{color:#667085;font-size:12px;font-weight:400}
+
+/* The price type a line is priced in, stated under the Rate field: it comes from the
+   Item master (or the line own choice for an ad hoc line), never from a silent default. */
+.ivRateCell{display:flex;flex-direction:column;gap:4px;min-width:0}
+.ivRateCell .ivPriceType{font-size:12px;font-weight:600;line-height:1.2;white-space:nowrap}
+.ivRateCell .ivPriceType.is-exclusive{color:#667085}
+.ivRateCell .ivPriceType.is-inclusive{color:#2f6fed}
+
+/* The customer card keeps the master data - PAN, contact, credit limit and the shipping address -
+   behind View customer details, while the profile card above it carries what a document needs. */
+/* The one disclosure on the customer card reads from its trailing edge, so the card ends in the
+   actions that act on the customer rather than starting another column of links. */
+/* The two actions that act on the customer read together from the card trailing edge. */
+.soCreatePage .soCustomerActions{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:0}
+.soCreatePage .soCustomerMoreToggle{display:inline-grid;place-items:center;width:34px;height:34px;min-height:34px;padding:0;border:1px solid #d7e0eb;border-radius:7px;background:#fff;color:#475467;cursor:pointer}
+.soCreatePage .soCustomerMoreToggle:hover{border-color:#bcd0f5;background:#f4f8ff;color:#245fd9}
+.soCreatePage .soCustomerMoreToggle[aria-expanded="true"]{border-color:#8fb4f2;background:#eef4ff;color:#245fd9}
+.soCreatePage .soCustomerActions .soFactEdit>summary{width:34px;height:34px}
+.soCreatePage .soCustomerMoreBody{display:flex;flex-direction:column;gap:10px;margin-top:10px;grid-column:1/-1}
+.soCreatePage .soCustomerMoreBody>.soFactList{width:100%}
+.soCustomerMore>summary{display:inline-flex!important;align-items:center!important;gap:6px!important;min-height:32px!important;color:#2463d4!important;font-size:12px!important;font-weight:600!important;cursor:pointer!important}
+.soCustomerMore[open]>summary{margin-bottom:8px!important}
+.soCreatePage .soCurrencyChip{flex:none;padding:3px 8px;border:1px solid #e1e6ed;border-radius:999px;background:#f4f7fb;color:#475569;font-size:12px;font-weight:600}
+/* The add-item control is the section's one primary action, so it carries the primary fill, and
+   offers the two ways a line is born plus the way out to a reusable item. */
+.soCreatePage .soAddItem{position:relative;flex:none}
+.soCreatePage .soAddItemMain{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:0 14px;border:1px solid #bcd0f5;border-radius:7px;background:#eef4ff;color:#245fd9;font-size:13px;font-weight:600;cursor:pointer;list-style:none}
+.soCreatePage .soAddItemMain::-webkit-details-marker{display:none}
+.soCreatePage .soAddItemMain:hover,.soCreatePage .soAddItem[open] .soAddItemMain{border-color:#8fb4f2;background:#e2ecff;color:#1d4fbb}
+.soCreatePage .soAddItemMain:focus-visible{outline:2px solid #245fd9;outline-offset:2px}
+.soCreatePage .soAddItemMenu{position:absolute;right:0;top:calc(100% + 6px);z-index:80;min-width:216px;padding:6px;border:1px solid #e1e6ed;border-radius:9px;background:#fff;box-shadow:0 14px 30px #16274324}
+.soCreatePage .soAddItemMenu button{display:block;width:100%;min-height:36px;padding:0 10px;border:0;border-radius:7px;background:none;text-align:left;color:#172033;font-size:13px}
+.soCreatePage .soAddItemMenu button:hover{background:#eef4ff;color:#245fd9}
+
+
+/* Additional details: one labelled block per job, so an opened card reads as a short form rather
+   than one undifferentiated stack of optional fields. */
+.soCreatePage .soMoreGroup{display:flex;flex-direction:column;gap:8px}
+.soCreatePage .soMoreGroup+.soMoreGroup{padding-top:12px;border-top:1px solid #eef1f6}
+.soCreatePage .soMoreGroupTitle{margin:0;color:#344054;font-size:12px;font-weight:650;letter-spacing:.04em;text-transform:uppercase}
+
+/* ---------------------------------------------------------------------------
+   Create page: one stacked column.
+
+   The document is read top to bottom in the order the operator answers it - the
+   scope and the document header first, then who it is for, then what is being
+   sold, then what it is worth, then the optional detail. There is no second
+   column: every block is the full width of the page, so nothing has to be
+   hunted for on the right.
+   --------------------------------------------------------------------------- */
+/* The posting note states, in one quiet line, when the document in front of the reader reaches the
+   ledger - the one accounting fact a salesperson needs without opening anything. */
+.soCreatePage .soPostingNote{margin:12px 0 0;color:#6b7789;font-size:12px;line-height:1.5}
+
+/* The derived due date sits under the payment terms on the same 12px muted tokens as the other
+   field hint, so the header row keeps its one control per field. */
+.soCreatePage .soDueHint{display:block;margin:0;color:#667085;font-size:12px;line-height:1.45}
+
+/* ---------------------------------------------------------------------------
+   Create page fields: the Record Transaction control.
+
+   Every field on the page is the same shape the journal create page uses - the
+   label over a bordered control that carries its own icon - so a field is
+   recognised by its mark as well as by its word, and the two create journeys in
+   the product read as one design.
+   --------------------------------------------------------------------------- */
+.soCreatePage .soField{display:flex;flex-direction:column;gap:6px;min-width:0;color:#24334c;font-size:13px;font-weight:600}
+.soCreatePage .soField>span:first-child{line-height:1.35}
+.soCreatePage .soControl{position:relative;display:flex;align-items:center;gap:10px;min-width:0;min-height:42px;padding:0 11px;border:1px solid #d6e0ec;border-radius:8px;background:#fff;color:#475467}
+.soCreatePage .soControl:focus-within{border-color:#7da9f5;box-shadow:0 0 0 3px #3478f61a}
+.soCreatePage .soControl>svg{flex:none;color:#526785}
+.soCreatePage .soControl input,.soCreatePage .soControl select{display:block;width:100%;min-width:0;min-height:40px;padding:0;border:0;outline:0;background:transparent;color:#17233a;font-size:13px;font-weight:500}
+.soCreatePage .soControl select{cursor:pointer}
+.soCreatePage .soControl select:disabled{cursor:not-allowed;color:#8090a7}
+.soCreatePage .soControl input::placeholder{color:#8995a8}
+.soCreatePage .soField small{color:#71809a;font-size:12px;font-weight:400}
+/* The details rows keep their own folds: four fields, then the scope pair. */
+.soCreatePage .soFieldRow4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:1080px){.soCreatePage .soFieldRow4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:820px){.soCreatePage .soFieldRow2{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.soCreatePage .soFieldRow2,.soCreatePage .soFieldRow4{grid-template-columns:minmax(0,1fr)}}
+
+/* The customer field is typed into directly and the matches appear under it. */
+.soCreatePage .soFieldSearch{max-width:640px}
+.soCreatePage .soCustomerSearch{position:relative;min-width:0}
+.soCreatePage .soCustomerClear{display:inline-flex;align-items:center;justify-content:center;flex:none;width:26px;height:26px;padding:0;border:0;border-radius:6px;background:#f1f5fa;color:#5b6b81;cursor:pointer}
+.soCreatePage .soCustomerClear:hover{background:#e6edf7;color:#245fd9}
+.soCreatePage .soCustomerResults{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:80;max-height:280px;overflow:auto;padding:6px;border:1px solid #e1e6ed;border-radius:10px;background:#fff;box-shadow:0 16px 34px #16274324}
+.soCreatePage .soCustomerResults>button{display:flex;width:100%;min-height:44px;padding:8px 10px;border:0;border-radius:8px;background:none;text-align:left}
+.soCreatePage .soCustomerResults>button:hover,.soCreatePage .soCustomerResults>button.active{background:#eef4ff}
+.soCreatePage .soCustomerResults>button>span{display:flex;flex-direction:column;gap:2px;min-width:0}
+.soCreatePage .soCustomerResults b{color:#172033;font-size:13px;font-weight:600}
+.soCreatePage .soCustomerResults small{color:#667085;font-size:12px;font-weight:400;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.soCreatePage .soCustomerEmptyMatch{margin:0;padding:10px;color:#667085;font-size:12px}
+.soCreatePage .soCustomerEmptyMatch button{display:inline;margin-left:6px;padding:0;border:0;background:none;color:#245fd9;font-size:12px;font-weight:600;cursor:pointer}
+
+/* The read-out is ONE compact strip, capped at 80px, holding two bold lines: the customer name, then
+   the billing address the operator needs while entering the order. Anything more made the card four
+   hundred pixels tall for three short facts, which pushed the lines off the first screen; the rest
+   of the customer record is one click away in View customer details. */
+.soCreatePage .soCustomerProfile{display:flex;align-items:center;gap:14px;max-height:80px;margin-top:0;padding:10px 16px;border:1px solid #e4e9f0;border-radius:10px;background:#fbfcfe;overflow:hidden}
+.soCreatePage .soCustomerAvatar{display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:50%;background:#eaf1ff;color:#2f6fed;font-size:14px;font-weight:650;letter-spacing:.02em}
+.soCreatePage .soCustomerLines{display:flex;flex-direction:column;gap:2px;flex:1 1 auto;min-width:0}
+.soCreatePage .soCustomerHead{display:flex;align-items:center;gap:8px;min-width:0}
+.soCreatePage .soCustomerType{flex:none;padding:1px 8px;border-radius:999px;background:#eef2f7;color:#475467;font-size:12px;font-weight:600;line-height:18px}
+.soCreatePage .soCustomerMeta{display:flex;flex-direction:column;align-items:flex-end;gap:1px;flex:none}
+.soCreatePage .soCustomerMeta>span{color:#6b7789;font-size:12px;font-weight:500;line-height:1.3}
+.soCreatePage .soCustomerMeta>strong{color:#172033;font-size:14px;font-weight:650;line-height:1.3}
+/* A phone-width strip cannot hold the avatar, the name, its type, the address, the receivable and the
+   two actions on one line, so the stat gives way first: the name is what identifies the customer, and
+   the figure is still in the customer detail and in View customer details. */
+@media(max-width:620px){.soCreatePage .soCustomerMeta{display:none}}
+.soCreatePage .soCustomerName{color:#172033;font-size:14px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.soCreatePage .soCustomerAddress{display:block;color:#475467;font-size:12.5px;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.soCreatePage .soCustomerAddress b{font-weight:600;color:#344054}
+/* A narrower screen keeps the SAME one line and the same 80px ceiling, so the strip has to decide
+   what it is for. It drops the one optional item - the shipping note - and gives the address a
+   readable floor, because a strip that shows neither the address nor the tax identity is worse than
+   a short one. */
+@media(max-width:900px){
+ .soCreatePage .soCustomerProfile{gap:10px;padding:10px 12px}
+ .soCreatePage .soCustomerAvatar{width:36px;height:36px;font-size:12px}
+}
+
+/* The billing summary states its currency directly above the figures it belongs to. */
+/* The summary closes the page the way an invoice does: what the operator wants to say on the left,
+   what the document is worth on the right, at a measure the figures can be read at. */
+.soCreatePage .soSummaryGrid{display:grid;grid-template-columns:minmax(0,50fr) minmax(0,35fr);justify-content:space-between;gap:20px;align-items:start}
+.soCreatePage .soSummaryLeft{display:flex;flex-direction:column;gap:10px;min-width:0}
+.soCreatePage .soSummaryRight{display:flex;flex-direction:column;gap:10px;min-width:0}
+.soCreatePage .soSummaryNote{display:flex;flex-direction:column;gap:7px}
+.soCreatePage .soSummaryNote>span{color:#24334c;font-size:13px;font-weight:600}
+.soCreatePage .soSummaryNote textarea{width:100%;min-height:84px;padding:10px 12px;border:1px solid #d6e0ec;border-radius:8px;background:#fff;color:#17233a;font:inherit;font-size:13px;resize:vertical}
+.soCreatePage .soSummaryNote textarea::placeholder{color:#8995a8}
+.soCreatePage .soSummaryNote textarea:focus-visible{outline:0;border-color:#7da9f5;box-shadow:0 0 0 3px #3478f61a}
+@media(max-width:900px){.soCreatePage .soSummaryGrid{grid-template-columns:minmax(0,1fr);justify-content:stretch}}
+.soCreatePage .soSummaryMoney{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.soCreatePage .soSummaryMoney>.ivTotals{width:100%}
+.soCreatePage .soSummaryMoney>p{margin:0}
+/* The items heading states how many lines the document holds. */
+.soCreatePage .soItemsCount{margin-left:8px;padding:2px 8px;border-radius:999px;background:#eef2f7;color:#5b6b81;font-size:12px;font-weight:600;vertical-align:middle}
+.soCreatePage .ivLineTable tbody tr:hover{background:#fafcff}
+
+/* The document keeps the tax identity it was raised with, so the difference from the live customer
+   master is stated quietly beside the fact rather than left invisible. */
+.soCreatePage .soDocumentIdentityNote{display:block;margin-top:6px;color:#667085;font-size:12px;font-weight:400}
+
+/* One column, for a group that holds a single field such as the terms. */
+.soCreatePage .soFieldRow1{grid-template-columns:minmax(0,1fr)}

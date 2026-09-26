@@ -21,9 +21,17 @@ test('ledger impact renders all three views with distinct source identifiers',()
  }
 });
 test('receipt register renders existing payment history and independent creation action',()=>{const s=initial();s.accounts=[{code:'1010',name:'Bank',type:'Assets',active:true}];s.invoices=[{id:'i',customerName:'Customer'}];s.payments=[{id:'p',number:'PAY-OLD',invoiceId:'i',date:'2026-09-04',amount:10000,bank:'1010'}];globalThis.localStorage={getItem:k=>k===KEY?JSON.stringify(s):null};globalThis.sessionStorage={getItem:()=>null};const html=renderToString(React.createElement(mod.exports.default,{seed:{},onNavigate(){},notify(){}}));/* the register prints the receipt, its date and the invoice it settles in one cell, so the columns are the seven the register asks for rather than a separate Allocation column */
- for(const label of ['Payment Receipts','New receipt','PAY-OLD','Bank matching','local simulation','Receipt &amp; date','Mode &amp; amount'])assert.ok(html.includes(label),label);delete globalThis.localStorage;delete globalThis.sessionStorage;});
+ for(const label of ['Payment Receipts','New receipt','PAY-OLD','Bank matching','Receipt &amp; date','Mode &amp; amount'])assert.ok(html.includes(label),label);
+ assert.ok(!html.includes('Receipt role'),'the local-simulation receipt role panel is hidden: permissions stay the prototype default');delete globalThis.localStorage;delete globalThis.sessionStorage;});
 test('receipt workspace defaults to the signed-in prototype administrator role',()=>{const source=readFileSync('src/Receipts.jsx','utf8');assert.ok(source.includes("[role,setRole]=useState('Admin')"));assert.ok(source.includes("r.status==='Approved'"));assert.ok(source.includes("disabled={!can('post')}"));});
-test('receipt more actions use a vertical, non-scrolling menu',()=>{const css=readFileSync('src/receipts.css','utf8');assert.ok(css.includes('.receiptWorkspace .receiptMore>div{position:static'));assert.ok(css.includes('flex-direction:column'));assert.ok(css.includes('overflow:visible'));assert.ok(css.includes('justify-content:flex-start'))});
+test('receipt more actions open as the canonical portalled menu instead of pushing the page',()=>{
+ const page=readFileSync('src/Receipts.jsx','utf8'),css=readFileSync('src/receipts.css','utf8');
+ assert.ok(page.includes("import {createPortal} from 'react-dom';"),'the menu is portalled, as the invoice, sales order and credit note registers are');
+ assert.ok(page.includes("className=\"soMoreButton\"")&&page.includes("className=\"soActionMenu\" role=\"menu\""),'with the canonical trigger and panel classes');
+ assert.ok(page.includes('window.document.body)}</>'),'rendered on the body, so it cannot displace the detail header or the tabs');
+ assert.ok(!page.includes('receiptMore'),'and the old in-flow details menu is gone');
+ assert.ok(!css.includes('.receiptWorkspace .receiptMore>div{position:static'),'so the rules that forced it into normal flow are gone too');
+});
 
 test('the receipt detail page is the shared document shell, not the old inline heading',()=>{
  const s=initial();s.accounts=[{code:'1010',name:'HDFC Bank',active:true,type:'Assets'},{code:'1100',name:'Receivables',active:true,type:'Assets'}];
@@ -70,50 +78,28 @@ test('the receipt register is the merged one register row',()=>{
  assert.match(css,/\.registerHead details:has\(>summary\[aria-label="Open filters"\]\)\{flex:0 0 auto\}/,'and the funnel cannot be squashed by the toolbar');
 });
 
-test('the invoice column names what each receipt settles, and says when it settles nothing',()=>{
- const s=initial();
- s.accounts=[{code:'1010',name:'HDFC Bank',active:true,type:'Assets'},{code:'1100',name:'Receivables',active:true,type:'Assets'}];
- s.invoices=[{id:'i1',number:'INV-00001',customerId:'c1',customerName:'ABC Retail Pvt Ltd',arAccount:'1100'},{id:'i2',number:'INV-00002',customerId:'c1',customerName:'ABC Retail Pvt Ltd',arAccount:'1100'}];
- s.payments=[{id:'p1',number:'PAY-OLD',invoiceId:'i1',date:'2026-09-04',amount:50000,bank:'1010',mode:'Bank Transfer'}];
- s.receipts=[
-  {id:'r2',number:'RCPT-00002',customerId:'c1',customerName:'ABC Retail Pvt Ltd',date:'2026-09-06',bank:'1010',arAccount:'1100',advanceAccount:'2100',amount:50000,status:'Posted',posted:true,kind:'Advance',mode:'Bank Transfer'},
-  {id:'r3',number:'RCPT-00003',customerId:'c1',customerName:'ABC Retail Pvt Ltd',date:'2026-09-07',bank:'1010',arAccount:'1100',amount:100000,status:'Posted',posted:true,kind:'Normal',mode:'Bank Transfer'}
- ];
- s.receiptAllocations=[{id:'a1',receiptId:'r3',invoiceId:'i1',amount:40000,date:'2026-09-07'},{id:'a2',receiptId:'r3',invoiceId:'i2',amount:60000,date:'2026-09-07'}];
- globalThis.localStorage={getItem:k=>k===KEY?JSON.stringify(s):null};
- globalThis.sessionStorage={getItem:()=>null};
- const html=renderToString(React.createElement(mod.exports.default,{seed:{},onNavigate(){},notify(){}}));
- delete globalThis.localStorage;delete globalThis.sessionStorage;
- const source=readFileSync('src/Receipts.jsx','utf8');
- assert.ok(source.includes("<th key={h}>{h}</th>"),'the header row is still rendered from one label list');
- assert.ok(source.includes("['Receipt & date','Invoice','Branch & organisation','Payment & type','Reference','Customer & type','Mode & amount','Actions']"),'the Invoice column sits second, beside the receipt it settles');
- assert.ok(source.includes("const allocated=receiptAllocations(db,x).filter(a=>!a.voided);"),'the row reads its allocations once');
- assert.ok(source.includes("<td>{allocated.length?allocated.map(a=>db.invoices.find(i=>i.id===a.invoiceId)?.number||'Invoice').join(', '):'Unallocated'}"),'and prints every invoice it settles, or Unallocated when it settles none');
- assert.ok(source.includes('{allocated.length>1&&<small>{allocated.length} invoices</small>}'),'with the count beneath when a receipt settles more than one');
- assert.ok(!source.includes('{receiptAllocations(db,x).filter(a=>!a.voided).length>0&&<small>{receiptAllocations(db,x)'),'and the invoice is no longer stacked inside the receipt cell');
- assert.ok(html.includes('INV-00001'),'the legacy payment names its invoice in the row');
- assert.ok(html.includes('INV-00001, INV-00002'),'a receipt allocated across two invoices names both, in one cell');
- assert.match(html,/2(?:<!-- -->)? invoices/,'and states how many it settles - React splits the number and the word into two text nodes, so the marker is allowed for');
- assert.ok(html.includes('Unallocated'),'while a receipt that has settled nothing says so rather than showing an empty cell');
- const css=readFileSync('src/receipts.css','utf8');
- for(let n=1;n<=8;n++)assert.ok(css.includes('.receiptTable th:nth-child('+n+'){width:'),'column '+n+' declares its width, because the table is fixed-layout');
- assert.ok(!css.includes('.receiptTable th:nth-child(9)'),'and the width set stops at the eight columns the register now carries');
+test('the Invoice column is gone from the receipts register',()=>{
+ const source=readFileSync('src/Receipts.jsx','utf8'),css=readFileSync('src/receipts.css','utf8');
+ assert.ok(!source.includes("'Invoice',"),'the header list no longer names an Invoice column');
+ assert.ok(!source.includes('allocated.length?allocated.map('),'and the row no longer renders the cell that named the settled invoices');
+ assert.equal([...css.matchAll(/table\.receiptTable th:nth-child\(\d\)\{width:\d+%\}/g)].length,7,'seven columns declare a width, one per remaining column');
 });
-
-test('every receipt row carries one View details action, and no cell is cut off',()=>{
+test('every receipt row carries one view icon and the shared row menu, and no cell is cut off',()=>{
  const source=readFileSync('src/Receipts.jsx','utf8');
  const css=readFileSync('src/receipts.css','utf8');
- assert.ok(source.includes('<td><button type="button" className="receiptViewButton" onClick={()=>open(x)}>View details</button>{actionMenu(x)}</td>'),'the row carries the visible action beside the row menu, opening the receipt detail');
+ assert.ok(source.includes('<td><div className="ivRowActions"><button type="button" className="ivIconButton" aria-label={'+"'View '+x.number"+'} title={'+"'View '+x.number"+'} onClick={()=>open(x)}><IconEye size={17}/></button>{actionMenu(x)}</div></td>'),'the row carries the shared eye icon beside the shared row menu, exactly as the invoices and sales orders registers state it');
+ assert.ok(!source.includes('>View details</button>'),'and the old text button is gone');
  assert.ok(!source.includes("[IconEye,'View',()=>open(x)]"),'and the menu no longer duplicates it');
  assert.ok(source.includes("[IconEye,'Preview & templates',()=>setPrintDoc(x)]"),'while every other menu entry stays');
- assert.ok(css.includes('.receiptWorkspace .receiptViewButton{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 9px;border:1px solid #d0d5dd;border-radius:7px;'),'the button is on the register row-button tokens the invoices and sales orders registers use');
+ assert.ok(css.includes('.receiptWorkspace .soMoreButton{width:38px;height:38px;border-radius:8px'),'the row menu wears the shared trigger, stated a little larger on this page so the icon reads beside the figures');
+ assert.ok(source.includes('<IconDots size={22}/>'),'with the enlarged dots the operator asked for');
  assert.ok(css.includes('.receiptWorkspace .receiptMore>summary{display:inline-grid;place-items:center;width:36px;height:36px;min-height:36px;padding:0;border:1px solid #d0d5dd;border-radius:7px;'),'and the trigger beside it is the same 36px square, so the pair reads as one control');
  assert.ok(css.includes('.receiptWorkspace .receiptMore{display:inline-block;vertical-align:top;margin-left:6px}'),'the menu is inline rather than a flex item, so its open 218px panel is never squeezed to the column width');
- assert.match(css,/\.receiptWorkspace table\.receiptTable td:nth-child\(2\),\n\.receiptWorkspace table\.receiptTable td:nth-child\(5\),\n\.receiptWorkspace table\.receiptTable td:nth-child\(7\) small\{white-space:normal;overflow-wrap:anywhere\}/,'the invoice, reference and mode cells wrap rather than being cut off, which is what the payment mode was reported for');
+ assert.ok(css.includes('.receiptWorkspace table.receiptTable td small{display:block;white-space:normal;overflow-wrap:anywhere}'),'every sub-line in the register wraps rather than being cut off, so the payment mode and the customer type are never trimmed');
  const widths=[...css.matchAll(/table\.receiptTable th:nth-child\(\d\)\{width:(\d+)%\}/g)].map(m=>Number(m[1]));
- assert.equal(widths.length,8,'the register declares all eight column widths');
+ assert.equal(widths.length,7,'the register declares all seven column widths');
  assert.equal(widths.reduce((a,b)=>a+b,0),100,'and they total exactly 100%, so the browser never has to scale them');
- assert.ok(widths[4]>=14,'the reference column holds a full reference, not an ellipsis');
- assert.ok(widths[6]>=13,'the mode column holds a full mode line');
- assert.ok(widths[7]>=15,'and the actions column holds the button plus the trigger without a scrollbar');
+ assert.ok(widths[3]>=15,'the reference column holds a full reference, not an ellipsis');
+ assert.ok(widths[5]>=14,'the mode column holds a full mode line');
+ assert.ok(widths[6]>=16,'and the actions column holds the button plus the trigger without a scrollbar');
 });

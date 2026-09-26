@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {ALL_BRANCHES,NO_BRANCH,findOrganisation,getBranchesForOrganisation,getScopeVisibility,normaliseScope,organisationBranches,scopeLabel,scopePickerRows,scopePickerState,toggleScopePicker,validateScope} from '../src/organisation-scope.js';
 
-const orgSource=readFileSync(new URL('../src/HeaderOrgSelectors.jsx',import.meta.url),'utf8');
+const orgSource=readFileSync(new URL('../src/demo-organisations.js',import.meta.url),'utf8');
 const demoOrganizations=new Function('return '+orgSource.match(/export const demoOrganizations=(\[[\s\S]*?\n\]);/)[1])();
 
 const one={id:'one',code:'ONE',name:'One Branch Co',currency:'INR',branches:[{id:'one-main',name:'Main Branch',code:'MB'}]};
@@ -89,11 +89,13 @@ test('the three consuming modules read the shared scope rule instead of a privat
  const settings=readFileSync(new URL('../src/PeriodLockSettings.jsx',import.meta.url),'utf8');
  const accounts=readFileSync(new URL('../src/EnterpriseAccountForm.jsx',import.meta.url),'utf8');
  const workspace=readFileSync(new URL('../src/AccountWorkspace.jsx',import.meta.url),'utf8');
+ const financeCategoryScope=readFileSync(new URL('../src/finance-category-scope.js',import.meta.url),'utf8');
  const consumers=[['journal entry',journal],['period closing',closing],['period closing settings',settings],['account form',accounts],['account workspace',workspace]];
  for(const [name,source] of consumers)assert.ok(source.includes("from './organisation-scope.js'"),name+' imports the shared scope module');
+ assert.ok(financeCategoryScope.includes("from './organisation-scope.js'"),'the Finance Categories display helper imports the shared scope module');
  const duplicated=['flatMap(item=>item.branches)','flatMap(organisation=>organisation.branches','flatMap(org=>org.branches','.branches.map(branch=>({...branch,organisationId'];
  for(const [name,source] of consumers)for(const pattern of duplicated)assert.ok(!source.includes(pattern),name+' keeps no private branch flattening of '+pattern);
- for(const [name,source,helper] of [['journal entry',journal,'getScopeVisibility('],['journal entry',journal,'getBranchesForOrganisation('],['period closing',closing,'validateScope('],['period closing settings',settings,'getBranchesForOrganisation('],['account form',accounts,'organisationBranches('],['account form',accounts,'validateScope('],['account workspace',workspace,'organisationBranches('],['account workspace',workspace,'getScopeVisibility(']])assert.ok(source.includes(helper),name+' reads '+helper+' from the shared module');
+ for(const [name,source,helper] of [['journal entry',journal,'getScopeVisibility('],['journal entry',journal,'getBranchesForOrganisation('],['period closing',closing,'validateScope('],['period closing settings',settings,'getBranchesForOrganisation('],['account form',accounts,'organisationBranches('],['account form',accounts,'validateScope('],['account workspace',workspace,'financeCategoryScope('],['finance category scope',financeCategoryScope,'organisationScopeList(']])assert.ok(source.includes(helper),name+' reads '+helper+' from the shared module');
  assert.ok(closing.includes('validateScope({organisations:demoOrganizations,companyIds:lockForm.companyIds'),'creating a lock validates the scope through the shared rule');
  assert.ok(!closing.includes('pc-lock-scope'),'the create lock popup no longer prints a scope chip');
  assert.ok(!closing.includes('on the saved automatic schedule'),'the create lock popup no longer prints its schedule paragraph');

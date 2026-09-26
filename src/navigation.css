@@ -18,7 +18,7 @@
   .app.navCollapsed:has(>aside .erpNavigation){padding-left:72px}
   .app.navCollapsed>header{left:72px}
   .app.navCollapsed>aside{width:72px;transform:none;visibility:visible}
-  .app>header>button.navToggle:not(.primary):not(.hamb){position:fixed;z-index:500;top:18px;left:238px;display:grid;place-items:center;width:26px;height:26px;flex:none;padding:0;border:1px solid #b8c7da;background:#ffffffd9;border-radius:999px;color:#344b6a;box-shadow:0 2px 8px #1018282b;backdrop-filter:blur(6px);transition:left .22s ease,background .15s,border-color .15s,color .15s}
+  .app>header>button.navToggle:not(.primary):not(.hamb){position:fixed;z-index:500;top:18px;left:238px;display:grid;place-items:center;width:26px;height:26px;flex:none;padding:0;border:1px solid #b8c7da;background:#ffffffd9;border-radius:999px;color:#3478f6;box-shadow:0 2px 8px #1018282b;backdrop-filter:blur(6px);transition:left .22s ease,background .15s,border-color .15s,color .15s}
   .app>header>button.navToggle:not(.primary):not(.hamb)>svg{display:block}
   .app.navCollapsed>header>button.navToggle:not(.primary):not(.hamb){left:59px}
   .app>header>button.navToggle:not(.primary):not(.hamb):hover{background:#e5efff;border-color:#8eb4ef;color:#175cd3}
@@ -103,8 +103,8 @@
 .wayvidaLogo img{position:absolute;width:60px;height:60px;max-width:none;left:-13px;top:-12px;object-fit:contain}
 
 
-.railSubmenuBackdrop { position: fixed; inset: 0; z-index: 55; background: transparent; border: 0; cursor: default; }
-.railSubmenu { position: fixed; left: 76px; z-index: 60; width: 220px; background: #fff; border: 1px solid #e1e6ed; border-radius: 8px; box-shadow: 0 10px 30px #1018281a; padding: 8px; display: flex; flex-direction: column; }
+.railSubmenuBackdrop { position: fixed; inset: 0; z-index: 9998; background: transparent; border: 0; cursor: default; }
+.railSubmenu { position: fixed; left: 76px; z-index: 9999; width: 220px; background: #fff; border: 1px solid #e1e6ed; border-radius: 8px; box-shadow: 0 10px 30px #1018281a; padding: 8px; display: flex; flex-direction: column; }
 .railSubmenu[data-theme="dark"] { background: #172235; border-color: #2d3b50; color: #c8d3e3; }
 .railSubmenu strong { padding: 4px 10px 8px; font-size: 13px; border-bottom: 1px solid #e1e6ed; margin-bottom: 4px; display: block; color: #172033; }
 .railSubmenu[data-theme="dark"] strong { border-color: #2d3b50; color: #fff; }
@@ -115,3 +115,6 @@
 .railSubGroup { padding: 2px 0; }
 .railSubGroup > span { display: block; padding: 6px 10px 2px; font-size: 11px; color: #667085; text-transform: uppercase; font-weight: 600; }
 .railSubmenu[data-theme="dark"] .railSubGroup > span { color: #7a8ba3; }
+
+@media(min-width:701px){ .app>header { z-index: 101; } }
+

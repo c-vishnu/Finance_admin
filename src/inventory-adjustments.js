@@ -16,6 +16,7 @@
    it is mirrored by a correcting reversal instead. */
 
 import {journal,today} from './invoice-engine.js';
+import {formatQuantity as formatQuantityNumber} from './number-format.js';
 
 export const ADJUSTMENT_TYPES=['Quantity Adjustment','Value Adjustment'];
 export const ADJUSTMENT_STATUSES=['Draft','Pending Approval','Adjusted','Cancelled'];
@@ -48,7 +49,7 @@ const validDate=value=>/^\d{4}-\d{2}-\d{2}$/.test(String(value||''))&&!Number.is
 const roundQty=value=>Math.round((Number(value)||0)*1000)/1000;
 export const quantityOf=value=>{const text=String(value??'').replace(/[,\s]/g,'');if(!text||!Number.isFinite(Number(text)))return NaN;return roundQty(text)};
 export const toMinor=value=>{const text=String(value??'').replace(/[,\s\u20b9]/g,'');if(!text||!Number.isFinite(Number(text)))return NaN;return Math.round(Number(text)*100)};
-export const formatQuantity=value=>roundQty(Number(value)||0).toLocaleString('en-IN',{maximumFractionDigits:3});
+export const formatQuantity=value=>formatQuantityNumber(roundQty(Number(value)||0));
 export const entryModeLabel=mode=>mode==='Set New Value'?'Set New Value':'Adjust By';
 
 /* An item carries a rate, not a value: opening stock is quantity x rate, and every

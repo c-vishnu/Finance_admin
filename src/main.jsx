@@ -2,7 +2,6 @@ import "./crypto-uuid.js";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./App.jsx";
-import HeaderOrgSelectors from "./HeaderOrgSelectors.jsx";
 import "./styles.css";
 import "./typography.css";
 import "./ui-system.css";
@@ -34,7 +33,6 @@ try{
       <StartError>
         <TerminologyProvider>
           <App />
-          <HeaderOrgSelectors />
           <WayvidaDatePicker />
         </TerminologyProvider>
       </StartError>
