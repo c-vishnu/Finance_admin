@@ -49,7 +49,7 @@ function OrgList({type,notify}){
 
 const cashFlow=[['Apr',15,-12,0],['May',35,-22,20],['Jun',39,-30,23],['Jul',26,-24,0],['Aug',29,-28,2],['Sep',24,-27,-6],['Oct',36,-27,9],['Nov',20,-32,-5],['Dec',41,-22,0],['Jan',28,-13,3],['Feb',17,-12,4],['Mar',10,-13,1]].map(x=>({month:x[0],opening:x[3]+20,inflow:x[1],outflow:Math.abs(x[2]),closing:x[3]+22}));
 const ageData=[{name:'Current',value:320,color:'#3478f6',pct:'71.11%'},{name:'1–30 Days',value:60,color:'#58c98b',pct:'13.33%'},{name:'31–60 Days',value:40,color:'#f5b94f',pct:'8.89%'},{name:'61–90 Days',value:20,color:'#ed8a42',pct:'4.44%'},{name:'90+ Days',value:10,color:'#ec5757',pct:'2.22%'}];
-function Ageing({pay=false}){let d=pay?ageData.map((x,i)=>({...x,value:[180,50,30,15,5][i],pct:['64.29%','17.86%','10.71%','5.36%','1.79%'][i]})):ageData,total=pay?'₹2,80,000':'₹4,50,000';return <div className="exactDonut"><div className="piechart"><ResponsiveContainer><PieChart><Pie data={d} dataKey="value" innerRadius="64%" outerRadius="88%" startAngle={90} endAngle={-270} stroke="none">{d.map(x=><Cell key={x.name} fill={x.color}/>)}</Pie></PieChart></ResponsiveContainer><span><b>{total}</b><small>Total</small></span></div><div className="agelegend">{d.map(x=><p><i style={{background:x.color}}/><span>{x.name}<b>₹{x.value.toLocaleString('en-IN')},000 <small>({x.pct})</small></b></span></p>)}</div></div>}
+
 function Box({title,filter='As on Today',children,link,state='normal',onRetry}){
   return (
     <section className="exactBox" aria-label={title}>
