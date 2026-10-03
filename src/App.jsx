@@ -1,4 +1,4 @@
-import{useEffect,useState}from'react';import{ResponsiveContainer,LineChart,Line,XAxis,YAxis,CartesianGrid,Tooltip,PieChart,Pie,Cell}from'recharts';import{IconHome,IconUsers,IconFileInvoice,IconBuildingBank,IconChartBar,IconSettings,IconSearch,IconPlus,IconMenu2,IconX,IconCheck,IconDotsVertical,IconEdit,IconTrash,IconBell,IconHelpCircle,IconChevronDown,IconRefresh,IconReceipt,IconTrendingUp,IconTrendingDown,IconBuilding,IconLock,IconArrowRight,IconAlertTriangle,IconCashBanknote,IconChevronRight,IconChevronLeft,IconFolder,IconBook,IconFilter,IconCirclePlus,IconDownload,IconEye,IconPaperclip,IconCalendar,IconPlusMinus,IconLayoutSidebarLeftCollapse,IconLayoutSidebarLeftExpand,IconMoon,IconSun}from'@tabler/icons-react';
+import{useEffect,useState}from'react';import{ResponsiveContainer,LineChart,Line,BarChart,Bar,XAxis,YAxis,CartesianGrid,Tooltip,PieChart,Pie,Cell}from'recharts';import{IconHome,IconUsers,IconFileInvoice,IconBuildingBank,IconChartBar,IconSettings,IconSearch,IconPlus,IconMenu2,IconX,IconCheck,IconDotsVertical,IconEdit,IconTrash,IconBell,IconHelpCircle,IconChevronDown,IconRefresh,IconReceipt,IconTrendingUp,IconTrendingDown,IconBuilding,IconLock,IconArrowRight,IconAlertTriangle,IconCashBanknote,IconChevronRight,IconChevronLeft,IconFolder,IconBook,IconFilter,IconCirclePlus,IconDownload,IconEye,IconPaperclip,IconCalendar,IconPlusMinus,IconLayoutSidebarLeftCollapse,IconLayoutSidebarLeftExpand,IconMoon,IconSun}from'@tabler/icons-react';
 import Items from './Items.jsx';
 import Customers from './Customers.jsx';
 import SalesOrders from './SalesOrders.jsx';
@@ -85,9 +85,10 @@ function Box({title,filter='As on Today',children,link,state='normal',onRetry}){
   );
 }
 
-function Ageing({pay=false}){
+function Ageing({pay=false, notify=()=>{}}){
   let d=pay?ageData.map((x,i)=>({...x,value:[180,50,30,15,5][i],pct:['64.29%','17.86%','10.71%','5.36%','1.79%'][i]})):ageData;
   let total=pay?'₹2,80,000':'₹4,50,000';
+  let label=pay?'Payable':'Outstanding';
   return (
     <div className="exactDonut">
       <div className="piechart">
@@ -98,17 +99,54 @@ function Ageing({pay=false}){
             </Pie>
           </PieChart>
         </ResponsiveContainer>
-        <span><b>{total}</b><small>Total</small></span>
+        <span><b>{total}</b><small>{label}</small></span>
       </div>
       <div className="agelegend">
         {d.map(x=>
-          <p key={x.name}>
-            <i style={{background:x.color}} aria-hidden="true"/>
-            <span>{x.name}<b>₹{x.value.toLocaleString('en-IN')},000 <small>({x.pct})</small></b></span>
-          </p>
+          <button 
+            key={x.name} 
+            type="button"
+            onClick={()=>notify(`${pay ? 'Payables' : 'Receivables'} ${x.name} ageing bucket selected`)}
+            aria-label={`${x.name}: ₹${x.value.toLocaleString('en-IN')},000 (${x.pct})`}
+          >
+            <p>
+              <i style={{background:x.color}} aria-hidden="true"/>
+              <span>{x.name}<b>₹{x.value.toLocaleString('en-IN')},000 <small>({x.pct})</small></b></span>
+            </p>
+          </button>
         )}
       </div>
     </div>
+  );
+}
+
+const cashFlowBarData = [
+  ['Apr', 150, 80], ['May', 165, 85], ['Jun', 180, 92], ['Jul', 155, 88],
+  ['Aug', 190, 100], ['Sep', 200, 108], ['Oct', 210, 112], ['Nov', 205, 115],
+  ['Dec', 240, 130], ['Jan', 220, 120], ['Feb', 250, 135], ['Mar', 270, 145]
+].map(([m, inF, outF]) => ({ month: m, Inflow: inF, Outflow: outF }));
+
+function MiniTrendCard({ title, amount, comparison, dataKey, color, state, notify }) {
+  return (
+    <Box title={title} filter="This FY" state={state}>
+      <div className="miniTrendHead">
+        <strong>{amount}</strong>
+        <span className={`trendBadge ${color === '#ec5757' ? 'neutral' : 'good'}`}>
+          {comparison}
+        </span>
+      </div>
+      <div className="miniTrendChart">
+        <ResponsiveContainer>
+          <LineChart data={trendData} margin={{top:10,right:12,left:-20,bottom:0}}>
+            <CartesianGrid vertical={false} stroke="#edf0f4"/>
+            <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{fontSize:11}}/>
+            <YAxis tickFormatter={v=>'₹'+v+'K'} tickLine={false} axisLine={false} tick={{fontSize:11}}/>
+            <Tooltip formatter={(value) => [`₹${value.toLocaleString('en-IN')},000`, title]}/>
+            <Line type="monotone" dataKey={dataKey} stroke={color} strokeWidth={2.4} dot={false}/>
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </Box>
   );
 }
 
@@ -117,22 +155,22 @@ function ExactDashboard({notify}){
   const [financialYear, setFinancialYear] = useState('FY 2026–27 (This FY)');
 
   const bizMetrics = [
-    ['Total Revenue', '₹24,50,000.00', IconTrendingUp, 'green', '↑ 15.6% vs Last FY', 'Revenue breakdown opened'],
-    ['Total Expenses', '₹12,30,000.00', IconTrendingDown, 'purple', '↓ 4.2% vs Last FY', 'Expense breakdown opened'],
-    ['Net Profit', '₹12,20,000.00', IconCashBanknote, 'cyan', '↑ 28.4% vs Last FY', 'Profit & Loss opened'],
-    ['Cash & Bank Balance', '₹11,30,000.00', IconBuildingBank, 'blue', '4 Active Accounts', 'Cash & Bank summary opened']
+    ['Total Revenue', '₹24,50,000.00', IconTrendingUp, 'green', '↑ 15.6% vs Last FY', 'Revenue breakdown opened', 'good'],
+    ['Total Expenses', '₹12,30,000.00', IconTrendingDown, 'purple', '↓ 4.2% vs Last FY', 'Expense breakdown opened', 'neutral'],
+    ['Net Profit', '₹12,20,000.00', IconCashBanknote, 'cyan', '49.8% margin · ↑ 28.4% vs Last FY', 'Profit & Loss opened', 'good'],
+    ['Cash & Bank Balance', '₹11,30,000.00', IconBuildingBank, 'blue', '4 accounts · ₹25,000 unreconciled', 'Cash & Bank summary opened', 'blue']
   ];
 
   const attentionMetrics = [
-    ['Accounts Receivable', '₹4,50,000.00', IconUsers, 'blue', '5 Overdue Invoices', 'Customer outstanding opened'],
-    ['Accounts Payable', '₹2,80,000.00', IconReceipt, 'orange', '3 Bills Due Soon', 'Vendor outstanding opened'],
-    ['GST Payable', '₹3,28,740.00', IconReceipt, 'amber', 'Due 20 Sep 2026', 'GST summary opened'],
-    ['TDS Payable', '₹86,500.00', IconReceipt, 'rose', 'Due 07 Sep 2026', 'TDS summary opened']
+    ['Accounts Receivable', '₹4,50,000.00', IconUsers, 'blue', '₹1,30,000 overdue · 5 invoices', 'Customer outstanding opened', 'amber'],
+    ['Accounts Payable', '₹2,80,000.00', IconReceipt, 'orange', '₹1,00,000 overdue · 3 due soon', 'Vendor outstanding opened', 'orange'],
+    ['GST Payable', '₹3,28,740.00', IconReceipt, 'amber', 'Overdue · Due 20 Sep', 'GST summary opened', 'bad'],
+    ['TDS Payable', '₹86,500.00', IconReceipt, 'rose', 'Overdue · Due 07 Sep', 'TDS summary opened', 'bad']
   ];
 
   const renderMetricGrid = (metricsList, sectionLabel) => (
     <div className="metricGrid compactGrid" role="group" aria-label={sectionLabel}>
-      {metricsList.map(([t, v, I, c, trend, actionMsg]) => (
+      {metricsList.map(([t, v, I, c, trend, actionMsg, badgeType]) => (
         <section 
           className="metric compactMetric clickableMetric" 
           key={t}
@@ -148,7 +186,7 @@ function ExactDashboard({notify}){
           </div>
           <div className="metricValueRow">
             <strong>{v}</strong>
-            <span className={`trendBadge ${c === 'purple' ? 'bad' : c === 'rose' || c === 'orange' || c === 'amber' ? 'neutral' : 'good'}`}>
+            <span className={`trendBadge ${badgeType || 'good'}`}>
               {trend}
             </span>
           </div>
@@ -186,23 +224,86 @@ function ExactDashboard({notify}){
       {renderMetricGrid(bizMetrics, "Business Performance Metrics")}
       {renderMetricGrid(attentionMetrics, "Working Capital & Tax Attention Metrics")}
       
-      {/* ROW 1: Revenue & Expense Trend, Payables Ageing, Top Expenses */}
+      {/* ROW 1: Revenue Trend, Expense Trend, Net Profit Trend */}
       <div className="exactGrid detailGrid">
-        <RevenueTrend state={widgetState}/>
-        <Box title="Payables Ageing" state={widgetState}>
-          <Ageing pay/>
+        <MiniTrendCard 
+          title="Revenue Trend" 
+          amount="₹24,50,000" 
+          comparison="↑ 15.6% vs Last FY" 
+          dataKey="Revenue" 
+          color="#3478f6" 
+          state={widgetState} 
+          notify={notify}
+        />
+        <MiniTrendCard 
+          title="Expense Trend" 
+          amount="₹12,30,000" 
+          comparison="↓ 4.2% vs Last FY" 
+          dataKey="Expenses" 
+          color="#ec5757" 
+          state={widgetState} 
+          notify={notify}
+        />
+        <MiniTrendCard 
+          title="Net Profit Trend" 
+          amount="₹12,20,000" 
+          comparison="↑ 28.4% vs Last FY" 
+          dataKey="Profit" 
+          color="#58c98b" 
+          state={widgetState} 
+          notify={notify}
+        />
+      </div>
+
+      {/* ROW 2: Cash Flow, Receivables Ageing, Payables Ageing */}
+      <div className="exactGrid detailGrid">
+        <Box title="Cash Flow" filter="This Financial Year" state={widgetState}>
+          <div className="cashFlowKpiRow">
+            <span>Inflow<b className="good">₹18.50L</b></span>
+            <span>Outflow<b className="bad">₹11.20L</b></span>
+            <span>Net Cash<b className="good">+₹7.30L</b></span>
+            <span>Closing<b className="good">₹11.30L</b></span>
+          </div>
+          <div className="flowchart" style={{height: 165}}>
+            <ResponsiveContainer>
+              <BarChart data={cashFlowBarData} margin={{top:10,right:12,left:-20,bottom:0}}>
+                <CartesianGrid vertical={false} stroke="#edf0f4"/>
+                <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{fontSize:11}}/>
+                <YAxis tickFormatter={v=>v+'K'} tickLine={false} axisLine={false} tick={{fontSize:11}}/>
+                <Tooltip formatter={(val) => `₹${val.toLocaleString('en-IN')},000`}/>
+                <Bar dataKey="Inflow" fill="#2dad68" radius={[3,3,0,0]} />
+                <Bar dataKey="Outflow" fill="#ec5757" radius={[3,3,0,0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </Box>
+        <Box title="Receivables Ageing" state={widgetState}>
+          <Ageing notify={notify}/>
+        </Box>
+        <Box title="Payables Ageing" state={widgetState}>
+          <Ageing pay notify={notify}/>
+        </Box>
+      </div>
+
+      {/* ROW 3: Top Expenses, Bank Accounts, Tax & Compliance */}
+      <div className="exactGrid detailGrid">
         <Box title="Top Expenses" filter="This Financial Year" state={widgetState}>
           <div className="topExpenses">
             {[
-              ['Salaries & Wages', 420, 100],
-              ['Rent', 180, 26],
-              ['Utilities', 90, 12],
-              ['Marketing', 75, 10],
-              ['Travel', 60, 7]
+              ['Salaries & Wages', 420, 100, '34%'],
+              ['Rent', 180, 42, '15%'],
+              ['Utilities', 90, 21, '7%'],
+              ['Marketing', 75, 18, '6%'],
+              ['Travel', 60, 14, '5%']
             ].map(x => (
-              <p key={x[0]}>
-                <span>{x[0]}</span>
+              <p 
+                key={x[0]} 
+                onClick={()=>notify(`${x[0]} expense details opened`)}
+                role="button"
+                tabIndex={0}
+                aria-label={`${x[0]}: ₹${x[1].toLocaleString('en-IN')},000 (${x[3]} share)`}
+              >
+                <span>{x[0]} <small style={{color:'#667085'}}>({x[3]})</small></span>
                 <i aria-hidden="true"><b style={{width:x[2]+'%'}}/></i>
                 <strong>₹{x[1].toLocaleString('en-IN')},000</strong>
               </p>
@@ -211,35 +312,6 @@ function ExactDashboard({notify}){
               View All Expenses <IconArrowRight aria-hidden="true"/>
             </a>
           </div>
-        </Box>
-      </div>
-
-      {/* ROW 2: Cash Flow, Receivables Ageing, Bank Accounts */}
-      <div className="exactGrid detailGrid">
-        <Box title="Cash Flow" filter="This Financial Year" state={widgetState}>
-          <div className="flowkeys">
-            <span>● Opening Balance</span>
-            <span className="good">● Inflow</span>
-            <span className="bad">● Outflow</span>
-            <span>● Closing Balance</span>
-          </div>
-          <div className="flowchart">
-            <ResponsiveContainer>
-              <LineChart data={cashFlow} margin={{top:8,right:15,left:-12,bottom:0}}>
-                <CartesianGrid vertical={false} stroke="#edf0f4"/>
-                <XAxis dataKey="month" tickLine={false} axisLine={false}/>
-                <YAxis tickFormatter={v=>v+' K'} tickLine={false} axisLine={false}/>
-                <Tooltip/>
-                <Line type="monotone" dataKey="opening" stroke="#8b5cf6" strokeWidth={2} dot={{r:2}}/>
-                <Line type="monotone" dataKey="inflow" stroke="#58c98b" strokeWidth={2} dot={{r:3}}/>
-                <Line type="monotone" dataKey="outflow" stroke="#ec5757" strokeWidth={2} dot={{r:3}}/>
-                <Line type="monotone" dataKey="closing" stroke="#3478f6" strokeWidth={2} dot={{r:3}}/>
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </Box>
-        <Box title="Receivables Ageing" state={widgetState}>
-          <Ageing/>
         </Box>
         <Box 
           title="Bank Accounts" 
@@ -250,14 +322,18 @@ function ExactDashboard({notify}){
             {[
               ['HDFC Bank - 1234', '₹8,75,000.00', 'H'],
               ['ICICI Bank - 5678', '₹2,45,000.00', 'I'],
-              ['Axis Bank - 9012', '₹1,10,000.00', 'A']
+              ['Axis Bank - 9012 (OD)', '-₹1,10,000.00', 'A'],
+              ['Petty Cash / Cash in Hand', '₹1,20,000.00', 'P']
             ].map(x => (
               <p key={x[0]}>
                 <i aria-hidden="true">{x[2]}</i>
                 <span>{x[0]}<small>Current Balance</small></span>
-                <b>{x[1]}</b>
+                <b style={{color: x[1].startsWith('-') ? '#b42318' : '#172033'}}>{x[1]}</b>
               </p>
             ))}
+            <div className="bankFooterNote">
+              Total bank balance ₹11,30,000 · 4 accounts
+            </div>
             <button 
               onClick={()=>notify('Bank account form opened')}
               aria-label="Add Bank Account"
@@ -267,60 +343,98 @@ function ExactDashboard({notify}){
             </button>
           </div>
         </Box>
+        <Box title="Tax & Compliance" state={widgetState}>
+          <div className="taxComplianceWidget">
+            <div className="taxComplianceRow">
+              <span>
+                GST Payable
+                <small>Due 20 Sep 2026</small>
+                <span className="taxOverdueTag">Overdue</span>
+              </span>
+              <strong>₹3,28,740.00</strong>
+            </div>
+            <div className="taxComplianceRow">
+              <span>
+                TDS Payable
+                <small>Due 07 Sep 2026</small>
+                <span className="taxOverdueTag">Overdue</span>
+              </span>
+              <strong>₹86,500.00</strong>
+            </div>
+            <div className="taxComplianceRow">
+              <span>
+                Input GST Credit
+                <small>Available to claim</small>
+              </span>
+              <strong style={{color:'#18794e'}}>₹1,12,400.00</strong>
+            </div>
+            <div className="taxComplianceRow">
+              <span>
+                Next Filing / Payment
+                <small>GSTR-3B & TDS Remittance</small>
+              </span>
+              <strong>20 Oct 2026</strong>
+            </div>
+            <a href="#" onClick={(e)=>{e.preventDefault();notify('GST & TDS tax details opened');}}>
+              View tax details <IconArrowRight aria-hidden="true"/>
+            </a>
+          </div>
+        </Box>
       </div>
 
-        <div className="exactGrid lowerGrid">
-          <Box title="Task List (Needs Attention)" state={widgetState}>
-            <div className="exactTasks">
-              {[
-                ['Overdue customer invoices','5 invoices · ₹1,30,000 overdue','View invoices','red'],
-                ['Overdue vendor bills','3 bills · ₹75,000 overdue','View bills','amber'],
-                ['Pending bank reconciliation','2 accounts not reconciled','Reconcile now','violet'],
-                ['GST payable','GST due 20 Sep 2026','View GST','blue'],
-                ['TDS payment due','Payment due 07 Sep 2026','Pay TDS','amber'],
-                ['Unposted transactions','8 drafts awaiting posting','Review drafts','blue'],
-                ['Negative cash/bank balance','Axis OD account below zero','View account','red'],
-                ['Unapproved expenses','6 claims · ₹42,500','Review expenses','amber'],
-                ['Unbalanced journal entries','2 entries need correction','Fix entries','red']
-              ].map(x => (
-                <button 
-                  key={x[0]}
-                  onClick={()=>notify(x[2]+' opened')}
-                  aria-label={`${x[0]}: ${x[1]}`}
-                >
-                  <i className={x[3]} aria-hidden="true"><IconAlertTriangle/></i>
-                  <span><b>{x[0]}</b><small>{x[1]}</small></span>
-                  <em>{x[2]}<IconArrowRight aria-hidden="true"/></em>
-                </button>
-              ))}
-            </div>
-          </Box>
+      {/* ROW 4: Needs Attention, Recent Transactions */}
+      <div className="exactGrid lowerGrid">
+        <Box title="Needs Attention" state={widgetState}>
+          <div className="exactTasks">
+            {[
+              ['GST payment overdue','GST due 20 Sep 2026 · ₹3,28,740 overdue','Pay GST','red'],
+              ['TDS payment overdue','Payment due 07 Sep 2026 · ₹86,500 overdue','Pay TDS','red'],
+              ['Negative cash/bank balance','Axis OD account below zero (-₹1,10,000)','View account','red'],
+              ['Overdue customer invoices','5 invoices · ₹1,30,000 overdue','View invoices','red'],
+              ['Unbalanced journal entries','2 entries need correction','Fix entries','red'],
+              ['Overdue vendor bills','3 bills · ₹75,000 overdue','View bills','amber'],
+              ['Pending bank reconciliation','2 accounts not reconciled','Reconcile now','amber'],
+              ['Unapproved expenses','6 claims · ₹42,500','Review expenses','amber'],
+              ['Unposted transactions','8 drafts awaiting posting','Review drafts','blue']
+            ].map(x => (
+              <button 
+                key={x[0]}
+                onClick={()=>notify(x[2]+' opened')}
+                aria-label={`${x[0]}: ${x[1]}`}
+              >
+                <i className={x[3] === 'red' ? '' : x[3]} aria-hidden="true"><IconAlertTriangle/></i>
+                <span><b>{x[0]}</b><small>{x[1]}</small></span>
+                <em>{x[2]}<IconArrowRight aria-hidden="true"/></em>
+              </button>
+            ))}
+          </div>
+        </Box>
 
-          <Box 
-            title="Recent Transactions" 
-            link={{label: 'View All', onClick: ()=>notify('Recent transactions list opened')}}
-            state={widgetState}
-          >
-            <div className="exactTx">
-              {[
-                ['INV-2026-0012','ABC Pvt Ltd','Invoice','₹50,000.00','Submitted'],
-                ['BILL-2026-0009','XYZ Suppliers','Bill','₹25,000.00','Draft'],
-                ['PAY-2026-0015','ABC Pvt Ltd','Payment Received','₹20,000.00','Posted'],
-                ['PAY-2026-0012','XYZ Suppliers','Payment Made','₹15,000.00','Posted'],
-                ['JE-2026-0008','Journal Entry','Journal Entry','₹10,000.00','Posted']
-              ].map((x,i) => (
-                <p key={x[0]}>
-                  <IconLock aria-hidden="true"/>
-                  <span><b>{x[0]}</b><small>{x[1]}</small></span>
-                  <em className={'type t'+i}>{x[2]}</em>
-                  <time>03 Sep 2026</time>
-                  <strong>{x[3]}</strong>
-                  <em className="posted">{x[4]}</em>
-                </p>
-              ))}
-            </div>
-          </Box>
-        </div>
+        <Box 
+          title="Recent Transactions" 
+          link={{label: 'View All', onClick: ()=>notify('Recent transactions list opened')}}
+          state={widgetState}
+        >
+          <div className="exactTx">
+            {[
+              ['INV-2026-0012','ABC Pvt Ltd','Invoice','₹50,000.00','Posted'],
+              ['BILL-2026-0009','XYZ Suppliers','Bill','₹25,000.00','Draft'],
+              ['PAY-2026-0015','ABC Pvt Ltd','Payment Received','₹20,000.00','Posted'],
+              ['PAY-2026-0012','XYZ Suppliers','Payment Made','₹15,000.00','Posted'],
+              ['JE-2026-0008','Journal Entry','Journal Entry','₹10,000.00','Posted']
+            ].map((x,i) => (
+              <p key={x[0]}>
+                <IconLock aria-hidden="true" title="Posted — accounting entry locked"/>
+                <span><b>{x[0]}</b><small>{x[1]}</small></span>
+                <em className={'type t'+(i%4)}>{x[2]}</em>
+                <time>03 Sep 2026</time>
+                <strong>{x[3]}</strong>
+                <em className="posted">{x[4]}</em>
+              </p>
+            ))}
+          </div>
+        </Box>
+      </div>
     </div>
   );
 }
