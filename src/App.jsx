@@ -180,102 +180,94 @@ function ExactDashboard({notify}){
               <option value="FY 2024–25">FY 2024–25</option>
             </select>
           </label>
-          <span>
-            Updated: 03 Sep 2026, 10:30 AM 
-            <button 
-              onClick={() => notify('Dashboard data refreshed')}
-              aria-label="Refresh dashboard metrics"
-              title="Refresh dashboard metrics"
-            >
-              <IconRefresh aria-hidden="true"/>
-            </button>
-          </span>
         </div>
       </div>
 
       {renderMetricGrid(bizMetrics, "Business Performance Metrics")}
       {renderMetricGrid(attentionMetrics, "Working Capital & Tax Attention Metrics")}
-      <RevenueTrend state={widgetState}/>
       
-      <div className="exactGrid heroGrid">
-          <Box title="Cash Flow" filter="This Financial Year" state={widgetState}>
-            <div className="flowkeys">
-              <span>● Opening Balance</span>
-              <span className="good">● Inflow</span>
-              <span className="bad">● Outflow</span>
-              <span>● Closing Balance</span>
-            </div>
-            <div className="flowchart">
-              <ResponsiveContainer>
-                <LineChart data={cashFlow} margin={{top:8,right:15,left:-12,bottom:0}}>
-                  <CartesianGrid vertical={false} stroke="#edf0f4"/>
-                  <XAxis dataKey="month" tickLine={false} axisLine={false}/>
-                  <YAxis tickFormatter={v=>v+' K'} tickLine={false} axisLine={false}/>
-                  <Tooltip/>
-                  <Line type="monotone" dataKey="opening" stroke="#8b5cf6" strokeWidth={2} dot={{r:2}}/>
-                  <Line type="monotone" dataKey="inflow" stroke="#58c98b" strokeWidth={2} dot={{r:3}}/>
-                  <Line type="monotone" dataKey="outflow" stroke="#ec5757" strokeWidth={2} dot={{r:3}}/>
-                  <Line type="monotone" dataKey="closing" stroke="#3478f6" strokeWidth={2} dot={{r:3}}/>
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </Box>
-          <Box title="Receivables Ageing" state={widgetState}>
-            <Ageing/>
-          </Box>
-        </div>
+      {/* ROW 1: Revenue & Expense Trend, Payables Ageing, Top Expenses */}
+      <div className="exactGrid detailGrid">
+        <RevenueTrend state={widgetState}/>
+        <Box title="Payables Ageing" state={widgetState}>
+          <Ageing pay/>
+        </Box>
+        <Box title="Top Expenses" filter="This Financial Year" state={widgetState}>
+          <div className="topExpenses">
+            {[
+              ['Salaries & Wages', 420, 100],
+              ['Rent', 180, 26],
+              ['Utilities', 90, 12],
+              ['Marketing', 75, 10],
+              ['Travel', 60, 7]
+            ].map(x => (
+              <p key={x[0]}>
+                <span>{x[0]}</span>
+                <i aria-hidden="true"><b style={{width:x[2]+'%'}}/></i>
+                <strong>₹{x[1].toLocaleString('en-IN')},000</strong>
+              </p>
+            ))}
+            <a href="#" onClick={(e)=>{e.preventDefault();notify('Expense report opened');}}>
+              View All Expenses <IconArrowRight aria-hidden="true"/>
+            </a>
+          </div>
+        </Box>
+      </div>
 
-        <div className="exactGrid detailGrid">
-          <Box title="Payables Ageing" state={widgetState}>
-            <Ageing pay/>
-          </Box>
-          <Box title="Top Expenses" filter="This Financial Year" state={widgetState}>
-            <div className="topExpenses">
-              {[
-                ['Salaries & Wages', 420, 100],
-                ['Rent', 180, 26],
-                ['Utilities', 90, 12],
-                ['Marketing', 75, 10],
-                ['Travel', 60, 7]
-              ].map(x => (
-                <p key={x[0]}>
-                  <span>{x[0]}</span>
-                  <i aria-hidden="true"><b style={{width:x[2]+'%'}}/></i>
-                  <strong>₹{x[1].toLocaleString('en-IN')},000</strong>
-                </p>
-              ))}
-              <a href="#" onClick={(e)=>{e.preventDefault();notify('Expense report opened');}}>
-                View All Expenses <IconArrowRight aria-hidden="true"/>
-              </a>
-            </div>
-          </Box>
-          <Box 
-            title="Bank Accounts" 
-            link={{label: 'View All', onClick: ()=>notify('Bank accounts page opened')}}
-            state={widgetState}
-          >
-            <div className="exactBanks">
-              {[
-                ['HDFC Bank - 1234', '₹8,75,000.00', 'H'],
-                ['ICICI Bank - 5678', '₹2,45,000.00', 'I'],
-                ['Axis Bank - 9012', '₹1,10,000.00', 'A']
-              ].map(x => (
-                <p key={x[0]}>
-                  <i aria-hidden="true">{x[2]}</i>
-                  <span>{x[0]}<small>Current Balance</small></span>
-                  <b>{x[1]}</b>
-                </p>
-              ))}
-              <button 
-                onClick={()=>notify('Bank account form opened')}
-                aria-label="Add Bank Account"
-                title="Add Bank Account"
-              >
-                <IconPlus aria-hidden="true"/>Add Bank Account
-              </button>
-            </div>
-          </Box>
-        </div>
+      {/* ROW 2: Cash Flow, Receivables Ageing, Bank Accounts */}
+      <div className="exactGrid detailGrid">
+        <Box title="Cash Flow" filter="This Financial Year" state={widgetState}>
+          <div className="flowkeys">
+            <span>● Opening Balance</span>
+            <span className="good">● Inflow</span>
+            <span className="bad">● Outflow</span>
+            <span>● Closing Balance</span>
+          </div>
+          <div className="flowchart">
+            <ResponsiveContainer>
+              <LineChart data={cashFlow} margin={{top:8,right:15,left:-12,bottom:0}}>
+                <CartesianGrid vertical={false} stroke="#edf0f4"/>
+                <XAxis dataKey="month" tickLine={false} axisLine={false}/>
+                <YAxis tickFormatter={v=>v+' K'} tickLine={false} axisLine={false}/>
+                <Tooltip/>
+                <Line type="monotone" dataKey="opening" stroke="#8b5cf6" strokeWidth={2} dot={{r:2}}/>
+                <Line type="monotone" dataKey="inflow" stroke="#58c98b" strokeWidth={2} dot={{r:3}}/>
+                <Line type="monotone" dataKey="outflow" stroke="#ec5757" strokeWidth={2} dot={{r:3}}/>
+                <Line type="monotone" dataKey="closing" stroke="#3478f6" strokeWidth={2} dot={{r:3}}/>
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </Box>
+        <Box title="Receivables Ageing" state={widgetState}>
+          <Ageing/>
+        </Box>
+        <Box 
+          title="Bank Accounts" 
+          link={{label: 'View All', onClick: ()=>notify('Bank accounts page opened')}}
+          state={widgetState}
+        >
+          <div className="exactBanks">
+            {[
+              ['HDFC Bank - 1234', '₹8,75,000.00', 'H'],
+              ['ICICI Bank - 5678', '₹2,45,000.00', 'I'],
+              ['Axis Bank - 9012', '₹1,10,000.00', 'A']
+            ].map(x => (
+              <p key={x[0]}>
+                <i aria-hidden="true">{x[2]}</i>
+                <span>{x[0]}<small>Current Balance</small></span>
+                <b>{x[1]}</b>
+              </p>
+            ))}
+            <button 
+              onClick={()=>notify('Bank account form opened')}
+              aria-label="Add Bank Account"
+              title="Add Bank Account"
+            >
+              <IconPlus aria-hidden="true"/>Add Bank Account
+            </button>
+          </div>
+        </Box>
+      </div>
 
         <div className="exactGrid lowerGrid">
           <Box title="Task List (Needs Attention)" state={widgetState}>
