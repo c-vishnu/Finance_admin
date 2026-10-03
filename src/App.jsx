@@ -114,26 +114,27 @@ function Ageing({pay=false}){
 
 function ExactDashboard({notify}){
   const [widgetState, setWidgetState] = useState('normal');
+  const [financialYear, setFinancialYear] = useState('FY 2026–27 (This FY)');
 
   const bizMetrics = [
-    ['Total Revenue', '₹24,50,000.00', IconTrendingUp, 'green', 'This FY', '↑ 15.6% vs Last FY', 'Revenue breakdown opened'],
-    ['Total Expenses', '₹12,30,000.00', IconTrendingDown, 'purple', 'This FY', '↓ 4.2% vs Last FY', 'Expense breakdown opened'],
-    ['Net Profit', '₹12,20,000.00', IconCashBanknote, 'cyan', 'This FY', '↑ 28.4% vs Last FY', 'Profit & Loss opened'],
-    ['Cash & Bank Balance', '₹11,30,000.00', IconBuildingBank, 'blue', 'Liquid Cash', '4 Active Accounts', 'Cash & Bank summary opened']
+    ['Total Revenue', '₹24,50,000.00', IconTrendingUp, 'green', '↑ 15.6% vs Last FY', 'Revenue breakdown opened'],
+    ['Total Expenses', '₹12,30,000.00', IconTrendingDown, 'purple', '↓ 4.2% vs Last FY', 'Expense breakdown opened'],
+    ['Net Profit', '₹12,20,000.00', IconCashBanknote, 'cyan', '↑ 28.4% vs Last FY', 'Profit & Loss opened'],
+    ['Cash & Bank Balance', '₹11,30,000.00', IconBuildingBank, 'blue', '4 Active Accounts', 'Cash & Bank summary opened']
   ];
 
   const attentionMetrics = [
-    ['Accounts Receivable', '₹4,50,000.00', IconUsers, 'blue', 'Due now', '5 Overdue Invoices', 'Customer outstanding opened'],
-    ['Accounts Payable', '₹2,80,000.00', IconReceipt, 'orange', 'Due now', '3 Bills Due Soon', 'Vendor outstanding opened'],
-    ['GST Payable', '₹3,28,740.00', IconReceipt, 'amber', 'Statutory', 'Due 20 Sep 2026', 'GST summary opened'],
-    ['TDS Payable', '₹86,500.00', IconReceipt, 'rose', 'Statutory', 'Due 07 Sep 2026', 'TDS summary opened']
+    ['Accounts Receivable', '₹4,50,000.00', IconUsers, 'blue', '5 Overdue Invoices', 'Customer outstanding opened'],
+    ['Accounts Payable', '₹2,80,000.00', IconReceipt, 'orange', '3 Bills Due Soon', 'Vendor outstanding opened'],
+    ['GST Payable', '₹3,28,740.00', IconReceipt, 'amber', 'Due 20 Sep 2026', 'GST summary opened'],
+    ['TDS Payable', '₹86,500.00', IconReceipt, 'rose', 'Due 07 Sep 2026', 'TDS summary opened']
   ];
 
   const renderMetricGrid = (metricsList, sectionLabel) => (
-    <div className="metricGrid" role="group" aria-label={sectionLabel}>
-      {metricsList.map(([t, v, I, c, period, trend, actionMsg]) => (
+    <div className="metricGrid compactGrid" role="group" aria-label={sectionLabel}>
+      {metricsList.map(([t, v, I, c, trend, actionMsg]) => (
         <section 
-          className="metric clickableMetric" 
+          className="metric compactMetric clickableMetric" 
           key={t}
           role="button"
           tabIndex={0}
@@ -141,15 +142,16 @@ function ExactDashboard({notify}){
           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); notify(actionMsg); } }}
           aria-label={`${t}: ${v}. ${trend}`}
         >
-          <div>
+          <div className="metricHeader">
             <i className={c} aria-hidden="true"><I/></i>
             <b>{t}</b>
           </div>
-          <strong>{v}</strong>
-          <footer>
-            <span><b>{period}</b></span>
-            <span className={c === 'purple' ? 'bad' : 'good'}>{trend}</span>
-          </footer>
+          <div className="metricValueRow">
+            <strong>{v}</strong>
+            <span className={`trendBadge ${c === 'purple' ? 'bad' : c === 'rose' || c === 'orange' || c === 'amber' ? 'neutral' : 'good'}`}>
+              {trend}
+            </span>
+          </div>
         </section>
       ))}
     </div>
@@ -163,8 +165,23 @@ function ExactDashboard({notify}){
           <p>Here’s what’s happening with your business today.</p>
         </div>
         <div className="dashHeaderRight">
+          <label className="dashFyPicker">
+            <span>Period:</span>
+            <select 
+              value={financialYear} 
+              onChange={(e) => {
+                setFinancialYear(e.target.value);
+                notify(`Switched dashboard view to ${e.target.value}`);
+              }}
+              aria-label="Select Financial Year"
+            >
+              <option value="FY 2026–27 (This FY)">FY 2026–27 (This FY)</option>
+              <option value="FY 2025–26 (Last FY)">FY 2025–26 (Last FY)</option>
+              <option value="FY 2024–25">FY 2024–25</option>
+            </select>
+          </label>
           <span>
-            Last updated: 03 Sep 2026, 10:30 AM 
+            Updated: 03 Sep 2026, 10:30 AM 
             <button 
               onClick={() => notify('Dashboard data refreshed')}
               aria-label="Refresh dashboard metrics"

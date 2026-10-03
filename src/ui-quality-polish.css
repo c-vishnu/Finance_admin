@@ -673,4 +673,115 @@ a:focus-visible {
   font-size: 12.5px;
 }
 
+/* Compact KPI Metric Cards & Inline Trend Alignment */
+.compactGrid {
+  gap: 14px !important;
+  margin-bottom: 24px !important;
+}
+
+.compactMetric {
+  height: auto !important;
+  min-height: 88px !important;
+  padding: 14px 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  border-radius: 10px !important;
+}
+
+.metricHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.metricHeader b {
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  color: #1e293b !important;
+}
+
+.metricValueRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.metricValueRow strong {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  margin: 0 !important;
+  text-align: left !important;
+}
+
+.trendBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.trendBadge.good {
+  background: #e6f4ea;
+  color: #15803d;
+}
+
+.trendBadge.bad {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.trendBadge.neutral {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.dashHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.dashFyPicker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.dashFyPicker select {
+  height: 32px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #fff;
+  padding: 0 10px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #0f172a;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.dashFyPicker select:hover {
+  border-color: #2563eb;
+}
+
+.dashFyPicker select:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+
 
