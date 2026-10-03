@@ -371,7 +371,7 @@ function ExactDashboard({notify}){
             <div className="taxComplianceRow">
               <span>
                 Next Filing / Payment
-                <small>GSTR-3B & TDS Remittance</small>
+                <small>GST & TDS Remittance</small>
               </span>
               <strong>20 Oct 2026</strong>
             </div>
