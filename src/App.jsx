@@ -193,41 +193,11 @@ function ExactDashboard({notify}){
         </div>
       </div>
 
-      {/* SECTION 1: How is the business doing? */}
-      <section className="dashSection">
-        <div className="sectionHeader">
-          <h2>1. How is the business doing?</h2>
-          <p>Core performance metrics: Revenue, Expenses, Profitability, and Liquid Cash</p>
-        </div>
-        {renderMetricGrid(bizMetrics, "Business Performance Metrics")}
-      </section>
-
-      {/* SECTION 2: What money needs attention? */}
-      <section className="dashSection">
-        <div className="sectionHeader">
-          <h2>2. What money needs attention?</h2>
-          <p>Receivables, Payables, and Statutory Tax Compliance (GST & TDS)</p>
-        </div>
-        {renderMetricGrid(attentionMetrics, "Working Capital & Tax Attention Metrics")}
-      </section>
-
-      {/* SECTION 3: How is it changing? */}
-      <section className="dashSection">
-        <div className="sectionHeader">
-          <h2>3. How is it changing?</h2>
-          <p>Revenue, Expense, and Net Profit trends over the financial year</p>
-        </div>
-        <RevenueTrend state={widgetState}/>
-      </section>
-
-      {/* SECTION 4: What should I do now? */}
-      <section className="dashSection">
-        <div className="sectionHeader">
-          <h2>4. What should I do now?</h2>
-          <p>Operational action items, cash flow breakdown, ageing schedules, and recent activity</p>
-        </div>
-        
-        <div className="exactGrid heroGrid">
+      {renderMetricGrid(bizMetrics, "Business Performance Metrics")}
+      {renderMetricGrid(attentionMetrics, "Working Capital & Tax Attention Metrics")}
+      <RevenueTrend state={widgetState}/>
+      
+      <div className="exactGrid heroGrid">
           <Box title="Cash Flow" filter="This Financial Year" state={widgetState}>
             <div className="flowkeys">
               <span>● Opening Balance</span>
@@ -359,7 +329,6 @@ function ExactDashboard({notify}){
             </div>
           </Box>
         </div>
-      </section>
     </div>
   );
 }
