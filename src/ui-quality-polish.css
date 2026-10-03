@@ -538,3 +538,139 @@ html,body,#root{height:100%;overflow:hidden}
   box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08) !important;
 }
 
+/* ==========================================================================
+   Dashboard UI Hierarchy, Accessibility & Widget Polish
+   ========================================================================== */
+.dashSection {
+  margin-bottom: 28px;
+}
+
+.sectionHeader {
+  margin-bottom: 12px;
+}
+
+.sectionHeader h2 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 4px 0;
+  border-left: 3px solid #2563eb;
+  padding-left: 10px;
+}
+
+.sectionHeader p {
+  font-size: 13px;
+  color: #475569;
+  margin: 0;
+  padding-left: 13px;
+}
+
+.clickableMetric {
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  border: 1px solid #cbd5e1 !important;
+}
+
+.clickableMetric:hover {
+  border-color: #2563eb !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.14) !important;
+}
+
+.clickableMetric:focus-visible,
+.exactBox button:focus-visible,
+.exactTasks button:focus-visible,
+.dashIntro button:focus-visible,
+a:focus-visible {
+  outline: 2px solid #2563eb !important;
+  outline-offset: 2px !important;
+}
+
+.dashIntro h1 {
+  color: #0f172a;
+}
+
+.dashIntro p {
+  color: #475569 !important;
+  font-size: 13.5px !important;
+}
+
+.metric strong {
+  color: #0f172a;
+  font-size: 18px !important;
+}
+
+.metric footer span {
+  color: #475569 !important;
+  font-size: 12.5px !important;
+}
+
+.exactHead h3 {
+  font-size: 14px !important;
+  font-weight: 650;
+  color: #0f172a;
+}
+
+.exactTasks span b {
+  font-size: 13px !important;
+  color: #0f172a;
+}
+
+.exactTasks span small {
+  font-size: 12.5px !important;
+  color: #475569 !important;
+}
+
+.exactTx span b {
+  font-size: 13px !important;
+  color: #0f172a;
+}
+
+.exactTx span small {
+  font-size: 12.5px !important;
+  color: #475569 !important;
+}
+
+/* Widget States (Skeleton, Empty, Error, No-Permission) */
+.widgetSkeleton {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skBar {
+  height: 16px;
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: skLoading 1.5s infinite;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.skBar.w70 { width: 70%; }
+.skBar.w40 { width: 40%; }
+
+@keyframes skLoading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.widgetState {
+  padding: 30px 20px;
+  text-align: center;
+  font-size: 13px;
+  color: #475569;
+}
+
+.widgetState.errorState button {
+  margin-top: 10px;
+  padding: 6px 14px;
+  background: #2563eb;
+  color: #fff;
+  border: 0;
+  border-radius: 6px;
+  font-size: 12.5px;
+}
+
+

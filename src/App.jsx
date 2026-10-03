@@ -50,8 +50,330 @@ function OrgList({type,notify}){
 const cashFlow=[['Apr',15,-12,0],['May',35,-22,20],['Jun',39,-30,23],['Jul',26,-24,0],['Aug',29,-28,2],['Sep',24,-27,-6],['Oct',36,-27,9],['Nov',20,-32,-5],['Dec',41,-22,0],['Jan',28,-13,3],['Feb',17,-12,4],['Mar',10,-13,1]].map(x=>({month:x[0],opening:x[3]+20,inflow:x[1],outflow:Math.abs(x[2]),closing:x[3]+22}));
 const ageData=[{name:'Current',value:320,color:'#3478f6',pct:'71.11%'},{name:'1–30 Days',value:60,color:'#58c98b',pct:'13.33%'},{name:'31–60 Days',value:40,color:'#f5b94f',pct:'8.89%'},{name:'61–90 Days',value:20,color:'#ed8a42',pct:'4.44%'},{name:'90+ Days',value:10,color:'#ec5757',pct:'2.22%'}];
 function Ageing({pay=false}){let d=pay?ageData.map((x,i)=>({...x,value:[180,50,30,15,5][i],pct:['64.29%','17.86%','10.71%','5.36%','1.79%'][i]})):ageData,total=pay?'₹2,80,000':'₹4,50,000';return <div className="exactDonut"><div className="piechart"><ResponsiveContainer><PieChart><Pie data={d} dataKey="value" innerRadius="64%" outerRadius="88%" startAngle={90} endAngle={-270} stroke="none">{d.map(x=><Cell key={x.name} fill={x.color}/>)}</Pie></PieChart></ResponsiveContainer><span><b>{total}</b><small>Total</small></span></div><div className="agelegend">{d.map(x=><p><i style={{background:x.color}}/><span>{x.name}<b>₹{x.value.toLocaleString('en-IN')},000 <small>({x.pct})</small></b></span></p>)}</div></div>}
-function Box({title,filter='As on Today',children,link}){return <section className="exactBox"><div className="exactHead"><h3>{title}</h3>{link?<a>{link}</a>:<button>{filter}<IconChevronDown/></button>}</div>{children}</section>}
-function ExactDashboard({notify}){let metrics=[['Total Revenue','₹24,50,000.00',IconTrendingUp,'green'],['Total Expenses','₹12,30,000.00',IconTrendingDown,'purple'],['Net Profit','₹12,20,000.00',IconCashBanknote,'cyan'],['Cash & Bank Balance','₹11,30,000.00',IconBuildingBank,'blue'],['Accounts Receivable','₹4,50,000.00',IconUsers,'blue'],['Accounts Payable','₹2,80,000.00',IconReceipt,'orange'],['GST Payable','₹3,28,740.00',IconReceipt,'amber'],['TDS Payable','₹86,500.00',IconReceipt,'rose']];return <div className="exactDash"><div className="dashIntro"><div><h1>Hello, Admin 👋</h1><p>Here’s what’s happening with your business today.</p></div><span>Last updated: 03 Sep 2026, 10:30 AM <button onClick={()=>notify('Dashboard data refreshed')}><IconRefresh/></button></span></div><div className="metricGrid">{metrics.map(([t,v,I,c],i)=><section className="metric"><div><i className={c}><I/></i><b>{t}</b></div><strong>{v}</strong><footer><span><b>{t.includes('Payable')?'Due now':'This FY'}</b></span><span className={t.includes('Expenses')?'bad':'good'}>{t.includes('GST')?'Due 20 Sep':t.includes('TDS')?'Due 07 Sep':'↑ 15.6%'} <small>{t.includes('Payable')?'':'vs Last FY'}</small></span></footer></section>)}</div><RevenueTrend/><div className="exactGrid heroGrid"><Box title="Cash Flow" filter="This Financial Year"><div className="flowkeys"><span>● Opening Balance</span><span className="good">● Inflow</span><span className="bad">● Outflow</span><span>● Closing Balance</span></div><div className="flowchart"><ResponsiveContainer><LineChart data={cashFlow} margin={{top:8,right:15,left:-12,bottom:0}}><CartesianGrid vertical={false} stroke="#edf0f4"/><XAxis dataKey="month" tickLine={false} axisLine={false}/><YAxis tickFormatter={v=>v+' K'} tickLine={false} axisLine={false}/><Tooltip/><Line type="monotone" dataKey="opening" stroke="#8b5cf6" strokeWidth={2} dot={{r:2}}/><Line type="monotone" dataKey="inflow" stroke="#58c98b" strokeWidth={2} dot={{r:3}}/><Line type="monotone" dataKey="outflow" stroke="#ec5757" strokeWidth={2} dot={{r:3}}/><Line type="monotone" dataKey="closing" stroke="#3478f6" strokeWidth={2} dot={{r:3}}/></LineChart></ResponsiveContainer></div></Box><Box title="Receivables Ageing"><Ageing/></Box></div><div className="exactGrid detailGrid"><Box title="Payables Ageing"><Ageing pay/></Box><Box title="Top Expenses" filter="This Financial Year"><div className="topExpenses">{[['Salaries & Wages',420,100],['Rent',180,26],['Utilities',90,12],['Marketing',75,10],['Travel',60,7]].map(x=><p><span>{x[0]}</span><i><b style={{width:x[2]+'%'}}/></i><strong>₹{x[1].toLocaleString('en-IN')},000</strong></p>)}<a>View All Expenses <IconArrowRight/></a></div></Box><Box title="Bank Accounts" link="View All"><div className="exactBanks">{[['HDFC Bank - 1234','₹8,75,000.00','H'],['ICICI Bank - 5678','₹2,45,000.00','I'],['Axis Bank - 9012','₹1,10,000.00','A']].map(x=><p><i>{x[2]}</i><span>{x[0]}<small>Current Balance</small></span><b>{x[1]}</b></p>)}<button onClick={()=>notify('Bank account form opened')}><IconPlus/>Add Bank Account</button></div></Box></div><div className="exactGrid lowerGrid"><Box title="Task List"><div className="exactTasks">{[['Overdue customer invoices','5 invoices · ₹1,30,000 overdue','View invoices','red'],['Overdue vendor bills','3 bills · ₹75,000 overdue','View bills','amber'],['Pending bank reconciliation','2 accounts not reconciled','Reconcile now','violet'],['GST payable','GST due 20 Sep 2026','View GST','blue'],['TDS payment due','Payment due 07 Sep 2026','Pay TDS','amber'],['Unposted transactions','8 drafts awaiting posting','Review drafts','blue'],['Negative cash/bank balance','Axis OD account below zero','View account','red'],['Unapproved expenses','6 claims · ₹42,500','Review expenses','amber'],['Unbalanced journal entries','2 entries need correction','Fix entries','red']].map(x=><button onClick={()=>notify(x[2]+' opened')}><i className={x[3]}><IconAlertTriangle/></i><span><b>{x[0]}</b><small>{x[1]}</small></span><em>{x[2]}<IconArrowRight/></em></button>)}</div></Box><Box title="Recent Transactions" link="View All"><div className="exactTx">{[['INV-2026-0012','ABC Pvt Ltd','Invoice','₹50,000.00','Submitted'],['BILL-2026-0009','XYZ Suppliers','Bill','₹25,000.00','Draft'],['PAY-2026-0015','ABC Pvt Ltd','Payment Received','₹20,000.00','Posted'],['PAY-2026-0012','XYZ Suppliers','Payment Made','₹15,000.00','Posted'],['JE-2026-0008','Journal Entry','Journal Entry','₹10,000.00','Posted']].map((x,i)=><p><IconLock/><span><b>{x[0]}</b><small>{x[1]}</small></span><em className={'type t'+i}>{x[2]}</em><time>03 Sep 2026</time><strong>{x[3]}</strong><em className="posted">{x[4]}</em></p>)}</div></Box></div></div>}
+function Box({title,filter='As on Today',children,link,state='normal',onRetry}){
+  return (
+    <section className="exactBox" aria-label={title}>
+      <div className="exactHead">
+        <h3>{title}</h3>
+        {link ? (
+          <a href="#" onClick={(e)=>{e.preventDefault();if(typeof link==='object'&&link.onClick)link.onClick();}}>
+            {typeof link==='object'?link.label:link}
+          </a>
+        ) : (
+          <button aria-label={`${title} filter: ${filter}`} title={`Filter ${title}`}>
+            {filter} <IconChevronDown aria-hidden="true" />
+          </button>
+        )}
+      </div>
+      {state==='loading' ? (
+        <div className="widgetSkeleton"><div className="skBar"/><div className="skBar w70"/><div className="skBar w40"/></div>
+      ) : state==='empty' ? (
+        <div className="widgetState emptyState">
+          <p>No data available for the selected period.</p>
+        </div>
+      ) : state==='error' ? (
+        <div className="widgetState errorState">
+          <p>Unable to load widget data.</p>
+          {onRetry && <button onClick={onRetry}>Retry</button>}
+        </div>
+      ) : state==='no-permission' ? (
+        <div className="widgetState noPermState">
+          <p>Access Restricted: Additional permissions required.</p>
+        </div>
+      ) : children}
+    </section>
+  );
+}
+
+function Ageing({pay=false}){
+  let d=pay?ageData.map((x,i)=>({...x,value:[180,50,30,15,5][i],pct:['64.29%','17.86%','10.71%','5.36%','1.79%'][i]})):ageData;
+  let total=pay?'₹2,80,000':'₹4,50,000';
+  return (
+    <div className="exactDonut">
+      <div className="piechart">
+        <ResponsiveContainer>
+          <PieChart>
+            <Pie data={d} dataKey="value" innerRadius="64%" outerRadius="88%" startAngle={90} endAngle={-270} stroke="none">
+              {d.map(x=><Cell key={x.name} fill={x.color}/>)}
+            </Pie>
+          </PieChart>
+        </ResponsiveContainer>
+        <span><b>{total}</b><small>Total</small></span>
+      </div>
+      <div className="agelegend">
+        {d.map(x=>
+          <p key={x.name}>
+            <i style={{background:x.color}} aria-hidden="true"/>
+            <span>{x.name}<b>₹{x.value.toLocaleString('en-IN')},000 <small>({x.pct})</small></b></span>
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ExactDashboard({notify}){
+  const [widgetState, setWidgetState] = useState('normal');
+
+  const bizMetrics = [
+    ['Total Revenue', '₹24,50,000.00', IconTrendingUp, 'green', 'This FY', '↑ 15.6% vs Last FY', 'Revenue breakdown opened'],
+    ['Total Expenses', '₹12,30,000.00', IconTrendingDown, 'purple', 'This FY', '↓ 4.2% vs Last FY', 'Expense breakdown opened'],
+    ['Net Profit', '₹12,20,000.00', IconCashBanknote, 'cyan', 'This FY', '↑ 28.4% vs Last FY', 'Profit & Loss opened'],
+    ['Cash & Bank Balance', '₹11,30,000.00', IconBuildingBank, 'blue', 'Liquid Cash', '4 Active Accounts', 'Cash & Bank summary opened']
+  ];
+
+  const attentionMetrics = [
+    ['Accounts Receivable', '₹4,50,000.00', IconUsers, 'blue', 'Due now', '5 Overdue Invoices', 'Customer outstanding opened'],
+    ['Accounts Payable', '₹2,80,000.00', IconReceipt, 'orange', 'Due now', '3 Bills Due Soon', 'Vendor outstanding opened'],
+    ['GST Payable', '₹3,28,740.00', IconReceipt, 'amber', 'Statutory', 'Due 20 Sep 2026', 'GST summary opened'],
+    ['TDS Payable', '₹86,500.00', IconReceipt, 'rose', 'Statutory', 'Due 07 Sep 2026', 'TDS summary opened']
+  ];
+
+  const renderMetricGrid = (metricsList, sectionLabel) => (
+    <div className="metricGrid" role="group" aria-label={sectionLabel}>
+      {metricsList.map(([t, v, I, c, period, trend, actionMsg]) => (
+        <section 
+          className="metric clickableMetric" 
+          key={t}
+          role="button"
+          tabIndex={0}
+          onClick={() => notify(actionMsg)}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); notify(actionMsg); } }}
+          aria-label={`${t}: ${v}. ${trend}`}
+        >
+          <div>
+            <i className={c} aria-hidden="true"><I/></i>
+            <b>{t}</b>
+          </div>
+          <strong>{v}</strong>
+          <footer>
+            <span><b>{period}</b></span>
+            <span className={c === 'purple' ? 'bad' : 'good'}>{trend}</span>
+          </footer>
+        </section>
+      ))}
+    </div>
+  );
+
+  return (
+    <div className="exactDash">
+      <div className="dashIntro">
+        <div>
+          <h1>Hello, Admin 👋</h1>
+          <p>Here’s what’s happening with your business today.</p>
+        </div>
+        <div className="dashHeaderRight">
+          <span>
+            Last updated: 03 Sep 2026, 10:30 AM 
+            <button 
+              onClick={() => notify('Dashboard data refreshed')}
+              aria-label="Refresh dashboard metrics"
+              title="Refresh dashboard metrics"
+            >
+              <IconRefresh aria-hidden="true"/>
+            </button>
+          </span>
+        </div>
+      </div>
+
+      {/* SECTION 1: How is the business doing? */}
+      <section className="dashSection">
+        <div className="sectionHeader">
+          <h2>1. How is the business doing?</h2>
+          <p>Core performance metrics: Revenue, Expenses, Profitability, and Liquid Cash</p>
+        </div>
+        {renderMetricGrid(bizMetrics, "Business Performance Metrics")}
+      </section>
+
+      {/* SECTION 2: What money needs attention? */}
+      <section className="dashSection">
+        <div className="sectionHeader">
+          <h2>2. What money needs attention?</h2>
+          <p>Receivables, Payables, and Statutory Tax Compliance (GST & TDS)</p>
+        </div>
+        {renderMetricGrid(attentionMetrics, "Working Capital & Tax Attention Metrics")}
+      </section>
+
+      {/* SECTION 3: How is it changing? */}
+      <section className="dashSection">
+        <div className="sectionHeader">
+          <h2>3. How is it changing?</h2>
+          <p>Revenue, Expense, and Net Profit trends over the financial year</p>
+        </div>
+        <RevenueTrend state={widgetState}/>
+      </section>
+
+      {/* SECTION 4: What should I do now? */}
+      <section className="dashSection">
+        <div className="sectionHeader">
+          <h2>4. What should I do now?</h2>
+          <p>Operational action items, cash flow breakdown, ageing schedules, and recent activity</p>
+        </div>
+        
+        <div className="exactGrid heroGrid">
+          <Box title="Cash Flow" filter="This Financial Year" state={widgetState}>
+            <div className="flowkeys">
+              <span>● Opening Balance</span>
+              <span className="good">● Inflow</span>
+              <span className="bad">● Outflow</span>
+              <span>● Closing Balance</span>
+            </div>
+            <div className="flowchart">
+              <ResponsiveContainer>
+                <LineChart data={cashFlow} margin={{top:8,right:15,left:-12,bottom:0}}>
+                  <CartesianGrid vertical={false} stroke="#edf0f4"/>
+                  <XAxis dataKey="month" tickLine={false} axisLine={false}/>
+                  <YAxis tickFormatter={v=>v+' K'} tickLine={false} axisLine={false}/>
+                  <Tooltip/>
+                  <Line type="monotone" dataKey="opening" stroke="#8b5cf6" strokeWidth={2} dot={{r:2}}/>
+                  <Line type="monotone" dataKey="inflow" stroke="#58c98b" strokeWidth={2} dot={{r:3}}/>
+                  <Line type="monotone" dataKey="outflow" stroke="#ec5757" strokeWidth={2} dot={{r:3}}/>
+                  <Line type="monotone" dataKey="closing" stroke="#3478f6" strokeWidth={2} dot={{r:3}}/>
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </Box>
+          <Box title="Receivables Ageing" state={widgetState}>
+            <Ageing/>
+          </Box>
+        </div>
+
+        <div className="exactGrid detailGrid">
+          <Box title="Payables Ageing" state={widgetState}>
+            <Ageing pay/>
+          </Box>
+          <Box title="Top Expenses" filter="This Financial Year" state={widgetState}>
+            <div className="topExpenses">
+              {[
+                ['Salaries & Wages', 420, 100],
+                ['Rent', 180, 26],
+                ['Utilities', 90, 12],
+                ['Marketing', 75, 10],
+                ['Travel', 60, 7]
+              ].map(x => (
+                <p key={x[0]}>
+                  <span>{x[0]}</span>
+                  <i aria-hidden="true"><b style={{width:x[2]+'%'}}/></i>
+                  <strong>₹{x[1].toLocaleString('en-IN')},000</strong>
+                </p>
+              ))}
+              <a href="#" onClick={(e)=>{e.preventDefault();notify('Expense report opened');}}>
+                View All Expenses <IconArrowRight aria-hidden="true"/>
+              </a>
+            </div>
+          </Box>
+          <Box 
+            title="Bank Accounts" 
+            link={{label: 'View All', onClick: ()=>notify('Bank accounts page opened')}}
+            state={widgetState}
+          >
+            <div className="exactBanks">
+              {[
+                ['HDFC Bank - 1234', '₹8,75,000.00', 'H'],
+                ['ICICI Bank - 5678', '₹2,45,000.00', 'I'],
+                ['Axis Bank - 9012', '₹1,10,000.00', 'A']
+              ].map(x => (
+                <p key={x[0]}>
+                  <i aria-hidden="true">{x[2]}</i>
+                  <span>{x[0]}<small>Current Balance</small></span>
+                  <b>{x[1]}</b>
+                </p>
+              ))}
+              <button 
+                onClick={()=>notify('Bank account form opened')}
+                aria-label="Add Bank Account"
+                title="Add Bank Account"
+              >
+                <IconPlus aria-hidden="true"/>Add Bank Account
+              </button>
+            </div>
+          </Box>
+        </div>
+
+        <div className="exactGrid lowerGrid">
+          <Box title="Task List (Needs Attention)" state={widgetState}>
+            <div className="exactTasks">
+              {[
+                ['Overdue customer invoices','5 invoices · ₹1,30,000 overdue','View invoices','red'],
+                ['Overdue vendor bills','3 bills · ₹75,000 overdue','View bills','amber'],
+                ['Pending bank reconciliation','2 accounts not reconciled','Reconcile now','violet'],
+                ['GST payable','GST due 20 Sep 2026','View GST','blue'],
+                ['TDS payment due','Payment due 07 Sep 2026','Pay TDS','amber'],
+                ['Unposted transactions','8 drafts awaiting posting','Review drafts','blue'],
+                ['Negative cash/bank balance','Axis OD account below zero','View account','red'],
+                ['Unapproved expenses','6 claims · ₹42,500','Review expenses','amber'],
+                ['Unbalanced journal entries','2 entries need correction','Fix entries','red']
+              ].map(x => (
+                <button 
+                  key={x[0]}
+                  onClick={()=>notify(x[2]+' opened')}
+                  aria-label={`${x[0]}: ${x[1]}`}
+                >
+                  <i className={x[3]} aria-hidden="true"><IconAlertTriangle/></i>
+                  <span><b>{x[0]}</b><small>{x[1]}</small></span>
+                  <em>{x[2]}<IconArrowRight aria-hidden="true"/></em>
+                </button>
+              ))}
+            </div>
+          </Box>
+
+          <Box 
+            title="Recent Transactions" 
+            link={{label: 'View All', onClick: ()=>notify('Recent transactions list opened')}}
+            state={widgetState}
+          >
+            <div className="exactTx">
+              {[
+                ['INV-2026-0012','ABC Pvt Ltd','Invoice','₹50,000.00','Submitted'],
+                ['BILL-2026-0009','XYZ Suppliers','Bill','₹25,000.00','Draft'],
+                ['PAY-2026-0015','ABC Pvt Ltd','Payment Received','₹20,000.00','Posted'],
+                ['PAY-2026-0012','XYZ Suppliers','Payment Made','₹15,000.00','Posted'],
+                ['JE-2026-0008','Journal Entry','Journal Entry','₹10,000.00','Posted']
+              ].map((x,i) => (
+                <p key={x[0]}>
+                  <IconLock aria-hidden="true"/>
+                  <span><b>{x[0]}</b><small>{x[1]}</small></span>
+                  <em className={'type t'+i}>{x[2]}</em>
+                  <time>03 Sep 2026</time>
+                  <strong>{x[3]}</strong>
+                  <em className="posted">{x[4]}</em>
+                </p>
+              ))}
+            </div>
+          </Box>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+const trendData=[['Apr',160,82],['May',185,88],['Jun',205,96],['Jul',178,90],['Aug',215,104],['Sep',225,112],['Oct',240,116],['Nov',232,121],['Dec',268,135],['Jan',250,124],['Feb',285,142],['Mar',310,151]].map(x=>({month:x[0],Revenue:x[1],Expenses:x[2],Profit:x[1]-x[2]}));
+function RevenueTrend({state='normal'}){
+  return (
+    <div className="trendBox">
+      <Box title="Revenue & Expense Trend" filter="This Financial Year" state={state}>
+        <div className="trendSummary">
+          <span><i className="rev" aria-hidden="true"/>Revenue <b>₹24.50L</b></span>
+          <span><i className="exp" aria-hidden="true"/>Expenses <b>₹12.30L</b></span>
+          <span><i className="profit" aria-hidden="true"/>Profit <b>₹12.20L</b></span>
+        </div>
+        <div className="trendChart">
+          <ResponsiveContainer>
+            <LineChart data={trendData} margin={{top:5,right:20,left:-5,bottom:0}}>
+              <CartesianGrid vertical={false} stroke="#edf0f4"/>
+              <XAxis dataKey="month" tickLine={false} axisLine={false}/>
+              <YAxis tickFormatter={v=>'₹'+v+'K'} tickLine={false} axisLine={false}/>
+              <Tooltip/>
+              <Line type="monotone" dataKey="Revenue" stroke="#3478f6" strokeWidth={2.4} dot={{r:2}}/>
+              <Line type="monotone" dataKey="Expenses" stroke="#ec5757" strokeWidth={2.2} dot={{r:2}}/>
+              <Line type="monotone" dataKey="Profit" stroke="#58c98b" strokeWidth={2.2} dot={{r:2}}/>
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </Box>
+    </div>
+  );
+}
 
 
 

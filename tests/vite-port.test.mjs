@@ -9,7 +9,7 @@ test('local Vite defaults to port 4001 and does not silently move',()=>{
   assert.match(vite,/port:\s*4001/);
   assert.match(vite,/strictPort:\s*true/);
   assert.match(vite,/preview:\s*\{/);
-  assert.equal(pkg.scripts.dev,'vite --port 4001 --strictPort');
+  assert.equal(pkg.scripts.dev,'vite --host 0.0.0.0 --port 4001 --strictPort');
   assert.equal(pkg.scripts.preview,'vite preview --port 4001 --strictPort');
 });
 
