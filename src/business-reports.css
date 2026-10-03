@@ -1,0 +1,192 @@
+/* ---------------------------------------------------------------------------
+   Business Reports - Sales Report, Purchase Report and Expense Report.
+
+   The three reports belong to the same family as the Transaction Register, the
+   Balance Sheet, the Trial Balance, the Day Book, the General Ledger, Customer
+   Outstanding, Supplier Outstanding and the Tax & Compliance reports, so this
+   sheet states nothing new: the page surface, the heading row, the 300px search
+   beside the Filters disclosure, the four summary cards, the fixed-column card,
+   the caption, the pager, the empty and error states, the printed identity block
+   and the right-side portal neutralisation are the same values those reports
+   use, under the br prefix. Only the column sets are report-specific, and each
+   report declares its own widths under its own page class.
+
+   The portal itself is NOT redeclared here: src/transaction-register.css already
+   owns .transactionPortal and Navigation.jsx imports that stylesheet
+   unconditionally, so a fourth copy would only be a fourth thing to keep in step.
+   Each page still neutralises the portal for its own class in its print block.
+   --------------------------------------------------------------------------- */
+
+.brPage{--br-blue:#3478f6;--br-text:#172033;--br-muted:#667085;--br-line:#e2e8f0;display:flex;flex-direction:column;gap:20px;max-width:100%;min-width:0;margin:0;padding:24px;border:1px solid #dfe6ef;border-radius:12px;background:#fff;box-shadow:0 1px 2px #10182808;color:var(--br-text);font:14px/1.45 'Instrument Sans',sans-serif}
+.brPage *{box-sizing:border-box}
+.brPage button,.brPage input,.brPage select{font:inherit}
+
+/* ---------- Heading ---------- */
+.brHead{position:static!important;inset:auto!important;z-index:auto!important;height:auto!important;display:flex;align-items:center;justify-content:space-between;gap:18px;width:100%;padding:0 0 20px;border-bottom:1px solid #e6ecf3;background:transparent}
+.brHeadText{min-width:0}
+.brHead h1{margin:0;font-size:24px;line-height:1.2}
+.brHead p{margin:5px 0 0;font-size:13px;color:var(--br-muted)}
+.brHeadActions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.brPage button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:8px 12px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;cursor:pointer}
+.brPage button:hover:not(:disabled){border-color:#aac2ed;background:#f5f8ff}
+.brPage button:disabled{cursor:not-allowed;opacity:.55}
+.brPage button:focus-visible,.brPage input:focus-visible,.brPage select:focus-visible,.brFiltersMore summary:focus-visible{outline:2px solid #9cbbff;outline-offset:2px}
+.brSearch{width:300px;height:40px;padding:0 10px;display:flex;align-items:center;gap:8px;border:1px solid #d9e1ec;border-radius:7px;color:#344054}
+.brSearch input{width:100%;min-width:0;border:0;outline:0;background:transparent;font-size:13px}
+.brFiltersMore{position:relative}
+.brFiltersMore summary{height:40px;padding:0 10px;display:flex;align-items:center;gap:6px;border:1px solid #d9e1ec;border-radius:7px;list-style:none;color:#344054;font-size:12px;font-weight:600;cursor:pointer}
+.brFiltersMore summary::-webkit-details-marker{display:none}
+.brFiltersMore summary span{min-width:17px;height:17px;display:inline-grid;place-items:center;border-radius:999px;background:#eaf1ff;color:#245fd9;font-size:11px;font-weight:700}
+.brFilters{position:absolute;right:0;top:calc(100% + 6px);z-index:20;width:min(620px,calc(100vw - 48px));max-height:min(70vh,620px);overflow:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:16px;border:1px solid var(--br-line);border-radius:10px;background:#fff;box-shadow:0 12px 32px #1018281f}
+.brFilters label{display:flex;flex-direction:column;gap:6px;color:#475467;font-size:12px;font-weight:600}
+.brFilters input,.brFilters select{min-height:38px;padding:7px 9px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#172033}
+.brFilterActions{grid-column:1/-1;display:flex;justify-content:flex-end;gap:8px;padding-top:4px;border-top:1px solid #eef2f7}
+
+/* ---------- States and printed identity ---------- */
+.brError{display:flex;align-items:center;gap:10px;padding:12px 15px;border:1px solid #ffd3d9;border-radius:8px;background:#fff1f2;color:#b33243}
+.brError button{margin-left:auto}
+.brPrintMeta{display:none}
+
+/* ---------- Summary ---------- */
+.brSummary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.brSummary>div{min-height:92px;padding:15px 12px;display:flex;flex-direction:column;justify-content:center;gap:8px;border:1px solid #dfe6ef;border-radius:9px;background:#fff}
+.brSummary>div:first-child{background:#edf3ff;border-color:#d2e0ff;color:#285dca}
+.brSummary span{color:var(--br-muted);font-size:12px}
+.brSummary strong{font-size:22px;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+/* A card whose value is a word rather than a figure - the Expense tax card - sets it in the same
+   slot at a smaller size, so the four cards stay one row and one height. */
+.brSummary strong.brWord{font-size:15px;letter-spacing:0}
+.brNote{margin:0;padding:10px 13px;border:1px solid #dfe6ef;border-radius:8px;background:#f8fafc;color:#475467;font-size:12px}
+
+/* ---------- Register ---------- */
+.brRegisterCard{border:1px solid var(--br-line);border-radius:10px;background:#fff;overflow:visible!important}
+.brTableScroll{overflow-x:auto;overscroll-behavior-inline:contain}
+.brRegisterCard table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
+.brCaption{caption-side:top;padding:12px 16px;border-bottom:1px solid #edf1f6;background:#fbfcfe;color:var(--br-muted);font-size:12px;text-align:left}
+.brRegisterCard th,.brRegisterCard td{padding:13px 16px;border-top:1px solid #edf1f6;text-align:left;vertical-align:middle}
+.brRegisterCard thead th{position:sticky!important;top:-24px!important;z-index:20!important;background:#f7f9fc!important;color:#5b6b81!important;font-size:12px!important;font-weight:600!important;border-bottom:2px solid #cbd5e1!important;box-shadow:0 2px 6px rgba(15,23,42,0.08)!important}
+.brRegisterCard tbody tr:hover{background:#fafcff}
+/* The pager shows one comfortable page of rows; the rows outside it are withheld from the screen
+   only. The printed PDF still states the whole filtered dataset, the way the Transaction Register's
+   print does. */
+.brRegisterCard tbody tr.brOffPage{display:none}
+.brMoney{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.brRegisterCard td.brDateCol{color:var(--br-muted);font-size:12px}
+.brRegisterCard td.brPartyCol{font-weight:600;color:#172033}
+.brRegisterCard td.brTaxCol{color:#475467;font-size:12px}
+.brRegisterCard td.brMoneyCol{font-weight:700;color:#172033}
+.brRegisterCard td.brAccountCol{color:#344054}
+/* Date, party, account, category and reference stay on one line and shorten with an ellipsis, so a
+   long customer name never wraps a row onto three lines. The full value stays on the cell's own
+   tooltip and in the export. */
+.brRegisterCard td.brDateCol,.brRegisterCard td.brPartyCol,.brRegisterCard td.brAccountCol,.brRegisterCard td.brCategoryCol,.brRegisterCard td.brNumberCol{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* The document number is the primary handle on the row: a link-styled control that opens the very
+   document the row states, the way the invoice and journal registers render their numbers. */
+.brPage button.brLink{display:block;width:fit-content;max-width:100%;min-height:0;padding:0;border:0;border-radius:0;background:none;color:#286aee;font:inherit;font-weight:650;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
+.brPage button.brLink:hover:not(:disabled){border:0;background:none;color:#174fa9;text-decoration:underline}
+/* src/ui-system.css right-aligns and re-pads every last cell with !important; the Actions column is
+   the last cell, so it restates its own alignment and keeps room for the 28px menu trigger. */
+.brRegisterCard th.brActionsCol,.brRegisterCard td.brActionsCol{text-align:center!important;padding-right:14px!important}
+.brRegisterCard th.brActionsCol .soMoreButton,.brRegisterCard td.brActionsCol .soMoreButton{margin:0 auto}
+.brGrandTotal th{padding:13px 16px;border-top:2px solid #dbe3ee;background:#eef3fb;color:#172033;font-size:13px;font-weight:700;text-align:right}
+.brGrandTotal th.brLabel,.brGrandTotal th.brActionsCol{text-align:left!important}
+
+/* ---------- Reconciliation strip ---------- */
+.brEquation{display:flex;align-items:center;gap:14px;margin:0;padding:10px 13px;border:1px solid #cee9da;border-radius:7px;background:#eaf7ef;color:#28724d}
+.brEquation.mismatch{border-color:#f3d4b8;background:#fff3e9;color:#994b1e}
+.brEquation.unknown{border-color:#dfe6ef;background:#f7f9fc;color:#475467}
+.brEquation b{font-size:13px}
+.brEquation span{margin-left:auto;font-size:12px}
+.brStickyBalance{position:sticky;bottom:0;z-index:12;box-shadow:0 -6px 16px #1018280d}
+
+/* ---------- Pager ----------
+   The shared footer the journal, inventory, purchase and transaction registers already use, so the
+   count, the page size and the arrows read identically here. */
+.brPager.pagination-footer{padding:8px 16px}
+.brPager .pagination-left,.brPager .pagination-right{font-size:12px;color:var(--br-muted)}
+.brPager .brPerPage{display:inline-flex;align-items:center}
+.brPager .brPerPage select{font-size:12px;color:var(--br-muted)}
+.brPager.pagination-footer button{width:32px;height:32px;min-height:32px;padding:0;border:1px solid #d7e0eb;border-radius:6px;background:#fff;color:#344054}
+.brPager.pagination-footer button:hover:not(:disabled){border-color:#aac2ed;background:#f5f8ff}
+
+/* ---------- Column widths ----------
+   Sales and Purchase state eight columns; the Expense Report states ten, because a spend report
+   separates the account, the payee and the category. Every width is declared because the table is
+   fixed-layout: an undeclared column would take an equal share and squeeze the money cells. */
+.brSales .brRegisterCard thead .brDateCol{width:11%}
+.brSales .brRegisterCard thead .brNumberCol{width:12%}
+.brSales .brRegisterCard thead .brPartyCol{width:19%}
+.brSales .brRegisterCard thead .brMetaCol{width:14%}
+.brSales .brRegisterCard thead .brMetaCol.brTaxCol{width:11%}
+.brSales .brRegisterCard thead .brMoneyCol{width:14%}
+.brSales .brRegisterCard thead .brStatusCol{width:10%}
+.brSales .brRegisterCard thead .brActionsCol{width:9%}
+.brPurchase .brRegisterCard thead .brDateCol{width:11%}
+.brPurchase .brRegisterCard thead .brNumberCol{width:12%}
+.brPurchase .brRegisterCard thead .brPartyCol{width:19%}
+.brPurchase .brRegisterCard thead .brMetaCol{width:14%}
+.brPurchase .brRegisterCard thead .brMetaCol.brTaxCol{width:11%}
+.brPurchase .brRegisterCard thead .brMoneyCol{width:14%}
+.brPurchase .brRegisterCard thead .brStatusCol{width:10%}
+.brPurchase .brRegisterCard thead .brActionsCol{width:9%}
+.brExpense .brRegisterCard thead .brDateCol{width:9%}
+.brExpense .brRegisterCard thead .brNumberCol{width:10%}
+.brExpense .brRegisterCard thead .brAccountCol{width:12%}
+.brExpense .brRegisterCard thead .brPartyCol{width:13%}
+.brExpense .brRegisterCard thead .brCategoryCol{width:11%}
+.brExpense .brRegisterCard thead .brMoneyCol{width:10%}
+.brExpense .brRegisterCard thead .brMetaCol{width:7%}
+.brExpense .brRegisterCard thead .brMetaCol.brTaxCol{width:8%}
+.brExpense .brRegisterCard thead .brStatusCol{width:9%}
+.brExpense .brRegisterCard thead .brActionsCol{width:8%}
+
+/* ---------- Narrow screens ----------
+   The page itself never scrolls sideways: the table container is the only scroll container. The
+   columns that stay reachable at every width are the document number, the party, the money and the
+   actions - the ones the row is read by - and the rest are dropped first, remaining on the row
+   tooltip and in the export. */
+@media(max-width:1100px){
+ .brRegisterCard th,.brRegisterCard td{padding:10px 9px;font-size:12px}
+}
+@media(max-width:900px){
+ .brPage{padding:18px}
+ .brHead{align-items:flex-start;flex-direction:column}
+ .brHeadActions{width:100%;justify-content:flex-start}
+ .brSearch{flex:1 1 260px;width:auto}
+ .brSummary{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+ .brRegisterCard table{min-width:640px}
+ .brExpense .brRegisterCard table{min-width:860px}
+ .brRegisterCard .brCategoryCol{display:none}
+}
+@media(max-width:560px){
+ .brRegisterCard table{min-width:520px}
+ .brExpense .brRegisterCard table{min-width:720px}
+ .brFilters{grid-template-columns:1fr}
+ .brPager.pagination-footer{flex-wrap:wrap;gap:8px;height:auto}
+ .brRegisterCard .brTaxCol{display:none}
+ .brSummary{grid-template-columns:1fr}
+ .brEquation{align-items:flex-start;flex-wrap:wrap}
+ .brEquation span{margin-left:26px}
+}
+
+@media print{@page{size:landscape;margin:12mm}
+body:has(.brPage) .app>aside,body:has(.brPage) .app>header,body:has(.brPage) .welcome,body:has(.brPage) .brHeadActions,body:has(.brPage) .brFilters,body:has(.brPage) .brActionsCol{display:none!important}
+.transactionPortal:has(.brPage){position:static!important;inset:auto!important;overflow:visible!important;padding:0!important;background:#fff!important}
+.brPage{max-width:none;padding:0;border:0;box-shadow:none;border-radius:0;gap:12px}
+.brPrintMeta{display:block}
+.brPrintMeta h2{margin:0 0 6px;font-size:16px}
+.brPrintMeta p{margin:0 0 3px;font-size:12px}
+.brTableScroll{overflow:visible}
+.brRegisterCard table{font-size:12px;table-layout:auto;min-width:0}
+.brRegisterCard thead{display:table-header-group}
+.brRegisterCard tr{break-inside:avoid}
+.brRegisterCard th,.brRegisterCard td{padding:5px;white-space:normal}
+.brRegisterCard .brCategoryCol,.brRegisterCard .brTaxCol{display:table-cell}
+.brRegisterCard tbody tr.brOffPage{display:table-row!important}
+.brRegisterCard td.brDateCol,.brRegisterCard td.brPartyCol,.brRegisterCard td.brAccountCol,.brRegisterCard td.brCategoryCol,.brRegisterCard td.brNumberCol{overflow:visible;text-overflow:clip;white-space:normal}
+.brPage button.brLink{color:#172033;text-decoration:none;overflow:visible;text-overflow:clip;white-space:normal}
+.brPager{display:none!important}
+.brStickyBalance{position:static;box-shadow:none}
+}

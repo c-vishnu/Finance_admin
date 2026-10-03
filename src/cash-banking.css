@@ -1,0 +1,222 @@
+/* ---------------------------------------------------------------------------
+   Cash & Banking - the Cash & Bank Book and the Bank Reconciliation report.
+
+   Both pages belong to the same family as the Transaction Register, the Day Book,
+   the Balance Sheet, the Trial Balance, the General Ledger, Customer Outstanding,
+   Supplier Outstanding, the Tax & Compliance reports and the Business Reports, so
+   this sheet states nothing new: the page surface, the heading row, the 300px
+   search beside the Filters disclosure, the summary cards, the fixed-column card,
+   the caption, the pager, the empty and error states, the printed identity block
+   and the right-side portal neutralisation are the same values those reports use,
+   under the cb prefix. Only the column sets are report-specific, and each report
+   declares its own widths under its own page class.
+
+   The portal itself is NOT redeclared here: src/transaction-register.css already
+   owns .transactionPortal and Navigation.jsx imports that stylesheet
+   unconditionally, so a third copy would only be a third thing to keep in step.
+   Each page still neutralises the portal for its own class in its print block.
+   --------------------------------------------------------------------------- */
+
+.cbPage{--cb-blue:#3478f6;--cb-text:#172033;--cb-muted:#667085;--cb-line:#e2e8f0;display:flex;flex-direction:column;gap:20px;max-width:100%;min-width:0;margin:0;padding:24px;border:1px solid #dfe6ef;border-radius:12px;background:#fff;box-shadow:0 1px 2px #10182808;color:var(--cb-text);font:14px/1.45 'Instrument Sans',sans-serif}
+.cbPage *{box-sizing:border-box}
+.cbPage button,.cbPage input,.cbPage select{font:inherit}
+/* A report heading is a <header> element and src/styles.css pins every header to the viewport, so it
+   must opt back into the flow or it lifts out and overlaps the summary cards and the sidebar. */
+.cbHead{position:static!important;inset:auto!important;z-index:auto!important;height:auto!important;display:flex;align-items:center;justify-content:space-between;gap:18px;width:100%;padding:0 0 20px;border-bottom:1px solid #e6ecf3;background:transparent}
+.cbHeadText{min-width:0}
+.cbHead h1{margin:0;font-size:24px;line-height:1.2}
+.cbHead p{margin:5px 0 0;font-size:13px;color:var(--cb-muted)}
+.cbHeadActions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.cbPage button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:8px 12px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;cursor:pointer}
+.cbPage button:hover:not(:disabled){border-color:#aac2ed;background:#f5f8ff}
+.cbPage button:disabled{cursor:not-allowed;opacity:.55}
+.cbPage button:focus-visible,.cbPage input:focus-visible,.cbPage select:focus-visible,.cbFiltersMore summary:focus-visible{outline:2px solid #9cbbff;outline-offset:2px}
+.cbSearch{width:300px;height:40px;padding:0 10px;display:flex;align-items:center;gap:8px;border:1px solid #d9e1ec;border-radius:7px;color:#344054}
+.cbSearch input{width:100%;min-width:0;border:0;outline:0;background:transparent;font-size:13px}
+.cbFiltersMore{position:relative;flex:none}
+.cbFiltersMore summary{height:40px;padding:0 10px;display:flex;align-items:center;gap:6px;border:1px solid #d9e1ec;border-radius:7px;list-style:none;color:#344054;font-size:12px;font-weight:600;cursor:pointer}
+.cbFiltersMore summary::-webkit-details-marker{display:none}
+.cbFiltersMore summary span{min-width:17px;height:17px;display:inline-grid;place-items:center;border-radius:999px;background:#eaf1ff;color:#245fd9;font-size:11px;font-weight:700}
+.cbFilters{position:absolute;right:0;top:calc(100% + 6px);z-index:80;width:min(620px,calc(100vw - 48px));max-height:min(70vh,620px);overflow:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:16px;border:1px solid var(--cb-line);border-radius:10px;background:#fff;box-shadow:0 12px 32px #1018281f}
+.cbFilters label{display:flex;flex-direction:column;gap:6px;color:#475467;font-size:12px;font-weight:600}
+.cbFilters input,.cbFilters select{min-height:38px;padding:7px 9px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#172033}
+.cbFilterActions{grid-column:1/-1;display:flex;justify-content:flex-end;gap:8px;padding-top:4px;border-top:1px solid #eef2f7}
+
+/* ---------- States and printed identity ---------- */
+.cbError{display:flex;align-items:center;gap:10px;padding:12px 15px;border:1px solid #ffd3d9;border-radius:8px;background:#fff1f2;color:#b33243}
+.cbError button{margin-left:auto}
+.cbPrintMeta{display:none}
+
+/* ---------- Summary ---------- */
+/* Four cards on the book: where the money started, what came in, what went out and where it ended.
+   Inflows and outflows carry the same green and amber the cash flow statement and the validation
+   footer use, so a movement reads the same colour on both reports. */
+.cbSummary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.cbSummary>div{min-height:92px;padding:15px 12px;display:flex;flex-direction:column;justify-content:center;gap:8px;border:1px solid #dfe6ef;border-radius:9px;background:#fff}
+.cbSummary>div:first-child{background:#edf3ff;border-color:#d2e0ff;color:#285dca}
+.cbSummary .cbInflow{border-color:#cee9da;background:#eaf7ef;color:#28724d}
+.cbSummary .cbOutflow{border-color:#f3d4b8;background:#fff7f0;color:#994b1e}
+.cbSummary .cbClosing{border-color:#b9cdf0;background:#e6eefc;color:#14357d}
+.cbSummary span{color:var(--cb-muted);font-size:12px}
+.cbSummary strong{font-size:20px;letter-spacing:-.5px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+/* The reconciliation summary is read on five numbers, so it is the five-card grid the cash flow
+   statement uses. A card whose value is a word - 'Not available' - sets it at a smaller size, so the
+   five stay one row and one height. */
+.cbReconSummary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.cbReconSummary>div{min-height:92px;padding:15px 12px;display:flex;flex-direction:column;justify-content:center;gap:8px;border:1px solid #dfe6ef;border-radius:9px;background:#fff}
+.cbReconSummary>div:first-child{background:#edf3ff;border-color:#d2e0ff;color:#285dca}
+.cbReconSummary .cbInflow{border-color:#cee9da;background:#eaf7ef;color:#28724d}
+.cbReconSummary .cbOutflow{border-color:#f3d4b8;background:#fff7f0;color:#994b1e}
+.cbReconSummary .cbClosing{border-color:#b9cdf0;background:#e6eefc;color:#14357d}
+.cbReconSummary span{color:var(--cb-muted);font-size:12px}
+.cbReconSummary strong{font-size:18px;letter-spacing:-.5px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.cbReconSummary strong.cbWord{font-size:15px;letter-spacing:0}
+
+.cbNote{margin:0;padding:10px 13px;border:1px solid #dfe6ef;border-radius:8px;background:#f8fafc;color:#475467;font-size:12px}
+.cbNote ul{margin:8px 0 0;padding-left:18px}
+.cbNote li{margin:0 0 4px}
+
+/* ---------- Register ---------- */
+.cbCard{border:1px solid var(--cb-line);border-radius:10px;background:#fff;overflow:hidden}
+.cbTableScroll{overflow-x:auto;overscroll-behavior-inline:contain}
+.cbCard table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
+.cbCaption{caption-side:top;padding:12px 16px;border-bottom:1px solid #edf1f6;background:#fbfcfe;color:var(--cb-muted);font-size:12px;text-align:left}
+.cbCard th,.cbCard td{padding:11px 12px;border-top:1px solid #edf1f6;text-align:left;vertical-align:middle}
+.cbCard thead th,.cbAccountsCard thead th{position:sticky!important;top:-24px!important;z-index:20!important;background:#f7f9fc!important;color:#5b6b81!important;font-size:12px!important;font-weight:600!important;border-bottom:2px solid #cbd5e1!important;border-top:1px solid #dfe6ef!important;box-shadow:0 2px 6px rgba(15,23,42,0.08)!important}
+.cbCard tbody tr:hover{background:#fafcff}
+/* The pager shows one comfortable page of rows; the rows outside it are withheld from the screen
+   only. The printed PDF still states the whole filtered dataset. */
+.cbCard tbody tr.cbOffPage{display:none}
+.cbMoney{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.cbCard td.cbDateCol{color:var(--cb-muted);font-size:12px}
+.cbCard td.cbDateTypeCol{color:var(--cb-text);font-size:13px;line-height:1.3}
+.cbCard td.cbDateTypeCol .cbDateVal{font-weight:600;color:#0f172a}
+.cbCard td.cbDateTypeCol .cbTypeVal{font-size:11px;color:#64748b;font-weight:400;margin-top:2px}
+.cbCard td.cbAccountCol,.cbCard td.cbGroupCol{color:#344054}
+.cbCard td.cbParticularsCol{color:#344054}
+.cbCard td.cbBalanceCol{font-weight:700;color:#172033}
+.cbCard td.cbDebitCol,.cbCard td.cbCreditCol{font-weight:600;color:#172033}
+/* Date, account, type, reference and particulars stay on one line and shorten with an ellipsis, so a
+   long narration never wraps a row onto three lines. The full value stays on the row tooltip, in the
+   export and on the printed sheet. */
+.cbCard td.cbDateCol,.cbCard td.cbAccountCol,.cbCard td.cbTypeCol,.cbCard td.cbRefCol,.cbCard td.cbParticularsCol,.cbCard td.cbDescCol{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* The document number is the primary handle on the row: a link-styled control that opens the ledger
+   the line was posted in, the way the journal and invoice registers render their numbers. */
+.cbPage button.cbLink{display:block;width:fit-content;max-width:100%;min-height:0;padding:0;border:0;border-radius:0;background:none;color:#286aee;font:inherit;font-weight:650;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
+.cbPage button.cbLink:hover:not(:disabled){border:0;background:none;color:#174fa9;text-decoration:underline}
+/* src/ui-system.css right-aligns and re-pads every last cell with !important; the Actions column is
+   the last cell, so it restates its own alignment and keeps room for the 28px menu trigger. */
+.cbCard th.cbActionsCol,.cbCard td.cbActionsCol{text-align:center!important;padding-right:14px!important}
+.cbCard th.cbActionsCol .soMoreButton,.cbCard td.cbActionsCol .soMoreButton{margin:0 auto}
+.cbCard th.cbStatusCol,.cbCard td.cbStatusCol{text-align:center!important;padding-left:8px!important;padding-right:12px!important}
+.cbGrandTotal th{padding:11px 12px;border-top:2px solid #dbe3ee;background:#eef3fb;color:#172033;font-size:13px;font-weight:700;text-align:right}
+.cbGrandTotal th.cbLabel,.cbGrandTotal th.cbActionsCol,.cbGrandTotal th.cbStatusCol{text-align:left!important}
+/* A row that moves money between two of the business own accounts is stated, but it is marked so it
+   is never read as trading income or as a business expense. */
+.cbTransfer td.cbTypeCol{color:#5b6b81}
+.cbInternalMark{margin-left:6px;padding:0 6px;border-radius:999px;background:#eef3fb;color:#1c3f8f;font-size:11px;font-weight:700}
+
+/* ---------- Account-level balances ----------
+   A combined running balance across unrelated accounts would be meaningless, so the all-account view
+   states each account's own opening, movement and closing balance here instead. */
+.cbAccountsCard{border:1px solid var(--cb-line);border-radius:10px;background:#fff;overflow:hidden}
+.cbAccountsCard table{width:100%;border-collapse:collapse;font-size:13px}
+.cbAccountsCard caption{caption-side:top;padding:12px 16px;border-bottom:1px solid #edf1f6;background:#fbfcfe;color:var(--cb-muted);font-size:12px;text-align:left}
+.cbAccountsCard th,.cbAccountsCard td{padding:11px 12px;border-top:1px solid #edf1f6;text-align:right;font-variant-numeric:tabular-nums}
+.cbAccountsCard thead th{position:sticky!important;top:-24px!important;z-index:20!important;background:#f7f9fc!important;color:#5b6b81!important;font-size:12px!important;font-weight:600!important;border-bottom:2px solid #cbd5e1!important;border-top:1px solid #dfe6ef!important;box-shadow:0 2px 6px rgba(15,23,42,0.08)!important}
+.cbAccountsCard th:first-child,.cbAccountsCard th:nth-child(2),.cbAccountsCard td:first-child,.cbAccountsCard td:nth-child(2){text-align:left}
+.cbAccountsCard tbody tr:hover{background:#fafcff}
+.cbAccountsCard tbody tr.cbSelectedRow td{background:#f2f7ff}
+
+/* ---------- Reconciliation strip ---------- */
+.cbEquation{display:flex;align-items:center;gap:14px;margin:0;padding:10px 13px;border:1px solid #cee9da;border-radius:7px;background:#eaf7ef;color:#28724d}
+.cbEquation.mismatch{border-color:#f3d4b8;background:#fff3e9;color:#994b1e}
+.cbEquation.unknown{border-color:#dfe6ef;background:#f7f9fc;color:#475467}
+.cbEquation b{font-size:13px}
+.cbEquation span{margin-left:auto;font-size:12px}
+.cbStickyBalance{position:sticky;bottom:0;z-index:12;box-shadow:0 -6px 16px #1018280d}
+
+/* ---------- Pager ----------
+   The shared footer the journal, inventory, purchase and transaction registers already use, so the
+   count, the page size and the arrows read identically here. */
+.cbPager.pagination-footer{padding:8px 16px}
+.cbPager .pagination-left,.cbPager .pagination-right{font-size:12px;color:var(--cb-muted)}
+.cbPager .cbPerPage{display:inline-flex;align-items:center}
+.cbPager .cbPerPage select{font-size:12px;color:var(--cb-muted)}
+.cbPager.pagination-footer button{width:32px;height:32px;min-height:32px;padding:0;border:1px solid #d7e0eb;border-radius:6px;background:#fff;color:#344054}
+.cbPager.pagination-footer button:hover:not(:disabled){border-color:#aac2ed;background:#f5f8ff}
+
+/* ---------- Column widths ----------
+   Both tables are fixed-layout, so every column is declared: an undeclared column would take an
+   equal share and squeeze the money cells. */
+.cbBook .cbCard thead .cbDateTypeCol{width:16%}
+.cbBook .cbCard thead .cbAccountCol{width:15%}
+.cbBook .cbCard thead .cbRefCol{width:18%}
+.cbBook .cbCard thead .cbDebitCol{width:12%}
+.cbBook .cbCard thead .cbCreditCol{width:12%}
+.cbBook .cbCard thead .cbBalanceCol{width:13%}
+.cbBook .cbCard thead .cbStatusCol{width:14%}
+.cbRecon .cbCard thead .cbDateCol{width:10%}
+.cbRecon .cbCard thead .cbDescCol{width:21%}
+.cbRecon .cbCard thead .cbRefCol{width:13%}
+.cbRecon .cbCard thead .cbBookCol{width:12%}
+.cbRecon .cbCard thead .cbBankCol{width:12%}
+.cbRecon .cbCard thead .cbDiffCol{width:11%}
+.cbRecon .cbCard thead .cbStatusCol{width:11%}
+.cbRecon .cbCard thead .cbActionsCol{width:10%}
+
+/* ---------- Narrow screens ----------
+   The page itself never scrolls sideways: the table container is the only scroll container. The
+   columns that stay reachable at every width are the date, the account or description, the money and
+   the status - the ones the row is read by - and the rest are dropped first, remaining on the row
+   tooltip and in the export. */
+@media(max-width:1100px){
+ .cbCard th,.cbCard td{padding:11px 12px;font-size:12px}
+ .cbSummary strong{font-size:18px}
+ .cbReconSummary strong{font-size:16px}
+}
+@media(max-width:900px){
+ .cbPage{padding:18px}
+ .cbHead{align-items:flex-start;flex-direction:column}
+ .cbHeadActions{width:100%;justify-content:flex-start}
+ .cbSearch{flex:1 1 260px;width:auto}
+ .cbSummary,.cbReconSummary{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .cbBook .cbCard table{min-width:860px}
+ .cbRecon .cbCard table{min-width:800px}
+}
+@media(max-width:760px){
+ .cbBook .cbCard table{min-width:700px}
+ .cbRecon .cbCard table{min-width:700px}
+ .cbBook .cbCard .cbTypeCol{display:none}
+ .cbRecon .cbCard .cbRefCol{display:none}
+}
+@media(max-width:560px){
+ .cbFilters{grid-template-columns:1fr}
+ .cbPager.pagination-footer{flex-wrap:wrap;gap:8px;height:auto}
+ .cbSummary,.cbReconSummary{grid-template-columns:1fr}
+ .cbEquation{align-items:flex-start;flex-wrap:wrap}
+ .cbEquation span{margin-left:26px}
+ .cbBook .cbCard table{min-width:600px}
+ .cbRecon .cbCard table{min-width:620px}
+ .cbAccountsCard th,.cbAccountsCard td{padding:9px 10px;font-size:12px}
+}
+
+@media print{@page{size:landscape;margin:12mm}
+body:has(.cbPage) .app>aside,body:has(.cbPage) .app>header,body:has(.cbPage) .welcome,body:has(.cbPage) .cbHeadActions,body:has(.cbPage) .cbFilters,body:has(.cbPage) .cbActionsCol{display:none!important}
+.transactionPortal:has(.cbPage){position:static!important;inset:auto!important;overflow:visible!important;padding:0!important;background:#fff!important}
+.cbPage{max-width:none;padding:0;border:0;box-shadow:none;border-radius:0;gap:12px}
+.cbPrintMeta{display:block}
+.cbPrintMeta h2{margin:0 0 6px;font-size:16px}
+.cbPrintMeta p{margin:0 0 3px;font-size:12px}
+.cbTableScroll{overflow:visible}
+.cbCard table,.cbAccountsCard table{font-size:12px;table-layout:auto;min-width:0}
+.cbCard thead{display:table-header-group}
+.cbCard tr{break-inside:avoid}
+.cbCard th,.cbCard td{padding:5px;white-space:normal}
+.cbBook .cbCard .cbTypeCol,.cbRecon .cbCard .cbRefCol{display:table-cell}
+.cbCard tbody tr.cbOffPage{display:table-row!important}
+.cbCard td.cbDateCol,.cbCard td.cbAccountCol,.cbCard td.cbTypeCol,.cbCard td.cbRefCol,.cbCard td.cbParticularsCol,.cbCard td.cbDescCol{overflow:visible;text-overflow:clip;white-space:normal}
+.cbPage button.cbLink{color:#172033;text-decoration:none;overflow:visible;text-overflow:clip;white-space:normal}
+.cbPager{display:none!important}
+.cbStickyBalance{position:static;box-shadow:none}
+}

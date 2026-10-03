@@ -1,22 +1,209 @@
+/* ---------------------------------------------------------------------------
+   Transaction Register.
+
+   The report belongs to the same family as Balance Sheet, Trial Balance, Day
+   Book, General Ledger, Customer Outstanding and Supplier Outstanding, so this
+   sheet states nothing new: the page surface, the heading row, the 300px search
+   beside the Filters disclosure, the four summary cards, the fixed-column card,
+   the caption, the empty and error states, the printed identity block and the
+   right-side portal neutralisation are the same values those reports use, under
+   this report's own class names. Only the register itself is specific here - the
+   eight business columns, the money alignment and the View action.
+   --------------------------------------------------------------------------- */
+
+/* The dashboard portal every report is rendered into. It is declared here because this is the
+   stylesheet that owns it; each report then neutralises it for its own page class in its print
+   block, so the page scrolls with the shell instead of inside a fixed frame. */
 .transactionPortal{position:fixed;z-index:45;inset:59px 0 0 250px;overflow:auto;background:#f5f7fb;padding:24px}
-.transactionRegister{display:flex;flex-direction:column;gap:18px;color:#172033;min-width:0}
-.transactionRegister>header{position:static!important;inset:auto!important;z-index:auto!important;display:flex!important;align-items:center;width:100%!important;height:auto!important;min-height:96px;margin:0!important;padding:18px 22px!important;background:#fff;border:1px solid #dfe6ef;border-top:3px solid #3577f6;border-radius:13px;box-shadow:0 3px 12px rgba(15,23,42,.04)}
-.transactionRegister>header>div{min-width:0}
-.transactionRegister>header span{color:#2563eb;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
-.transactionRegister h1{margin:5px 0 4px;font-size:28px}.transactionRegister p{margin:0;color:#667085}
-.trCard{overflow:hidden;background:#fff;border:1px solid #dfe6ef;border-radius:13px;box-shadow:0 4px 18px rgba(15,23,42,.04)}
-.trTools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:16px 18px;border-bottom:1px solid #e7edf5}
-.trTools label{display:flex;align-items:center;gap:9px;flex:1 1 300px;min-height:42px;padding:0 12px;border:1px solid #cfd8e6;border-radius:9px}
-.trTools input{width:100%;border:0;outline:0;font:inherit}.trTools select,.trTools button,.trOverlay button{min-height:42px;padding:0 12px;border:1px solid #cfd8e6;border-radius:9px;background:#fff;font:inherit}
-.trTools button,.trOverlay button{display:inline-flex;align-items:center;gap:7px;cursor:pointer}.trTools>span{margin-left:auto;color:#667085;font-size:13px}
-.trMore{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;padding:14px 18px;background:#f8fafc;border-bottom:1px solid #e7edf5}
-.trMore label{display:flex;flex-direction:column;gap:6px;color:#536079;font-size:12px;font-weight:600}.trMore input{min-height:40px;padding:8px 10px;border:1px solid #cfd8e6;border-radius:8px;font:inherit}
-.trTable{overflow-x:auto}.trTable table{width:100%;min-width:1500px;border-collapse:collapse}.trTable th,.trTable td{padding:13px 12px;border-bottom:1px solid #e7edf5;text-align:left;vertical-align:top;white-space:nowrap;font-size:13px}.trTable th{background:#f7f9fc;color:#5d6b82;font-size:12px}.trTable td:nth-child(5){max-width:260px;white-space:normal}.trTable td small{display:block;margin-top:3px;color:#7a879d}.trTable td button{display:inline-flex;align-items:center;gap:5px;border:0;background:transparent;color:#2463d3;cursor:pointer}
-.trBadge{display:inline-flex;padding:5px 9px;border-radius:999px;background:#eef2f7;color:#445269;font-size:12px;font-weight:600}.trBadge.posted{background:#e5f7ed;color:#16734b}.trBadge.reversed{background:#fde8ec;color:#b4233f}.trBadge.notposted{background:#fff3dd;color:#9a5b00}.trEmpty{padding:42px;text-align:center;color:#667085}
-.trOverlay{position:fixed;z-index:1200;inset:0;display:flex;justify-content:flex-end;background:rgba(15,23,42,.45)}.trOverlay aside{width:min(680px,100%);height:100%;overflow:auto;background:#fff;box-shadow:-12px 0 36px rgba(15,23,42,.16)}.trOverlay header,.trOverlay section,.trOverlay footer{padding:20px 24px;border-bottom:1px solid #e7edf5}.trOverlay header{display:flex;justify-content:space-between;align-items:flex-start}.trOverlay h2{margin:4px 0}.trOverlay h3{margin:0 0 14px}.trOverlay dl{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:0}.trOverlay dt{color:#667085;font-size:12px}.trOverlay dd{margin:4px 0 0;font-weight:600}.trOverlay table{width:100%;border-collapse:collapse}.trOverlay th,.trOverlay td{padding:10px;border-bottom:1px solid #e7edf5;text-align:left}.trOverlay footer{display:flex;justify-content:flex-end;gap:9px;border-bottom:0}
+
+/* The Banking screen owns a "View posted book register" disclosure that restates transactions
+   already recorded in the books; it is suppressed here so the bank feed never shows the same
+   entries twice. */
 .bankBookRegister{display:none!important}
-@media(max-width:900px){.transactionPortal{left:0;padding:14px}.transactionRegister>header{min-height:auto;padding:16px!important}.transactionRegister h1{font-size:24px}.trTools select{flex:1 1 180px}.trOverlay dl{grid-template-columns:1fr}}
-/* Left-side detail drawer. Explicit resets prevent shell header/aside rules leaking in. */
-.trOverlay{justify-content:flex-start;align-items:stretch}.trOverlay>aside{position:relative!important;inset:auto!important;display:flex!important;flex-direction:column;width:min(680px,100vw)!important;max-width:100%;height:100dvh!important;margin:0!important;padding:0!important;overflow:auto!important;border:0!important;border-right:1px solid #dfe6ef;background:#fff;box-shadow:16px 0 42px rgba(15,23,42,.18)}.trOverlay>aside>header{position:relative!important;inset:auto!important;z-index:2!important;display:flex!important;flex:none;align-items:flex-start;justify-content:space-between;width:100%!important;height:auto!important;min-height:96px;margin:0!important;padding:22px 24px!important;border:0!important;border-bottom:1px solid #e7edf5!important;background:#fff!important}.trOverlay>aside>header>div{min-width:0}.trOverlay>aside>header>button{flex:0 0 auto;width:40px;padding:0;justify-content:center}.trOverlay>aside>section{padding:22px 24px}.trOverlay>aside>footer{position:sticky!important;inset:auto!important;bottom:0!important;z-index:2!important;display:flex!important;flex:none;justify-content:flex-end;gap:9px;width:100%!important;height:auto!important;margin-top:auto!important;padding:16px 24px!important;border:0!important;border-top:1px solid #e7edf5!important;background:#fff!important}.trOverlay dd{overflow-wrap:anywhere}.trOverlay table{min-width:520px}.trOverlay section:has(table){overflow-x:auto}@media(max-width:520px){.trOverlay>aside>header,.trOverlay>aside>section,.trOverlay>aside>footer{padding-left:16px!important;padding-right:16px!important}.trOverlay>aside>footer{position:relative!important;flex-direction:column}.trOverlay>aside>footer button{width:100%;justify-content:center}.trOverlay table{min-width:480px}}
-/* Project convention: side detail drawers open from the right. */
-.trOverlay{justify-content:flex-end}.trOverlay>aside{border-left:1px solid #dfe6ef;border-right:0;box-shadow:-16px 0 42px rgba(15,23,42,.18)}
+
+.trPage{--tr-blue:#3478f6;--tr-text:#172033;--tr-muted:#667085;--tr-line:#e2e8f0;display:flex;flex-direction:column;gap:20px;max-width:100%;min-width:0;margin:0;padding:24px;border:1px solid #dfe6ef;border-radius:12px;background:#fff;box-shadow:0 1px 2px #10182808;color:var(--tr-text);font:14px/1.45 'Instrument Sans',sans-serif}
+.trPage *{box-sizing:border-box}
+.trPage button,.trPage input,.trPage select{font:inherit}
+
+/* ---------- Heading ---------- */
+.trHead{position:static!important;inset:auto!important;z-index:auto!important;height:auto!important;display:flex;align-items:center;justify-content:space-between;gap:18px;width:100%;padding:0;border-bottom:0;background:transparent}
+.trHeadText{min-width:0}
+.trHead h1{margin:0;font-size:24px;line-height:1.2}
+.trHead p{margin:5px 0 0;font-size:13px;color:var(--tr-muted)}
+.trHeadActions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:nowrap}
+.trPage button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:8px 12px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;cursor:pointer}
+.trPage button:hover:not(:disabled){border-color:#aac2ed;background:#f5f8ff}
+.trPage button:disabled{cursor:not-allowed;opacity:.55}
+.trPage button:focus-visible,.trPage input:focus-visible,.trPage select:focus-visible,.trFiltersMore summary:focus-visible{outline:2px solid #9cbbff;outline-offset:2px}
+.trSearch{flex:0 1 260px;min-width:180px;height:40px;padding:0 10px;display:flex;align-items:center;gap:8px;border:1px solid #d9e1ec;border-radius:7px;color:#344054}
+.trSearch input{width:100%;min-width:0;border:0;outline:0;background:transparent;font-size:13px}
+.trFiltersMore{position:relative;z-index:100}
+.trFiltersMore[open]{z-index:105}
+.trFiltersMore summary{height:40px;padding:0 12px;display:flex;align-items:center;gap:7px;border:1px solid #d9e1ec;border-radius:7px;list-style:none;color:#344054;font-size:13px;font-weight:600;cursor:pointer}
+.trFiltersMore summary svg{flex:none;width:20px;height:20px}
+.trFiltersMore summary::-webkit-details-marker{display:none}
+.trFiltersMore summary span{min-width:17px;height:17px;display:inline-grid;place-items:center;border-radius:999px;background:#eaf1ff;color:#245fd9;font-size:11px;font-weight:700}
+.trFilters{position:absolute;right:0;top:calc(100% + 6px);z-index:110;width:min(560px,calc(100vw - 48px));display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:16px;border:1px solid var(--tr-line);border-radius:10px;background:#fff;box-shadow:0 12px 32px #1018281f}
+.trFilters label{display:flex;flex-direction:column;gap:6px;color:#475467;font-size:12px;font-weight:600}
+.trFilters input,.trFilters select{min-height:38px;padding:7px 9px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#172033}
+.trFilterActions{grid-column:1/-1;display:flex;justify-content:flex-end;gap:8px;padding-top:4px;border-top:1px solid #eef2f7}
+
+/* ---------- States and printed identity ---------- */
+.trError{display:flex;align-items:center;gap:10px;padding:12px 15px;border:1px solid #ffd3d9;border-radius:8px;background:#fff1f2;color:#b33243}
+.trError button{margin-left:auto}
+.trPrintMeta{display:none}
+
+/* ---------- Summary ---------- */
+.trSummary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.trSummary>div{min-height:70px;padding:10px 14px;display:flex;flex-direction:column;justify-content:center;gap:4px;border:1px solid #dfe6ef;border-radius:8px;background:#fff}
+.trSummary>div:first-child{background:#edf3ff;border-color:#d2e0ff;color:#285dca}
+.trSummary span{color:var(--tr-muted);font-size:12px;font-weight:500}
+.trSummary strong{font-size:20px;letter-spacing:-.4px;font-variant-numeric:tabular-nums}
+
+/* ---------- Register ---------- */
+.trRegisterCard{border:1px solid var(--tr-line);border-radius:10px;background:#fff;overflow:visible!important}
+.trTableScroll{overflow-x:auto;overflow:visible!important;overscroll-behavior-inline:contain;scrollbar-width:none;-ms-overflow-style:none}
+.trTableScroll::-webkit-scrollbar{display:none;width:0;height:0}
+.trRegisterCard table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;table-layout:fixed}
+.trRegisterCard th,.trRegisterCard td{padding:13px 16px;border-top:1px solid #edf1f6;text-align:left;vertical-align:middle}
+.trRegisterCard thead th{position:sticky!important;top:-24px!important;z-index:30!important;background:#f7f9fc!important;color:#5b6b81!important;font-size:12px!important;font-weight:600!important;border-top:0!important;box-shadow:0 2px 4px rgba(16,24,40,0.06), inset 0 -1px 0 #edf1f6!important}
+.trRegisterCard thead tr:first-child th:first-child{border-top-left-radius:9px!important}
+.trRegisterCard thead tr:first-child th:last-child{border-top-right-radius:9px!important}
+.trRegisterCard tbody tr:hover{background:#fafcff}
+/* The page shows twenty-five rows at a time, so the rows outside the page in view are withheld from
+   the screen - never from the report: the printed PDF still states the whole filtered dataset, the
+   way the Day Book's print does. */
+.trRegisterCard tbody tr.trOffPage{display:none}
+.trMoney{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+/* Date, Transaction Type, party and reference each stay on one line and shorten with an ellipsis, so
+   a long customer name or reference never wraps the row into three lines. The full value stays on
+   the cell's own tooltip and in the export. */
+.trDocDateCell{display:flex;flex-direction:column;gap:3px;align-items:flex-start}
+.trDateSub{font-size:12px;color:var(--tr-muted);font-weight:400;line-height:1.3;display:block}
+
+/* Transaction Type Badges */
+.trTypeBadge{display:inline-block;padding:3px 9px;border-radius:6px;font-size:12px;font-weight:600;white-space:nowrap;letter-spacing:.1px;background:#f8fafc;color:#475569;border:1px solid #e2e8f0}
+.trType-Sales-Invoice{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
+.trType-Credit-Note{background:#f5f3ff;color:#6d28d9;border:1px solid #ddd6fe}
+.trType-Customer-Receipt, .trType-Receipt{background:#ecfdf5;color:#047857;border:1px solid #a7f3d0}
+.trType-Purchase-Bill{background:#fffbeb;color:#b45309;border:1px solid #fde68a}
+.trType-Debit-Note{background:#fff1f2;color:#be123c;border:1px solid #fecdd3}
+.trType-Supplier-Payment, .trType-Payment{background:#f0fdfa;color:#0f766e;border:1px solid #99f6e4}
+.trType-Expense{background:#f8fafc;color:#475569;border:1px solid #e2e8f0}
+.trType-Journal, .trType-Journal-Entry{background:#eef2ff;color:#3730a3;border:1px solid #c7d2fe}
+.trType-Bank-Transaction{background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd}
+
+.trRegisterCard td.trDocDateCol,.trRegisterCard td.trTypeCol,.trRegisterCard td.trPartyCol,.trRegisterCard td.trRefCol{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.trRegisterCard td.trPartyCol{font-weight:400;color:#172033}
+.trRegisterCard td.trRefCol{color:var(--tr-muted)}
+.trRegisterCard td.trAmountCol{font-weight:700;color:#172033}
+/* The document number is the primary handle on the row: a link-styled control that opens the very
+   document the row states, the way the invoice and journal registers render their numbers. */
+.trPage button.trLink{display:block;width:fit-content;max-width:100%;min-height:0;padding:0;border:0;border-radius:0;background:none;color:#286aee;font:inherit;font-weight:650;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
+.trPage button.trLink:hover:not(:disabled){border:0;background:none;color:#174fa9;text-decoration:underline}
+.trRegisterCard thead .trDocDateCol{width:16%}
+.trRegisterCard thead .trTypeCol{width:16%}
+.trRegisterCard thead .trPartyCol{width:24%}
+.trRegisterCard thead .trRefCol{width:14%}
+.trRegisterCard thead .trAmountCol{width:12%}
+.trRegisterCard thead .trStatusCol{width:10%}
+.trRegisterCard thead .trActionsCol{width:8%}
+
+/* ---------- Actions Dropdown Menu ---------- */
+.trActionsMenu{position:relative;display:inline-block}
+.trActionsMenu summary{list-style:none;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:1px solid #d0d5dd;border-radius:6px;background:#fff;color:#344054;cursor:pointer}
+.trActionsMenu summary::-webkit-details-marker{display:none}
+.trActionsMenu summary:hover{border-color:#aac2ed;background:#f5f8ff}
+.trActionsDropdown{position:absolute;right:0;top:calc(100% + 4px);z-index:90;min-width:130px;padding:4px;background:#fff;border:1px solid #e1e7ef;border-radius:8px;box-shadow:0 8px 24px #1018281a}
+.trActionsDropdown button{width:100%;display:flex;align-items:center;gap:8px;padding:8px 10px;min-height:34px;border:0;border-radius:5px;background:#fff;color:#344054;font-size:13px;text-align:left;cursor:pointer}
+.trActionsDropdown button:hover{background:#f1f6ff;color:#2864d8}
+
+/* ---------- Preview Modal ---------- */
+.trModalOverlay{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:rgba(16,24,40,.4);backdrop-filter:blur(2px);padding:16px}
+.trModalContent{width:min(520px,100%);background:#fff;border-radius:12px;box-shadow:0 20px 40px rgba(16,24,40,.2);overflow:hidden;display:flex;flex-direction:column}
+.trModalHeader{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #eef2f7}
+.trModalHeader h3{margin:4px 0 0;font-size:18px;font-weight:700;color:#172033}
+.trModalType{font-size:12px;font-weight:600;color:#667085;text-transform:uppercase;letter-spacing:.3px}
+.trModalClose{padding:4px;border:0;background:none;color:#667085;cursor:pointer;border-radius:4px}
+.trModalClose:hover{background:#f2f4f7;color:#172033}
+.trModalBody{padding:20px}
+.trModalGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.trModalGrid label{display:block;font-size:12px;font-weight:600;color:#667085;margin-bottom:4px}
+.trModalGrid span{font-size:14px;color:#172033}
+.trModalGrid strong{font-size:16px;color:#172033}
+.trModalFooter{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:16px 20px;border-top:1px solid #eef2f7;background:#fafbfc}
+.trModalFooter .trPrimaryBtn{background:#286aee;color:#fff;border-color:#286aee;font-weight:600}
+.trModalFooter .trPrimaryBtn:hover{background:#174fa9;border-color:#174fa9}
+
+/* ---------- Pager ----------
+   The shared footer the journal, inventory and purchase registers already use, so the count, the
+   page size and the arrows read identically here. It replaces a grand total: adding an invoice, a
+   receipt and an expense into one figure would state a number no module computes. */
+.trPager.pagination-footer{padding:8px 16px}
+.trPager .pagination-left,.trPager .pagination-right{font-size:12px;color:var(--tr-muted)}
+.trPager .trPerPage{display:inline-flex;align-items:center}
+.trPager .trPerPage select{font-size:12px;color:var(--tr-muted)}
+.trPager.pagination-footer button{width:32px;height:32px;min-height:32px;padding:0;border:1px solid #d7e0eb;border-radius:6px;background:#fff;color:#344054}
+.trPager.pagination-footer button:hover:not(:disabled){border-color:#aac2ed;background:#f5f8ff}
+
+/* ---------- Narrow screens ----------
+   The page itself never scrolls sideways: the table is the only scroll container. The columns that
+   stay reachable at every width are the Date, the Transaction Type, the Document No., the Amount,
+   the Status and the Actions, which is the order the spec calls them in; the Reference and then the
+   Customer / Supplier are dropped first, and both remain on the row tooltip and in the export. */
+@media(max-width:1100px){
+ .trRegisterCard th,.trRegisterCard td{padding:10px 9px;font-size:12px}
+}
+@media(max-width:900px){
+ .trPage{padding:18px}
+ .trHead{align-items:flex-start;flex-direction:column}
+ .trHeadActions{width:100%;justify-content:flex-start}
+ .trSearch{flex:1 1 260px;width:auto}
+ .trSummary{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+ /* The table keeps its fixed layout at every width, because that is what makes the ellipsis
+    truncation real; only the widths change as columns are dropped, so the Actions cell always has
+    room for its control and never clips it. */
+ .trRegisterCard table{min-width:640px}
+ .trRegisterCard .trRefCol{display:none}
+ .trRegisterCard thead .trDateCol{width:12%}
+ .trRegisterCard thead .trTypeCol{width:16%}
+ .trRegisterCard thead .trNumberCol{width:15%}
+ .trRegisterCard thead .trPartyCol{width:20%}
+ .trRegisterCard thead .trAmountCol{width:14%}
+ .trRegisterCard thead .trStatusCol{width:11%}
+ .trRegisterCard thead .trActionsCol{width:12%}
+}
+@media(max-width:560px){
+ .trRegisterCard table{min-width:520px}
+ .trRegisterCard .trPartyCol{display:none}
+ .trFilters{grid-template-columns:1fr}
+ .trViewButton span{display:none}
+ .trPager.pagination-footer{flex-wrap:wrap;gap:8px;height:auto}
+ .trRegisterCard thead .trDateCol{width:14%}
+ .trRegisterCard thead .trTypeCol{width:19%}
+ .trRegisterCard thead .trNumberCol{width:18%}
+ .trRegisterCard thead .trAmountCol{width:16%}
+ .trRegisterCard thead .trStatusCol{width:14%}
+ .trRegisterCard thead .trActionsCol{width:19%}
+}
+
+@media print{@page{size:landscape;margin:12mm}
+body:has(.trPage) .app>aside,body:has(.trPage) .app>header,body:has(.trPage) .welcome,body:has(.trPage) .trHeadActions,body:has(.trPage) .trFilters,body:has(.trPage) .trActionsCol{display:none!important}
+.transactionPortal:has(.trPage){position:static!important;inset:auto!important;overflow:visible!important;padding:0!important;background:#fff!important}
+.trPage{max-width:none;padding:0;border:0;box-shadow:none;border-radius:0;gap:12px}
+.trPrintMeta{display:block}
+.trPrintMeta h2{margin:0 0 6px;font-size:16px}
+.trPrintMeta p{margin:0 0 3px;font-size:12px}
+.trTableScroll{overflow:visible}
+.trRegisterCard table{font-size:12px;table-layout:auto;min-width:0}
+.trRegisterCard thead{display:table-header-group}
+.trRegisterCard tr{break-inside:avoid}
+.trRegisterCard th,.trRegisterCard td{padding:5px;white-space:normal}
+.trRegisterCard .trRefCol,.trRegisterCard .trPartyCol{display:table-cell}
+.trRegisterCard tbody tr.trOffPage{display:table-row!important}
+.trRegisterCard td.trDateCol,.trRegisterCard td.trTypeCol,.trRegisterCard td.trPartyCol,.trRegisterCard td.trRefCol{overflow:visible;text-overflow:clip;white-space:normal}
+.trPage button.trLink{color:#172033;text-decoration:none;overflow:visible;text-overflow:clip;white-space:normal}
+.trPager{display:none!important}
+}

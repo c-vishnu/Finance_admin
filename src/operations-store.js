@@ -5,23 +5,60 @@ const today='2026-09-07';
 export const seedOperations=()=>({version:1,categories:[
  {id:'cat-software',name:'Software & subscriptions',account:'5600',tax:'GST 18%',description:'Cloud tools and recurring software',status:'Active'},
  {id:'cat-travel',name:'Travel & conveyance',account:'5400',tax:'GST 5%',description:'Business travel and local conveyance',status:'Active'},
- {id:'cat-utilities',name:'Utilities',account:'5300',tax:'GST 18%',description:'Electricity, internet and utilities',status:'Active'}],expenses:[
+ {id:'cat-utilities',name:'Utilities',account:'5300',tax:'GST 18%',description:'Electricity, internet and utilities',status:'Active'},
+ {id:'cat-office',name:'Office supplies',account:'5000',tax:'GST 18%',description:'Stationery, printing and consumables',status:'Active'},
+ {id:'cat-marketing',name:'Marketing & advertising',account:'5900',tax:'GST 18%',description:'Campaigns, print and digital advertising',status:'Active'},
+ {id:'cat-professional',name:'Professional fees',account:'5600',tax:'GST 18%',description:'Audit, legal and advisory services',status:'Active'},
+ {id:'cat-repairs',name:'Repairs & maintenance',account:'5900',tax:'GST 18%',description:'Equipment repairs and premises upkeep',status:'Active'},
+ {id:'cat-rent',name:'Rent & lease',account:'5300',tax:'GST 18%',description:'Office and warehouse rentals',status:'Active'},
+ {id:'cat-welfare',name:'Employee welfare',account:'5900',tax:'GST 5%',description:'Staff events, meals and welfare',status:'Active'},
+ {id:'cat-bank',name:'Bank charges',account:'5700',tax:'No tax',description:'Bank fees, charges and commission',status:'Active'}],expenses:[
  {id:'exp-1',number:'EXP-00041',date:'2026-09-05',name:'Cloud hosting',category:'Software & subscriptions',payee:'Cloudstack Services',amount:118000,account:'5600',paidThrough:'1010',method:'UPI',tax:'GST 18%',status:'Posted',journalId:'JE-DEMO-EXP-41',description:'September hosting subscription'},
  {id:'exp-2',number:'EXP-00042',date:'2026-09-06',name:'Client visit',category:'Travel & conveyance',payee:'Metro Cabs',amount:245000,account:'5400',paidThrough:'1010',method:'Card',tax:'GST 5%',status:'Pending',description:'Travel for customer implementation'},
- {id:'exp-3',number:'EXP-00043',date:today,name:'Internet charges',category:'Utilities',payee:'FiberNet India',amount:177000,account:'5300',paidThrough:'1010',method:'Bank transfer',tax:'GST 18%',status:'Draft',description:'Branch broadband charges'}],assets:[
+ {id:'exp-3',number:'EXP-00043',date:'2026-09-07',name:'Internet charges',category:'Utilities',payee:'FiberNet India',amount:177000,account:'5300',paidThrough:'1010',method:'Bank transfer',tax:'GST 18%',status:'Draft',description:'Branch broadband charges'},
+ {id:'exp-4',number:'EXP-00044',date:'2026-09-04',name:'Team offsite catering',category:'Employee welfare',payee:'Lakeview Hotels',amount:186000,account:'5900',paidThrough:'1010',method:'Card',tax:'GST 5%',status:'Posted',journalId:'JE-DEMO-EXP-44',description:'Catering for the quarterly planning offsite'},
+ {id:'exp-5',number:'EXP-00045',date:'2026-09-03',name:'Marketing brochure print',category:'Marketing & advertising',payee:'Everest Print Solutions',amount:94400,account:'5900',paidThrough:'1010',method:'Bank transfer',tax:'GST 18%',status:'Posted',journalId:'JE-DEMO-EXP-45',description:'Product brochure for the trade show'},
+ {id:'exp-6',number:'EXP-00046',date:'2026-09-08',name:'Laptop repair',category:'Repairs & maintenance',payee:'Nimbus Technologies',amount:59000,account:'5900',paidThrough:'1010',method:'UPI',tax:'GST 18%',status:'Pending',description:'Screen replacement for the design laptop'},
+ {id:'exp-7',number:'EXP-00047',date:'2026-09-09',name:'Statutory audit support',category:'Professional fees',payee:'Vertex Software Licences',amount:236000,account:'5600',paidThrough:'1010',method:'Bank transfer',tax:'GST 18%',status:'Posted',journalId:'JE-DEMO-EXP-47',description:'Support for the FY26 statutory audit'},
+ {id:'exp-8',number:'EXP-00048',date:'2026-09-01',name:'Office rent for September',category:'Rent & lease',payee:'Kochi Business Park',amount:850000,account:'5300',paidThrough:'1010',method:'Bank transfer',tax:'GST 18%',status:'Posted',journalId:'JE-DEMO-EXP-48',description:'Monthly rent for the Kochi head office'},
+ {id:'exp-9',number:'EXP-00049',date:'2026-09-10',name:'Festival advance for staff',category:'Employee welfare',payee:'Wayvida Learning',amount:75000,account:'5900',paidThrough:'1000',method:'Cash',tax:'No tax',status:'Draft',description:'Onam advance paid to the operations team'},
+ {id:'exp-10',number:'EXP-00050',date:'2026-09-11',name:'Courier and postage',category:'Office supplies',payee:'Harbour Freight Movers',amount:29500,account:'5000',paidThrough:'1010',method:'UPI',tax:'GST 18%',status:'Posted',journalId:'JE-DEMO-EXP-50',description:'Courier charges for signed agreements'},
+ {id:'exp-11',number:'EXP-00051',date:'2026-09-12',name:'Bank charges for September',category:'Bank charges',payee:'HDFC Bank',amount:1180,account:'5700',paidThrough:'1010',method:'Bank transfer',tax:'No tax',status:'Posted',journalId:'JE-DEMO-EXP-51',description:'Quarterly account maintenance charge'},
+ {id:'exp-12',number:'EXP-00052',date:'2026-09-13',name:'Stationery restock',category:'Office supplies',payee:'Kerala Office Supplies',amount:35400,account:'5000',paidThrough:'1010',method:'Card',tax:'GST 18%',status:'Pending',description:'Paper, folders and printer consumables'}],assets:[
  {id:'asset-1',code:'AST-0001',name:'Dell Latitude laptops',category:'Computer equipment',purchaseDate:'2025-04-01',cost:60000000,accumulated:18000000,bookValue:42000000,status:'Active',vendor:'Kerala Office Supplies',location:'Kochi Office',method:'Straight line',life:5,residual:0},
  {id:'asset-2',code:'AST-0002',name:'Office furniture',category:'Furniture',purchaseDate:'2024-04-01',cost:32000000,accumulated:12800000,bookValue:19200000,status:'Active',vendor:'Metro Furnishings',location:'Kannur Office',method:'Straight line',life:5,residual:0},
- {id:'asset-3',code:'AST-0003',name:'Delivery vehicle',category:'Vehicles',purchaseDate:'2026-04-10',cost:95000000,accumulated:9500000,bookValue:85500000,status:'Active',vendor:'South Motors',location:'Kochi Office',method:'Written down value',life:8,residual:5000000}],assetTransactions:[
+ {id:'asset-3',code:'AST-0003',name:'Delivery vehicle',category:'Vehicles',purchaseDate:'2026-04-10',cost:95000000,accumulated:9500000,bookValue:85500000,status:'Active',vendor:'South Motors',location:'Kochi Office',method:'Written down value',life:8,residual:5000000},
+ {id:'asset-4',code:'AST-0004',name:'Network switches',category:'Computer equipment',purchaseDate:'2026-05-02',cost:4200000,accumulated:840000,bookValue:3360000,status:'Active',vendor:'Nimbus Technologies',location:'Kochi Office',method:'Straight line',life:5,residual:0},
+ {id:'asset-5',code:'AST-0005',name:'Conference room display',category:'Computer equipment',purchaseDate:'2026-05-18',cost:18500000,accumulated:3083333,bookValue:15416667,status:'Active',vendor:'Nimbus Technologies',location:'Bengaluru Office',method:'Straight line',life:5,residual:0},
+ {id:'asset-6',code:'AST-0006',name:'Warehouse racking',category:'Plant & machinery',purchaseDate:'2025-10-01',cost:27500000,accumulated:6875000,bookValue:20625000,status:'Active',vendor:'Southern Furniture Co',location:'Kochi Warehouse',method:'Straight line',life:8,residual:0},
+ {id:'asset-7',code:'AST-0007',name:'Forklift',category:'Plant & machinery',purchaseDate:'2025-07-15',cost:68000000,accumulated:17000000,bookValue:51000000,status:'Active',vendor:'South Motors',location:'Kochi Warehouse',method:'Written down value',life:8,residual:3000000},
+ {id:'asset-8',code:'AST-0008',name:'UPS battery bank',category:'Computer equipment',purchaseDate:'2026-06-05',cost:9800000,accumulated:980000,bookValue:8820000,status:'Active',vendor:'Sagar Electricals',location:'Kochi Office',method:'Straight line',life:5,residual:0},
+ {id:'asset-9',code:'AST-0009',name:'Reception renovation',category:'Furniture',purchaseDate:'2026-03-20',cost:15000000,accumulated:3000000,bookValue:12000000,status:'Active',vendor:'Southern Furniture Co',location:'Kochi Office',method:'Straight line',life:5,residual:0},
+ {id:'asset-10',code:'AST-0010',name:'Delivery van',category:'Vehicles',purchaseDate:'2025-01-10',cost:72000000,accumulated:28800000,bookValue:43200000,status:'Active',vendor:'South Motors',location:'Kochi Warehouse',method:'Written down value',life:8,residual:4000000},
+ {id:'asset-11',code:'AST-0011',name:'Backup server',category:'Computer equipment',purchaseDate:'2026-02-01',cost:34000000,accumulated:6800000,bookValue:27200000,status:'Active',vendor:'Cloudstack Services',location:'Bengaluru Office',method:'Straight line',life:5,residual:0},
+ {id:'asset-12',code:'AST-0012',name:'Air conditioning units',category:'Plant & machinery',purchaseDate:'2024-11-12',cost:12800000,accumulated:6400000,bookValue:6400000,status:'Disposed',vendor:'Sagar Electricals',location:'Kochi Office',method:'Straight line',life:5,residual:0}],assetTransactions:[
  {id:'at-1',date:'2026-09-01',asset:'Dell Latitude laptops',type:'Depreciation',reference:'DEP-SEP-001',amount:1000000,status:'Posted'},
  {id:'at-2',date:'2026-09-02',asset:'Office furniture',type:'Transfer',reference:'ATR-00012',amount:0,status:'Completed'},
- {id:'at-3',date:'2026-09-05',asset:'Delivery vehicle',type:'Capitalization',reference:'BILL-00031',amount:95000000,status:'Posted'}],gst:[
- {id:'gst-1',date:'2026-09-04',party:'ABC Retail Pvt Ltd',reference:'INV-000021',type:'Output GST',taxable:10000000,tax:1800000,status:'Posted'},
- {id:'gst-2',date:'2026-09-05',party:'Kerala Office Supplies',reference:'BILL-000031',type:'Input GST',taxable:5000000,tax:900000,status:'Posted'}],tds:[
- {id:'tds-1',date:'2026-09-03',party:'Cloudstack Services',section:'194J',taxable:5000000,amount:500000,status:'Pending'},
- {id:'tds-2',date:'2026-08-28',party:'Metro Maintenance Works',section:'194C',taxable:8000000,amount:80000,status:'Deposited'}],budgets:[
+ {id:'at-3',date:'2026-09-05',asset:'Delivery vehicle',type:'Capitalization',reference:'BILL-00031',amount:95000000,status:'Posted'},
+ {id:'at-4',date:'2026-09-03',asset:'Network switches',type:'Capitalization',reference:'BILL-00032',amount:4200000,status:'Posted'},
+ {id:'at-5',date:'2026-09-04',asset:'Conference room display',type:'Depreciation',reference:'DEP-SEP-005',amount:308333,status:'Posted'},
+ {id:'at-6',date:'2026-09-06',asset:'Warehouse racking',type:'Transfer',reference:'ATR-00013',amount:0,status:'Completed'},
+ {id:'at-7',date:'2026-09-07',asset:'Forklift',type:'Depreciation',reference:'DEP-SEP-007',amount:720000,status:'Posted'},
+ {id:'at-8',date:'2026-09-08',asset:'UPS battery bank',type:'Capitalization',reference:'BILL-00034',amount:9800000,status:'Posted'},
+ {id:'at-9',date:'2026-09-09',asset:'Reception renovation',type:'Depreciation',reference:'DEP-SEP-009',amount:250000,status:'Posted'},
+ {id:'at-10',date:'2026-09-10',asset:'Delivery van',type:'Depreciation',reference:'DEP-SEP-010',amount:640000,status:'Posted'},
+ {id:'at-11',date:'2026-09-11',asset:'Backup server',type:'Capitalization',reference:'BILL-00036',amount:34000000,status:'Posted'},
+ {id:'at-12',date:'2026-09-12',asset:'Air conditioning units',type:'Disposal',reference:'DISP-0002',amount:6400000,status:'Completed'}],budgets:[
  {id:'bud-1',name:'Operating Expenses FY27',account:'Operating Expenses',period:'Yearly',branch:'All branches',amount:300000000,actual:142000000,status:'On track'},
  {id:'bud-2',name:'Marketing FY27',account:'Marketing',period:'Yearly',branch:'Kochi Branch',amount:60000000,actual:38000000,status:'On track'},
- {id:'bud-3',name:'Travel FY27',account:'Travel',period:'Yearly',branch:'All branches',amount:25000000,actual:22500000,status:'Watch'}],audit:[]});
+ {id:'bud-3',name:'Travel FY27',account:'Travel',period:'Yearly',branch:'All branches',amount:25000000,actual:22500000,status:'Watch'},
+ {id:'bud-4',name:'Professional fees FY27',account:'Professional Fees',period:'Yearly',branch:'All branches',amount:180000000,actual:74000000,status:'On track'},
+ {id:'bud-5',name:'Utilities FY27',account:'Utilities',period:'Monthly',branch:'Kochi Branch',amount:12000000,actual:5600000,status:'On track'},
+ {id:'bud-6',name:'Repairs FY27',account:'Repairs & maintenance',period:'Quarterly',branch:'All branches',amount:36000000,actual:41200000,status:'Watch'},
+ {id:'bud-7',name:'Employee welfare FY27',account:'Employee welfare',period:'Yearly',branch:'All branches',amount:14000000,actual:6100000,status:'On track'},
+ {id:'bud-8',name:'Office supplies FY27',account:'Office supplies',period:'Quarterly',branch:'Kochi Branch',amount:22000000,actual:23800000,status:'Watch'},
+ {id:'bud-9',name:'Rent FY27',account:'Rent & lease',period:'Yearly',branch:'All branches',amount:102000000,actual:85000000,status:'On track'},
+ {id:'bud-10',name:'Bank charges FY27',account:'Bank charges',period:'Yearly',branch:'All branches',amount:600000,actual:240000,status:'On track'}],audit:[]});
 
 const clone=v=>JSON.parse(JSON.stringify(v));
 export function readOperations(){try{const value=JSON.parse(localStorage.getItem(OPERATIONS_KEY)||'null');return value?.expenses?value:seedOperations()}catch{return seedOperations()}}

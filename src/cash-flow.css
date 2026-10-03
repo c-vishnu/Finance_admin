@@ -1,0 +1,123 @@
+/* Cash Flow Statement report shell. The same white report surface, hairlines, radii, type scale and
+   sticky validation footer as the Balance Sheet (src/balance-sheet.css), the Trial Balance
+   (src/trial-balance.css) and the Profit & Loss (src/profit-loss.css), so the four financial
+   statements read as one product. Only the cash-flow hierarchy - activity, line, account, subtotal,
+   net and closing - is report-specific. */
+.cfPage{--cf-blue:#3478f6;--cf-text:#172033;--cf-muted:#667085;--cf-line:#e2e8f0;display:flex;flex-direction:column;gap:20px;max-width:100%;margin:0;padding:24px;border:1px solid #dfe6ef;border-radius:12px;background:#fff;box-shadow:0 1px 2px #10182808;color:var(--cf-text);font:14px/1.45 'Instrument Sans',sans-serif}
+.cfPage *{box-sizing:border-box}
+.cfPage button,.cfPage input,.cfPage select{font:inherit}
+/* A report heading is a <header> element and src/styles.css pins every header to the viewport, so it
+   must opt back into the flow or it lifts out and overlaps the summary cards. */
+.cfHead{position:static!important;inset:auto!important;z-index:auto!important;height:auto!important;display:flex;align-items:center;justify-content:space-between;gap:18px;width:100%;padding:0 0 20px;border-bottom:1px solid #e6ecf3;background:transparent}
+.cfHead h1{margin:0;font-size:24px;line-height:1.2}
+.cfHead p{margin:5px 0 0;font-size:13px;color:var(--cf-muted)}
+.cfHeadActions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:nowrap}
+.cfPage button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:8px 12px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;cursor:pointer}
+.cfPage button:hover:not(:disabled){border-color:#aac2ed;background:#f5f8ff}
+.cfPage button:disabled{cursor:not-allowed;opacity:.55}
+.cfSearch{width:300px;height:40px;padding:0 10px;display:flex;align-items:center;gap:8px;border:1px solid #d9e1ec;border-radius:7px;color:#344054}
+.cfSearch input{width:100%;min-width:0;border:0;outline:0;background:transparent;font-size:13px}
+.cfFiltersMore{position:relative;flex:none}
+.cfFiltersMore summary{height:40px;padding:0 10px;display:flex;align-items:center;gap:6px;border:1px solid #d9e1ec;border-radius:7px;list-style:none;color:#344054;font-size:12px;font-weight:600;cursor:pointer}
+.cfFiltersMore summary::-webkit-details-marker{display:none}
+.cfFiltersMore summary span{min-width:17px;height:17px;display:inline-grid;place-items:center;border-radius:999px;background:#eaf1ff;color:#245fd9;font-size:11px;font-weight:700}
+.cfFilters{position:absolute;z-index:80;right:0;top:calc(100% + 8px);width:min(620px,calc(100vw - 48px));padding:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;border:1px solid #e1e6ed;border-radius:9px;background:#fff;box-shadow:0 12px 28px #1018281f}
+.cfFilters label{display:flex;flex-direction:column;gap:6px;color:#475467;font-size:12px;font-weight:650}
+.cfFilters select,.cfFilters input[type=date]{height:40px;padding:0 11px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:var(--cf-text);font-size:13px}
+.cfFilters .cfCheck{grid-column:1/-1;flex-direction:row;align-items:center;gap:9px;font-weight:500}
+.cfFilters .cfCheck input{width:16px;height:16px;accent-color:var(--cf-blue)}
+.cfFilterActions{grid-column:1/-1;justify-self:start;display:flex;align-items:center;gap:14px}
+.cfFilterActions button{min-height:auto;padding:4px 0;border:0;background:transparent;color:#245fd9;font-size:12px}
+.cfFilterActions button:hover:not(:disabled){border:0;background:transparent;text-decoration:underline}
+.cfError{display:flex;align-items:center;gap:10px;padding:12px 15px;border:1px solid #ffd3d9;border-radius:8px;background:#fff1f2;color:#b33243}
+.cfPrintMeta{display:none}
+/* Five cards, because a cash flow statement is read on five numbers: where cash started, what came
+   in, what went out, the net change and where cash ended. Inflows and outflows carry the same green
+   and amber the validation footer and the loss card use. */
+.cfSummary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.cfSummary>div{min-height:92px;padding:15px 12px;display:flex;flex-direction:column;justify-content:center;gap:8px;border:1px solid #dfe6ef;border-radius:9px;background:#fff}
+.cfSummary>div:first-child{background:#edf3ff;border-color:#d2e0ff;color:#285dca}
+.cfSummary .cfInflow{border-color:#cee9da;background:#eaf7ef;color:#28724d}
+.cfSummary .cfOutflow{border-color:#f3d4b8;background:#fff7f0;color:#994b1e}
+.cfSummary .cfNet{border-color:#c9d8f2;background:#eef3fb;color:#1c3f8f}
+.cfSummary .cfClosing{border-color:#b9cdf0;background:#e6eefc;color:#14357d}
+.cfSummary span{color:var(--cf-muted);font-size:12px}
+.cfSummary strong{font-size:18px;letter-spacing:-.5px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.cfPage,
+.cfStatementCard,
+.cfTableScroll {
+  overflow: visible !important;
+  clip-path: none !important;
+}
+
+.cfStatementCard{border:1px solid var(--cf-line);border-radius:10px;background:#fff}
+.cfTableScroll{overflow-x:auto;overscroll-behavior-inline:contain}
+.cfStatementCard table {width:100%;border-collapse:separate!important;border-spacing:0!important;font-size:13px}
+.cfStatementCard th,.cfStatementCard td{padding:11px 14px;border-top:1px solid #edf1f6;text-align:right;font-variant-numeric:tabular-nums}
+.cfStatementCard thead th {
+  position: sticky !important;
+  top: -24px !important;
+  z-index: 20 !important;
+  background: #f7f9fc !important;
+  color: #5b6b81 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  border-top: 1px solid #dfe6ef !important;
+  border-bottom: 2px solid #cbd5e1 !important;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08) !important;
+}
+.cfAccountHead {width:48%;text-align:left!important}
+.cfGroupHead {width:30%;text-align:left!important}
+.cfAmountHead {width:22%;text-align:right!important}
+.cfAccountCode {color:var(--cf-muted);font-size:13px;font-weight:500;margin-right:6px}
+.cfAccountDot {color:var(--cf-muted);margin-right:6px}
+.cfStatementCard tbody tr.cfAccount td.cfAccountCell{text-align:left!important;padding-left:34px}
+.cfStatementCard tbody tr.cfAccount td.cfGroupCell{text-align:left!important;color:#667085;font-size:13px}
+.cfStatementCard tbody tr.cfAccount.selected td{background:#f2f7ff}
+.cfStatementCard .cfMoney{text-align:right!important;white-space:nowrap}
+.cfStatementCard tbody tr.cfAccount button{display:inline-flex;align-items:center;gap:6px;min-height:auto;padding:0;border:0;background:transparent;color:#245fd9;font-size:13px;text-align:left;overflow-wrap:anywhere}
+.cfStatementCard tbody tr.cfAccount button:hover{background:transparent;text-decoration:underline}
+/* src/ui-system.css right-aligns every row last cell with !important; the activity and line heading
+   rows are one full-width cell, so they opt back to the statement left alignment. */
+.cfStatementCard .cfSection th,.cfStatementCard .cfGroup th{text-align:left!important;padding-right:14px!important}
+.cfStatementCard .cfGroupTotal th:not(.cfMoney),.cfStatementCard .cfSectionTotal th:not(.cfMoney),.cfStatementCard .cfDerived th:not(.cfMoney){text-align:left!important}
+.cfSection th{padding:13px 14px;border-top:1px solid #e6ecf3;background:#f1f5fb;color:#1c3f8f;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.cfGroup th{padding:11px 14px 11px 22px;border-top:1px solid #edf1f6;background:#fbfcfe;color:#344054;font-size:12px;font-weight:700}
+.cfGroupTotal th{padding:10px 14px;border-top:1px solid #edf1f6;background:#f8fafc;color:#344054;font-size:12px;font-weight:600}
+.cfSectionTotal th{padding:11px 14px;border-top:1px solid #e6ecf3;background:#f4f7fc;color:#263b57;font-size:13px;font-weight:700}
+/* A subtotal states its label and amount in one full-width cell, so the pair stays together and the
+   amount keeps the table right edge even where the narrow columns are hidden on a phone. */
+.cfRowLine{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%}
+.cfRowLine .cfMoney{flex:0 0 auto}
+.cfDerived th{padding:13px 14px;border-top:2px solid #dbe3ee;background:#eef3fb;color:#172033;font-size:13px;font-weight:700}
+/* The net change and the closing balance are the two lines the statement is read for, so the closing
+   balance is the strongest row on the page. */
+.cfNet th{border-top:2px solid #c9d8f2;background:#e6eefc;color:#1c3f8f;font-size:14px;font-weight:800}
+.cfClosing th{border-top:2px solid #b9cdf0;background:#dde8fb;color:#14357d;font-size:15px;font-weight:800}
+.cfEquation{display:flex;align-items:center;gap:14px;margin:0;padding:10px 13px;border:1px solid #cee9da;border-radius:7px;background:#eaf7ef;color:#28724d}
+.cfEquation.mismatch{border-color:#f3d4b8;background:#fff3e9;color:#994b1e}
+.cfEquation b{font-size:13px}
+.cfEquation span{margin-left:auto;font-size:12px}
+.cfStickyBalance{position:sticky;bottom:0;z-index:12;box-shadow:0 -6px 16px #1018280d}
+.cfNotes{display:flex;flex-direction:column;gap:8px;color:var(--cf-muted);font-size:12px;line-height:1.7}
+.cfNotes p{margin:0}
+@keyframes cfScan{from{opacity:.4}to{opacity:.85}}
+.cfPage[aria-busy="true"] .cfTableScroll{animation:cfScan .9s ease-in-out infinite alternate}
+@media(max-width:900px){.cfPage{padding:18px}.cfHead{align-items:flex-start;flex-direction:column}.cfHeadActions{width:100%;justify-content:flex-start;flex-wrap:wrap}.cfSearch{flex:1 1 260px}.cfSummary{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:700px){.cfStatementCard th,.cfStatementCard td{padding:10px 8px;font-size:12px}.cfStatementCard thead th:nth-child(3),.cfStatementCard tbody .cfGroupCell{display:none}.cfStatementCard tbody tr.cfAccount td:first-child,.cfStatementCard tbody tr.cfAccount td:nth-child(2){padding-left:18px}.cfGroup th{padding-left:14px}.cfSummary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.cfPage{padding:14px}.cfSearch{width:100%;flex-basis:100%}.cfFiltersMore{width:100%}.cfFiltersMore summary{justify-content:center}.cfFilters{position:static;width:100%;grid-template-columns:1fr;margin-top:8px}.cfSummary{grid-template-columns:1fr}.cfStickyBalance{bottom:6px}.cfEquation{align-items:flex-start;flex-wrap:wrap}.cfEquation span{margin-left:26px}.cfStatementCard th,.cfStatementCard td{padding:9px 6px;font-size:11px}.cfStatementCard thead th:first-child,.cfStatementCard tbody .cfCode{display:none}}
+/* Phone widths: the two narrow columns are hidden, so the account column takes the slack and the
+   amount column shares the card exactly, instead of the table overflowing into a scroller. */
+@media(max-width:560px){.cfStatementCard table{table-layout:fixed}.cfStatementCard th,.cfStatementCard td{padding:10px 6px!important;font-size:11px}.cfStatementCard thead th:nth-child(2){width:62%}.cfStatementCard thead th:nth-child(4){width:38%}.cfStatementCard tbody td:nth-child(2){overflow-wrap:break-word}.cfStatementCard caption{overflow-wrap:anywhere}.cfStatementCard tbody tr.cfAccount td:first-child,.cfStatementCard tbody tr.cfAccount td:nth-child(2){padding-left:14px}.cfGroup th{padding-left:12px!important}}
+@media print{@page{size:landscape;margin:12mm}
+body:has(.cfPage) .app>aside,body:has(.cfPage) .app>header,body:has(.cfPage) .welcome,body:has(.cfPage) .cfHeadActions,body:has(.cfPage) .cfFilters,body:has(.cfPage) .cfNotes{display:none!important}
+.transactionPortal:has(.cfPage){position:static!important;inset:auto!important;overflow:visible!important;padding:0!important;background:#fff!important}
+.cfPage{max-width:none;padding:0;border:0;box-shadow:none;border-radius:0;gap:12px}
+.cfPrintMeta{display:block}
+.cfPrintMeta p{margin:0 0 3px;font-size:12px}
+.cfTableScroll{overflow:visible}
+.cfStatementCard table{font-size:12px;table-layout:auto}
+.cfStatementCard thead{display:table-header-group}
+.cfStatementCard tr{break-inside:avoid}
+.cfStatementCard th,.cfStatementCard td{padding:5px;white-space:normal}
+.cfStickyBalance{position:static;box-shadow:none}}

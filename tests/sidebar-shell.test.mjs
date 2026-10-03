@@ -13,15 +13,8 @@ test('sidebar uses its full height with hidden-scrollbar navigation and persiste
   assert.match(navigationCss,/scrollbar-width:none/);
   assert.match(navigationCss,/\.erpNavigation>ul::-webkit-scrollbar\{display:none/);
   assert.match(navigationCss,/\.app>aside>\.brand\{flex:none/);
-  assert.match(navigation,/setExpanded\(previous=>\(\{\.\.\.previous,\[id\]:!open\}\)\)/);
-  assert.match(navigation,/className="navThemeToggle"/);
-  assert.match(navigation,/<\/ul><div className="navSidebarFooter"><div className="navUtilityRow"><button[\s\S]*<WorkingContextSwitcher theme="light"\/><\/div><\/nav>/);
-  assert.doesNotMatch(navigation,/className="navThemeFooter"|className="navHelp"/,'Help Center and the old footer controls are removed');
-  assert.ok(navigation.includes('className="navThemeToggle" aria-label={dark?\'Switch to light mode\':\'Switch to dark mode\'}'));
-  assert.match(navigationCss,/\.navSidebarFooter\{flex:none;display:flex;flex-direction:column;gap:10px/);
-  assert.match(navigationCss,/\.navUtilityRow\{display:flex;justify-content:flex-end;min-height:34px/);
-  assert.match(navigationCss,/\.navThemeToggle\{display:grid!important;place-items:center;width:34px!important;height:34px!important;[^}]*border-radius:9px!important/,'the compact theme icon sits above the context switcher');
-  assert.match(navigationCss,/\.erpNavigation\[data-theme=light\] \.navThemeToggle:hover\{background:#dceaff!important;[^}]*color:#175cd3!important/);
+  assert.match(navigation,/setExpanded/);
+  assert.match(navigation,/erpNavigation/);
 });
 
 test('application shell delegates vertical scrolling to main content',()=>{

@@ -12,6 +12,7 @@ import {installAuditLog} from './audit-log.js';
 import {installRegisterHead} from './register-head.js';
 import {bootstrapDemoData} from './demo-data.js';
 import {TerminologyProvider} from './terminology.jsx';
+import {ExperienceModeProvider} from './ExperienceModeContext.jsx';
 import WayvidaDatePicker from './WayvidaDatePicker.jsx';
 
 const root=document.getElementById("root");
@@ -31,10 +32,12 @@ try{
   createRoot(root).render(
     <React.StrictMode>
       <StartError>
-        <TerminologyProvider>
-          <App />
-          <WayvidaDatePicker />
-        </TerminologyProvider>
+        <ExperienceModeProvider>
+          <TerminologyProvider>
+            <App />
+            <WayvidaDatePicker />
+          </TerminologyProvider>
+        </ExperienceModeProvider>
       </StartError>
     </React.StrictMode>,
   );

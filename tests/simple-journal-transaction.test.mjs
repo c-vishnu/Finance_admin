@@ -2,10 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
  JOURNAL_ACTIONS,JOURNAL_ACTION_DUTY,JOURNAL_ROLES,SAMPLE_TRANSACTIONS,TRANSACTION_STATUSES,TRANSACTION_TYPES,
- buildSimpleJournal,counterpartyAccount,duplicateTransaction,financialYearLabel,getAccountingPreview,
+ buildSimpleJournal,counterpartyAccount,currentDayTransactions,DEMO_MONTH,duplicateTransaction,financialYearLabel,getAccountingPreview,
  getSimplePostingLines,getValidationErrors,journalAllowed,moneyAccounts,nextJournalNumber,normaliseStatus,
  journalTimeline,postsToLedger,relativeTime,reversalRecord,sampleJournalRecords,transactionTypeLabel
 } from '../src/simple-journal-transaction.js';
+import {today} from '../src/invoice-engine.js';
 
 const accounts=[
  {code:'1000',name:'Cash',type:'Assets',accountNature:'Cash',active:true},
@@ -168,14 +169,29 @@ test('the demo content covers every status and every transaction type',()=>{
  assert.deepEqual([...new Set(SAMPLE_TRANSACTIONS.map(row=>row.status))].sort(),[...TRANSACTION_STATUSES].sort());
  assert.deepEqual([...new Set(SAMPLE_TRANSACTIONS.map(row=>row.transactionType))].sort(),TRANSACTION_TYPES.map(([value])=>value).sort());
  const records=sampleJournalRecords({accounts});
- assert.equal(records.length,6);
+ assert.ok(records.length>=10,'the demo seeds at least ten journal records');
  for(const record of records){
   assert.match(record.number,/^JE-2026-\d{6}$/);
   assert.ok(record.lines.length>=2);
   assert.equal(record.lines.reduce((total,line)=>total+Number(line.debit||0),0),record.lines.reduce((total,line)=>total+Number(line.credit||0),0));
   assert.ok(record.simpleTransaction.name);
  }
- assert.deepEqual(records.map(record=>record.status),['Approved','Pending Approval','Draft','Rejected','Reversed','Cancelled']);
+ assert.deepEqual([...new Set(records.map(record=>record.status))].sort(),[...TRANSACTION_STATUSES].sort());
+ assert.deepEqual([...new Set(records.map(record=>record.status))],['Approved','Pending Approval','Draft','Rejected','Reversed','Cancelled']);
+});
+
+/* The Day Book opens on the current date, so the demo offers the day it is opened on. The batch
+   is confined to the demo's own opening month, where the seeded period control has an open
+   period, and is skipped anywhere else rather than posting into a period that is not open. */
+test('the demo offers a full day of trading on the current date, inside its own month only',()=>{
+ const day=currentDayTransactions('2026-09-28');
+ assert.ok(day.length>=10,'a day inside the demo month carries a full day of transactions');
+ assert.ok(day.every(row=>row.date==='2026-09-28'&&row.status==='Approved'),'every row is dated on that day and posted');
+ assert.ok(day.every(row=>TRANSACTION_TYPES.some(([value])=>value===row.transactionType)),'and every row names a transaction type');
+ assert.equal(new Set(day.map(row=>row.number)).size,day.length,'the batch keeps its own voucher numbers');
+ assert.deepEqual(currentDayTransactions('2026-10-15'),[],'a day outside the demo month is not posted at all');
+ const dates=new Set(SAMPLE_TRANSACTIONS.map(row=>row.date));
+ assert.equal(dates.has(today()),today().startsWith(DEMO_MONTH),'the register carries the batch exactly when today is inside the demo month');
 });
 
 test('a customer or vendor payment resolves the party ledger account from the party',()=>{

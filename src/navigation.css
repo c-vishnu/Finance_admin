@@ -34,9 +34,9 @@
   .app.navCollapsed .erpNavigation :is(.navLeaf,.navGroupButton)>span,.app.navCollapsed .erpNavigation .navGroupButton>svg:last-child{display:none}
   .app.navCollapsed .erpNavigation :is(.navLeaf,.navGroupButton)>svg:first-child{width:19px;height:19px}
   .app.navCollapsed .erpNavigation .navStandalone{margin:0}
-  .app.navCollapsed .workingContext{padding:3px;margin-bottom:10px;border-radius:11px}
-  .app.navCollapsed .workingContext .wcTrigger{justify-content:center;min-height:42px;padding:5px}
-  .app.navCollapsed .workingContext .wcTriggerText,.app.navCollapsed .workingContext .wcTrigger>svg{display:none}
+  .app.navCollapsed aside .workingContext{padding:3px;margin-bottom:10px;border-radius:11px}
+  .app.navCollapsed aside .workingContext .wcTrigger{justify-content:center;min-height:42px;padding:5px}
+  .app.navCollapsed aside .workingContext .wcTriggerText,.app.navCollapsed aside .workingContext .wcTrigger>svg{display:none}
 }
 @media(prefers-reduced-motion:reduce){
   .app,.app>header,.app>aside{transition:none}

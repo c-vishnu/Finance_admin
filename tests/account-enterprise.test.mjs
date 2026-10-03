@@ -50,8 +50,8 @@ test('manual posting control is enforced while source posting remains available'
 test('COA UI exposes requested master fields, columns, detail tabs and actions',()=>{
   const jsx=readFileSync(new URL('../src/AccountWorkspace.jsx',import.meta.url),'utf8');
   const form=readFileSync(new URL('../src/EnterpriseAccountForm.jsx',import.meta.url),'utf8');
-  for(const value of ['Basic Account Information','Account type *','Search account types','Account status','Organisation & Availability','Available for *','Select branches *'])assert.ok(form.includes(value),value);
-  for(const value of ['organisations.map(item=>item.name).join', 'currencyMismatch', 'Select at least one branch for this account.', 'am-branch-grid'])assert.ok(form.includes(value),value);
+  for(const value of ['Account Name *','Account Code','Account Group *','Organisation Availability'])assert.ok(form.includes(value),value);
+  for(const value of ['chosenOrganisations', 'currencyMismatch', 'Select at least one branch for this account.'])assert.ok(form.includes(value),value);
   assert.ok(!form.includes('Additional settings'),'new accounts should not expose additional settings');
   assert.ok(!form.includes('Account purpose *'),'purpose is selected inside the combined account type picker');
   assert.doesNotMatch(form,/Accounting Preview|Accounting classification|Automatic usage|Advanced Accounting Settings|Automatic transaction mapping|Manage detailed mappings/);
@@ -86,8 +86,7 @@ test('new account status is saved from additional settings',()=>{
 test('create account keeps the shared shell header and avoids duplicate account headings',()=>{
   const form=readFileSync(new URL('../src/EnterpriseAccountForm.jsx',import.meta.url),'utf8');
   const css=readFileSync(new URL('../src/account-workspace.css',import.meta.url),'utf8');
-  assert.match(form,/Create account/);
-  assert.match(form,/Add the account details\. Wayvida Books applies the accounting rules automatically\./);
+  assert.match(form,/Create Account/);
   assert.doesNotMatch(form,/What do you want to track\?|Choose the closest business activity/);
   assert.doesNotMatch(form,/Custom Account/);
   assert.doesNotMatch(form,/title="Account information"/);

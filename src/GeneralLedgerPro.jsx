@@ -1,54 +1,716 @@
-import {useMemo,useState} from 'react';
-import {IconAdjustments,IconArrowLeft,IconBook,IconBuildingBank,IconCheck,IconChevronDown,IconDownload,IconEye,IconFileInvoice,IconFilter,IconHistory,IconMail,IconPrinter,IconRefresh,IconSearch,IconX} from '@tabler/icons-react';
-import {KEY,ledger as postedLedger} from './invoice-engine.js';
-import {formatMinor,formatRupees} from './number-format.js';
+import {useMemo, useState} from 'react';
+import {
+  IconAdjustments,
+  IconArrowLeft,
+  IconBook,
+  IconBuildingBank,
+  IconCheck,
+  IconChevronDown,
+  IconChevronLeft,
+  IconChevronRight,
+  IconDownload,
+  IconEye,
+  IconFileInvoice,
+  IconFilter,
+  IconHistory,
+  IconMail,
+  IconPrinter,
+  IconRefresh,
+  IconSearch,
+  IconX
+} from '@tabler/icons-react';
+import {KEY, ledger as postedLedger} from './invoice-engine.js';
+import {formatMinor, formatRupees} from './number-format.js';
+import {useExperienceMode} from './ExperienceModeContext.jsx';
 import './general-ledger.css';
 
+const money = n => formatRupees(Math.abs(Number(n) || 0));
 
-const money=n=>formatRupees(Math.abs(Number(n)||0));
-const dateText=v=>new Date(v+'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
-const timeText=(createdAt,date)=>new Date(createdAt||date+'T09:00:00').toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
-const sourcePage=source=>({
- 'Sales Invoice':'Invoices','Customer Payment':'Payments Received','Customer Receipt':'Payments Received',
- 'Credit Note':'Credit Notes','Journal Entry':'Journal Entries','Manual Journal':'Journal Entries',
- 'Invoice Reversal':'Invoices','Receipt Reversal':'Payments Received'
-}[source]||source||'Journal Entries');
+const dateText = v => {
+  if (!v) return '—';
+  try {
+    return new Date(v + 'T00:00:00').toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
+  } catch {
+    return v;
+  }
+};
 
-export default function GeneralLedgerPro({accounts=[],notify,onNavigate}){
- const transactionRows=useMemo(()=>{try{const state=JSON.parse(localStorage.getItem(KEY)||'null');/* Nothing posted yet is an empty ledger, not a sample one: fabricated rows in a report an accountant
-   reads as their own books is worse than an empty screen. */
-  if(!state?.journals?.length)return [];return postedLedger(state).map((line,index)=>({id:line.id||`ledger-${index}`,date:line.date,createdAt:line.createdAt,type:line.source||'Journal Entry',voucher:line.reference||line.number,reference:line.description||line.reference||'—',description:line.description||`${line.source||'Journal'} posting`,account:line.account,debit:(line.debit||0)/100,credit:(line.credit||0)/100,branch:line.branch||'Unassigned',cost:line.costCentre||'Unassigned',status:line.status||'Posted',journal:line.number,source:sourcePage(line.source),reconciled:Boolean(line.reconciled)}))}catch{return []}},[]);
- const accountList=useMemo(()=>{const raw=Array.isArray(accounts)?accounts:Object.entries(accounts||{}).flatMap(([type,rows])=>(rows||[]).map(row=>Array.isArray(row)?{code:row[0],name:row[1],type}:row));const mapped=raw.filter(a=>!a.isGroup).map(a=>({code:a.code,name:a.name,type:a.type,group:a.parentName||a.type,opening:Number(a.openingBalance)||0,normal:a.normalBalance||(['Assets','Expenses'].includes(a.type)?'Debit':'Credit'),created:'01 Apr 2026'}));const merged=[...mapped];return [...new Map(merged.map(a=>[a.code,a])).values()]},[accounts]);
- const preferred=sessionStorage.getItem('wayvida-open-account')||'1010';
- const [account,setAccount]=useState(accountList.some(a=>a.code===preferred)?preferred:'1010'),[range,setRange]=useState('This Financial Year'),[branch,setBranch]=useState('All Branches'),[cost,setCost]=useState('All Cost Centres'),[voucher,setVoucher]=useState('All Voucher Types'),[status,setStatus]=useState('Posted'),[query,setQuery]=useState(''),[filters,setFilters]=useState(false),[detail,setDetail]=useState(null),[accountPage,setAccountPage]=useState(false),[tab,setTab]=useState('Ledger'),[reconcile,setReconcile]=useState(false);
- const active=accountList.find(a=>a.code===account)||accountList[0];
- /* The filter options are the values actually in the ledger. They used to be a hardcoded list of
-   demo branch and cost-centre names, which matched nothing once real postings arrived because a
-   journal line carries a branch id. */
- const branchOptions=['All Branches',...new Set(transactionRows.map(row=>row.branch).filter(Boolean))];
- const costOptions=['All Cost Centres',...new Set(transactionRows.map(row=>row.cost).filter(Boolean))];
- const filtered=transactionRows.filter(x=>(!account||x.account===account)&&(branch==='All Branches'||x.branch===branch)&&(cost==='All Cost Centres'||x.cost===cost)&&(voucher==='All Voucher Types'||x.type===voucher)&&(status==='All Statuses'||x.status===status)&&[x.voucher,x.reference,x.description,x.journal].join(' ').toLowerCase().includes(query.toLowerCase()));
- const signed=x=>active?.normal==='Credit'?x.credit-x.debit:x.debit-x.credit;
- const openingRow=filtered.find(x=>x.type==='Opening Balance');
- const opening=Number(active?.opening)||Math.max(0,openingRow?signed(openingRow):0);
- const movements=filtered.filter(x=>x.type!=='Opening Balance');
- let running=opening;const rows=filtered.map(x=>({...x,running:x.type==='Opening Balance'?running:(running+=signed(x))}));
- const debit=movements.reduce((n,x)=>n+x.debit,0),credit=movements.reduce((n,x)=>n+x.credit,0),closing=opening+movements.reduce((n,x)=>n+signed(x),0);
- const appliedFilters=[range,branch!=='All Branches'&&branch,cost!=='All Cost Centres'&&cost,voucher!=='All Voucher Types'&&voucher,status!=='All Statuses'&&status].filter(Boolean);
- function reset(){setBranch('All Branches');setCost('All Cost Centres');setVoucher('All Voucher Types');setStatus('Posted');notify('Ledger filters reset')}
- function openSource(row){setDetail(row)}
- if(accountPage)return <AccountLedgerDetail account={active} rows={rows} tab={tab} setTab={setTab} onBack={()=>setAccountPage(false)} onSource={openSource} onNavigate={onNavigate} notify={notify}/>;
- return <section className="gl"><header className="gl-heading"><div><span className="gl-eyebrow"><IconBook size={15}/>Accounting report</span><h1>General Ledger</h1><p>Trace every posted movement from source document to journal and account balance.</p></div><div className="gl-heading-actions"><details><summary><IconDownload size={17}/>Export<IconChevronDown size={15}/></summary><div><button onClick={()=>notify('Excel export prepared')}><IconDownload size={16}/>Export Excel</button><button onClick={()=>notify('PDF export prepared')}><IconFileInvoice size={16}/>Export PDF</button><button onClick={()=>window.print()}><IconPrinter size={16}/>Print ledger</button><button onClick={()=>notify('Ledger report email prepared')}><IconMail size={16}/>Email report</button></div></details></div></header>
- <div className="gl-primary-filters gl-filter-toolbar"><label className="gl-account-picker"><span>Account</span><select value={account} onChange={e=>setAccount(e.target.value)} aria-label="Select ledger account">{accountList.map(a=><option key={a.code} value={a.code}>{a.code} · {a.name}</option>)}</select></label><label className="gl-search"><IconSearch size={17}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search voucher, reference or description" aria-label="Search ledger transactions"/></label><button className={filters?'active':''} onClick={()=>setFilters(true)} aria-expanded={filters}><IconFilter size={17}/>Filters<span className="gl-filter-count">{appliedFilters.length}</span></button></div>
- {filters&&<><button className="gl-scrim" onClick={()=>setFilters(false)} aria-label="Close filters"/><aside className="gl-filter-panel" aria-label="General Ledger filters"><div><IconAdjustments size={18}/><span><b>Filter General Ledger</b><small>Choose a period and transaction filters.</small></span><button onClick={()=>setFilters(false)} aria-label="Close filters"><IconX size={18}/></button></div><section><label>Date range<select value={range} onChange={e=>setRange(e.target.value)}>{['This Month','This Quarter','This Financial Year','Custom Range'].map(x=><option key={x}>{x}</option>)}</select></label><label>Branch<select value={branch} onChange={e=>setBranch(e.target.value)}>{branchOptions.map(x=><option key={x}>{x}</option>)}</select></label><label>Cost centre<select value={cost} onChange={e=>setCost(e.target.value)}>{costOptions.map(x=><option key={x}>{x}</option>)}</select></label><label>Voucher type<select value={voucher} onChange={e=>setVoucher(e.target.value)}>{['All Voucher Types','Sales Invoice','Purchase Bill','Receipt','Payment','Expense','Journal Entry','Credit Note','Debit Note'].map(x=><option key={x}>{x}</option>)}</select></label><label>Status<select value={status} onChange={e=>setStatus(e.target.value)}>{['All Statuses','Posted','Draft','Cancelled'].map(x=><option key={x}>{x}</option>)}</select></label></section><footer><button onClick={reset}><IconRefresh size={16}/>Reset</button><button className="primary" onClick={()=>setFilters(false)}><IconCheck size={16}/>Apply filters</button></footer></aside></>}
- <div className="gl-viewbar"><div className="gl-chips"><span>{active?.code} · {active?.name}</span>{appliedFilters.map(x=><span key={x}>{x}</span>)}</div><small>{rows.length} entries</small></div>
- <section className="gl-summary"><button className="gl-account-card" onClick={()=>setAccountPage(true)} aria-label={`View ${active?.name} account details`}><i><IconBuildingBank/></i><span><small>Selected account</small><b>{active?.name}</b><em>{active?.code} · {active?.type}</em><em>{active?.group} · Normal {active?.normal}</em></span><IconEye size={18}/></button>{[['Opening balance',opening,'neutral',active?.normal==='Credit'?'Cr':'Dr'],['Debit movement',debit,'debit',''],['Credit movement',credit,'credit',''],['Closing balance',closing,'closing',active?.normal==='Credit'?'Cr':'Dr']].map(([label,value,tone,suffix])=><article key={label} className={tone}><small>{label}</small><strong>{money(value)} {suffix&&<em>{suffix}</em>}</strong></article>)}</section>
- <section className="gl-card"><div className="gl-card-head"><div><h2>{active?.name} ledger</h2><p>{dateText('2026-04-01')} – {dateText('2026-09-05')} · Posted transactions only</p></div>{['Bank Accounts','Customers','Vendors'].includes(active?.group)&&<button onClick={()=>setReconcile(true)}><IconRefresh size={16}/>Reconcile</button>}</div><div className="gl-table-scroll" aria-label="Ledger transactions"><table className="gl-ledger-table gl-ledger-simple gl-ledger-compact"><thead><tr><th>Date &amp; time</th><th>Voucher</th><th>Debit</th><th>Credit</th><th>Balance</th><th>Status</th><th>View details</th></tr></thead><tbody>{rows.map(row=><tr key={row.id}><td><span className="gl-hover-description gl-date-time" title={row.description}><b>{dateText(row.date)}</b><small>{timeText(row.createdAt,row.date)}</small></span></td><td><button className="gl-link gl-hover-description" title={row.description} onClick={()=>openSource(row)}>{row.voucher}</button><small className="gl-voucher-type">{row.type}</small></td><td className="gl-money">{row.debit?money(row.debit):<span className="gl-empty-value">—</span>}</td><td className="gl-money">{row.credit?money(row.credit):<span className="gl-empty-value">—</span>}</td><td className="gl-money balance">{money(row.running)} {active?.normal==='Credit'?'Cr':'Dr'}</td><td><span className="gl-status"><IconCheck size={13}/>{row.status}</span></td><td><button className="gl-view-detail" onClick={()=>openSource(row)}><IconEye size={16}/>View details</button></td></tr>)}</tbody></table>{!rows.length&&<div className="gl-empty"><IconBook/><h3>No posted transactions found</h3><p>Try changing the date range or filters.</p><button onClick={reset}>Reset filters</button></div>}</div><footer><span>Opening {money(opening)} + period debits {money(debit)} − period credits {money(credit)}</span><strong>Closing balance {money(closing)} {active?.normal==='Credit'?'Cr':'Dr'}</strong></footer></section>
- {detail&&<SourceDrawer row={detail} onClose={()=>setDetail(null)} onJournal={()=>{onNavigate('Journal Entries');notify('Opening '+detail.journal)}} onSource={()=>{onNavigate(detail.source);notify('Opening '+detail.voucher)}}/>}{reconcile&&<ReconcileDialog rows={rows} onClose={()=>setReconcile(false)} notify={notify}/>}</section>
+const sourcePage = source =>
+  ({
+    'Sales Invoice': 'Invoices',
+    'Customer Payment': 'Payments Received',
+    'Customer Receipt': 'Payments Received',
+    'Purchase Bill': 'Purchase Bills',
+    'Vendor Payment': 'Payments Made',
+    'Credit Note': 'Credit Notes',
+    'Debit Note': 'Debit Notes',
+    'Journal Entry': 'Journal Entries',
+    'Manual Journal': 'Journal Entries',
+    'Invoice Reversal': 'Invoices',
+    'Receipt Reversal': 'Payments Received'
+  }[source] ||
+  source ||
+  'Journal Entries');
+
+export default function GeneralLedgerPro({accounts = [], notify, onNavigate}) {
+  const { isEasy } = useExperienceMode();
+  // Load all posted transactions from localStorage
+  const transactionRows = useMemo(() => {
+    try {
+      const state = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (!state?.journals?.length) return [];
+      return postedLedger(state).map((line, index) => {
+        const vNum = line.reference || line.number;
+        const rawParty = line.partyName || line.customerName || line.vendorName;
+        // Clean party name so it doesn't repeat voucher number
+        const party = rawParty && rawParty !== vNum ? rawParty : '';
+        const desc = line.description && line.description !== vNum ? line.description : '';
+
+        return {
+          id: line.id || `ledger-${index}`,
+          date: line.date,
+          createdAt: line.createdAt,
+          type: line.source || 'Journal Transaction',
+          voucher: vNum,
+          reference: line.reference || '—',
+          description: desc || (party ? '' : `${line.source || 'Journal'} posting`),
+          party: party || desc || '—',
+          account: line.account,
+          debit: (line.debit || 0) / 100,
+          credit: (line.credit || 0) / 100,
+          branch: line.branch || 'Unassigned',
+          cost: line.costCentre || 'Unassigned',
+          status: line.status || 'Posted',
+          journal: line.number,
+          source: sourcePage(line.source),
+          reconciled: Boolean(line.reconciled)
+        };
+      });
+    } catch {
+      return [];
+    }
+  }, []);
+
+  // Format Chart of Accounts list
+  const accountList = useMemo(() => {
+    const raw = Array.isArray(accounts)
+      ? accounts
+      : Object.entries(accounts || {}).flatMap(([type, rows]) =>
+          (rows || []).map(row => (Array.isArray(row) ? {code: row[0], name: row[1], type} : row))
+        );
+    const mapped = raw
+      .filter(a => !a.isGroup)
+      .map(a => ({
+        code: a.code,
+        name: a.name,
+        type: a.type || 'Assets',
+        group: a.parentName || a.group || a.type || 'Assets',
+        opening: Number(a.openingBalance) || 0,
+        normal: a.normalBalance || (['Assets', 'Expenses'].includes(a.type) ? 'Debit' : 'Credit'),
+        created: '01 Apr 2026'
+      }));
+    return [...new Map(mapped.map(a => [a.code, a])).values()];
+  }, [accounts]);
+
+  // Preferred account handoff or default to ALL
+  const preferred = sessionStorage.getItem('wayvida-open-account');
+
+  // Control bar state
+  const [selectedAccount, setSelectedAccount] = useState(() =>
+    preferred && accountList.some(a => a.code === preferred) ? preferred : 'ALL'
+  );
+  const [query, setQuery] = useState('');
+  const [range, setRange] = useState('This Financial Year');
+  const [branch, setBranch] = useState('All Branches');
+  const [cost, setCost] = useState('All Cost Centres');
+  const [voucher, setVoucher] = useState('All Voucher Types');
+  const [showZero, setShowZero] = useState(false);
+  const [filters, setFilters] = useState(false);
+  const [detail, setDetail] = useState(null);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
+
+  // Unique dropdown options
+  const branchOptions = ['All Branches', ...new Set(transactionRows.map(row => row.branch).filter(Boolean))];
+  const costOptions = ['All Cost Centres', ...new Set(transactionRows.map(row => row.cost).filter(Boolean))];
+
+  // Active filter count for badge
+  const appliedFilters = [
+    branch !== 'All Branches' && branch,
+    cost !== 'All Cost Centres' && cost,
+    voucher !== 'All Voucher Types' && voucher,
+    showZero && 'Zero Balance Accounts'
+  ].filter(Boolean);
+
+  function resetFilters() {
+    setBranch('All Branches');
+    setCost('All Cost Centres');
+    setVoucher('All Voucher Types');
+    setShowZero(false);
+    setQuery('');
+    setRange('This Financial Year');
+    notify('Ledger filters reset');
+  }
+
+  // Account Group Calculation
+  const accountGroups = useMemo(() => {
+    let list = accountList;
+
+    // Single account filter
+    if (selectedAccount !== 'ALL') {
+      list = list.filter(a => a.code === selectedAccount);
+    }
+
+    const q = query.trim().toLowerCase();
+
+    return list
+      .map(acc => {
+        // Find movements for this account matching active non-account filters
+        const movements = transactionRows.filter(
+          x =>
+            x.account === acc.code &&
+            (branch === 'All Branches' || x.branch === branch) &&
+            (cost === 'All Cost Centres' || x.cost === cost) &&
+            (voucher === 'All Voucher Types' || x.type === voucher)
+        );
+
+        // Account-level search query matching
+        const matchesAccName =
+          acc.code.toLowerCase().includes(q) ||
+          acc.name.toLowerCase().includes(q) ||
+          acc.type.toLowerCase().includes(q);
+
+        // Filter movements by query if user typed something
+        const filteredMovements = q
+          ? movements.filter(
+              x =>
+                matchesAccName ||
+                [x.voucher, x.party, x.description, x.journal, x.reference].some(v =>
+                  String(v || '').toLowerCase().includes(q)
+                )
+            )
+          : movements;
+
+        const opening = acc.opening;
+        const isCreditNormal = acc.normal === 'Credit';
+
+        // Calculate running balance per movement row
+        let running = opening;
+        const calculatedRows = filteredMovements.map(x => {
+          const signed = isCreditNormal ? x.credit - x.debit : x.debit - x.credit;
+          running += signed;
+          const sign = running >= 0 ? (isCreditNormal ? 'Cr' : 'Dr') : isCreditNormal ? 'Dr' : 'Cr';
+          return {
+            ...x,
+            running,
+            runningSign: sign
+          };
+        });
+
+        const debitTotal = filteredMovements.reduce((sum, x) => sum + x.debit, 0);
+        const creditTotal = filteredMovements.reduce((sum, x) => sum + x.credit, 0);
+
+        const netSigned = isCreditNormal ? creditTotal - debitTotal : debitTotal - creditTotal;
+        const closing = opening + netSigned;
+        const closingSign = closing >= 0 ? (isCreditNormal ? 'Cr' : 'Dr') : isCreditNormal ? 'Dr' : 'Cr';
+
+        const hasActivity = filteredMovements.length > 0 || opening !== 0 || closing !== 0;
+
+        return {
+          account: acc,
+          opening,
+          openingSign: opening >= 0 ? (isCreditNormal ? 'Cr' : 'Dr') : isCreditNormal ? 'Dr' : 'Cr',
+          movements: calculatedRows,
+          debitTotal,
+          creditTotal,
+          closing,
+          closingSign,
+          hasActivity,
+          matchesAccName
+        };
+      })
+      .filter(g => {
+        if (selectedAccount !== 'ALL') return true;
+        if (q) return g.matchesAccName || g.movements.length > 0;
+        if (!showZero) return g.hasActivity;
+        return true;
+      });
+  }, [accountList, transactionRows, selectedAccount, query, branch, cost, voucher, showZero]);
+
+  // Reset pagination on filter changes
+  useMemo(() => {
+    setCurrentPage(1);
+  }, [selectedAccount, query, range, branch, cost, voucher, showZero, pageSize]);
+
+  // Paginated account groups
+  const totalAccountGroups = accountGroups.length;
+  const totalPages = Math.max(1, Math.ceil(totalAccountGroups / pageSize));
+  const paginatedGroups = useMemo(() => {
+    if (selectedAccount !== 'ALL') return accountGroups;
+    const start = (currentPage - 1) * pageSize;
+    return accountGroups.slice(start, start + pageSize);
+  }, [accountGroups, selectedAccount, currentPage, pageSize]);
+
+  // Single Account Mode statistics
+  const singleGroup = selectedAccount !== 'ALL' ? accountGroups[0] : null;
+
+  return (
+    <section className="gl">
+      {/* 1. PAGE HEADER */}
+      <header className="gl-heading">
+        <div>
+          <h1>General Ledger</h1>
+          <p>View account movements and running balances.</p>
+        </div>
+        <div className="gl-heading-actions">
+          <label className="gl-account-picker">
+            <select
+              value={selectedAccount}
+              onChange={e => setSelectedAccount(e.target.value)}
+              aria-label="Select ledger account"
+            >
+              <option value="ALL">All Accounts</option>
+              {accountList.map(a => (
+                <option key={a.code} value={a.code}>
+                  {a.code} · {a.name}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <button
+            className={filters ? 'active' : ''}
+            onClick={() => setFilters(!filters)}
+            aria-expanded={filters}
+          >
+            <IconFilter size={17} />
+            Filters
+            {appliedFilters.length > 0 && (
+              <span className="gl-filter-count">{appliedFilters.length}</span>
+            )}
+          </button>
+
+          <details>
+            <summary>
+              <IconDownload size={17} />
+              Export
+              <IconChevronDown size={15} />
+            </summary>
+            <div>
+              <button onClick={() => notify('Excel export prepared')}>
+                <IconDownload size={16} />
+                Export Excel
+              </button>
+              <button onClick={() => notify('PDF export prepared')}>
+                <IconFileInvoice size={16} />
+                Export PDF
+              </button>
+              <button onClick={() => window.print()}>
+                <IconPrinter size={16} />
+                Print ledger
+              </button>
+              <button onClick={() => notify('Ledger report email prepared')}>
+                <IconMail size={16} />
+                Email report
+              </button>
+            </div>
+          </details>
+        </div>
+      </header>
+
+      {/* EXPANDABLE FILTERS POPOVER */}
+      {filters && (
+        <div className="gl-filters-more">
+          <div className="gl-filter-panel">
+            <div>
+              <IconAdjustments size={18} />
+              <span>
+                <b>Filter General Ledger</b>
+                <small>Refine financial year, branch, cost centre and voucher types.</small>
+              </span>
+              <button onClick={() => setFilters(false)} aria-label="Close filters">
+                <IconX size={18} />
+              </button>
+            </div>
+            <section>
+              <label>
+                Financial year / Date range
+                <select value={range} onChange={e => setRange(e.target.value)}>
+                  <option>This Financial Year</option>
+                  <option>This Month</option>
+                  <option>This Quarter</option>
+                  <option>Custom Range</option>
+                </select>
+              </label>
+              <label>
+                Branch
+                <select value={branch} onChange={e => setBranch(e.target.value)}>
+                  {branchOptions.map(x => (
+                    <option key={x}>{x}</option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Cost centre
+                <select value={cost} onChange={e => setCost(e.target.value)}>
+                  {costOptions.map(x => (
+                    <option key={x}>{x}</option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Voucher type
+                <select value={voucher} onChange={e => setVoucher(e.target.value)}>
+                  {[
+                    'All Voucher Types',
+                    'Sales Invoice',
+                    'Purchase Bill',
+                    'Receipt',
+                    'Payment',
+                    'Vendor Payment',
+                    'Journal Entry',
+                    'Credit Note',
+                    'Debit Note'
+                  ].map(x => (
+                    <option key={x}>{x}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="checkfield" style={{display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px'}}>
+                <input
+                  type="checkbox"
+                  checked={showZero}
+                  onChange={e => setShowZero(e.target.checked)}
+                />
+                Include zero-movement accounts
+              </label>
+            </section>
+            <footer>
+              <button onClick={resetFilters} className="gl-filter-reset">
+                <IconRefresh size={15} /> Reset filters
+              </button>
+              <button className="primary" onClick={() => setFilters(false)}>
+                <IconCheck size={16} /> Apply filters
+              </button>
+            </footer>
+          </div>
+        </div>
+      )}
+
+      {/* 3. COMBINED REPORT CARD (ACCOUNT CONTEXT, SUMMARY & LEDGER TABLE IN ONE SURFACE) */}
+      <section className="gl-card gl-report-card">
+        {selectedAccount !== 'ALL' && singleGroup ? (
+          <div className="gl-report-header">
+            <div className="gl-account-context-header">
+              <div className="gl-account-context-left">
+                <strong className="gl-account-title">
+                  {singleGroup.account.code} · {singleGroup.account.name}
+                </strong>
+                <span className="gl-account-meta">
+                  {singleGroup.account.group || singleGroup.account.type} · Normal {singleGroup.account.normal}
+                </span>
+              </div>
+              <span className="gl-entry-count">
+                {singleGroup.movements.length} {singleGroup.movements.length === 1 ? 'entry' : 'entries'}
+              </span>
+            </div>
+
+            <div className="gl-summary-container">
+              <div className="gl-summary-item">
+                <span className="gl-summary-label">OPENING BALANCE</span>
+                <strong className="gl-summary-value">
+                  {money(singleGroup.opening)} {singleGroup.openingSign}
+                </strong>
+              </div>
+              <div className="gl-summary-item">
+                <span className="gl-summary-label">TOTAL DEBITS</span>
+                <strong className="gl-summary-value">{money(singleGroup.debitTotal)}</strong>
+              </div>
+              <div className="gl-summary-item">
+                <span className="gl-summary-label">TOTAL CREDITS</span>
+                <strong className="gl-summary-value">{money(singleGroup.creditTotal)}</strong>
+              </div>
+              <div className="gl-summary-item gl-summary-closing">
+                <span className="gl-summary-label">CLOSING BALANCE</span>
+                <strong className="gl-summary-value">
+                  {money(singleGroup.closing)} {singleGroup.closingSign}
+                </strong>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="gl-report-header">
+            <div className="gl-account-context-header">
+              <div className="gl-account-context-left">
+                <strong className="gl-account-title">All Accounts</strong>
+                <span className="gl-account-meta">Viewing posted movements across accounts</span>
+              </div>
+              <span className="gl-entry-count">
+                {totalAccountGroups} {totalAccountGroups === 1 ? 'account' : 'accounts'}
+              </span>
+            </div>
+          </div>
+        )}
+
+        <div className="gl-table-scroll" aria-label="General Ledger Table">
+          <table className="gl-ledger-table gl-ledger-all-accounts">
+            {/* STICKY COLUMN HEADER */}
+            <thead>
+              <tr>
+                <th scope="col" style={{width: '12%', minWidth: '110px'}}>DATE</th>
+                <th scope="col" style={{width: '15%', minWidth: '140px'}}>{isEasy ? 'DOCUMENT' : 'VOUCHER'}</th>
+                <th scope="col" style={{width: '37%', minWidth: '240px'}}>{isEasy ? 'PARTY / DETAILS' : 'DETAILS'}</th>
+                <th scope="col" style={{width: '12%', minWidth: '120px', textAlign: 'right'}}>{isEasy ? 'MONEY IN' : 'DEBIT'}</th>
+                <th scope="col" style={{width: '12%', minWidth: '120px', textAlign: 'right'}}>{isEasy ? 'MONEY OUT' : 'CREDIT'}</th>
+                <th scope="col" style={{width: '12%', minWidth: '150px', textAlign: 'right', paddingRight: '24px'}}>BALANCE</th>
+              </tr>
+            </thead>
+            <tbody>
+              {paginatedGroups.map(group => {
+                const {account, movements} = group;
+
+                return (
+                  <FragmentGroup key={account.code}>
+                    {/* ACCOUNT GROUP HEADER ROW — RENDERED ONLY IN ALL ACCOUNTS MODE */}
+                    {selectedAccount === 'ALL' && (
+                      <tr className="gl-group-header-row">
+                        <td colSpan={6}>
+                          <div className="gl-group-header-content">
+                            <span className="gl-group-code">{account.code}</span>
+                            <span className="gl-group-name">{account.name}</span>
+                            <span className="gl-group-meta">
+                              {account.group || account.type} · Normal {account.normal}
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+
+                    {/* LEDGER MOVEMENTS */}
+                    {movements.map(row => (
+                      <tr key={row.id} className="gl-movement-row">
+                        <td>
+                          <div className="gl-date-cell">
+                            <b>{dateText(row.date)}</b>
+                          </div>
+                        </td>
+                        <td>
+                          <div className="gl-voucher-cell">
+                            <button
+                              className="gl-voucher-link"
+                              onClick={() => setDetail(row)}
+                              title={`View ${row.voucher} source details`}
+                            >
+                              {row.voucher}
+                            </button>
+                            <small className="gl-voucher-type">{row.type}</small>
+                          </div>
+                        </td>
+                        <td>
+                          <div className="gl-details-cell">
+                            {row.party && row.party !== '—' ? (
+                              <>
+                                <span className="gl-party-title">{row.party}</span>
+                                {row.description && row.description !== row.party && (
+                                  <small className="gl-narrative">{row.description}</small>
+                                )}
+                              </>
+                            ) : (
+                              <span className="gl-party-title">{row.description || `${row.type} posting`}</span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="gl-money">
+                          {row.debit ? money(row.debit) : <span className="gl-empty-val">—</span>}
+                        </td>
+                        <td className="gl-money">
+                          {row.credit ? money(row.credit) : <span className="gl-empty-val">—</span>}
+                        </td>
+                        <td className="gl-money balance" style={{paddingRight: '24px'}}>
+                          {money(row.running)} {row.runningSign}
+                        </td>
+                      </tr>
+                    ))}
+                  </FragmentGroup>
+                );
+              })}
+            </tbody>
+          </table>
+
+          {/* EMPTY STATE */}
+          {!accountGroups.length && (
+            <div className="gl-empty">
+              <IconBook size={32} />
+              <h3>No posted ledger accounts found</h3>
+              <p>Try resetting filters or searching for another account name or voucher.</p>
+              <button onClick={resetFilters}>Reset filters</button>
+            </div>
+          )}
+        </div>
+
+        {/* 5. ACCOUNT GROUP PAGINATION FOOTER (Only in All Accounts Mode) */}
+        {selectedAccount === 'ALL' && totalAccountGroups > 0 && (
+          <footer className="gl-pagination">
+            <div>
+              <span>
+                Showing accounts{' '}
+                <b>
+                  {(currentPage - 1) * pageSize + 1}–
+                  {Math.min(currentPage * pageSize, totalAccountGroups)}
+                </b>{' '}
+                of <b>{totalAccountGroups}</b>
+              </span>
+            </div>
+            <div style={{gap: '16px'}}>
+              <label style={{display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px'}}>
+                Accounts per page:
+                <select
+                  value={pageSize}
+                  onChange={e => setPageSize(Number(e.target.value))}
+                  style={{
+                    height: '28px',
+                    padding: '0 8px',
+                    borderRadius: '5px',
+                    border: '1px solid #d9e1ec'
+                  }}
+                >
+                  <option value={10}>10</option>
+                  <option value={20}>20</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
+                </select>
+              </label>
+              <div style={{display: 'flex', gap: '4px'}}>
+                <button
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  aria-label="Previous page"
+                >
+                  <IconChevronLeft size={16} />
+                </button>
+                <span
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: '0 8px',
+                    fontWeight: 600,
+                    fontSize: '12px'
+                  }}
+                >
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  disabled={currentPage >= totalPages}
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  aria-label="Next page"
+                >
+                  <IconChevronRight size={16} />
+                </button>
+              </div>
+            </div>
+          </footer>
+        )}
+      </section>
+
+      {/* SOURCE TRANSACTION DRAWER */}
+      {detail && (
+        <SourceDrawer
+          row={detail}
+          onClose={() => setDetail(null)}
+          onJournal={() => {
+            onNavigate('Journal Entries');
+            notify('Opening ' + detail.journal);
+          }}
+          onSource={() => {
+            onNavigate(detail.source);
+            notify('Opening ' + detail.voucher);
+          }}
+        />
+      )}
+    </section>
+  );
 }
 
-function SourceDrawer({row,onClose,onJournal,onSource}){return <><button className="gl-scrim" onClick={onClose} aria-label="Close transaction details"/><aside className="gl-drawer"><header><div><small>Ledger transaction</small><h2>{row.voucher}</h2></div><button onClick={onClose} aria-label="Close transaction details"><IconX size={18}/></button></header><span className="gl-posted"><IconCheck size={14}/>Posted</span><div className="gl-trace"><span>Source document</span><i>→</i><span>{row.journal}</span><i>→</i><span>Ledger entry</span></div><dl>{[['Date',dateText(row.date)],['Journal entry',row.journal],['Voucher type',row.type],['Reference',row.reference],['Description',row.description],['Branch',row.branch],['Cost centre',row.cost],['Reconciliation',row.reconciled?'Reconciled':'Unreconciled']].map(([k,v])=><div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl><section><p>Accounting impact</p><strong>{row.debit?'Debit '+money(row.debit):'Credit '+money(row.credit)}</strong></section><footer><button onClick={onJournal}><IconBook size={16}/>View journal</button><button onClick={()=>window.print()}><IconDownload size={16}/>Download PDF</button><button className="primary" onClick={onSource}><IconEye size={16}/>View source</button></footer></aside></>}
+// React fragment wrapper for group rows
+function FragmentGroup({children}) {
+  return <>{children}</>;
+}
 
-function AccountLedgerDetail({account,rows,tab,setTab,onBack,onSource,onNavigate,notify}){return <section className="gl gl-detail"><header className="gl-detail-head"><button onClick={onBack}><IconArrowLeft size={18}/></button><i><IconBuildingBank/></i><div><small>{account.code} · {account.type}</small><h1>{account.name}</h1><p>Current balance <b>{money(rows.at(-1)?.running??account.opening)} {account.normal==='Credit'?'Cr':'Dr'}</b></p></div><button onClick={()=>onNavigate('Chart of Accounts')}>Open account master</button></header><nav className="gl-tabs">{['Ledger','Transactions','Account Information','Audit Trail'].map(x=><button key={x} className={tab===x?'active':''} onClick={()=>setTab(x)}>{x}</button>)}</nav><div className="gl-detail-card">{tab==='Ledger'&&<div className="gl-table-scroll"><table><thead><tr><th>Date</th><th>Voucher</th><th>Description</th><th>Debit</th><th>Credit</th><th>Balance</th></tr></thead><tbody>{rows.map(r=><tr key={r.id}><td>{dateText(r.date)}</td><td><button className="gl-link" onClick={()=>onSource(r)}>{r.voucher}</button></td><td>{r.description}</td><td>{r.debit?money(r.debit):'—'}</td><td>{r.credit?money(r.credit):'—'}</td><td>{money(r.running)}</td></tr>)}</tbody></table></div>}{tab==='Transactions'&&<div className="gl-source-list">{rows.map(r=><button key={r.id} onClick={()=>onSource(r)}><IconFileInvoice/><span><b>{r.voucher}</b><small>{r.type} · {dateText(r.date)}</small></span><strong>{money(r.debit||r.credit)}</strong><IconEye/></button>)}</div>}{tab==='Account Information'&&<dl className="gl-facts">{[['Account code',account.code],['Account type',account.type],['Account group',account.group],['Opening balance',money(account.opening)],['Normal balance',account.normal],['Created date',account.created]].map(([k,v])=><div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl>}{tab==='Audit Trail'&&<div className="gl-audit"><p><IconHistory/>Account created by Admin · {account.created}</p><p><IconCheck/>Last ledger posting by Accounting Engine · 05 Sep 2026</p><p><IconRefresh/>Balance recalculated and verified against Trial Balance</p></div>}</div></section>}
+// Source drawer
+function SourceDrawer({row, onClose, onJournal, onSource}) {
+  return (
+    <>
+      <button className="gl-scrim" onClick={onClose} aria-label="Close transaction details" />
+      <aside className="gl-drawer">
+        <header>
+          <div>
+            <small>Ledger transaction</small>
+            <h2>{row.voucher}</h2>
+          </div>
+          <button onClick={onClose} aria-label="Close transaction details">
+            <IconX size={18} />
+          </button>
+        </header>
 
-function ReconcileDialog({rows,onClose,notify}){const [picked,setPicked]=useState(rows.filter(r=>r.reconciled).map(r=>r.id));const difference=rows.filter(r=>picked.includes(r.id)).reduce((n,r)=>n+r.debit-r.credit,0);return <div className="gl-modal"><section><header><div><h2>Account reconciliation</h2><p>Match statement activity with posted ledger transactions.</p></div><button onClick={onClose}><IconX/></button></header><div className="gl-reconcile-summary"><span><small>Selected transactions</small><b>{picked.length}</b></span><span><small>Matched value</small><b>{money(difference)}</b></span><span><small>Difference</small><b>₹0.00</b></span></div><div className="gl-reconcile-list">{rows.map(r=><label key={r.id}><input type="checkbox" checked={picked.includes(r.id)} onChange={()=>setPicked(picked.includes(r.id)?picked.filter(x=>x!==r.id):[...picked,r.id])}/><span><b>{r.description}</b><small>{dateText(r.date)} · {r.voucher}</small></span><strong>{money(r.debit||r.credit)}</strong></label>)}</div><footer><button onClick={onClose}>Cancel</button><button className="primary" onClick={()=>{notify('Selected transactions marked reconciled');onClose()}}><IconCheck/>Mark reconciled</button></footer></section></div>}
+        <span className="gl-posted">
+          <IconCheck size={14} />
+          Posted
+        </span>
+
+        <div className="gl-trace">
+          <span>Source document</span>
+          <i>→</i>
+          <span>{row.journal}</span>
+          <i>→</i>
+          <span>Ledger entry</span>
+        </div>
+
+        <dl>
+          {[
+            ['Date', dateText(row.date)],
+            ['Journal entry', row.journal],
+            ['Voucher type', row.type],
+            ['Party', row.party],
+            ['Description', row.description],
+            ['Branch', row.branch],
+            ['Cost centre', row.cost],
+            ['Reconciliation', row.reconciled ? 'Reconciled' : 'Unreconciled']
+          ].map(([k, v]) => (
+            <div key={k}>
+              <dt>{k}</dt>
+              <dd>{v}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <section>
+          <p>Accounting impact</p>
+          <strong>
+            {row.debit ? 'Debit ' + money(row.debit) : 'Credit ' + money(row.credit)}
+          </strong>
+        </section>
+
+        <footer>
+          <button onClick={onJournal}>
+            <IconBook size={16} />
+            View journal
+          </button>
+          <button onClick={() => window.print()}>
+            <IconDownload size={16} />
+            Download PDF
+          </button>
+          <button className="primary" onClick={onSource}>
+            <IconEye size={16} />
+            View source
+          </button>
+        </footer>
+      </aside>
+    </>
+  );
+}

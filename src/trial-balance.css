@@ -1,0 +1,956 @@
+/* Trial Balance report shell. Unified design language with Wayvida Books visual system. */
+.tbPage {
+  --tb-blue: #3478f6;
+  --tb-blue-dark: #175cd3;
+  --tb-blue-light: #eff6ff;
+  --tb-text: #0f172a;
+  --tb-secondary: #334155;
+  --tb-muted: #475569;
+  --tb-line: #e2e8f0;
+  --tb-bg-subtle: #f8fafc;
+  --tb-bg-total: #f1f5f9;
+  
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 100%;
+  margin: 0;
+  padding: 24px;
+  border: 1px solid var(--tb-line);
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+  color: var(--tb-text);
+  font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.tbPage * {
+  box-sizing: border-box;
+}
+
+.tbPage button,
+.tbPage input,
+.tbPage select {
+  font-family: inherit;
+}
+
+/* Keyboard Focus States - WCAG AA */
+.tbPage button:focus-visible,
+.tbPage input:focus-visible,
+.tbPage select:focus-visible,
+.tbPage summary:focus-visible,
+.tbAccountBtn:focus-visible {
+  outline: 2px solid var(--tb-blue) !important;
+  outline-offset: 2px !important;
+}
+
+/* 1. Page Header */
+.tbHead {
+  position: relative !important;
+  inset: auto !important;
+  z-index: 200 !important;
+  height: auto !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: 0 0 16px;
+  border-bottom: 1px solid var(--tb-line);
+  background: transparent;
+}
+
+.tbHeadTitle h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 30px;
+  color: var(--tb-text);
+  letter-spacing: -0.01em;
+}
+
+.tbHeadTitle p {
+  margin: 3px 0 0;
+  font-size: 13.5px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--tb-secondary);
+}
+
+.tbHeadActions {
+  position: relative;
+  z-index: 250;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+.tbPage button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--tb-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tbPage button:hover:not(:disabled) {
+  border-color: #b2ccff;
+  background: #f5f8ff;
+  color: var(--tb-blue-dark);
+}
+
+.tbPage button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.tbSearch {
+  width: 280px;
+  min-width: 240px;
+  height: 40px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  color: var(--tb-muted);
+  background: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tbSearch:focus-within {
+  border-color: var(--tb-blue);
+  box-shadow: 0 0 0 3px rgba(52, 120, 246, 0.12);
+}
+
+.tbSearch input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 14px;
+  color: var(--tb-text);
+}
+
+.tbSearch input::placeholder {
+  color: var(--tb-muted);
+  font-weight: 400;
+}
+
+.tbFiltersMore {
+  position: relative;
+  z-index: 300;
+  flex: none;
+}
+
+.tbFiltersMore summary {
+  height: 40px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  list-style: none;
+  color: var(--tb-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  background: #ffffff;
+  transition: border-color 0.15s ease;
+}
+
+.tbFiltersMore summary::-webkit-details-marker {
+  display: none;
+}
+
+.tbFiltersMore summary span {
+  min-width: 18px;
+  height: 18px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #eff8ff;
+  color: var(--tb-blue-dark);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.tbFilters {
+  position: absolute;
+  z-index: 400;
+  right: 0;
+  top: calc(100% + 8px);
+  width: min(620px, calc(100vw - 48px));
+  padding: 18px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  border: 1px solid var(--tb-line);
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.15);
+}
+
+.tbFilters label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--tb-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.tbFilters select,
+.tbFilters input[type=date] {
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--tb-text);
+  font-size: 14px;
+}
+
+.tbFilters .tbCheck {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  align-items: center;
+  gap: 9px;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.tbFilters .tbCheck input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--tb-blue);
+  cursor: pointer;
+}
+
+.tbFilterActions {
+  grid-column: 1 / -1;
+  justify-self: start;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.tbFilterActions button {
+  min-height: auto;
+  height: auto;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  color: var(--tb-blue-dark);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.tbFilterActions button:hover:not(:disabled) {
+  border: 0;
+  background: transparent;
+  text-decoration: underline;
+}
+
+.tbError {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border: 1px solid #fda29b;
+  border-radius: 8px;
+  background: #fef3f2;
+  color: #b42318;
+  font-size: 14px;
+}
+
+.tbPrintMeta {
+  display: none;
+}
+
+/* 2. Four Summary KPI Cards */
+.tbSummary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.tbSummaryCard {
+  min-height: 88px;
+  height: 88px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  border: 1px solid var(--tb-line);
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+.tbSummaryLabel {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--tb-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tbSummaryValue {
+  font-size: 21px;
+  font-weight: 700;
+  color: var(--tb-text);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.25;
+  white-space: nowrap !important;
+}
+
+.tbSummaryBalanced .tbSummaryValue {
+  color: #027a48;
+}
+
+.tbSummaryUnbalanced .tbSummaryValue {
+  color: #b42318;
+}
+
+.tbSummarySub {
+  font-size: 12.5px;
+  color: var(--tb-muted);
+  font-weight: 500;
+}
+
+/* 3. Switch Control Bar & Grid Layout (60% Left Table, 40% Right Insights) */
+.tbViewSwitchBar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 2px 0;
+}
+
+.tbSwitchControls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tbControlBtn {
+  min-height: 34px !important;
+  height: 34px !important;
+  padding: 0 14px !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 6px !important;
+  background: #ffffff !important;
+  color: var(--tb-secondary) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tbControlBtn:hover {
+  background: var(--tb-bg-subtle) !important;
+  color: var(--tb-text) !important;
+  border-color: #94a3b8 !important;
+}
+
+.tbControlBtn.active {
+  background: #f0f5fe !important;
+  color: var(--tb-blue-dark) !important;
+  border-color: #cbd5e1 !important;
+}
+
+.tbReportLayout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  align-items: start;
+  transition: grid-template-columns 0.2s ease;
+  width: 100%;
+}
+
+.tbReportLayout.withPanel {
+  grid-template-columns: 60% calc(40% - 20px);
+}
+
+.tbMainColumn {
+  min-width: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Right-side Inline Insights Panel */
+.tbSidePanel {
+  position: sticky !important;
+  top: 75px !important;
+  align-self: flex-start !important;
+  z-index: 5 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 18px;
+  border: 1px solid var(--tb-line);
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tbDrawerHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--tb-line);
+}
+
+.tbDrawerHead h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--tb-text);
+  line-height: 1.3;
+}
+
+.tbDrawerSub {
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  color: var(--tb-secondary);
+  font-weight: 400;
+}
+
+/* Composition Bar */
+.tbCompBar {
+  display: flex;
+  height: 8px;
+  width: 100%;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #e2e8f0;
+}
+
+.tbCompSeg {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.segAssets { background: #2563eb; }
+.segLiab { background: #64748b; }
+.segEquity { background: #0284c7; }
+.segIncome { background: #059669; }
+.segExpenses { background: #d97706; }
+
+.tbCompList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tbCompItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--tb-text);
+}
+
+.tbCompItem.highlight {
+  padding-top: 8px;
+  border-top: 1px solid var(--tb-line);
+  font-weight: 700;
+}
+
+.tbCompLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--tb-secondary);
+}
+
+.tbCompVal {
+  color: var(--tb-text);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.tbCompDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dotAssets { background: #2563eb; }
+.dotLiab { background: #64748b; }
+.dotEquity { background: #0284c7; }
+.dotIncome { background: #059669; }
+.dotExpenses { background: #d97706; }
+.dotTotal { background: var(--tb-text); }
+
+.tbContextDivider {
+  height: 1px;
+  background: var(--tb-line);
+  margin: 2px 0;
+}
+
+.tbMetricsBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tbMetricItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.tbMetricLabel {
+  color: var(--tb-secondary);
+}
+
+.tbMetricVal {
+  color: var(--tb-text);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.tbMetricVal.statusBalanced {
+  color: #059669;
+}
+
+.tbMetricVal.statusOut {
+  color: #d97706;
+}
+
+.tbReportNotes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tbNotesTitle {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--tb-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.tbReportNotes ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--tb-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* 4. Statement Table & Sticky Column Heading on Page Scroll */
+.tbStatementCard {
+  border: 1px solid var(--tb-line);
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+  overflow: hidden;
+}
+
+.tbTableScroll {
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  max-height: none !important;
+}
+
+.tbStatementCard table {
+  width: 100%;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  font-size: 13.5px;
+}
+
+/* Sticky Column Header on page scroll */
+.tbStatementCard table thead th {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 20 !important;
+  height: 40px;
+  background: var(--tb-bg-subtle) !important;
+  color: var(--tb-secondary) !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  padding: 8px 16px !important;
+  border-bottom: 2px solid var(--tb-line) !important;
+  text-align: left;
+  letter-spacing: 0.04em;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.04) !important;
+}
+
+.tbAccountHead {
+  width: 60%;
+}
+
+.tbMoneyHead {
+  width: 20%;
+  text-align: right !important;
+  white-space: nowrap !important;
+}
+
+.tbStatementCard th,
+.tbStatementCard td {
+  padding: 7px 16px !important;
+  border-top: 1px solid #f1f5f9;
+  font-variant-numeric: tabular-nums;
+  line-height: 20px;
+}
+
+/* Level 1 Major Categories (ASSETS, LIABILITIES, EQUITY, INCOME, EXPENSES) - 44-48px */
+.tbSection th {
+  position: static !important;
+  height: 46px;
+  padding: 8px 16px !important;
+  background: var(--tb-bg-subtle);
+  color: var(--tb-text);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left !important;
+  letter-spacing: 0.04em;
+  border-top: 1px solid var(--tb-line);
+}
+
+/* Level 2 Subgroups (Cash and Bank, Current Assets, etc.) - 40-44px */
+.tbGroup th {
+  position: static !important;
+  height: 42px;
+  padding: 6px 16px 6px 24px !important;
+  background: #ffffff;
+  color: var(--tb-text);
+  font-size: 13.5px;
+  font-weight: 650;
+  text-align: left !important;
+  border-top: 1px solid #f1f5f9;
+}
+
+/* Level 3 Dense Account Rows (1000 · Cash) - 42-46px */
+.tbAccountRow {
+  background: #ffffff;
+  height: 44px;
+  transition: background 0.12s ease;
+}
+
+.tbAccountRow td {
+  background: #ffffff;
+  padding: 7px 16px !important;
+}
+
+.tbAccountRow:hover td {
+  background: #fafcff !important;
+}
+
+.tbAccountRow.selected td {
+  background: #f0f5fe !important;
+}
+
+.tbAccountCell {
+  padding-left: 36px !important;
+  text-align: left;
+}
+
+.tbCode {
+  color: var(--tb-muted);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.tbSep {
+  color: #94a3b8;
+  font-size: 13px;
+  margin: 0 4px;
+}
+
+.tbAccountName {
+  color: var(--tb-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.tbAccountBtn {
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: auto !important;
+  height: auto !important;
+  color: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  cursor: pointer;
+  text-align: left;
+  display: inline-flex;
+  align-items: center;
+  line-height: 20px;
+  border-radius: 4px;
+}
+
+.tbAccountBtn:hover .tbAccountName {
+  color: var(--tb-blue-dark) !important;
+  text-decoration: underline !important;
+}
+
+.tbMoney {
+  text-align: right;
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--tb-text);
+}
+
+/* Level 4 Subtotal Row (Cash and Bank subtotal) - 42-44px */
+.tbGroupTotal {
+  height: 42px;
+}
+
+.tbGroupTotal td {
+  padding: 7px 16px !important;
+  border-top: 1px solid #edf2f7;
+  background: var(--tb-bg-subtle);
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.tbSubtotalLabel {
+  padding-left: 36px !important;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+/* Major Section Total (TOTAL ASSETS) - 44-48px */
+.tbTypeTotal {
+  height: 46px;
+}
+
+.tbTypeTotal td {
+  padding: 8px 16px !important;
+  border-top: 1px solid #cbd5e1;
+  background: var(--tb-bg-total);
+  color: var(--tb-text);
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.tbMajorTotalLabel {
+  padding-left: 16px !important;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tb-text);
+  letter-spacing: 0.02em;
+}
+
+/* Grand Total Row - 46-50px */
+.tbStatementCard tfoot tr.tbGrandTotal {
+  height: 48px;
+}
+
+.tbStatementCard tfoot td {
+  padding: 9px 16px !important;
+  border-top: 2px solid #3478f6;
+  border-bottom: 2px solid #3478f6;
+  background: #e0ecff;
+  color: var(--tb-text);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.tbGrandTotalLabel {
+  padding-left: 16px !important;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--tb-blue-dark);
+}
+
+/* Imbalance Warning */
+.tbMismatchWarning {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border: 1px solid #fec84b;
+  border-radius: 8px;
+  background: #fffaeb;
+  color: #b54708;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* About Report Section */
+.tbAboutReport {
+  margin-top: 4px;
+}
+
+.tbAboutReport summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--tb-secondary);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+
+.tbAboutReport summary:hover {
+  color: var(--tb-blue-dark);
+}
+
+.tbAboutReport p {
+  margin: 6px 0 0 24px;
+  color: var(--tb-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Responsive Styles */
+@media (max-width: 900px) {
+  .tbPage {
+    padding: 18px;
+  }
+  .tbHead {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .tbHeadActions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+  .tbSearch {
+    flex: 1 1 240px;
+  }
+  .tbSummary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .tbReportLayout.withPanel {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .tbPage {
+    padding: 14px;
+  }
+  .tbSearch {
+    width: 100%;
+    flex-basis: 100%;
+  }
+  .tbFiltersMore {
+    width: 100%;
+  }
+  .tbFiltersMore summary {
+    justify-content: center;
+  }
+  .tbFilters {
+    position: static;
+    width: 100%;
+    grid-template-columns: 1fr;
+    margin-top: 8px;
+  }
+  .tbSummary {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  @page {
+    size: landscape;
+    margin: 12mm;
+  }
+  body:has(.tbPage) .app > aside,
+  body:has(.tbPage) .app > header,
+  body:has(.tbPage) .welcome,
+  body:has(.tbPage) .tbHeadActions,
+  body:has(.tbPage) .tbFilters,
+  body:has(.tbPage) .tbAboutReport {
+    display: none !important;
+  }
+  .transactionPortal:has(.tbPage) {
+    position: static !important;
+    inset: auto !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+  }
+  .tbPage {
+    max-width: none;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+    border-radius: 0;
+    gap: 12px;
+  }
+  .tbPrintMeta {
+    display: block;
+  }
+  .tbPrintMeta p {
+    margin: 0 0 3px;
+    font-size: 12px;
+  }
+  .tbTableScroll {
+    overflow: visible;
+  }
+  .tbStatementCard table {
+    font-size: 12px;
+    table-layout: auto;
+  }
+  .tbStatementCard thead {
+    display: table-header-group;
+  }
+  .tbStatementCard tr {
+    break-inside: avoid;
+  }
+  .tbStatementCard th,
+  .tbStatementCard td {
+    padding: 6px;
+    white-space: normal;
+  }
+}

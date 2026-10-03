@@ -5,6 +5,16 @@ import {readFileSync} from 'node:fs';
 const workspace=readFileSync(new URL('../src/BudgetWorkspace.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
 const css=readFileSync(new URL('../src/budget-workspace.css',import.meta.url),'utf8');
 
+/* The register narrows to the working context. A stored scope keeps the organisation code the
+   scope control writes while the header context key holds the organisation id, so the two are
+   matched through the shared scope rule; comparing them raw hid every budget in the list. */
+test('the register narrows to the working organisation instead of the raw context key',()=>{
+  assert.ok(workspace.includes("const __working=normaliseScope({organisations:getScopeOrganisations(),companyIds:[localStorage.getItem('wayvida-demo-company')||'abc'],branchIds:[localStorage.getItem('wayvida-demo-branch')||'abc-kochi']});"),'the working context is resolved through the shared scope rule');
+  assert.ok(!workspace.includes('__cid'),'the raw context key no longer stands in for a stored scope reference');
+  assert.ok(workspace.includes('budget.scope?.companyIds?.some(organisation=>__working.companyIds.includes(organisation))'),'a plan stays listed when its scope names the working organisation');
+  assert.ok(workspace.includes("budget.scope?.type==='Entire Organisation'||budget.scope?.branchIds?.some(branch=>__working.branchIds.includes(branch))"),'and the branch only narrows a branch scoped plan');
+});
+
 test('the Budgets register is a grid of Budget Name, Financial Year, Budget Period and Actions',()=>{
   assert.ok(workspace.includes('<th scope="col">Budget Name</th><th scope="col">Financial Year</th><th scope="col">Budget Period</th><th scope="col">Actions</th>'),'the four columns are declared once');
   assert.ok(workspace.includes('<td><b>{budget.name}</b></td><td>{budget.financialYear}</td><td>{budget.period}</td>'),'each row states the name, the financial year and the budget period');

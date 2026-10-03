@@ -9,19 +9,20 @@
 .gl-filter-count{min-width:19px;height:19px;display:inline-grid;place-items:center;border-radius:10px;background:#2864d8;color:#fff;font-size:11px;margin-left:2px}
 .gl-viewbar{align-items:center}.gl-viewbar>small{margin-left:auto}.gl-chips{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.gl-chips span{display:inline-flex;padding:4px 8px;border:1px solid #dce5f1;border-radius:999px;background:#fff;color:#52627a}
 .gl-summary article.debit,.gl-summary article.credit{border-top-color:#9aa9bd}
-.gl-table-scroll{scrollbar-gutter:stable}.gl-table-scroll:focus-visible{outline:2px solid #3478f6;outline-offset:-2px}.gl table{min-width:1120px}.gl th:nth-child(n+6):nth-child(-n+8){text-align:right}.gl th:nth-child(8),.gl td:nth-child(8){position:sticky;right:0;z-index:1;background:#f8fafc;box-shadow:-1px 0 #e7edf5}.gl tbody td:nth-child(8){background:#fff}.gl tbody tr:hover td:nth-child(8){background:#f8fbff}.gl-money{color:#344054}.gl-money.debit,.gl-money.credit{color:#344054}.gl-money.balance{color:#234f9f}.gl-empty-value{color:#98a2b3;font-weight:400}
+.gl-table-scroll{scrollbar-gutter:stable}.gl-table-scroll:focus-visible{outline:2px solid #3478f6;outline-offset:-2px}.gl table{min-width:100%}.gl-money{color:#344054}.gl-money.debit,.gl-money.credit{color:#344054}.gl-money.balance{color:#234f9f}.gl-empty-value{color:#98a2b3;font-weight:400}
 @media(max-width:700px){.gl{gap:10px}.gl-heading h1{font-size:22px}.gl-helper{align-items:flex-start}.gl-primary-filters{padding:12px}.gl-summary article{min-height:86px;padding:12px}.gl-summary article strong{font-size:16px}.gl-account-card{min-height:82px}.gl-viewbar{align-items:flex-start}.gl-viewbar>small{margin-left:0}}
 
 /* Unified ledger filter drawer and overlap-safe data grid */
 .gl-filter-toolbar{display:flex;align-items:center;gap:10px;padding:12px}.gl-filter-toolbar .gl-search{flex:1;min-width:0;grid-column:auto}.gl-filter-toolbar>button{flex:none;min-width:112px;justify-content:center}
 .gl-filter-panel{position:fixed;z-index:200;top:0;right:0;bottom:0;width:min(420px,94vw);display:flex;flex-direction:column;border:0;border-left:1px solid var(--b);border-radius:0;box-shadow:-18px 0 45px #14223a25;overflow:auto}.gl-filter-panel>div{position:sticky;top:0;z-index:2;background:#fff;padding:18px 20px}.gl-filter-panel>section{display:flex;flex-direction:column;gap:16px;padding:20px;flex:1}.gl-filter-panel>footer{position:sticky;bottom:0;background:#fff;padding:14px 20px}.gl-filter-panel select{height:44px}
-.gl-ledger-table{min-width:1540px;table-layout:auto}.gl-ledger-table th,.gl-ledger-table td{position:static!important;box-shadow:none!important}.gl-ledger-table th:nth-child(6),.gl-ledger-table td:nth-child(6),.gl-ledger-table th:nth-child(7),.gl-ledger-table td:nth-child(7),.gl-ledger-table th:nth-child(8),.gl-ledger-table td:nth-child(8){text-align:right}.gl-ledger-table th:last-child,.gl-ledger-table td:last-child{position:sticky!important;right:0!important;z-index:2;background:#f8fafc!important;box-shadow:-1px 0 #dfe6ef!important;width:54px;min-width:54px}.gl-ledger-table tbody td:last-child{background:#fff!important}.gl-ledger-table tbody tr:hover td:last-child{background:#f8fbff!important}.gl-ledger-table td:nth-child(3){min-width:125px}.gl-ledger-table .gl-col-description{min-width:230px;white-space:normal}.gl-ledger-table .gl-col-reference{min-width:115px}.gl-status,.gl-reconciled,.gl-unreconciled{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:600}.gl-status,.gl-reconciled{background:#e8f7ee;color:#24724d}.gl-unreconciled{background:#fff5e6;color:#9a5b13}.gl-actions details{position:relative}.gl-actions summary{width:32px;height:32px;display:grid;place-items:center;border-radius:6px;color:#53647c;list-style:none}.gl-actions summary:hover{background:#edf3fc}.gl-actions details>div{position:absolute;right:0;top:36px;z-index:15;width:210px;padding:5px;border:1px solid #dfe6ef;border-radius:8px;background:#fff;box-shadow:0 14px 34px #14223a24}.gl-actions details>div button{width:100%;display:flex;align-items:center;gap:8px;padding:9px;border:0;border-radius:6px;background:#fff;color:#344054;text-align:left}.gl-actions details>div button:hover{background:#f1f6ff}.gl-trace{display:flex;align-items:center;gap:6px;margin:12px 20px;padding:10px;border:1px solid #dbe7f8;border-radius:8px;background:#f7faff;color:#49617f;font-size:12px}.gl-trace span{flex:1;text-align:center}.gl-trace i{color:#8ba0bc;font-style:normal}.gl-drawer>footer{grid-template-columns:1fr 1fr}.gl-drawer>footer .primary{grid-column:1/-1}
+.gl-filter-panel{transform:none!important}
+.gl-ledger-table{min-width:100%;table-layout:auto}.gl-ledger-table th,.gl-ledger-table td{box-shadow:none!important}.gl-status,.gl-reconciled,.gl-unreconciled{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:600}.gl-status,.gl-reconciled{background:#e8f7ee;color:#24724d}.gl-unreconciled{background:#fff5e6;color:#9a5b13}.gl-actions details{position:relative}.gl-actions summary{width:32px;height:32px;display:grid;place-items:center;border-radius:6px;color:#53647c;list-style:none}.gl-actions summary:hover{background:#edf3fc}.gl-actions details>div{position:absolute;right:0;top:36px;z-index:15;width:210px;padding:5px;border:1px solid #dfe6ef;border-radius:8px;background:#fff;box-shadow:0 14px 34px #14223a24}.gl-actions details>div button{width:100%;display:flex;align-items:center;gap:8px;padding:9px;border:0;border-radius:6px;background:#fff;color:#344054;text-align:left}.gl-actions details>div button:hover{background:#f1f6ff}.gl-trace{display:flex;align-items:center;gap:6px;margin:12px 20px;padding:10px;border:1px solid #dbe7f8;border-radius:8px;background:#f7faff;color:#49617f;font-size:12px}.gl-trace span{flex:1;text-align:center}.gl-trace i{color:#8ba0bc;font-style:normal}.gl-drawer>footer{grid-template-columns:1fr 1fr}.gl-drawer>footer .primary{grid-column:1/-1}
 @media(max-width:1100px){.gl-ledger-table{min-width:820px}.gl-ledger-table .gl-col-dimension{display:none}.gl-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.gl-account-card{grid-column:1/-1}.gl-filter-panel>section{display:flex}}
 @media(max-width:700px){.gl-filter-toolbar{display:flex!important;grid-template-columns:none!important}.gl-filter-toolbar .gl-search{grid-column:auto!important}.gl-filter-toolbar>button{width:auto}.gl-chips{max-width:100%;overflow:auto;flex-wrap:nowrap;padding-bottom:2px}.gl-chips span{white-space:nowrap}.gl-ledger-table{min-width:700px}.gl-ledger-table .gl-col-reference{display:none}.gl-ledger-table .gl-col-description{min-width:190px}.gl-filter-panel>section{display:flex}}
 @media(max-width:420px){.gl-filter-toolbar{flex-direction:column}.gl-filter-toolbar>*{width:100%!important}.gl-filter-toolbar>button{height:42px}.gl-summary{grid-template-columns:1fr 1fr}.gl-summary article{min-width:0}.gl-summary article strong{white-space:normal}}
 
 /* Full-page ledger grid: no nested horizontal or vertical scroller. */
-.gl-card{overflow:visible}.gl-table-scroll{overflow:visible!important;max-width:100%}.gl-ledger-table{width:100%!important;min-width:0!important;table-layout:fixed}.gl-ledger-table th,.gl-ledger-table td{position:static!important;box-shadow:none!important;padding:11px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.gl-ledger-table th:nth-child(1){width:92px}.gl-ledger-table th:nth-child(2){width:106px}.gl-ledger-table th:nth-child(3){width:108px}.gl-ledger-table th:nth-child(4){width:104px}.gl-ledger-table th:nth-child(5){width:auto}.gl-ledger-table th:nth-child(6),.gl-ledger-table th:nth-child(7){width:105px}.gl-ledger-table th:nth-child(8){width:128px}.gl-ledger-table th:nth-child(9),.gl-ledger-table th:nth-child(10){width:86px}.gl-ledger-table th:nth-child(11){width:82px}.gl-ledger-table th:nth-child(12){width:108px}.gl-ledger-table th:nth-child(13){width:46px}.gl-ledger-table .gl-col-description{min-width:0!important;white-space:normal;line-height:1.35}.gl-ledger-table .gl-col-reference{min-width:0!important}.gl-ledger-table th:nth-child(6),.gl-ledger-table td:nth-child(6),.gl-ledger-table th:nth-child(7),.gl-ledger-table td:nth-child(7),.gl-ledger-table th:nth-child(8),.gl-ledger-table td:nth-child(8){text-align:right}.gl-actions{overflow:visible!important}.gl-actions details>div{z-index:40}
+.gl-card{overflow:visible}.gl-table-scroll{overflow:visible!important;max-width:100%}.gl-ledger-table{width:100%!important;min-width:100%!important;table-layout:auto!important}.gl-ledger-table td{padding:12px 16px;vertical-align:middle;white-space:nowrap}.gl-ledger-table th{padding:12px 16px;vertical-align:middle;white-space:nowrap}.gl-actions{overflow:visible!important}.gl-actions details>div{z-index:40}
 @media(max-width:1450px){.gl-ledger-table .gl-col-reference,.gl-ledger-table .gl-col-dimension{display:none}.gl-ledger-table th:nth-child(5){width:auto}.gl-ledger-table th:nth-child(12){width:108px}}
 @media(max-width:1100px){.gl-ledger-table th:nth-child(12),.gl-ledger-table td:nth-child(12){display:none}.gl-ledger-table th:nth-child(2){width:98px}.gl-ledger-table th:nth-child(3){width:104px}}
 @media(max-width:700px){.gl-ledger-table th:nth-child(2),.gl-ledger-table td:nth-child(2),.gl-ledger-table th:nth-child(11),.gl-ledger-table td:nth-child(11){display:none}.gl-ledger-table th:nth-child(1){width:80px}.gl-ledger-table th:nth-child(3){width:92px}.gl-ledger-table th:nth-child(6),.gl-ledger-table th:nth-child(7){width:82px}.gl-ledger-table th:nth-child(8){width:102px}.gl-ledger-table th:nth-child(13){width:42px}.gl-ledger-table th,.gl-ledger-table td{padding:10px 6px}}
@@ -47,3 +48,465 @@
 /* Side-detail convention: ledger drawers open from the left. */
 .gl-drawer{left:0;right:auto;border-right:1px solid #dfe6ef;box-shadow:18px 0 45px #14223a25}
 .gl-drawer{left:auto;right:0;border-left:1px solid #dfe6ef;border-right:0;box-shadow:-18px 0 45px #14223a25}
+
+/* Balance Sheet report shell parity.  The ledger keeps its own read-only data
+   projection, but shares the financial-statement hierarchy and density. */
+.welcome:has(+ .gl){display:none}
+.gl{max-width:100%;margin:16px 20px;gap:16px;padding:24px 32px;background:#fff;border:1px solid #dfe6ef;border-radius:12px;box-shadow:0 1px 2px #10182808}
+.gl-heading{align-items:flex-start;padding:0;border:0!important;border-bottom:0!important;border-radius:0;background:transparent;box-shadow:none;margin-bottom:0!important}
+.gl-heading h1{margin:0;font-size:24px;line-height:1.2;letter-spacing:0;color:#172033}
+.gl-heading p{margin:5px 0 0;font-size:13px;color:#667085}
+.gl-eyebrow{display:none}
+.gl-heading-actions.gl-primary-filters{display:flex;align-items:flex-end;justify-content:flex-end;gap:10px;min-width:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
+.gl-account-picker{width:220px;min-width:180px}
+.gl-account-picker>span{display:none}
+.gl-account-picker select,.gl-search{height:40px!important;border-color:#d9e1ec;border-radius:7px;font-size:13px}
+.gl-search{width:220px;flex:none!important}
+.gl-primary-filters>button,.gl-heading-actions summary{height:40px;border-color:#d9e1ec;border-radius:7px;font-size:12px}
+.gl-primary-filters>button{min-width:0;padding:0 10px}
+.gl-heading-actions details>div{top:calc(100% + 8px);z-index:80;border-color:#e1e6ed;border-radius:9px;box-shadow:0 12px 28px #1018281f}
+.gl-viewbar{min-height:0;padding:0;color:#667085}
+.gl-chips span{padding:4px 8px;border-color:#dce5f1;background:#fff;color:#52627a;font-size:12px}
+.gl-summary{grid-template-columns:minmax(250px,1.45fr) repeat(4,minmax(145px,1fr));gap:10px}
+.gl-summary article,.gl-account-card{min-height:92px;padding:15px 12px;border-color:#dfe6ef;border-radius:9px;box-shadow:none}
+.gl-summary article{gap:8px}
+.gl-summary article:first-of-type{background:#fff}
+.gl-summary article small{font-size:12px}
+.gl-summary article strong{font-size:18px;letter-spacing:-.5px}
+.gl-summary article.debit,.gl-summary article.credit{border-top:1px solid #dfe6ef}
+.gl-summary article.closing{border-top:1px solid #d2e0ff;background:#edf3ff;color:#285dca}
+.gl-account-card{background:#edf3ff;border-color:#d2e0ff}
+.gl-account-card>i{background:#fff;color:#285dca}
+.gl-card{border-color:#e2e8f0;border-radius:10px;box-shadow:none;overflow:hidden}
+.gl-card-head{padding:14px 16px;background:#f7f9fc;border-bottom:1px solid #e2e8f0}
+.gl-card-head h2{color:#344054;font-size:14px}
+.gl-card-head p{font-size:12px;color:#667085}
+.gl-card-head>button{height:36px;border-color:#d9e1ec;font-size:12px}
+.gl-ledger-table th,.gl-ledger-table td{padding:11px 14px;border-color:#edf1f6;font-size:13px}
+.gl-ledger-table th{height:42px;background:#f7f9fc;color:#5b6b81;font-size:12px;font-weight:600}
+.gl-ledger-table tbody tr:hover{background:#f8fbff}
+.gl-view-detail{height:32px;border-color:#d9e1ec;color:#245fd9;font-size:12px}
+.gl-status{background:#e8f7ee;color:#24724d}
+.gl-card>footer{position:sticky;bottom:0;z-index:12;align-items:center;padding:10px 13px;border:1px solid #cee9da;border-radius:7px;background:#eaf7ef;color:#28724d;box-shadow:0 -6px 16px #1018280d;font-size:12px}
+.gl-card>footer strong{color:#28724d;font-size:13px}
+.gl-filter-panel .gl-account-picker{width:auto;min-width:0;display:flex!important;gap:6px!important}
+.gl-filter-panel .gl-account-picker>span{display:block;color:#475467;font-size:12px;font-weight:600}
+.gl-filter-panel .gl-account-picker select{font-weight:500}
+.gl-view-detail{width:32px;min-width:32px;padding:0!important;font-size:0;gap:0}
+.gl-view-detail svg{width:16px;height:16px}
+body:has(.gl) .app>header{border-top:0}
+@media(max-width:1180px){.gl-heading{flex-direction:column}.gl-heading-actions.gl-primary-filters{width:100%;justify-content:flex-start}.gl-search{flex:1!important}}
+@media(max-width:760px){.gl{padding:18px;gap:16px}.gl-heading-actions.gl-primary-filters{flex-wrap:wrap}.gl-account-picker{width:100%;min-width:0}.gl-search{flex:1 1 220px!important}.gl-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.gl-account-card{grid-column:1/-1}.gl-card>footer{align-items:flex-start;flex-direction:column}}
+@media(max-width:560px){.gl{padding:14px}.gl-heading-actions.gl-primary-filters{display:grid!important;grid-template-columns:1fr 1fr;gap:8px}.gl-account-picker,.gl-search{grid-column:1/-1;width:100%!important}.gl-search{flex-basis:auto!important}.gl-heading-actions>details{width:auto!important}.gl-heading-actions summary{width:100%;justify-content:center}.gl-summary{grid-template-columns:1fr}.gl-account-card{grid-column:auto}}
+
+/* Ledger controls use the same anchored Filters popover as the report pages. */
+.gl-filters-more{position:relative;flex:none}
+.gl-filters-more summary::-webkit-details-marker{display:none}
+.gl-filters-more .gl-filter-panel{position:absolute;z-index:80;top:calc(100% + 8px);right:0;bottom:auto;width:min(620px,calc(100vw - 48px));display:block;padding:12px;border:1px solid #e1e6ed;border-radius:9px;background:#fff;box-shadow:0 12px 28px #1018281f;transform:none!important}
+.gl-filters-more .gl-filter-panel>section{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:0}
+.gl-filters-more .gl-filter-panel label{gap:6px;font-size:12px}
+.gl-filters-more .gl-filter-panel select{height:40px;font-size:13px}
+.gl-filters-more .gl-account-picker{width:auto;min-width:0}
+.gl-filter-reset{grid-column:1/-1;justify-self:start;min-height:auto!important;padding:4px 0!important;border:0!important;background:transparent!important;color:#245fd9!important;font-size:12px!important}
+.gl-card>.gl-table-scroll+.gl-pagination{margin:0}
+.gl-pagination{display:flex;align-items:center;justify-content:space-between;gap:8px;height:auto!important;min-height:48px;overflow:visible!important;padding:8px 14px;border-top:1px solid #edf1f6;background:#fff;color:#667085;font-size:12px}
+.gl-pagination>div{display:flex;align-items:center;gap:8px}.gl-pagination b{color:#475467;font-size:12px}.gl-pagination button{width:32px;height:32px;display:grid;place-items:center;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#344054}.gl-pagination button:hover:not(:disabled){border-color:#aac2ed;background:#f5f8ff}.gl-pagination button:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:560px){.gl-filters-more{grid-column:auto}.gl-filters-more .gl-filter-panel{position:fixed;inset:72px 12px auto;width:auto;max-height:calc(100vh - 96px);overflow:auto}.gl-filters-more .gl-filter-panel>section{grid-template-columns:1fr}.gl-pagination{align-items:flex-start;justify-content:flex-start;flex-direction:column}.gl-pagination>div{width:100%;justify-content:flex-end}}
+
+/* Clean Report Surface & Combined Account Context */
+.gl-report-surface {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #fff;
+  border: 1px solid #dfe6ef;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 14px;
+}
+
+.gl-all-accounts-surface {
+  padding: 14px 20px;
+}
+
+.gl-account-context-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.gl-account-context-left {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.gl-account-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.gl-account-meta {
+  font-size: 13px;
+  color: #64748b;
+  padding-left: 10px;
+  border-left: 1px solid #cbd5e1;
+}
+
+.gl-entry-count {
+  font-size: 13px;
+  font-weight: 500;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+/* Header Actions & Controls Alignment */
+.gl-heading-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  flex-wrap: wrap !important;
+}
+
+.gl-heading-actions .gl-account-picker {
+  width: 200px !important;
+  min-width: 160px !important;
+}
+
+.gl-heading-actions .gl-account-picker select {
+  height: 40px !important;
+}
+
+.gl-heading-actions .gl-search {
+  width: 280px !important;
+  min-width: 220px !important;
+}
+
+.gl-heading-actions .gl-search input {
+  height: 38px !important;
+}
+
+/* Single Merged Report Card Surface */
+.gl-report-card {
+  background: #ffffff !important;
+  border: 1px solid #dfe6ef !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 10px rgba(16, 24, 40, 0.05) !important;
+  overflow: visible !important;
+}
+
+.gl-report-header {
+  padding: 18px 20px !important;
+  border-bottom: 0 !important;
+}
+
+/* Single Account Clean 4-Section Summary Container */
+.gl-summary-container {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+  overflow: hidden;
+  margin-top: 14px;
+}
+
+.gl-summary-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 18px;
+  border-right: 1px solid #e2e8f0;
+}
+
+.gl-summary-item:last-child {
+  border-right: 0;
+}
+
+.gl-summary-closing {
+  background: #f0f6ff;
+}
+
+.gl-summary-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.gl-summary-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+.gl-summary-closing .gl-summary-value {
+  color: #1e40af;
+}
+
+/* Table and Account Group Styling with Window Sticky Header */
+.gl-card,
+.gl-report-card {
+  overflow: visible !important;
+}
+
+.gl-table-scroll {
+  overflow: visible !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+.gl-ledger-all-accounts,
+.gl-ledger-table {
+  width: 100% !important;
+  min-width: 840px !important;
+  table-layout: fixed !important;
+  border-collapse: collapse !important;
+  border-spacing: 0 !important;
+}
+
+.gl-ledger-all-accounts thead th,
+.gl-ledger-table thead th {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+  background: #f8fafc !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08) !important;
+  color: #475467 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.03em !important;
+  padding: 12px 14px !important;
+  white-space: nowrap !important;
+}
+
+.gl-ledger-table th,
+.gl-ledger-table td {
+  box-sizing: border-box !important;
+}
+
+.gl-ledger-table th:nth-child(1),
+.gl-ledger-table td:nth-child(1) {
+  width: 12% !important;
+  min-width: 110px !important;
+  text-align: left !important;
+}
+
+.gl-ledger-table th:nth-child(2),
+.gl-ledger-table td:nth-child(2) {
+  width: 15% !important;
+  min-width: 130px !important;
+  text-align: left !important;
+}
+
+.gl-ledger-table th:nth-child(3),
+.gl-ledger-table td:nth-child(3) {
+  width: 31% !important;
+  min-width: 200px !important;
+  text-align: left !important;
+}
+
+.gl-ledger-table th:nth-child(4),
+.gl-ledger-table td:nth-child(4) {
+  width: 14% !important;
+  min-width: 140px !important;
+  text-align: right !important;
+  padding-left: 24px !important;
+  padding-right: 24px !important;
+}
+
+.gl-ledger-table th:nth-child(5),
+.gl-ledger-table td:nth-child(5) {
+  width: 14% !important;
+  min-width: 140px !important;
+  text-align: right !important;
+  padding-left: 24px !important;
+  padding-right: 24px !important;
+}
+
+.gl-ledger-table th:nth-child(6),
+.gl-ledger-table td:nth-child(6) {
+  width: 14% !important;
+  min-width: 160px !important;
+  text-align: right !important;
+  padding-left: 24px !important;
+  padding-right: 28px !important;
+}
+
+.gl-group-header-row td {
+  background: #f1f5f9 !important;
+  padding: 10px 16px !important;
+  border-top: 1px solid #cbd5e1 !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+.gl-group-header-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.gl-group-code {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.gl-group-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.gl-group-meta {
+  font-size: 12px;
+  color: #64748b;
+  margin-left: 8px;
+  padding-left: 12px;
+  border-left: 1px solid #cbd5e1;
+}
+
+.gl-row-balance td {
+  background: #fafbfc !important;
+  padding: 8px 16px !important;
+  font-size: 13px !important;
+}
+
+.gl-balance-label {
+  font-weight: 600;
+  color: #475467;
+}
+
+.gl-opening-balance-row td {
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+
+.gl-closing-balance-row td {
+  border-top: 1px solid #cbd5e1 !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+  background: #f8fafc !important;
+}
+
+.gl-money {
+  text-align: right !important;
+  white-space: nowrap !important;
+  font-variant-numeric: tabular-nums !important;
+  font-feature-settings: "tnum" !important;
+  font-size: 13px !important;
+  color: #0f172a !important;
+}
+
+.gl-money.total-col {
+  font-weight: 600;
+  color: #334155 !important;
+}
+
+.gl-money.closing-bal {
+  font-weight: 700;
+  color: #1e40af !important;
+}
+
+.gl-movement-row td {
+  padding: 9px 16px !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  font-size: 13px !important;
+  vertical-align: top !important;
+}
+
+.gl-movement-row:hover td {
+  background: #f8fbff !important;
+}
+
+.gl-date-cell b {
+  font-weight: 600;
+  color: #1e293b;
+  white-space: nowrap;
+}
+
+.gl-voucher-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gl-voucher-link {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  color: #3478f6 !important;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.gl-voucher-link:hover {
+  text-decoration: underline;
+}
+
+.gl-voucher-link:focus-visible {
+  outline: 2px solid #3478f6;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.gl-voucher-type {
+  font-size: 11px;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.gl-details-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gl-party-title {
+  font-weight: 500;
+  color: #0f172a;
+  font-size: 13px;
+}
+
+.gl-narrative {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.3;
+}
+
+.gl-empty-val {
+  color: #94a3b8;
+}
+
+@media(max-width: 760px) {
+  .gl-summary-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .gl-summary-item {
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .gl-summary-item:nth-child(2) {
+    border-right: 0;
+  }
+}
+
+/* Financial Values (Debit, Credit, Balance) alignment and readability */
+.gl-money.debit,
+.gl-money.credit,
+.gl-money.balance {
+  font-variant-numeric: tabular-nums !important;
+  font-feature-settings: "tnum" !important;
+  white-space: nowrap !important;
+}
+
+
+

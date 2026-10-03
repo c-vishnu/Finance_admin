@@ -1,0 +1,198 @@
+/* ---------------------------------------------------------------------------
+   Tax & Compliance - GST / Tax Reports and TDS Reports.
+
+   Both pages belong to the same family as Balance Sheet, Trial Balance, Day
+   Book, General Ledger, Customer Outstanding, Supplier Outstanding and the
+   Transaction Register, so this sheet states nothing new: the page surface, the
+   heading row, the 300px search beside the Filters disclosure, the four summary
+   cards, the tab strip, the fixed-column card, the caption, the totals row, the
+   pager, the empty and error states, the reconciliation line, the printed
+   identity block and the right-side portal neutralisation are the same values
+   those reports use. Only the tax columns are specific here.
+
+   The two pages share one set of class names because they are one visual system:
+   the only differences are the column widths and which columns a narrow screen
+   drops first, and those are scoped by the .tcGstPage / .tcTdsPage modifier.
+   --------------------------------------------------------------------------- */
+
+/* The dashboard portal every report is rendered into. The Transaction Register sheet declares the
+   same rule; it is repeated here with identical values so this sheet can stand alone, because both
+   tax pages render into that portal from the same navigation. */
+.transactionPortal{position:fixed;z-index:45;inset:59px 0 0 250px;overflow:auto;background:#f5f7fb;padding:24px}
+
+.tcPage{--tc-blue:#3478f6;--tc-text:#172033;--tc-muted:#667085;--tc-line:#e2e8f0;display:flex;flex-direction:column;gap:20px;max-width:100%;min-width:0;margin:0;padding:24px;border:1px solid #dfe6ef;border-radius:12px;background:#fff;box-shadow:0 1px 2px #10182808;color:var(--tc-text);font:14px/1.45 'Instrument Sans',sans-serif}
+.tcPage *{box-sizing:border-box}
+.tcPage button,.tcPage input,.tcPage select{font:inherit}
+
+/* ---------- Heading ---------- */
+.tcHead{position:static!important;inset:auto!important;z-index:auto!important;height:auto!important;display:flex;align-items:center;justify-content:space-between;gap:18px;width:100%;padding:0 0 20px;border-bottom:1px solid #e6ecf3;background:transparent}
+.tcHeadText{min-width:0}
+.tcHead h1{margin:0;font-size:24px;line-height:1.2}
+.tcHead p{margin:5px 0 0;font-size:13px;color:var(--tc-muted)}
+.tcHeadActions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.tcPage button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:8px 12px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;cursor:pointer}
+.tcPage button:hover:not(:disabled){border-color:#aac2ed;background:#f5f8ff}
+.tcPage button:disabled{cursor:not-allowed;opacity:.55}
+.tcPage button:focus-visible,.tcPage input:focus-visible,.tcPage select:focus-visible,.tcFiltersMore summary:focus-visible,.tcTabs button:focus-visible{outline:2px solid #9cbbff;outline-offset:2px}
+.tcSearch{width:300px;height:40px;padding:0 10px;display:flex;align-items:center;gap:8px;border:1px solid #d9e1ec;border-radius:7px;color:#344054}
+.tcSearch input{width:100%;min-width:0;border:0;outline:0;background:transparent;font-size:13px}
+.tcFiltersMore{position:relative}
+.tcFiltersMore summary{height:40px;padding:0 10px;display:flex;align-items:center;gap:6px;border:1px solid #d9e1ec;border-radius:7px;list-style:none;color:#344054;font-size:12px;font-weight:600;cursor:pointer}
+.tcFiltersMore summary::-webkit-details-marker{display:none}
+.tcFiltersMore summary span{min-width:17px;height:17px;display:inline-grid;place-items:center;border-radius:999px;background:#eaf1ff;color:#245fd9;font-size:11px;font-weight:700}
+.tcFilters{position:absolute;right:0;top:calc(100% + 6px);z-index:20;width:min(560px,calc(100vw - 48px));display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:16px;border:1px solid var(--tc-line);border-radius:10px;background:#fff;box-shadow:0 12px 32px #1018281f}
+.tcFilters label{display:flex;flex-direction:column;gap:6px;color:#475467;font-size:12px;font-weight:600}
+.tcFilters input,.tcFilters select{min-height:38px;padding:7px 9px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#172033}
+.tcFilterActions{grid-column:1/-1;display:flex;justify-content:flex-end;gap:8px;padding-top:4px;border-top:1px solid #eef2f7}
+
+/* ---------- States and printed identity ---------- */
+.tcError{display:flex;align-items:center;gap:10px;padding:12px 15px;border:1px solid #ffd3d9;border-radius:8px;background:#fff1f2;color:#b33243}
+.tcError button{margin-left:auto}
+.tcPrintMeta{display:none}
+
+/* ---------- Summary ---------- */
+.tcSummary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.tcSummary>div{min-height:92px;padding:15px 12px;display:flex;flex-direction:column;justify-content:center;gap:8px;border:1px solid #dfe6ef;border-radius:9px;background:#fff}
+.tcSummary>div:first-child{background:#edf3ff;border-color:#d2e0ff;color:#285dca}
+.tcSummary span{color:var(--tc-muted);font-size:12px}
+.tcSummary strong{font-size:22px;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+.tcSummary small{color:var(--tc-muted);font-size:11px}
+
+/* ---------- Tabs ----------
+   The four GST views and the three TDS views are one page each with a tab strip, exactly as the
+   operational workspaces already present their tabs, so no GST or TDS sub-report becomes a sidebar
+   entry of its own. */
+.tcTabs{display:flex;gap:5px;padding:8px 10px;border:1px solid var(--tc-line);border-radius:10px;background:#fff;overflow:auto}
+.tcTabs button{flex:none;min-height:34px;padding:6px 12px;border:1px solid transparent;border-radius:7px;background:transparent;color:#475467;font-size:12px;font-weight:600}
+.tcTabs button:hover:not(.active){border-color:#dbe6f8;background:#f5f8ff}
+.tcTabs button.active{border-color:#cfe0ff;background:#eaf1ff;color:#245fd9}
+
+/* ---------- Report ---------- */
+.tcRegisterCard{border:1px solid var(--tc-line);border-radius:10px;background:#fff;overflow:hidden}
+.tcTableScroll{overflow-x:auto;overscroll-behavior-inline:contain}
+.tcRegisterCard table{width:100%;border-collapse:collapse;font-size:13px}
+.tcRegisterCard .tcFixed{table-layout:fixed}
+.tcRegisterCard .tcAggregate{table-layout:auto;min-width:720px}
+.tcCaption{caption-side:top;padding:12px 16px;border-bottom:1px solid #edf1f6;background:#fbfcfe;color:var(--tc-muted);font-size:12px;text-align:left}
+.tcRegisterCard th,.tcRegisterCard td{padding:11px 12px;border-top:1px solid #edf1f6;text-align:left;vertical-align:middle}
+.tcRegisterCard thead th{position:sticky!important;top:-24px!important;z-index:20!important;background:#f7f9fc!important;color:#5b6b81!important;font-size:12px!important;font-weight:600!important;border-bottom:2px solid #cbd5e1!important;border-top:1px solid #dfe6ef!important;box-shadow:0 2px 6px rgba(15,23,42,0.08)!important;white-space:nowrap}
+.tcRegisterCard tbody tr:hover{background:#fafcff}
+/* A document total and a report total are sums of one measure, so a totals row is meaningful here -
+   unlike the Transaction Register, where an invoice and a receipt cannot be added together. */
+.tcRegisterCard tfoot td{border-top:1px solid var(--tc-line);background:#f7f9fc;color:#172033;font-weight:650}
+.tcRegisterCard tfoot td:first-child{color:#475467;font-weight:600}
+.tcMoney{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tcNumCol{text-align:right}
+.tcRight{text-align:right}
+.tcStrong{font-weight:700;color:#172033}
+/* The page shows twenty-five rows at a time, so the rows outside the page in view are withheld from
+   the screen - never from the report: the printed PDF still states the whole filtered dataset. */
+.tcRegisterCard tbody tr.tcOffPage{display:none}
+/* Every text column stays on one line and shortens with an ellipsis, so a long customer, vendor or
+   GSTIN never wraps the row into three lines. The full value stays on the cell's title and in the
+   export. The numeric columns are never truncated. */
+.tcRegisterCard td.tcDateCol,.tcRegisterCard td.tcTypeCol,.tcRegisterCard td.tcNumberCol,.tcRegisterCard td.tcPartyCol,.tcRegisterCard td.tcGstinCol,.tcRegisterCard td.tcPanCol,.tcRegisterCard td.tcCodeCol,.tcRegisterCard td.tcRateCol,.tcRegisterCard td.tcStateCol{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tcRegisterCard td.tcDateCol{color:var(--tc-muted);font-size:12px}
+.tcRegisterCard td.tcDateTypeCol{color:var(--tc-text);font-size:13px;line-height:1.3;white-space:nowrap}
+.tcRegisterCard td.tcDateTypeCol .tcDateVal{font-weight:600;color:#0f172a}
+.tcRegisterCard td.tcDateTypeCol .tcTypeVal{font-size:11px;color:#64748b;font-weight:400;margin-top:2px}
+.tcRegisterCard td.tcPartyCol{font-weight:600;color:#172033}
+.tcRegisterCard td.tcGstinCol,.tcRegisterCard td.tcPanCol{color:#475467;font-variant-numeric:tabular-nums}
+.tcRegisterCard td.tcRateCol{text-align:right;color:#475467}
+.tcRegisterCard td.tcMoney.tcStrong{color:#172033}
+.tcSection{display:inline-flex;padding:3px 8px;border-radius:6px;background:#eef2f7;color:#3f4c60;font-size:12px;font-weight:650}
+.tcCodeCol{font-weight:650}
+/* The document number is the primary handle on the row: a link-styled control that opens the very
+   document the row states, the way the invoice and journal registers render theirs. */
+.tcPage button.tcLink{display:block;width:fit-content;max-width:100%;min-height:0;padding:0;border:0;border-radius:0;background:none;color:#286aee;font:inherit;font-weight:650;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
+.tcPage button.tcLink:hover:not(:disabled){border:0;background:none;color:#174fa9;text-decoration:underline}
+
+/* ---------- Pager ----------
+   The shared footer the journal, inventory, purchase and transaction registers already use, so the
+   count, the page size and the arrows read identically here. */
+.tcPager.pagination-footer{padding:8px 16px}
+.tcPager .pagination-left,.tcPager .pagination-right{font-size:12px;color:var(--tc-muted)}
+.tcPager .tcPerPage{display:inline-flex;align-items:center}
+.tcPager .tcPerPage select{font-size:12px;color:var(--tc-muted)}
+.tcPager.pagination-footer button{width:32px;height:32px;min-height:32px;padding:0;border:1px solid #d7e0eb;border-radius:6px;background:#fff;color:#344054}
+.tcPager.pagination-footer button:hover:not(:disabled){border-color:#aac2ed;background:#f5f8ff}
+
+/* ---------- Reconciliation and explanatory note ---------- */
+.tcRecon{display:flex;align-items:center;flex-wrap:wrap;justify-content:space-between;gap:9px 18px;margin:0;padding:11px 15px;border:1px solid;border-radius:9px;font-size:13px;font-weight:600}
+/* The TDS reconciliation states its three figures and then the check they were put to, so the
+   identity TDS Payable = TDS Deducted - TDS Paid is visible rather than asserted. */
+.tcReconFigures{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.tcReconFigures .tcReconName{color:inherit;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;opacity:.8}
+.tcReconFigures span{display:flex;flex-direction:column;gap:1px;font-size:12px;font-weight:600}
+.tcReconFigures b{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
+.tcReconState{margin:0}
+.tcRecon.ok{border-color:#cdebd9;background:#f2fbf6;color:#18794e}
+.tcRecon.warn{border-color:#ffe2b8;background:#fff8ee;color:#9a5b13}
+.tcNote{margin:0;color:var(--tc-muted);font-size:12px;line-height:1.5}
+
+/* ---------- Grouping ----------
+   The Summary register's one regrouping control. It sits inside the report card above the table, so
+   regrouping never becomes a second page, a second tab or a second report. */
+.tcPage .tcGroupBy{display:flex;align-items:center;gap:5px;flex-wrap:wrap;padding:10px 16px;border-bottom:1px solid #edf1f6}
+.tcPage .tcGroupByLabel{margin-right:2px;color:var(--tc-muted);font-size:12px;font-weight:600}
+.tcPage .tcGroupBy button{min-height:30px;padding:4px 11px;border:1px solid transparent;border-radius:7px;background:transparent;color:#475467;font-size:12px;font-weight:600}
+.tcPage .tcGroupBy button:hover:not(.active){border-color:#dbe6f8;background:#f5f8ff}
+.tcPage .tcGroupBy button.active{border-color:#cfe0ff;background:#eaf1ff;color:#245fd9}
+/* One group's heading row inside the same nine columns, so regrouping adds no column and moves no
+   figure - it only states the vendor or the section the rows beneath it belong to. */
+.tcRegisterCard tbody tr.tcGroupRow,.tcRegisterCard tbody tr.tcGroupRow:hover{background:#f7f9fc}
+.tcRegisterCard tbody tr.tcGroupRow>td{padding:9px 16px;border-top:1px solid var(--tc-line);color:#475467;font-size:12px}
+.tcGroupCell{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.tcGroupLabel{color:#172033;font-weight:700}
+.tcGroupTotals{font-variant-numeric:tabular-nums}
+
+/* ---------- Narrow screens ----------
+   The page itself never scrolls sideways: the table is the only scroll container. The columns that
+   stay reachable at every width are the date, the document, the party, the amounts and the status;
+   the GSTIN and then the PAN or the party are dropped first, and both remain on the row tooltip and
+   in the export. */
+@media(max-width:1100px){
+ .tcRegisterCard th,.tcRegisterCard td{padding:10px 9px;font-size:12px}
+}
+@media(max-width:900px){
+ .tcPage{padding:18px}
+ .tcHead{align-items:flex-start;flex-direction:column}
+ .tcHeadActions{width:100%;justify-content:flex-start}
+ .tcSearch{flex:1 1 260px;width:auto}
+ .tcSummary{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+ /* The fixed transaction tables keep their fixed layout at every width, because that is what makes
+    the ellipsis truncation real; the aggregate tables are narrow enough to stay automatic. */
+ .tcRegisterCard .tcFixed{min-width:680px}
+ .tcRegisterCard .tcFixed .tcGstinCol{display:none}
+ /* The PAN stays on the TDS register at every width, because PAN is a stated column of all three TDS
+    views; only the GST register, whose PAN is a secondary detail, drops it. */
+ .tcGstPage .tcFixed .tcPanCol{display:none}
+}
+@media(max-width:560px){
+ .tcRegisterCard .tcFixed{min-width:560px}
+ .tcGstPage .tcFixed .tcPartyCol{display:none}
+ .tcFilters{grid-template-columns:1fr}
+ .tcTabs{padding:6px}
+ .tcPager.pagination-footer{flex-wrap:wrap;gap:8px;height:auto}
+}
+
+@media print{@page{size:landscape;margin:12mm}
+body:has(.tcPage) .app>aside,body:has(.tcPage) .app>header,body:has(.tcPage) .welcome,body:has(.tcPage) .tcHeadActions,body:has(.tcPage) .tcFilters,body:has(.tcPage) .tcTabs,body:has(.tcPage) .tcGroupBy{display:none!important}
+.transactionPortal:has(.tcPage){position:static!important;inset:auto!important;overflow:visible!important;padding:0!important;background:#fff!important}
+.tcPage{max-width:none;padding:0;border:0;box-shadow:none;border-radius:0;gap:12px}
+.tcPrintMeta{display:block}
+.tcPrintMeta h2{margin:0 0 6px;font-size:16px}
+.tcPrintMeta p{margin:0 0 3px;font-size:12px}
+.tcTableScroll{overflow:visible}
+.tcRegisterCard table{font-size:12px;table-layout:auto;min-width:0}
+.tcRegisterCard thead{display:table-header-group}
+.tcRegisterCard tr{break-inside:avoid}
+.tcRegisterCard th,.tcRegisterCard td{padding:5px;white-space:normal}
+.tcRegisterCard tbody tr.tcOffPage{display:table-row!important}
+.tcRegisterCard td.tcDateCol,.tcRegisterCard td.tcTypeCol,.tcRegisterCard td.tcNumberCol,.tcRegisterCard td.tcPartyCol,.tcRegisterCard td.tcGstinCol,.tcRegisterCard td.tcPanCol,.tcRegisterCard td.tcCodeCol,.tcRegisterCard td.tcRateCol,.tcRegisterCard td.tcStateCol{overflow:visible;text-overflow:clip;white-space:normal}
+.tcRegisterCard .tcFixed .tcGstinCol,.tcRegisterCard .tcFixed .tcPanCol,.tcRegisterCard .tcFixed .tcPartyCol{display:table-cell}
+.tcPage button.tcLink{color:#172033;text-decoration:none;overflow:visible;text-overflow:clip;white-space:normal}
+.tcPager{display:none!important}
+}

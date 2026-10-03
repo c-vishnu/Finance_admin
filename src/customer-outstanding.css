@@ -1,0 +1,115 @@
+/* Customer Outstanding report shell. The same white report surface, hairlines, radii, type scale and
+   sticky validation footer as the Balance Sheet (src/balance-sheet.css), the Trial Balance
+   (src/trial-balance.css), the Profit & Loss and the Day Book, so the report reads as one product.
+   Supplier Outstanding (src/supplier-outstanding.css) is the SAME sheet under the spo prefix with
+   only the terminology changed, so the two reports are one design. Only the receivable column names,
+   the aging-filter hint and the customer drill-down are report-specific. */
+.coPage{--co-blue:#3478f6;--co-text:#172033;--co-muted:#667085;--co-line:#e2e8f0;display:flex;flex-direction:column;gap:20px;max-width:100%;margin:0;padding:24px;border:1px solid #dfe6ef;border-radius:12px;background:#fff;box-shadow:0 1px 2px #10182808;color:var(--co-text);font:14px/1.45 'Instrument Sans',sans-serif}
+.coPage *{box-sizing:border-box}
+.coPage button,.coPage input,.coPage select{font:inherit}
+.coHead{position:static!important;inset:auto!important;z-index:auto!important;height:auto!important;display:flex;align-items:center;justify-content:space-between;gap:18px;width:100%;padding:0 0 20px;border-bottom:1px solid #e6ecf3;background:transparent}
+.coHead h1{margin:0;font-size:24px;line-height:1.2}
+.coHead p{margin:5px 0 0;font-size:13px;color:var(--co-muted)}
+.coHeadActions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:nowrap}
+.coPage button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:8px 12px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;cursor:pointer}
+.coPage button:hover:not(:disabled){border-color:#aac2ed;background:#f5f8ff}
+.coPage button:disabled{cursor:not-allowed;opacity:.55}
+.coSearch{width:300px;height:40px;padding:0 10px;display:flex;align-items:center;gap:8px;border:1px solid #d9e1ec;border-radius:7px;color:#344054}
+.coSearch input{width:100%;min-width:0;border:0;outline:0;background:transparent;font-size:13px}
+.coFiltersMore{position:relative;flex:none}
+.coFiltersMore summary{height:40px;padding:0 10px;display:flex;align-items:center;gap:6px;border:1px solid #d9e1ec;border-radius:7px;list-style:none;color:#344054;font-size:12px;font-weight:600;cursor:pointer}
+.coFiltersMore summary::-webkit-details-marker{display:none}
+.coFiltersMore summary span{min-width:17px;height:17px;display:inline-grid;place-items:center;border-radius:999px;background:#eaf1ff;color:#245fd9;font-size:11px;font-weight:700}
+.coFilters{position:absolute;z-index:80;right:0;top:calc(100% + 8px);width:min(620px,calc(100vw - 48px));padding:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;border:1px solid #e1e6ed;border-radius:9px;background:#fff;box-shadow:0 12px 28px #1018281f}
+.coFilters label{display:flex;flex-direction:column;gap:6px;color:#475467;font-size:12px;font-weight:650}
+.coFilters select,.coFilters input[type=date]{height:40px;padding:0 11px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:var(--co-text);font-size:13px}
+.coFilterActions{grid-column:1/-1;justify-self:start;display:flex;align-items:center;gap:14px}
+.coFilterActions button{min-height:auto;padding:4px 0;border:0;background:transparent;color:#245fd9;font-size:12px}
+.coFilterActions button:hover:not(:disabled){border:0;background:transparent;text-decoration:underline}
+.coError{display:flex;align-items:center;gap:10px;padding:12px 15px;border:1px solid #ffd3d9;border-radius:8px;background:#fff1f2;color:#b33243}
+.coPrintMeta{display:none}
+.coSummary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.coSummary>div{min-height:92px;padding:15px 12px;display:flex;flex-direction:column;justify-content:center;gap:8px;border:1px solid #dfe6ef;border-radius:9px;background:#fff}
+.coSummary>div:first-child{background:#edf3ff;border-color:#d2e0ff;color:#285dca}
+.coSummary span{color:var(--co-muted);font-size:12px}
+.coSummary strong{font-size:18px;letter-spacing:-.5px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.coStatementCard{border:1px solid var(--co-line);border-radius:10px;background:#fff;overflow:hidden}
+.coTableScroll{overflow-x:auto;overscroll-behavior-inline:contain}
+.coStatementCard table{width:100%;border-collapse:collapse;font-size:13px}
+.coStatementCard caption{caption-side:top;padding:12px 16px;border-bottom:1px solid #edf1f6;background:#fbfcfe;color:var(--co-muted);font-size:12px;text-align:left}
+.coStatementCard th,.coStatementCard td{padding:11px 14px;border-top:1px solid #edf1f6;text-align:right;font-variant-numeric:tabular-nums}
+.coStatementCard thead th{position:sticky!important;top:-24px!important;z-index:20!important;background:#f7f9fc!important;color:#5b6b81!important;font-size:12px!important;font-weight:600!important;text-align:right}
+.coStatementCard thead th:first-child{text-align:left}
+/* SEVEN columns and nothing else: the customer, its ID, the invoice count, what is owed, what is
+   already overdue, what is not yet due and the actions. Aging is a filter, so no bucket is a column;
+   the widths are positional and add up to 100%. */
+.coStatementCard thead .coNameCol{width:32%}
+.coStatementCard thead .coCodeCol{width:16%}
+.coStatementCard thead .coCountCol{width:10%}
+.coStatementCard thead .coOutCol{width:18%}
+.coStatementCard thead .coDueCol{width:12%}
+.coTableScroll>table{table-layout:fixed}
+.coMoney{white-space:nowrap}
+.coStrong{font-weight:700;color:#172033}
+.coCodeCol{color:#475467}
+.coAgingHint{display:block;margin-top:2px;color:#245fd9;font-size:11px;font-style:normal;font-weight:600;white-space:nowrap}
+.coCustomer th,.coNameCell{text-align:left!important;font-weight:600;padding:11px 14px!important;color:#172033;font-size:13px}
+.coDetail>td{padding:0!important;border-top:0!important;text-align:left!important}
+.coDetailCard{padding:14px 16px 18px;background:#fbfcfe;border-top:1px solid #e6ecf3}
+.coDetailFacts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}
+.coDetailFacts>div{display:flex;flex-direction:column;gap:4px;padding:10px 12px;border:1px solid #e4eaf2;border-radius:8px;background:#fff}
+.coDetailFacts span{color:var(--co-muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+.coDetailFacts strong{font-size:13px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.coInvoiceScroll{overflow-x:auto;border:1px solid #e4eaf2;border-radius:9px;background:#fff}
+.coInvoiceTable{width:100%;min-width:760px;border-collapse:collapse;font-size:12px}
+.coInvoiceTable th,.coInvoiceTable td{padding:9px 12px;border-top:1px solid #eef2f7;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.coInvoiceTable thead th{background:#f7f9fc;color:#5b6b81;font-size:11px;font-weight:600;border-top:0}
+.coInvoiceTable thead th:first-child,.coInvoiceTable thead th:nth-child(2),.coInvoiceTable thead th:nth-child(3),.coInvoiceTable thead th:nth-child(8),.coInvoiceTable thead th:last-child,.coInvoiceTable tbody td:first-child,.coInvoiceTable tbody td:nth-child(2),.coInvoiceTable tbody td:nth-child(3),.coInvoiceTable tbody td:nth-child(8),.coInvoiceTable tbody td:last-child{text-align:left}
+.coInvoiceNumber{font-weight:650;color:#245fd9}
+.coInvoiceActions{width:1%}
+.coInvoiceActions .soMoreButton{margin-left:0;width:28px;height:28px}
+/* Days overdue is stated only when the invoice is actually overdue, inside the Status cell, instead
+   of spending a permanent column on a value most rows leave empty. */
+.coDaysOverdue{display:block;margin-top:3px;color:#b33243;font-size:11px;font-style:normal;font-weight:600}
+.coPill{display:inline-flex;align-items:center;padding:3px 9px;border-radius:999px;background:#eef2f7;color:#475467;font-size:11px;font-weight:600}
+.coPillcoPaid{background:#eaf7ef;color:#28724d}
+.coPillcoPartiallyPaid{background:#fff4e5;color:#9a5b12}
+.coPillcoNotYetDue{background:#eef2f7;color:#475467}
+.coPillcoDueToday{background:#eaf1ff;color:#245fd9}
+.coPillcoOverdue{background:#fff1f2;color:#b33243}
+/* src/ui-system.css right-aligns every row's last cell with !important; the customer column is a
+   header cell holding the expand button, so it restates the statement's left alignment. */
+.coStatementCard .coCustomer th{text-align:left!important;padding:11px 14px!important}
+.coStatementCard .coGrandTotal th.coNameCol{text-align:left!important}
+.coGrandTotal th{padding:13px 14px;border-top:2px solid #dbe3ee;background:#eef3fb;color:#172033;font-size:13px;font-weight:700;text-align:right}
+.coEquation{display:flex;align-items:center;gap:14px;margin:0;padding:10px 13px;border:1px solid #cee9da;border-radius:7px;background:#eaf7ef;color:#28724d}
+.coEquation.mismatch{border-color:#f3d4b8;background:#fff3e9;color:#994b1e}
+.coEquation.unknown{border-color:#dfe6ef;background:#f7f9fc;color:#475467}
+.coEquation b{font-size:13px}
+.coEquation span{margin-left:auto;font-size:12px}
+.coStickyBalance{position:sticky;bottom:0;z-index:12;box-shadow:0 -6px 16px #1018280d}
+@media(max-width:900px){.coPage{padding:18px}.coHead{align-items:flex-start;flex-direction:column}.coHeadActions{width:100%;justify-content:flex-start;flex-wrap:wrap}.coSearch{flex:1 1 260px}.coSummary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.coStatementCard th,.coStatementCard td{padding:10px 8px;font-size:12px}}
+@media(max-width:560px){.coPage{padding:14px}.coSearch{width:100%;flex-basis:100%}.coFiltersMore{width:100%}.coFiltersMore summary{justify-content:center}.coFilters{position:static;width:100%;grid-template-columns:1fr;margin-top:8px}.coSummary{grid-template-columns:1fr}.coStickyBalance{bottom:6px}.coEquation{align-items:flex-start;flex-wrap:wrap}.coEquation span{margin-left:26px}.coDetailFacts{grid-template-columns:1fr}.coInvoiceTable th,.coInvoiceTable td{padding:8px 9px}}
+/* Phone widths: the ID column and the explicit View toggle stand down, so the customer, the invoice
+   count, the three money facts and the More menu share the card exactly and the table never scrolls
+   sideways. The ID is still stated in the drill-down and in the export. These rules are scoped to the
+   statement table itself: a bare '.coStatementCard table' also matched the nine-column invoice table
+   nested in the drill-down and forced 'table-layout:fixed' on it, which squeezed every column to a
+   few pixels and let the nowrap text collide. The invoice table keeps its own layout and falls back
+   to the horizontal scroll '.coInvoiceScroll' already provides. */
+@media(max-width:560px){.coStatementCard>.coTableScroll>table{table-layout:fixed}.coStatementCard>.coTableScroll th,.coStatementCard>.coTableScroll td{padding:10px 4px!important;font-size:11px}.coStatementCard .coCodeCol{display:none}.coStatementCard thead .coNameCol{width:23%}.coStatementCard thead .coCountCol{width:5%}.coStatementCard thead .coOutCol{width:21%}.coStatementCard thead .coDueCol{width:18.5%}.coStatementCard thead .coActionsCol{width:14%}.coViewButton{display:none}.coCustomerButton{min-height:auto;padding:10px 6px;gap:6px}.coStatementCard caption{overflow-wrap:anywhere}}
+@media print{@page{size:landscape;margin:12mm}
+body:has(.coPage) .app>aside,body:has(.coPage) .app>header,body:has(.coPage) .welcome,body:has(.coPage) .coHeadActions,body:has(.coPage) .coFilters,body:has(.coPage) .coActionsCol{display:none!important}
+.transactionPortal:has(.coPage){position:static!important;inset:auto!important;overflow:visible!important;padding:0!important;background:#fff!important}
+.coPage{max-width:none;padding:0;border:0;box-shadow:none;border-radius:0;gap:12px}
+.coPrintMeta{display:block}
+.coPrintMeta p{margin:0 0 3px;font-size:12px}
+.coTableScroll,.coInvoiceScroll{overflow:visible}
+.coStatementCard table{font-size:12px;table-layout:auto}
+.coStatementCard thead{display:table-header-group}
+.coStatementCard tr{break-inside:avoid}
+.coStatementCard th,.coStatementCard td{padding:5px;white-space:normal}
+.coDetailFacts{grid-template-columns:repeat(3,minmax(0,1fr))}
+.coInvoiceTable th,.coInvoiceTable td{padding:4px;white-space:normal}
+.coStickyBalance{position:static;box-shadow:none}}

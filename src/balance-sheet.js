@@ -31,3 +31,16 @@ export function balanceSheet(state,{date='9999-12-31',branch='All'}={}){
   const equity=equityAccounts+currentEarnings,difference=assets-liabilities-equity;
   return {rows,currentEarnings,assets,liabilities,equity,equityAccounts,difference,balanced:Math.abs(difference)<=1};
 }
+
+export function balanceSheetExportRows(report,context={}){
+  return [
+    ['Account Code','Account Name','Account Type','Section','Amount INR'],
+    ...report.rows.map(row=>[row.code||'',row.name,row.type,row.section,row.amount/100]),
+    ['','Current Year Profit / Loss','Equity','Equity',report.currentEarnings/100],
+    ['','Total Assets','','',report.assets/100],
+    ['','Total Liabilities','','',report.liabilities/100],
+    ['','Total Equity','','',report.equity/100],
+    ['','Total Liabilities & Equity','','',(report.liabilities+report.equity)/100],
+    ['As of',context.date||'','Branch',context.branch||'All branches']
+  ];
+}

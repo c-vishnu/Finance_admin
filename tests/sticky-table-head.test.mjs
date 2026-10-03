@@ -11,7 +11,7 @@ test('the page header waits for a deliberate scroll before it gives way to the t
  assert.match(js,/const HIDE_AFTER=48;/,'one shared threshold, in the 40-60px band');
  assert.match(js,/const next=y>HIDE_AFTER&&delta>0&&y>h\.offsetHeight;/,'the row hides only on a downward scroll past it, so the top always shows it');
  assert.match(js,/const SCOPES='\.app>main,\.pc';/,'both shell scroll ports are handled, because Period Lock owns its own');
- assert.match(css,/\.registerHead\{[^}]*transition:transform \.22s ease/,'the slide is the subtle 200-300ms transition, not an abrupt toggle');
+ assert.match(css,/\.registerHead\.isHidden\{[^}]*transition:transform \.22s ease/,'the slide is the subtle 200-300ms transition, not an abrupt toggle');
 });
 
 test('one shared module marks the page grid and hands the offset to its column headings',()=>{
@@ -20,7 +20,7 @@ test('one shared module marks the page grid and hands the offset to its column h
  assert.match(js,/table\.setAttribute\('data-sticky-head',''\)/,'which is marked for the stylesheet to pin');
  assert.match(js,/document\.documentElement\.style\.setProperty\('--register-head-h',/,'and the measured heading height is published');
  assert.match(js,/h&&!h\.classList\.contains\('isHidden'\)\?h\.offsetHeight\+'px':'0px'/,'as its own height while it is there, and as nothing while it has slid away');
- assert.match(css,/\[data-sticky-head\] thead th\{position:sticky;top:calc\(var\(--register-head-h,0px\) - var\(--register-head-pad,22px\)\);z-index:6;box-shadow:inset 0 -1px 0 #e6ecf6;transition:top \.22s ease\}/,'the column heading pins under the row, keeps a stand-in for the collapsed border, stays below the row and glides with it');
+ assert.match(css,/\[data-sticky-head\] thead th\{position:sticky;top:calc\(var\(--register-head-h,0px\) - var\(--register-head-pad,22px\)\);z-index:6;box-shadow:inset 0 -1px 0 #e6ecf6;/,'the column heading pins under the row, keeps a stand-in for the collapsed border, stays below the row and glides with it');
  assert.match(css,/body:has\(\.registerHead\.isHidden\) \[data-sticky-head\] thead th::before,/,'and hides the band above itself while the page heading is away, because a sticky offset is measured from the scroll port content box and the port own top padding would otherwise leave a strip of scrolling rows showing');
  assert.match(js,/document\.documentElement\.style\.setProperty\('--register-head-pad',\(\(box\?parseFloat\(getComputedStyle\(box\)\.paddingTop\):0\)\|\|0\)\+'px'\);/,'the module publishes that padding, measured from the port the page actually scrolls in');
  assert.match(css,/@media print\{\n \[data-sticky-head\] thead th\{position:static/,'and print keeps static headings');

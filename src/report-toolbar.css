@@ -1,0 +1,33 @@
+/* The report toolbar controls every report page shares: the date-range preset beside the search box
+   and ONE Export button that opens the report own exports.
+
+   They are deliberately styled here rather than inherited from any page, because the same two
+   controls now appear on twenty report pages with twenty heading styles, and a reader moving
+   between them should not have to relearn the control. The heights match the 40px controls the
+   report heading rows already use. */
+.rptDateRangeGroup{position:relative;display:inline-block}
+.rptDateRange{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 12px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer;transition:border-color .15s,background-color .15s}
+.rptDateRange:hover{border-color:#aac2ed;background:#f5f8ff}
+.rptDateRange svg{flex:none;color:#475467}
+.rptDateRange select{border:0;outline:0;background:transparent;color:#344054;font:inherit;font-size:13px;font-weight:600;cursor:pointer;padding-right:18px;appearance:none;-webkit-appearance:none;-moz-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23344054' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right center}
+
+.rptCustomDatePopover{position:absolute;left:0;top:calc(100% + 6px);z-index:95;width:310px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:16px;border:1px solid #d6deea;border-radius:10px;background:#fff;box-shadow:0 12px 32px #1018281f}
+.rptCustomDatePopover label{display:flex;flex-direction:column;gap:6px;color:#475467;font-size:12px;font-weight:600}
+.rptCustomDatePopover input[type="date"]{min-height:38px;padding:7px 9px;border:1px solid #d9e1ec;border-radius:7px;background:#fff;color:#172033;font:inherit;font-size:13px}
+.rptCustomDateActions{grid-column:1/-1;display:flex;justify-content:flex-end;gap:8px;padding-top:8px;border-top:1px solid #eef2f7}
+.rptCustomDateActions button{height:34px;padding:0 14px;border:1px solid #286aee;border-radius:6px;background:#286aee;color:#fff;font-size:12px;font-weight:600;cursor:pointer}
+.rptCustomDateActions button:hover{background:#174fa9;border-color:#174fa9}
+
+.rptExportMenu{position:relative;flex:none}
+.rptExportMenu>summary{list-style:none;display:flex;align-items:center;gap:7px;height:40px;padding:0 12px;border:1px solid #d6deea;border-radius:7px;background:#fff;color:#344054;font-weight:600;white-space:nowrap;cursor:pointer}
+.rptExportMenu>summary::-webkit-details-marker{display:none}
+.rptExportMenu>summary:hover{border-color:#9ab9ef;background:#f8fbff}
+.rptExportMenu[open]>summary{border-color:#8db2f5;background:#f2f6ff;color:#2864d8}
+.rptExportList{position:absolute;right:0;top:calc(100% + 6px);z-index:80;min-width:196px;padding:5px;margin:0;background:#fff;border:1px solid #e1e7ef;border-radius:9px;box-shadow:0 14px 32px #10182824}
+.rptExportList button{width:100%;display:flex;align-items:center;gap:8px;padding:10px;border:0;border-radius:6px;background:#fff;color:#344054;font:inherit;text-align:left;cursor:pointer}
+.rptExportList button:hover:not(:disabled){background:#f1f6ff}
+.rptExportList button:disabled{color:#98a2b3;cursor:not-allowed}
+.rptExportSingle{display:flex;align-items:center;gap:7px;height:40px;padding:0 12px;border:1px solid #d6deea;border-radius:7px;background:#fff;color:#344054;font:inherit;font-weight:600;cursor:pointer;white-space:nowrap;flex:none}
+
+@media(max-width:700px){.rptDateRange{flex:1 1 100%;justify-content:space-between}.rptDateRange select{max-width:none}}
+@media print{.rptDateRange,.rptExportMenu,.rptExportSingle{display:none!important}}

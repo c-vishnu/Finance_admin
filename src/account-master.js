@@ -181,6 +181,7 @@ export function changeAccount(state,action,payload,external=[],organisations=[])
       if(accountUsed(s,old.code))fail('Accounts used in posted transactions cannot be deleted.');
       s.accounts=s.accounts.filter(a=>a.id!==old.id);record=old;
     }else if(action==='toggle'){
+      if(old.system)fail('System accounts cannot be deactivated.');
       if(!old.active&&old.parent&&!s.accounts.some(a=>a.code===old.parent&&a.active))fail('Activate the parent account first.');
       record={...old,active:!old.active,revision:old.revision+1,modifiedAt:new Date().toISOString(),modifiedBy:'Local user'};
       s.accounts=s.accounts.map(a=>a.id===old.id?record:a);

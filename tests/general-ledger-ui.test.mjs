@@ -33,8 +33,9 @@ test('professional ledger keeps the register simple and exposes report controls'
   assert.ok(!html.includes('Save view'));
   assert.ok(!html.includes('Saved view:'));
   assert.ok(!html.includes('Account history at a glance'));
-  const drawer=html.match(/<aside class="gl-filter-panel"[\s\S]*?<\/aside>/)?.[0]||'';
-  assert.ok(!drawer.includes('Select ledger account'));
+  assert.ok(!html.includes('class="gl-viewbar"'));
+  assert.match(table,/aria-label="View details for RCPT-00041"/);
+  assert.ok(html.includes('class="gl-filters-more"'));
   delete globalThis.sessionStorage;
 });
 
@@ -45,4 +46,10 @@ test('ledger grid uses the page width without an internal scrollbar',async()=>{
   assert.match(css,/\.gl-ledger-table\{width:100%!important;min-width:0!important;table-layout:fixed/);
   assert.match(css,/@media\(max-width:1450px\)/);
   assert.match(css,/Seven-column ledger register; descriptions are disclosed on hover and in details/);
+  assert.match(css,/Balance Sheet report shell parity/);
+  assert.match(css,/\.gl\{max-width:100%;margin:0;gap:20px;padding:24px/);
+  assert.match(css,/\.gl-heading-actions\.gl-primary-filters\{display:flex/);
+  assert.match(css,/\.gl-filters-more \.gl-filter-panel\{position:absolute/);
+  assert.match(css,/\.gl-pagination\{display:flex;align-items:center;justify-content:space-between;gap:8px;height:auto!important;min-height:48px/);
+  assert.match(css,/\.gl-card>\.gl-table-scroll\+\.gl-pagination\{margin:0\}/);
 });

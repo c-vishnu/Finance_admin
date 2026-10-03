@@ -1,0 +1,575 @@
+/* Column widths for the report pages that share the Cash & Banking report shell.
+
+   src/cash-banking.css owns the shell itself - the page frame, the heading with its search, Filters
+   disclosure and exports, the summary cards, the register card, the caption, the grand-total row, the
+   reconciliation strip, the print rules and the empty and error states - and deliberately states no
+   column widths of its own. Each report therefore states the shape of its own table here rather than
+   restating the shell: Customer and Supplier Aging, the Account Statement and the Journal Report. */
+
+.cbAging .cbCard thead .agPartyCol{width:20%}
+.cbAging .cbCard thead .agDocsCol{width:8%}
+.cbAging .cbCard thead .agBucketCol{width:10%}
+.cbAging .cbCard thead .agTotalCol{width:12%}
+
+.cbStatement .cbCard thead .asDateCol{width:11%}
+.cbStatement .cbCard thead .asJournalCol{width:14%}
+.cbStatement .cbCard thead .asTypeCol{width:11%}
+.cbStatement .cbCard thead .asRefCol{width:11%}
+.cbStatement .cbCard thead .asParticularsCol{width:24%}
+.cbStatement .cbCard thead .asDebitCol{width:10%}
+.cbStatement .cbCard thead .asCreditCol{width:10%}
+.cbStatement .cbCard thead .asBalanceCol{width:9%}
+
+.cbJournal .cbCard thead .jrDateCol{width:9%}
+.cbJournal .cbCard thead .jrJournalCol{width:13%}
+.cbJournal .cbCard thead .jrTypeCol{width:10%}
+.cbJournal .cbCard thead .jrRefCol{width:10%}
+.cbJournal .cbCard thead .jrAccountCol{width:22%}
+.cbJournal .cbCard thead .jrParticularsCol{width:16%}
+.cbJournal .cbCard thead .jrDebitCol{width:10%}
+.cbJournal .cbCard thead .jrCreditCol{width:10%}
+
+/* Below the desktop shell the fixed layout squeezes a nine-column or eight-column report, so the
+   tables size to their content and scroll sideways instead - the same trade the Cash & Bank Book
+   makes. No column is ever hidden, so every grand-total span stays the one the report declares. */
+@media(max-width:1100px){
+ .cbAging .cbCard table,.cbStatement .cbCard table,.cbJournal .cbCard table{table-layout:auto}
+ .cbAging .cbCard thead th,.cbStatement .cbCard thead th,.cbJournal .cbCard thead th{white-space:nowrap}
+}
+
+/* Journal Grouped Report Styling */
+.jrGroupCard {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 2px rgba(16,24,40,0.04);
+}
+
+.jrGroupHeader {
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.jrGroupHeaderMain {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+
+.jrGroupDate {
+  color: #475467;
+  font-weight: 500;
+}
+
+.jrGroupDot {
+  color: #cbd5e1;
+}
+
+.jrGroupNumber {
+  font-weight: 600;
+  color: #245fd9;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.jrGroupRef {
+  font-weight: 500;
+  color: #245fd9;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.jrGroupParty {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 400;
+}
+
+.jrTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+}
+
+.jrTable th {
+  background: #f8fafc;
+  color: #475467;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 12px;
+}
+
+.jrTable td {
+  padding: 7px 16px;
+  border-bottom: 1px dashed #e2e8f0;
+  color: #1e293b;
+  vertical-align: middle;
+}
+
+.jrTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.jrTotalRow th {
+  background: #f8fafc;
+  border-top: 1px solid #cbd5e1;
+  padding: 8px 16px;
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 12px;
+}
+
+/* Single Continuous Grouped Journal Table */
+.jrTitleBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: #fff;
+  border-bottom: 1px solid #e2e8f0;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.jrTitleLeft h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.3;
+}
+
+.jrTitleLeft p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.jrTitleRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.jrBannerSelect {
+  padding: 6px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 13px;
+  color: #0f172a;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+}
+
+.jrBannerSelect:focus {
+  border-color: #245fd9;
+  box-shadow: 0 0 0 2px rgba(36,95,217,0.1);
+}
+
+.cbJournal .cbCard {
+  overflow: visible !important;
+}
+
+.cbJournal .cbTableScroll {
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  max-height: none !important;
+}
+
+.cbJournal .cbCard table.jrContinuousTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.cbJournal .cbCard table.jrContinuousTable tr,
+.cbJournal .cbCard table.jrContinuousTable td,
+.cbJournal .cbCard table.jrContinuousTable th,
+.cbJournal .cbCard table.jrContinuousTable tr td:first-child,
+.cbJournal .cbCard table.jrContinuousTable tr td:last-child,
+.cbJournal .cbCard table.jrContinuousTable tr th:first-child,
+.cbJournal .cbCard table.jrContinuousTable tr th:last-child {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+}
+
+/* Horizontal 3-Card Analytics UI (Icon Left, Text Right) */
+.cbJournal .cbSummary.jrSummary3 {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 16px !important;
+  margin-bottom: 20px !important;
+}
+
+.cbJournal .jrSummaryCard {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 14px !important;
+  padding: 14px 18px !important;
+  min-height: 0 !important;
+  height: auto !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.05) !important;
+  text-align: left !important;
+}
+
+.jrSummaryIcon {
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+}
+
+.jrIconDebit {
+  background: #eff6ff !important;
+  color: #2563eb !important;
+  border: 1px solid #dbeafe !important;
+}
+
+.jrIconCredit {
+  background: #f0fdf4 !important;
+  color: #16a34a !important;
+  border: 1px solid #dcfce7 !important;
+}
+
+.jrIconJournals {
+  background: #f8fafc !important;
+  color: #475467 !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.jrSummaryContent {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 2px !important;
+  text-align: left !important;
+}
+
+.jrSummaryContent .cbSummaryLabel {
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  color: #64748b !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  line-height: 1.2 !important;
+  margin: 0 !important;
+}
+
+.jrSummaryContent .cbSummaryValue {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.01em !important;
+  margin: 0 !important;
+}
+
+.cbJournal .cbCard table.jrContinuousTable thead th {
+  position: sticky !important;
+  top: -24px !important;
+  z-index: 30 !important;
+  background: #f8fafc !important;
+  border-bottom: 2px solid #cbd5e1 !important;
+  border-right: 1px solid #e2e8f0;
+  color: #1e293b !important;
+  font-weight: 700 !important;
+  padding: 15px 16px !important;
+  font-size: 13.5px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.08);
+}
+
+.cbJournal .cbCard table.jrContinuousTable thead th:last-child {
+  border-right: none;
+}
+
+.cbJournal .cbCard table.jrContinuousTable tr.jrHeaderRow td,
+.cbJournal .cbCard table.jrContinuousTable tr.jrHeaderRow td.jrHeaderCell {
+  background: #eff6ff !important;
+  border-top: 1px solid #bfdbfe;
+  border-bottom: 1px solid #dbeafe;
+  padding: 10px 14px !important;
+}
+
+.jrHeaderContent {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.jrHeaderMain {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.jrHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 14.5px !important;
+  font-weight: 500;
+  color: #334155;
+  line-height: 1.35;
+}
+
+.jrDateText {
+  font-size: 14.5px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+}
+
+.jrTypeText {
+  font-size: 14.5px !important;
+  font-weight: 650 !important;
+  color: #334155 !important;
+}
+
+.jrHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.jrSep {
+  color: #94a3b8;
+  user-select: none;
+}
+
+.cbJournal button.jrLinkBtn,
+.jrLinkBtn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #245fd9 !important;
+  font-weight: 650 !important;
+  font-size: 14.5px !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  font-family: inherit !important;
+  line-height: 1.35 !important;
+  box-shadow: none !important;
+}
+
+.jrJournalNo {
+  font-size: 14.5px !important;
+  font-weight: 700 !important;
+}
+
+.cbJournal button.jrLinkBtn:hover,
+.jrLinkBtn:hover {
+  background: transparent !important;
+  border: none !important;
+  color: #1d4ed8 !important;
+  text-decoration: underline !important;
+}
+
+.cbJournal button.jrActionButton,
+.jrActionButton {
+  width: 28px !important;
+  height: 28px !important;
+  min-height: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid #d0d5dd !important;
+  background: #ffffff !important;
+  border-radius: 5px !important;
+  color: #475467 !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.cbJournal button.jrActionButton:hover,
+.jrActionButton:hover {
+  background: #f8fafc !important;
+  border-color: #94a3b8 !important;
+  color: #0f172a !important;
+}
+
+.jrGroupPartyRow {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 400;
+  padding-left: 0;
+  line-height: 1.35;
+  margin-top: 1px;
+}
+
+.cbJournal .cbCard table.jrContinuousTable tr.jrLineRow td {
+  padding: 10px 14px !important;
+  border-top: none;
+  border-bottom: 1px solid #f1f5f9;
+  border-right: 1px solid #f8fafc;
+  color: #0f172a;
+  vertical-align: middle;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.cbJournal .cbCard table.jrContinuousTable tr.jrLineRow td:last-child {
+  border-right: none;
+}
+
+.cbJournal .cbCard table.jrContinuousTable tr.jrTotalRow td {
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 8px solid #f1f5f9;
+  padding: 9px 14px !important;
+  font-weight: 600;
+  color: #0f172a;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.jrTotalRow .cbMoney {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+/* About this report disclosure */
+.jrAboutReport {
+  margin-top: 16px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.jrAboutReport summary {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  color: #475467;
+  user-select: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+
+.jrAboutReport summary:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.jrAboutContent {
+  margin-top: 8px;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+}
+
+.jrAboutContent ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.jrAboutContent li {
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.jrAboutContent li:last-child {
+  margin-bottom: 0;
+}
+
+
+/* Pagination Bar */
+.jrPaginationBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #fff;
+  border-top: 1px solid #e2e8f0;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.jrPaginationInfo {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.jrPaginationControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.jrPageSizeSelect {
+  padding: 4px 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 13px;
+  color: #1e293b;
+}
+
+.jrPageBtn {
+  padding: 4px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #fff;
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.jrPageBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.jrPageCurrent {
+  font-size: 13px;
+  color: #475467;
+  font-weight: 500;
+  padding: 0 4px;
+}
+
+

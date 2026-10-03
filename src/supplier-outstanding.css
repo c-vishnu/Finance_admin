@@ -1,0 +1,115 @@
+/* Supplier Outstanding report shell. The same white report surface, hairlines, radii, type scale and
+   sticky validation footer as the Balance Sheet (src/balance-sheet.css), the Trial Balance
+   (src/trial-balance.css), the Profit & Loss and the Day Book, so the report reads as one product.
+   Customer Outstanding (src/customer-outstanding.css) is the SAME sheet under the co prefix with
+   only the terminology changed, so the two reports are one design. Only the payable column names,
+   the aging-filter hint and the supplier drill-down are report-specific. */
+.spoPage{--spo-blue:#3478f6;--spo-text:#172033;--spo-muted:#667085;--spo-line:#e2e8f0;display:flex;flex-direction:column;gap:20px;max-width:100%;margin:0;padding:24px;border:1px solid #dfe6ef;border-radius:12px;background:#fff;box-shadow:0 1px 2px #10182808;color:var(--spo-text);font:14px/1.45 'Instrument Sans',sans-serif}
+.spoPage *{box-sizing:border-box}
+.spoPage button,.spoPage input,.spoPage select{font:inherit}
+.spoHead{position:static!important;inset:auto!important;z-index:auto!important;height:auto!important;display:flex;align-items:center;justify-content:space-between;gap:18px;width:100%;padding:0 0 20px;border-bottom:1px solid #e6ecf3;background:transparent}
+.spoHead h1{margin:0;font-size:24px;line-height:1.2}
+.spoHead p{margin:5px 0 0;font-size:13px;color:var(--spo-muted)}
+.spoHeadActions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:nowrap}
+.spoPage button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:8px 12px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;cursor:pointer}
+.spoPage button:hover:not(:disabled){border-color:#aac2ed;background:#f5f8ff}
+.spoPage button:disabled{cursor:not-allowed;opacity:.55}
+.spoSearch{width:300px;height:40px;padding:0 10px;display:flex;align-items:center;gap:8px;border:1px solid #d9e1ec;border-radius:7px;color:#344054}
+.spoSearch input{width:100%;min-width:0;border:0;outline:0;background:transparent;font-size:13px}
+.spoFiltersMore{position:relative;flex:none}
+.spoFiltersMore summary{height:40px;padding:0 10px;display:flex;align-items:center;gap:6px;border:1px solid #d9e1ec;border-radius:7px;list-style:none;color:#344054;font-size:12px;font-weight:600;cursor:pointer}
+.spoFiltersMore summary::-webkit-details-marker{display:none}
+.spoFiltersMore summary span{min-width:17px;height:17px;display:inline-grid;place-items:center;border-radius:999px;background:#eaf1ff;color:#245fd9;font-size:11px;font-weight:700}
+.spoFilters{position:absolute;z-index:80;right:0;top:calc(100% + 8px);width:min(620px,calc(100vw - 48px));padding:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;border:1px solid #e1e6ed;border-radius:9px;background:#fff;box-shadow:0 12px 28px #1018281f}
+.spoFilters label{display:flex;flex-direction:column;gap:6px;color:#475467;font-size:12px;font-weight:650}
+.spoFilters select,.spoFilters input[type=date]{height:40px;padding:0 11px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:var(--spo-text);font-size:13px}
+.spoFilterActions{grid-column:1/-1;justify-self:start;display:flex;align-items:center;gap:14px}
+.spoFilterActions button{min-height:auto;padding:4px 0;border:0;background:transparent;color:#245fd9;font-size:12px}
+.spoFilterActions button:hover:not(:disabled){border:0;background:transparent;text-decoration:underline}
+.spoError{display:flex;align-items:center;gap:10px;padding:12px 15px;border:1px solid #ffd3d9;border-radius:8px;background:#fff1f2;color:#b33243}
+.spoPrintMeta{display:none}
+.spoSummary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.spoSummary>div{min-height:92px;padding:15px 12px;display:flex;flex-direction:column;justify-content:center;gap:8px;border:1px solid #dfe6ef;border-radius:9px;background:#fff}
+.spoSummary>div:first-child{background:#edf3ff;border-color:#d2e0ff;color:#285dca}
+.spoSummary span{color:var(--spo-muted);font-size:12px}
+.spoSummary strong{font-size:18px;letter-spacing:-.5px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.spoStatementCard{border:1px solid var(--spo-line);border-radius:10px;background:#fff;overflow:hidden}
+.spoTableScroll{overflow-x:auto;overscroll-behavior-inline:contain}
+.spoStatementCard table{width:100%;border-collapse:collapse;font-size:13px}
+.spoStatementCard caption{caption-side:top;padding:12px 16px;border-bottom:1px solid #edf1f6;background:#fbfcfe;color:var(--spo-muted);font-size:12px;text-align:left}
+.spoStatementCard th,.spoStatementCard td{padding:11px 14px;border-top:1px solid #edf1f6;text-align:right;font-variant-numeric:tabular-nums}
+.spoStatementCard thead th{position:sticky!important;top:-24px!important;z-index:20!important;background:#f7f9fc!important;color:#5b6b81!important;font-size:12px!important;font-weight:600!important;text-align:right}
+.spoStatementCard thead th:first-child{text-align:left}
+/* SEVEN columns and nothing else: the supplier, its ID, the bill count, what we owe, what is already
+   overdue, what is not yet due and the actions. Aging is a filter, so no bucket is a column; the
+   widths are positional and add up to 100%. */
+.spoStatementCard thead .spoNameCol{width:32%}
+.spoStatementCard thead .spoCodeCol{width:16%}
+.spoStatementCard thead .spoCountCol{width:10%}
+.spoStatementCard thead .spoOutCol{width:18%}
+.spoStatementCard thead .spoDueCol{width:12%}
+.spoTableScroll>table{table-layout:fixed}
+.spoMoney{white-space:nowrap}
+.spoStrong{font-weight:700;color:#172033}
+.spoCodeCol{color:#475467}
+.spoAgingHint{display:block;margin-top:2px;color:#245fd9;font-size:11px;font-style:normal;font-weight:600;white-space:nowrap}
+.spoSupplier th,.spoNameCell{text-align:left!important;font-weight:600;padding:11px 14px!important;color:#172033;font-size:13px}
+.spoDetail>td{padding:0!important;border-top:0!important;text-align:left!important}
+.spoDetailCard{padding:14px 16px 18px;background:#fbfcfe;border-top:1px solid #e6ecf3}
+.spoDetailFacts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}
+.spoDetailFacts>div{display:flex;flex-direction:column;gap:4px;padding:10px 12px;border:1px solid #e4eaf2;border-radius:8px;background:#fff}
+.spoDetailFacts span{color:var(--spo-muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+.spoDetailFacts strong{font-size:13px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.spoBillScroll{overflow-x:auto;border:1px solid #e4eaf2;border-radius:9px;background:#fff}
+.spoBillTable{width:100%;min-width:760px;border-collapse:collapse;font-size:12px}
+.spoBillTable th,.spoBillTable td{padding:9px 12px;border-top:1px solid #eef2f7;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.spoBillTable thead th{background:#f7f9fc;color:#5b6b81;font-size:11px;font-weight:600;border-top:0}
+.spoBillTable thead th:first-child,.spoBillTable thead th:nth-child(2),.spoBillTable thead th:nth-child(3),.spoBillTable thead th:nth-child(8),.spoBillTable thead th:last-child,.spoBillTable tbody td:first-child,.spoBillTable tbody td:nth-child(2),.spoBillTable tbody td:nth-child(3),.spoBillTable tbody td:nth-child(8),.spoBillTable tbody td:last-child{text-align:left}
+.spoBillNumber{font-weight:650;color:#245fd9}
+.spoBillActions{width:1%}
+.spoBillActions .soMoreButton{margin-left:0;width:28px;height:28px}
+/* Days overdue is stated only when the bill is actually overdue, inside the Status cell, instead of
+   spending a permanent column on a value most rows leave empty. */
+.spoDaysOverdue{display:block;margin-top:3px;color:#b33243;font-size:11px;font-style:normal;font-weight:600}
+.spoPill{display:inline-flex;align-items:center;padding:3px 9px;border-radius:999px;background:#eef2f7;color:#475467;font-size:11px;font-weight:600}
+.spoPillspoPaid{background:#eaf7ef;color:#28724d}
+.spoPillspoPartiallyPaid{background:#fff4e5;color:#9a5b12}
+.spoPillspoNotYetDue{background:#eef2f7;color:#475467}
+.spoPillspoDueToday{background:#eaf1ff;color:#245fd9}
+.spoPillspoOverdue{background:#fff1f2;color:#b33243}
+/* src/ui-system.css right-aligns every row's last cell with !important; the supplier column is a
+   header cell holding the expand button, so it restates the statement's left alignment. */
+.spoStatementCard .spoSupplier th{text-align:left!important;padding:11px 14px!important}
+.spoStatementCard .spoGrandTotal th.spoNameCol{text-align:left!important}
+.spoGrandTotal th{padding:13px 14px;border-top:2px solid #dbe3ee;background:#eef3fb;color:#172033;font-size:13px;font-weight:700;text-align:right}
+.spoEquation{display:flex;align-items:center;gap:14px;margin:0;padding:10px 13px;border:1px solid #cee9da;border-radius:7px;background:#eaf7ef;color:#28724d}
+.spoEquation.mismatch{border-color:#f3d4b8;background:#fff3e9;color:#994b1e}
+.spoEquation.unknown{border-color:#dfe6ef;background:#f7f9fc;color:#475467}
+.spoEquation b{font-size:13px}
+.spoEquation span{margin-left:auto;font-size:12px}
+.spoStickyBalance{position:sticky;bottom:0;z-index:12;box-shadow:0 -6px 16px #1018280d}
+@media(max-width:900px){.spoPage{padding:18px}.spoHead{align-items:flex-start;flex-direction:column}.spoHeadActions{width:100%;justify-content:flex-start;flex-wrap:wrap}.spoSearch{flex:1 1 260px}.spoSummary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.spoStatementCard th,.spoStatementCard td{padding:10px 8px;font-size:12px}}
+@media(max-width:560px){.spoPage{padding:14px}.spoSearch{width:100%;flex-basis:100%}.spoFiltersMore{width:100%}.spoFiltersMore summary{justify-content:center}.spoFilters{position:static;width:100%;grid-template-columns:1fr;margin-top:8px}.spoSummary{grid-template-columns:1fr}.spoStickyBalance{bottom:6px}.spoEquation{align-items:flex-start;flex-wrap:wrap}.spoEquation span{margin-left:26px}.spoDetailFacts{grid-template-columns:1fr}.spoBillTable th,.spoBillTable td{padding:8px 9px}}
+/* Phone widths: the ID column and the explicit View toggle stand down, so the supplier, the bill
+   count, the three money facts and the More menu share the card exactly and the table never scrolls
+   sideways. The ID is still stated in the drill-down and in the export. These rules are scoped to the
+   statement table itself: a bare '.spoStatementCard table' also matched the nine-column bill table
+   nested in the drill-down and forced 'table-layout:fixed' on it, which squeezed every column to a
+   few pixels and let the nowrap text collide. The bill table keeps its own layout and falls back to
+   the horizontal scroll '.spoBillScroll' already provides. */
+@media(max-width:560px){.spoStatementCard>.spoTableScroll>table{table-layout:fixed}.spoStatementCard>.spoTableScroll th,.spoStatementCard>.spoTableScroll td{padding:10px 4px!important;font-size:11px}.spoStatementCard .spoCodeCol{display:none}.spoStatementCard thead .spoNameCol{width:23%}.spoStatementCard thead .spoCountCol{width:5%}.spoStatementCard thead .spoOutCol{width:21%}.spoStatementCard thead .spoDueCol{width:18.5%}.spoStatementCard thead .spoActionsCol{width:14%}.spoViewButton{display:none}.spoSupplierButton{min-height:auto;padding:10px 6px;gap:6px}.spoStatementCard caption{overflow-wrap:anywhere}}
+@media print{@page{size:landscape;margin:12mm}
+body:has(.spoPage) .app>aside,body:has(.spoPage) .app>header,body:has(.spoPage) .welcome,body:has(.spoPage) .spoHeadActions,body:has(.spoPage) .spoFilters,body:has(.spoPage) .spoActionsCol{display:none!important}
+.transactionPortal:has(.spoPage){position:static!important;inset:auto!important;overflow:visible!important;padding:0!important;background:#fff!important}
+.spoPage{max-width:none;padding:0;border:0;box-shadow:none;border-radius:0;gap:12px}
+.spoPrintMeta{display:block}
+.spoPrintMeta p{margin:0 0 3px;font-size:12px}
+.spoTableScroll,.spoBillScroll{overflow:visible}
+.spoStatementCard table{font-size:12px;table-layout:auto}
+.spoStatementCard thead{display:table-header-group}
+.spoStatementCard tr{break-inside:avoid}
+.spoStatementCard th,.spoStatementCard td{padding:5px;white-space:normal}
+.spoDetailFacts{grid-template-columns:repeat(3,minmax(0,1fr))}
+.spoBillTable th,.spoBillTable td{padding:4px;white-space:normal}
+.spoStickyBalance{position:static;box-shadow:none}}

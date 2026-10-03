@@ -69,6 +69,12 @@ const blank=()=>{const now=new Date(),context=getCurrentOrganizationContext(),da
    the register's JV-2026-nnnnn shape instead of colliding with the timestamp-derived numbers. */
 const nextJournalNumbers=(count,rows)=>{const used=rows.map(j=>Number(String(j.number||'').replace(/[^0-9]/g,'').slice(-5))||0);const start=used.length?Math.max(...used):Number(String(Date.now()).slice(-5));return Array.from({length:count},(_,i)=>'JV-2026-'+String(start+1+i).padStart(5,'0'))};
 const readManual=()=>{try{return JSON.parse(localStorage.getItem(STORE)||'[]')}catch{return []}};
+
+/* The 'View' action on the Transaction Register opens the journal it names through this key. A
+   manual journal is this register's own document, so it is looked up first; a journal that has no
+   document behind it - an opening balance or an adjustment - is opened from the ledger instead. The
+   handoff is consumed once, so arriving any other way opens the register list. */
+const handoffJournal=seed=>{try{const id=sessionStorage.getItem('wayvida-open-journal');if(!id)return null;sessionStorage.removeItem('wayvida-open-journal');return readManual().find(row=>row.id===id)||readAccounts(seed).journals.find(row=>row.id===id)||null}catch{return null}};
 const saveManual=rows=>localStorage.setItem(STORE,JSON.stringify(rows));
 const readAttachments=files=>Promise.all([...files].map(file=>new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve({name:file.name,type:file.type,data:reader.result});reader.onerror=()=>reject(reader.error);reader.readAsDataURL(file)})));
 const amount=v=>Math.round((Number(v)||0)*100);
@@ -167,7 +173,7 @@ const JournalRegister=({terms,list,filtered,totals,viewMode,role,accounts,query,
 export default function JournalEntriesPro({seed,notify,onNavigate}){
  const {mode:viewMode,t:terms}=useTerminology();
  const [accountRevision,setAccountRevision]=useState(0),state=useMemo(()=>readAccounts(seed),[seed,accountRevision]),accounts=state.accounts.filter(a=>a.active&&!a.isGroup);
- const [manual,setManual]=useState(readManual),[preview,setPreview]=useState(null),[mode,setMode]=useState('list'),[form,setForm]=useState(null),[detail,setDetail]=useState(null),[query,setQuery]=useState(''),[status,setStatus]=useState(()=>sessionStorage.getItem('wayvida-resolve-status')||'All statuses'),[typeFilter,setTypeFilter]=useState('All types'),[accountFilter,setAccountFilter]=useState('All accounts'),[orgFilter,setOrgFilter]=useState('All organisations'),[branchFilter,setBranchFilter]=useState('All branches'),[fromDate,setFromDate]=useState(''),[toDate,setToDate]=useState(''),[error,setError]=useState(''),[importOpen,setImportOpen]=useState(false);
+ const [manual,setManual]=useState(readManual),[preview,setPreview]=useState(null),[mode,setMode]=useState('list'),[form,setForm]=useState(null),[detail,setDetail]=useState(()=>handoffJournal(seed)),[query,setQuery]=useState(''),[status,setStatus]=useState(()=>sessionStorage.getItem('wayvida-resolve-status')||'All statuses'),[typeFilter,setTypeFilter]=useState('All types'),[accountFilter,setAccountFilter]=useState('All accounts'),[orgFilter,setOrgFilter]=useState('All organisations'),[branchFilter,setBranchFilter]=useState('All branches'),[fromDate,setFromDate]=useState(''),[toDate,setToDate]=useState(''),[error,setError]=useState(''),[importOpen,setImportOpen]=useState(false);
  const totals=j=>({debit:j.lines.reduce((n,l)=>n+amount(l.debit),0),credit:j.lines.reduce((n,l)=>n+amount(l.credit),0)});
  const openMenus=()=>document.querySelectorAll('.je-row-actions details[open],.je-detail-more[open]');
  useEffect(()=>{const closeOnPointerDown=event=>{openMenus().forEach(node=>{if(!node.contains(event.target))node.removeAttribute('open')})};const closeOnEscape=event=>{if(event.key==='Escape')openMenus().forEach(node=>node.removeAttribute('open'))};document.addEventListener('pointerdown',closeOnPointerDown);document.addEventListener('keydown',closeOnEscape);return()=>{document.removeEventListener('pointerdown',closeOnPointerDown);document.removeEventListener('keydown',closeOnEscape)}});

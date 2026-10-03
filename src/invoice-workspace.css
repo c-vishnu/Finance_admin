@@ -105,15 +105,15 @@ body:has(.ivCreatePage) .app{height:auto;min-height:100vh;overflow:visible}
    uses, so it declares its own widths: without them the last three columns collapsed to zero and
    their headers wrapped one character per line - a 258px header row, which is the height the user
    reported between the header and the first column. */
-.creditNotes .ivInvoiceTable th:nth-child(1){width:9%}
-.creditNotes .ivInvoiceTable th:nth-child(2){width:12%}
-.creditNotes .ivInvoiceTable th:nth-child(3){width:12%}
+.creditNotes .ivInvoiceTable th:nth-child(1){width:10%}
+.creditNotes .ivInvoiceTable th:nth-child(2){width:11%}
+.creditNotes .ivInvoiceTable th:nth-child(3){width:9%}
 .creditNotes .ivInvoiceTable th:nth-child(4){width:15%}
-.creditNotes .ivInvoiceTable th:nth-child(5){width:11%}
-.creditNotes .ivInvoiceTable th:nth-child(6){width:11%}
+.creditNotes .ivInvoiceTable th:nth-child(5){width:10%}
+.creditNotes .ivInvoiceTable th:nth-child(6){width:16%}
 .creditNotes .ivInvoiceTable th:nth-child(7){width:10%}
 .creditNotes .ivInvoiceTable th:nth-child(8){width:10%}
-.creditNotes .ivInvoiceTable th:nth-child(9){width:10%}
+.creditNotes .ivInvoiceTable th:nth-child(9){width:9%}
 /* A register number is a link, not a control: the shared 36px button minimum boxed the invoice and
    credit note numbers and pushed them below the header on a one-line row. */
 .invoiceWorkspace .ivInvoiceTable td>.ivLink{display:inline;min-height:0;padding:0}
@@ -125,18 +125,21 @@ body:has(.ivCreatePage) .app{height:auto;min-height:100vh;overflow:visible}
 /* The credit notes register puts Status and Actions side by side. The Actions cell inherits the
    invoice table overflow:hidden, and at 8% the row menu (two controls, about 84px) did not fit, so it
    drew over the Status column. The column is widened, allowed to overflow, and given its own gap. */
-.creditNotes .ivInvoiceTable th:nth-child(2){width:12%}
-.creditNotes .ivInvoiceTable th:nth-child(3){width:12%}
+.creditNotes .ivInvoiceTable th:nth-child(1){width:10%}
+.creditNotes .ivInvoiceTable th:nth-child(2){width:11%}
+.creditNotes .ivInvoiceTable th:nth-child(3){width:9%}
 .creditNotes .ivInvoiceTable th:nth-child(4){width:15%}
-.creditNotes .ivInvoiceTable th:nth-child(5){width:11%}
-.creditNotes .ivInvoiceTable th:nth-child(6){width:11%}
+.creditNotes .ivInvoiceTable th:nth-child(5){width:10%}
+.creditNotes .ivInvoiceTable th:nth-child(6){width:16%}
 .creditNotes .ivInvoiceTable th:nth-child(7){width:10%}
 .creditNotes .ivInvoiceTable th:nth-child(8){width:10%}
-.creditNotes .ivInvoiceTable th:nth-child(9){width:10%;text-align:right;padding-left:16px}
+.creditNotes .ivInvoiceTable th:nth-child(9){width:9%;text-align:right;padding-left:16px}
 /* The status cell holds a pill and, under it, the amount already refunded. The table nowrap would
    cut that line off mid-figure ("Refunded ₹2,950...."), so it wraps instead and the whole amount
    stays readable. The pill itself can never wrap - it is nowrap - which is why the column is wide
    enough for the longest status the module writes. */
+.creditNotes .ivInvoiceTable td:nth-child(6){overflow:visible}
+.creditNotes .ivInvoiceTable td:nth-child(6) .statusPill{white-space:nowrap;max-width:none}
 .creditNotes .ivInvoiceTable td:nth-child(6) small{white-space:normal;overflow-wrap:anywhere}
 
 /* The merged first column shifts everything after it, so this table states its own alignment: the

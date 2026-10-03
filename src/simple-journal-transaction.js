@@ -11,6 +11,7 @@
    account mapping, so a simple transaction can never grow a second accounting
    path and no debit/credit vocabulary leaks into the form. */
 import {formatRupees} from './number-format.js';
+import {today} from './invoice-engine.js';
 
 /* The one storage key for manual and simple transactions, shared by the page and
    the demo bootstrap so the register and the seed can never disagree. */
@@ -229,6 +230,29 @@ export function reversalRecord(record={},date='',reason=''){
    Codes map onto the existing Chart of Accounts; the names carry the narrative.
    The two settlement rows are posted by src/demo-data.js through the invoice and
    purchase engines so their documents and balances stay truthful. */
+/* The month the demo is set in. September 2026 is the open period the seeded period control
+   starts from, so the current day is only offered a batch inside that month: the seed never
+   posts into a period it has not opened. */
+export const DEMO_MONTH='2026-09';
+
+/* The day of trading the demo posts on the current date. The Day Book opens on today, so a
+   register dated only inside the month would leave the first screen of that report empty. The
+   batch is written like every other row here, so it posts through the same engine and the
+   Journal Entries register lists it beside the rest. */
+export const currentDayTransactions=(day=today())=>day.startsWith(DEMO_MONTH)?[
+ {number:'JE-2026-000141',date:day,transactionType:'income',name:'Counter sales collected today',moneyAccount:'1010',category:'4000',amount:'68500',status:'Approved',reference:'CSH-0928',description:'Walk-in sales banked at the end of the day'},
+ {number:'JE-2026-000142',date:day,transactionType:'expense',name:'Bank charges for September',moneyAccount:'1010',category:'5700',amount:'1180',status:'Approved',reference:'CHG-SEP',description:'Account maintenance and transaction charges'},
+ {number:'JE-2026-000143',date:day,transactionType:'expense',name:'Fuel for the delivery van',moneyAccount:'1010',category:'5400',amount:'4300',status:'Approved',reference:'FUEL-0928',description:'Diesel for the weekly delivery run'},
+ {number:'JE-2026-000144',date:day,transactionType:'income',name:'Advance from Meridian Logistics',moneyAccount:'1010',category:'4100',amount:'60000',status:'Approved',reference:'ADV-MER',description:'Advance received against the October support contract'},
+ {number:'JE-2026-000145',date:day,transactionType:'expense',name:'Printing and stationery',moneyAccount:'1010',category:'5900',amount:'2750',status:'Approved',reference:'STN-0928',description:'Letterheads and invoice books for the finance desk'},
+ {number:'JE-2026-000146',date:day,transactionType:'expense',name:'Staff refreshments',moneyAccount:'1010',category:'5300',amount:'1850',status:'Approved',reference:'RFM-0928',description:'Tea and snacks for the month-end review'},
+ {number:'JE-2026-000147',date:day,transactionType:'expense',name:'Courier and postage',moneyAccount:'1010',category:'5900',amount:'940',status:'Approved',reference:'CR-0928',description:'Signed agreements sent to the Bengaluru branch'},
+ {number:'JE-2026-000148',date:day,transactionType:'income',name:'Support services billed today',moneyAccount:'1010',category:'4100',amount:'32000',status:'Approved',reference:'SRV-0928',description:'Half-day support visit billed to Lakeview Hotels'},
+ {number:'JE-2026-000149',date:day,transactionType:'expense',name:'Office internet and telephone',moneyAccount:'1010',category:'5300',amount:'6400',status:'Approved',reference:'NET-SEP',description:'September broadband and telephone bill'},
+ {number:'JE-2026-000150',date:day,transactionType:'expense',name:'Vehicle parking and tolls',moneyAccount:'1010',category:'5400',amount:'1250',status:'Approved',reference:'TOLL-0928',description:'Tolls and parking for the customer visits'},
+ {number:'JE-2026-000151',date:day,transactionType:'income',name:'Training session fees',moneyAccount:'1010',category:'4000',amount:'24000',status:'Approved',reference:'TRN-0928',description:'One-day bookkeeping workshop for Coastal Traders'}
+]:[];
+
 export const SAMPLE_TRANSACTIONS=[
  {number:'JE-2026-000121',date:'2026-09-08',transactionType:'expense',name:'Office electricity bill',moneyAccount:'1010',category:'5300',amount:'8500',status:'Approved',reference:'KSEB-0912',description:'September electricity for the Kochi office'},
  {number:'JE-2026-000122',date:'2026-09-04',transactionType:'customer_payment',name:'Customer payment - ABC Retail Pvt Ltd',partyId:'cus-1',moneyAccount:'1010',amount:'590',status:'Approved',documentNumber:'INV-00001'},
@@ -237,7 +261,14 @@ export const SAMPLE_TRANSACTIONS=[
  {number:'JE-2026-000125',date:'2026-09-04',transactionType:'transfer',name:'Cash to bank transfer',moneyAccount:'1000',toAccount:'1010',amount:'20000',status:'Rejected',rejectionReason:'The deposit slip is for a different date. Please re-check and resubmit.',rejectedBy:'Admin'},
  {number:'JE-2026-000126',date:'2026-09-03',transactionType:'expense',name:'Software subscription',moneyAccount:'1010',category:'5600',amount:'4999',status:'Reversed',reversalReason:'The subscription was charged twice by the vendor.',reversalDate:'2026-09-05'},
  {number:'JE-2026-000127',date:'2026-09-05',transactionType:'vendor_payment',name:'Vendor payment - Kerala Office Supplies',partyId:'ven-1',moneyAccount:'1010',amount:'4080',status:'Approved',documentNumber:'BILL-00001'},
- {number:'JE-2026-000128',date:'2026-09-10',transactionType:'expense',name:'Duplicate subscription charge',moneyAccount:'1010',category:'5600',amount:'4999',status:'Cancelled',reference:'SUB-0910',description:'Withdrawn before approval because the charge was already recorded.',cancellationReason:'Duplicate of the September software subscription',cancelledBy:'Admin'}
+ {number:'JE-2026-000129',date:'2026-09-11',transactionType:'expense',name:'Office rent for September',moneyAccount:'1010',category:'5300',amount:'25000',status:'Approved',reference:'RENT-SEP',description:'Monthly rent for the Kochi office'},
+ {number:'JE-2026-000130',date:'2026-09-12',transactionType:'income',name:'Consulting retainer',moneyAccount:'1010',category:'4100',amount:'120000',status:'Approved',reference:'RET-SEP',description:'September advisory retainer billed to Meridian Logistics'},
+ {number:'JE-2026-000131',date:'2026-09-13',transactionType:'transfer',name:'Cash withdrawal for petty expenses',moneyAccount:'1010',toAccount:'1000',amount:'15000',status:'Approved',reference:'ATM-0913',description:'Cash moved from the bank account to the petty cash box'},
+ {number:'JE-2026-000132',date:'2026-09-14',transactionType:'expense',name:'Team offsite catering',moneyAccount:'1010',category:'5400',amount:'18600',status:'Approved',reference:'CAT-0914',description:'Catering for the quarterly planning offsite'},
+ {number:'JE-2026-000133',date:'2026-09-15',transactionType:'income',name:'Training workshop fees',moneyAccount:'1010',category:'4100',amount:'45000',status:'Pending Approval',reference:'TRN-0915',description:'Two-day GST workshop for Coastal Traders'},
+ {number:'JE-2026-000134',date:'2026-09-16',transactionType:'expense',name:'Courier and postage',moneyAccount:'1010',category:'5900',amount:'2350',status:'Draft',reference:'CR-0916',description:'Courier charges for the signed agreements'},
+ {number:'JE-2026-000128',date:'2026-09-10',transactionType:'expense',name:'Duplicate subscription charge',moneyAccount:'1010',category:'5600',amount:'4999',status:'Cancelled',reference:'SUB-0910',description:'Withdrawn before approval because the charge was already recorded.',cancellationReason:'Duplicate of the September software subscription',cancelledBy:'Admin'},
+ ...currentDayTransactions()
 ];
 
 const sampleState=row=>({transactionType:row.transactionType,name:row.name,date:row.date,amount:row.amount,moneyAccount:row.moneyAccount||'',toAccount:row.toAccount||'',category:row.category||'',partyId:row.partyId||'',documentId:'',description:row.description||'',reference:row.reference||''});

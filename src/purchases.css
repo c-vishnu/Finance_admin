@@ -18,7 +18,59 @@
 .purchaseDetailLines{table-layout:auto}
 .purchaseDetailLines th,.purchaseDetailLines td{white-space:normal}
 
+/* Purchase registers use the Sales workspace primitives, but their longer vendor and
+   document labels need an explicit table viewport.  Without a minimum table width a
+   narrow phone squeezes every heading into a character-per-line column instead of
+   exposing the same contained horizontal scroll used by the Sales registers. */
+.purchaseWorkspace .ivScroll{overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch}
+.purchaseWorkspace .ivInvoiceTable{min-width:0;width:100%;table-layout:auto}
+.purchaseWorkspace .ivInvoiceTable th{white-space:nowrap}
+.purchaseWorkspace .ivInvoiceTable td{white-space:normal}
+.purchaseWorkspace .ivInvoiceTable td:nth-child(2){max-width:260px;overflow:hidden;text-overflow:ellipsis}
+.purchaseWorkspace .ivInvoiceTable td small{white-space:nowrap}
+
+/* The purchase register now uses the Sales Orders registerHead layout, so the
+   old ivHeading / ivTools overrides are no longer needed. The card still needs
+   overflow:visible so the Filters dropdown can escape its bounds. */
+.purchaseWorkspace .ivRegisterCard{overflow:visible;padding:0;background:#fff;border:1px solid #e4e9f0;border-radius:10px}
+.purchaseWorkspace .ivRegisterCard .purchaseRegisterFoot{padding:12px 16px}
+
+/* The standard purchase register is deliberately the Sales Orders register translated
+   into purchase terminology: compact, fixed-height rows; a muted header band; tabular
+   money; and two square actions at the right.  All values are shared Sales tokens. */
+.purchaseWorkspace .ivHeading.registerHead{margin-bottom:0}
+.purchaseWorkspace .ivInvoiceTable{table-layout:fixed;width:100%;background:#fff}
+.purchaseWorkspace .ivInvoiceTable th,.purchaseWorkspace .ivInvoiceTable td{padding:12px 16px;vertical-align:top}
+.purchaseWorkspace .ivInvoiceTable th:first-child,.purchaseWorkspace .ivInvoiceTable td:first-child{padding-left:20px}
+.purchaseWorkspace .ivInvoiceTable th:last-child,.purchaseWorkspace .ivInvoiceTable td:last-child{padding-right:20px}
+.purchaseWorkspace .ivInvoiceTable th,.purchaseWorkspace thead th,.purchaseWorkspace [data-sticky-head] thead th{position:static!important;top:0!important;padding-top:10px;padding-bottom:10px;background:#f7f9fc;color:#5b6b81;font-size:12px;font-weight:600;line-height:1.3}
+.purchaseWorkspace .ivInvoiceTable tbody tr:hover{background:#f8fbff}
+.purchaseWorkspace .ivInvoiceTable td:nth-child(4){font-weight:650;font-variant-numeric:tabular-nums;text-align:right}
+.purchaseWorkspace .ivInvoiceTable th:last-child,.purchaseWorkspace .ivInvoiceTable td:last-child{text-align:right;overflow:visible}
+/* Order & date column: bold blue number over a muted formatted date, same as Sales Orders. */
+.purchaseWorkspace .ivInvoiceTable .soOrderNumber{color:#1849a9;font-weight:650}
+.purchaseWorkspace .ivInvoiceTable td small{display:block;margin-top:3px;color:#667085;font-size:12px;font-weight:400}
+.purchaseWorkspace .ivRowActions{gap:6px}
+.purchaseWorkspace .ivRowActions .ivIconButton{width:36px;height:36px;min-width:36px;padding:0;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#475467}
+.purchaseWorkspace .ivRowActions .ivIconButton:hover{border-color:#98a2b3;background:#f9fafb}
+
+/* Payments Made (Vendor Payments) table column alignment */
+.purchaseWorkspace .vpTable td:nth-child(4){font-weight:400;font-variant-numeric:normal;text-align:left}
+.purchaseWorkspace .vpTable th.vpAmount,.purchaseWorkspace .vpTable td.vpAmount{text-align:right;font-weight:650;font-variant-numeric:tabular-nums}
+.purchaseWorkspace .vpTable th.vpStatus,.purchaseWorkspace .vpTable td.vpStatus{text-align:center}
+.purchaseWorkspace .vpTable td.vpStatus .soStatusPill,.purchaseWorkspace .vpTable td.vpStatus .statusPill{display:inline-flex}
+.purchaseWorkspace .vpTable th.vpActions,.purchaseWorkspace .vpTable td.vpActions{text-align:right}
+
 @media(max-width:720px){
+ .purchaseWorkspace{width:100%;margin:0}
+ .purchaseWorkspace .soFiltersMore{width:100%}
+ .purchaseWorkspace .soFiltersMore>summary{justify-content:center}
+ .purchaseWorkspace .ivInvoiceTable{min-width:760px}
+ .purchaseWorkspace .ivScroll{margin-inline:-1px;border-radius:0 0 10px 10px}
+ .purchaseWorkspace .ivCreateForm .ivScroll{margin:0}
+ .purchaseWorkspace .soActionBar{position:static;align-items:stretch;flex-direction:column;gap:12px}
+ .purchaseWorkspace .soBarActions{justify-content:stretch;flex-wrap:wrap}
+ .purchaseWorkspace .soBarActions button{flex:1 1 120px}
  .purchaseWorkspace.ivDetailOpen .ivDetailSheet>:not(.ivDetailIdentityRow):not(.ivDetailStats):not(.itemDetailTabs){padding-left:12px;padding-right:12px}
  .purchaseReportMetrics{grid-template-columns:1fr}
 }

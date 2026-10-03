@@ -1,0 +1,1172 @@
+/* Profit & Loss report shell. Unified design language with Wayvida Books visual system. */
+.plPage {
+  --pl-blue: #3478f6;
+  --pl-blue-dark: #175cd3;
+  --pl-blue-light: #eff6ff;
+  --pl-blue-border: #bfdbfe;
+  --pl-blue-focus: #245fd9;
+  --pl-text: #0f172a;
+  --pl-secondary: #334155;
+  --pl-muted: #475569;
+  --pl-line: #e2e8f0;
+  --pl-bg-subtle: #f8fafc;
+  --pl-bg-total: #f1f5f9;
+  
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 100%;
+  margin: 0;
+  padding: 24px;
+  border: 1px solid var(--pl-line);
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+  color: var(--pl-text);
+  font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.plPage * {
+  box-sizing: border-box;
+}
+
+.plPage button,
+.plPage input,
+.plPage select {
+  font-family: inherit;
+}
+
+/* Keyboard Focus States - WCAG AA */
+.plPage button:focus-visible,
+.plPage input:focus-visible,
+.plPage select:focus-visible,
+.plPage summary:focus-visible,
+.plSectionHeader:focus-visible,
+.plAccountBtn:focus-visible,
+.plMoneyBtn:focus-visible {
+  outline: 2px solid var(--pl-blue-focus) !important;
+  outline-offset: 2px !important;
+}
+
+/* 1. Page Header */
+.plHead {
+  position: relative !important;
+  inset: auto !important;
+  z-index: 200 !important;
+  height: auto !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: 0 0 16px;
+  border-bottom: 1px solid var(--pl-line);
+  background: transparent;
+}
+
+.plHeadTitle h1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 32px;
+  color: var(--pl-text);
+  letter-spacing: -0.01em;
+}
+
+.plHeadTitle p {
+  margin: 3px 0 0;
+  font-size: 13.5px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--pl-secondary);
+}
+
+.plHeadActions {
+  position: relative;
+  z-index: 250;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+.plPage button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--pl-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.plPage button:hover:not(:disabled) {
+  border-color: #b2ccff;
+  background: #f5f8ff;
+  color: var(--pl-blue-dark);
+}
+
+.plPage button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.plSearch {
+  width: 280px;
+  min-width: 240px;
+  height: 40px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  color: var(--pl-muted);
+  background: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.plSearch:focus-within {
+  border-color: var(--pl-blue-focus);
+  box-shadow: 0 0 0 3px rgba(36, 95, 217, 0.12);
+}
+
+.plSearch input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 14px;
+  color: var(--pl-text);
+}
+
+.plSearch input::placeholder {
+  color: var(--pl-muted);
+  font-weight: 400;
+}
+
+.plFiltersMore {
+  position: relative;
+  z-index: 300;
+  flex: none;
+}
+
+.plFiltersMore summary {
+  height: 40px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  list-style: none;
+  color: var(--pl-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  background: #ffffff;
+  transition: border-color 0.15s ease;
+}
+
+.plFiltersMore summary::-webkit-details-marker {
+  display: none;
+}
+
+.plFiltersMore summary span {
+  min-width: 18px;
+  height: 18px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #eff8ff;
+  color: var(--pl-blue-dark);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.plFilters {
+  position: absolute;
+  z-index: 400;
+  right: 0;
+  top: calc(100% + 8px);
+  width: min(620px, calc(100vw - 48px));
+  padding: 18px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  border: 1px solid var(--pl-line);
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.15);
+}
+
+.plFilters label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--pl-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.plFilters select,
+.plFilters input[type=date] {
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--pl-text);
+  font-size: 14px;
+}
+
+.plFilters .plCheck {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  align-items: center;
+  gap: 9px;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.plFilters .plCheck input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--pl-blue);
+  cursor: pointer;
+}
+
+.plFilterActions {
+  grid-column: 1 / -1;
+  justify-self: start;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.plFilterActions button {
+  min-height: auto;
+  height: auto;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  color: var(--pl-blue-dark);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.plFilterActions button:hover:not(:disabled) {
+  border: 0;
+  background: transparent;
+  text-decoration: underline;
+}
+
+.plError {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border: 1px solid #fda29b;
+  border-radius: 8px;
+  background: #fef3f2;
+  color: #b42318;
+  font-size: 14px;
+}
+
+.plPrintMeta {
+  display: none;
+}
+
+/* 2. THREE Clean Summary KPI Cards */
+.plSummary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.plKpiCard {
+  min-height: 90px;
+  height: 90px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  border: 1px solid var(--pl-line);
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+.plKpiLabel {
+  color: var(--pl-muted);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.plKpiVal {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--pl-text);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.25;
+  white-space: nowrap !important;
+}
+
+.plKpiSub {
+  font-size: 12.5px;
+  color: var(--pl-muted);
+  font-weight: 500;
+}
+
+.plKpiResult {
+  background: var(--pl-bg-subtle);
+  border-color: #cbd5e1;
+}
+
+.plKpiResult.loss .plKpiVal {
+  color: #b42318;
+}
+
+/* 3. Report Presentation Controls Toolbar (Left-aligned) */
+.plViewSwitchBar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 2px 0;
+}
+
+.plSwitchControls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.plSegmented {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  background: #f1f5f9;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.plSegmentBtn {
+  min-height: 32px !important;
+  height: 32px !important;
+  padding: 0 16px !important;
+  border: 1px solid transparent !important;
+  border-radius: 6px !important;
+  background: transparent !important;
+  color: var(--pl-secondary) !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+  transition: all 0.15s ease !important;
+}
+
+.plSegmentBtn.active {
+  background: #ffffff !important;
+  color: var(--pl-blue-dark) !important;
+  border-color: var(--pl-blue-border) !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08) !important;
+}
+
+.plControlBtn {
+  min-height: 34px !important;
+  height: 34px !important;
+  padding: 0 14px !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 6px !important;
+  background: #ffffff !important;
+  color: var(--pl-secondary) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.plControlBtn:hover {
+  background: var(--pl-bg-subtle) !important;
+  color: var(--pl-text) !important;
+  border-color: #94a3b8 !important;
+}
+
+.plControlBtn.active {
+  background: #f0f5fe !important;
+  color: var(--pl-blue-dark) !important;
+  border-color: var(--pl-blue-border) !important;
+}
+
+/* 4. Report Grid Layout (60% left main column, 40% right panel) */
+.plReportLayout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  align-items: start;
+  transition: grid-template-columns 0.2s ease;
+}
+
+.plReportLayout.withPanel {
+  grid-template-columns: 60% calc(40% - 20px);
+}
+
+.plMainColumn {
+  min-width: 0;
+  width: 100%;
+}
+
+.plStatementCard {
+  border: 1px solid var(--pl-line);
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+  overflow: hidden;
+}
+
+.plTableScroll {
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  max-height: none !important;
+}
+
+.plStatementCard table {
+  width: 100%;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  font-size: 13.5px;
+}
+
+/* Sticky Header Row */
+.plStatementCard table thead th {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 20 !important;
+  height: 40px;
+  background: var(--pl-bg-subtle) !important;
+  color: var(--pl-secondary) !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  padding: 8px 16px !important;
+  border-bottom: 2px solid var(--pl-line) !important;
+  text-align: left;
+  letter-spacing: 0.04em;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.04) !important;
+}
+
+.plAccountHead {
+  width: 60%;
+}
+
+.plMoneyHead {
+  width: 40%;
+  text-align: right !important;
+  white-space: nowrap !important;
+}
+
+.plStatementCard th,
+.plStatementCard td {
+  padding: 8px 16px !important;
+  border-top: 1px solid #f1f5f9;
+  font-variant-numeric: tabular-nums;
+  line-height: 20px;
+}
+
+/* Level 1 Major Sections (REVENUE, COST OF GOODS SOLD, OPERATING EXPENSES) */
+.plSectionHeader {
+  cursor: pointer;
+  user-select: none;
+}
+
+.plSectionHeader th {
+  position: static !important;
+  height: 40px;
+  padding: 8px 16px !important;
+  background: var(--pl-bg-subtle);
+  color: var(--pl-text);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left !important;
+  letter-spacing: 0.04em;
+  border-top: 1px solid var(--pl-line);
+  transition: background 0.12s ease;
+}
+
+.plSectionHeader:hover th {
+  background: #f1f5f9;
+}
+
+.plSectionHeaderContent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.plChevron {
+  display: inline-flex;
+  align-items: center;
+  color: var(--pl-muted);
+}
+
+/* Level 2 Subgroups (Operating Income, Direct Costs, etc.) */
+.plGroupHeader th {
+  position: static !important;
+  height: 38px;
+  padding: 7px 16px 7px 32px !important;
+  background: #ffffff;
+  color: var(--pl-text);
+  font-size: 13.5px;
+  font-weight: 650;
+  text-align: left !important;
+  border-top: 1px solid #f1f5f9;
+}
+
+/* Level 3 Dense Account Rows (4000 · Sales) */
+.plAccountRow {
+  background: #ffffff;
+  height: 36px;
+  transition: background 0.12s ease;
+}
+
+.plAccountRow td {
+  background: #ffffff;
+  padding: 6px 16px !important;
+}
+
+.plAccountRow:hover td {
+  background: #fafcff !important;
+}
+
+.plAccountRow.selected td {
+  background: #f0f5fe !important;
+}
+
+.plAccountCell {
+  padding-left: 44px !important;
+  text-align: left;
+}
+
+.plCode {
+  color: var(--pl-muted);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.plSep {
+  color: #94a3b8;
+  font-size: 13px;
+  margin: 0 4px;
+}
+
+.plAccountName {
+  color: var(--pl-text);
+  font-size: 13.5px;
+  font-weight: 500;
+}
+
+.plAccountBtn {
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: auto !important;
+  height: auto !important;
+  color: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  cursor: pointer;
+  text-align: left;
+  display: inline-flex;
+  align-items: center;
+  line-height: 20px;
+  border-radius: 4px;
+}
+
+.plAccountBtn:hover .plAccountName {
+  color: var(--pl-blue-dark) !important;
+  text-decoration: underline !important;
+}
+
+.plMoneyBtn {
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: auto !important;
+  height: auto !important;
+  color: inherit !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+  text-align: right;
+  border-radius: 4px;
+  display: inline-block;
+  width: 100%;
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+}
+
+.plMoneyBtn:hover {
+  color: var(--pl-blue-dark) !important;
+  text-decoration: underline !important;
+}
+
+.plMoney {
+  text-align: right;
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--pl-text);
+}
+
+/* Level 4 Subtotal Row (Operating Income subtotal) */
+.plGroupTotal {
+  height: 38px;
+}
+
+.plGroupTotal td {
+  padding: 7px 16px !important;
+  border-top: 1px solid #edf2f7;
+  background: var(--pl-bg-subtle);
+  color: #334155;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.plSubtotalLabel {
+  padding-left: 44px !important;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #334155;
+}
+
+/* Level 1 Major Section Total Row (TOTAL REVENUE, etc.) */
+.plSectionTotal {
+  height: 42px;
+}
+
+.plSectionTotal td {
+  padding: 9px 16px !important;
+  border-top: 1px solid #cbd5e1;
+  background: var(--pl-bg-total);
+  color: var(--pl-text);
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.plMajorTotalLabel {
+  padding-left: 16px !important;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--pl-text);
+  letter-spacing: 0.02em;
+}
+
+/* Level 5 Derived Financial Result Rows */
+.plDerived {
+  height: 44px;
+}
+
+.plDerived td {
+  padding: 10px 16px !important;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.plDerivedLabel {
+  padding-left: 16px !important;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--pl-text);
+  letter-spacing: 0.02em;
+}
+
+/* Gross Profit: Subtle blue tint */
+.plGrossResult td {
+  background: #f5f8ff !important;
+  color: var(--pl-text) !important;
+  border-top: 1px solid #dbebe6 !important;
+  border-bottom: 1px solid #dbebe6 !important;
+}
+
+.plOpResult td {
+  background: #f0f5fe !important;
+  color: var(--pl-text) !important;
+  border-top: 1px solid #b8d1f9 !important;
+  border-bottom: 1px solid #b8d1f9 !important;
+}
+
+/* Final Profit Before Tax: Strongest Wayvida-blue emphasis */
+.plNetResult td {
+  background: #e0ecff !important;
+  color: var(--pl-text) !important;
+  font-size: 14.5px !important;
+  font-weight: 800 !important;
+  border-top: 2px solid var(--pl-blue) !important;
+  border-bottom: 2px solid var(--pl-blue) !important;
+}
+
+.plNetResult .plDerivedLabel {
+  color: var(--pl-blue-dark) !important;
+  font-size: 13.5px !important;
+  font-weight: 800 !important;
+}
+
+.plDrillHint {
+  padding: 10px 16px;
+  font-size: 12.5px;
+  color: var(--pl-secondary);
+  background: #fafcff;
+  border-top: 1px solid var(--pl-line);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 5. Two-sided T-Account View Styling */
+.plTwoSidedTable {
+  width: 100%;
+}
+
+.plTwoSidedHeaderRow th {
+  background: #f1f5f9 !important;
+  color: var(--pl-text) !important;
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  letter-spacing: 0.05em !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+}
+
+.plDebitHeader {
+  border-right: 2px solid #cbd5e1 !important;
+}
+
+.plSubHeaderRow th {
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  color: var(--pl-secondary) !important;
+  background: var(--pl-bg-subtle) !important;
+  border-bottom: 2px solid var(--pl-line) !important;
+}
+
+.plColParticulars {
+  width: 28%;
+  text-align: left;
+}
+
+.plColAmount {
+  width: 22%;
+  text-align: right !important;
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+}
+
+.plSubHeaderRow th:nth-child(2) {
+  border-right: 2px solid #cbd5e1 !important;
+}
+
+.plTAccountSectionHeader td {
+  background: var(--pl-bg-subtle) !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  color: var(--pl-secondary) !important;
+  letter-spacing: 0.04em !important;
+  padding: 6px 12px !important;
+  border-top: 1px solid var(--pl-line) !important;
+  border-bottom: 1px solid var(--pl-line) !important;
+}
+
+.plTAccountSectionHeader td:nth-child(1) {
+  border-right: 2px solid #cbd5e1 !important;
+}
+
+.plTAccRow td {
+  padding: 8px 10px !important;
+  font-size: 13.5px;
+  border-top: 1px solid #f1f5f9;
+  white-space: nowrap !important;
+}
+
+.plTAccRow td.plColParticulars {
+  white-space: normal !important;
+}
+
+.plTAccRow td:nth-child(2) {
+  border-right: 2px solid #cbd5e1 !important;
+}
+
+.plTradingTotalRow td,
+.plPnlTotalRow td {
+  padding: 10px 10px !important;
+  font-size: 13.5px !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+}
+
+.plTradingTotalRow td.plColParticulars,
+.plPnlTotalRow td.plColParticulars {
+  white-space: normal !important;
+}
+
+.plTradingTotalRow td {
+  background: var(--pl-bg-total) !important;
+  border-top: 1px solid #cbd5e1 !important;
+  border-bottom: 2px solid #cbd5e1 !important;
+}
+
+.plTradingTotalRow td:nth-child(2) {
+  border-right: 2px solid #cbd5e1 !important;
+}
+
+.plPnlTotalRow td {
+  background: #eff6ff !important;
+  color: var(--pl-blue-dark) !important;
+  border-top: 2px solid var(--pl-blue) !important;
+  border-bottom: 2px solid var(--pl-blue) !important;
+}
+
+.plPnlTotalRow td:nth-child(2) {
+  border-right: 2px solid #cbd5e1 !important;
+}
+
+.plTotalLabel {
+  text-align: left;
+}
+
+.plTotalAmount {
+  text-align: right !important;
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+}
+
+.plNetResultLabel {
+  color: var(--pl-blue-dark);
+}
+
+/* 6. Context Breakdown Panel ("Where Revenue Goes") */
+.plContextPanel,
+.plSidePanel {
+  position: sticky !important;
+  top: 75px !important;
+  align-self: flex-start !important;
+  inset: auto !important;
+  width: auto !important;
+  z-index: 5 !important;
+  border: 1px solid var(--pl-line);
+  border-radius: 10px;
+  background: #ffffff;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+.plContextHead h3 {
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--pl-text);
+}
+
+.plContextSub {
+  margin: 2px 0 0;
+  font-size: 12.5px;
+  color: var(--pl-muted);
+}
+
+.plCompBar {
+  height: 10px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  overflow: hidden;
+  display: flex;
+  width: 100%;
+}
+
+.plCompSeg {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.segCogs { background: #64748b; }
+.segOpEx { background: #94a3b8; }
+.segOtherEx { background: #cbd5e1; }
+.segProfit { background: var(--pl-blue); }
+
+.plCompList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.plCompItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  gap: 8px;
+}
+
+.plCompItem.highlight {
+  font-weight: 600;
+  padding-top: 6px;
+  border-top: 1px dashed var(--pl-line);
+}
+
+.plCompLabel {
+  display: flex;
+  align-items: center;
+  color: var(--pl-secondary);
+  flex: 1;
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.plCompDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  display: inline-block;
+  margin-right: 8px;
+  flex: none;
+}
+
+.dotCogs { background: #64748b; }
+.dotOpEx { background: #94a3b8; }
+.dotOtherEx { background: #cbd5e1; }
+.dotProfit { background: var(--pl-blue); }
+
+.plCompPct {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--pl-muted);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  margin-left: auto;
+  padding-right: 6px;
+}
+
+.plCompVal {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--pl-text);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap !important;
+}
+
+.plContextDivider {
+  border-top: 1px solid var(--pl-line);
+}
+
+.plReportNotes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.plNotesTitle {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--pl-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.plReportNotes ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--pl-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* 7. Collapsible About Report Section */
+.plAboutReport {
+  margin-top: 4px;
+}
+
+.plAboutReport summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--pl-secondary);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+
+.plAboutReport summary:hover {
+  color: var(--pl-blue-dark);
+}
+
+.plAboutChevron {
+  transition: transform 0.2s ease;
+  color: var(--pl-muted);
+}
+
+.plAboutReport[open] .plAboutChevron {
+  transform: rotate(180deg);
+}
+
+.plAboutContent {
+  margin-top: 8px;
+  padding: 14px 18px;
+  border: 1px solid var(--pl-line);
+  border-radius: 8px;
+  background: var(--pl-bg-subtle);
+  color: var(--pl-secondary);
+  font-size: 13.5px;
+  line-height: 1.65;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.plAboutContent p {
+  margin: 0;
+}
+
+/* Responsive Media Queries */
+@media (max-width: 1024px) {
+  .plReportLayout.withPanel {
+    grid-template-columns: 1fr;
+  }
+  .plContextPanel {
+    order: 2;
+  }
+}
+
+@media (max-width: 900px) {
+  .plPage {
+    padding: 18px;
+  }
+  .plHead {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .plHeadActions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+  .plSearch {
+    flex: 1 1 240px;
+  }
+  .plSummary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .plPage {
+    padding: 14px;
+  }
+  .plSearch {
+    width: 100%;
+    flex-basis: 100%;
+  }
+  .plFiltersMore {
+    width: 100%;
+  }
+  .plFiltersMore summary {
+    justify-content: center;
+  }
+  .plFilters {
+    position: static;
+    width: 100%;
+    grid-template-columns: 1fr;
+    margin-top: 8px;
+  }
+  .plSummary {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  @page {
+    size: landscape;
+    margin: 12mm;
+  }
+  body:has(.plPage) .app > aside,
+  body:has(.plPage) .app > header,
+  body:has(.plPage) .welcome,
+  body:has(.plPage) .plHeadActions,
+  body:has(.plPage) .plFilters,
+  body:has(.plPage) .plViewSwitchBar,
+  body:has(.plPage) .plAboutReport {
+    display: none !important;
+  }
+  .transactionPortal:has(.plPage) {
+    position: static !important;
+    inset: auto !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+  }
+  .plPage {
+    max-width: none;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+    border-radius: 0;
+    gap: 12px;
+  }
+  .plPrintMeta {
+    display: block;
+  }
+  .plPrintMeta p {
+    margin: 0 0 3px;
+    font-size: 12px;
+  }
+  .plReportLayout {
+    grid-template-columns: 1fr;
+  }
+  .plTableScroll {
+    overflow: visible;
+  }
+  .plStatementCard table {
+    font-size: 12px;
+    table-layout: auto;
+  }
+  .plStatementCard thead {
+    display: table-header-group;
+  }
+  .plStatementCard tr {
+    break-inside: avoid;
+  }
+  .plStatementCard th,
+  .plStatementCard td {
+    padding: 6px;
+    white-space: normal;
+  }
+}

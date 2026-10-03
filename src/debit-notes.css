@@ -1,1 +1,6 @@
 .debitJournalPreview{border:1px solid #e3e8ef;border-radius:8px;overflow:hidden}.debitJournalPreview p{display:grid;grid-template-columns:65px 1fr 130px;gap:12px;margin:0;padding:11px 13px;border-bottom:1px solid #edf0f4}.debitJournalPreview p:last-child{border-bottom:0}.debitJournalPreview b{color:#286aee}.debitJournalPreview strong{text-align:right}@media(max-width:700px){.debitJournalPreview p{grid-template-columns:55px 1fr}.debitJournalPreview strong{grid-column:2}}
+
+/* Debit Notes register table overrides */
+.purchaseWorkspace .ivInvoiceTable.debitNotesTable td:nth-child(4){font-weight:400!important;font-variant-numeric:normal!important;text-align:left!important}
+.purchaseWorkspace .ivInvoiceTable.debitNotesTable td:nth-child(5){font-weight:650!important;font-variant-numeric:tabular-nums!important;text-align:right!important}
+
