@@ -37,7 +37,7 @@ test('the popup leads with one sentence straight into the switches, with no card
  assert.ok(!settings.includes('pls-chip'),'the read only policy chip is not part of the popup');
  assert.ok(!settings.includes('periods lock on this schedule'),'the schedule description paragraph is gone');
  assert.ok(!settings.includes('chip=policyChip(value)')&&!settings.includes('policyChip'),'the popup no longer reads the policy chip text');
- assert.match(settings,/<section className="pls-card wide">\n +<Switch label="Enable automatic locking"/,'the first thing inside the card is the automatic locking switch');
+ assert.match(settings,/<section className="pls-card wide">\r?\n +<Switch label="Enable automatic locking"/,'the first thing inside the card is the automatic locking switch');
  assert.ok(!closing.includes('policyChip'),'the page header no longer renders the locking policy chip');
 });
 
