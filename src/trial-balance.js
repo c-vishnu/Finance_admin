@@ -17,7 +17,7 @@ const NORMAL_SIDE={Assets:'Debit',Expenses:'Debit',Liabilities:'Credit',Equity:'
 /* The posted-journal rule is deliberately the same one src/balance-sheet.js applies, so a Trial
    Balance always reconciles with the Balance Sheet. Drafts never reach the journal at all: an
    unposted document is not an accounting transaction and has no ledger lines to project. */
-const posted=journal=>!journal.status||journal.status==='Posted';
+const posted=journal=>!journal?.status||journal?.status==='Posted';
 const sum=(rows,key)=>rows.reduce((total,row)=>total+(Number(row[key])||0),0);
 const add=(movement,code,debit,credit)=>{const current=movement.get(code)||{debit:0,credit:0};movement.set(code,{debit:current.debit+debit,credit:current.credit+credit})};
 

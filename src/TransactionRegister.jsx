@@ -112,7 +112,6 @@ export default function TransactionRegister({onNavigate=()=>{}}){
   <header className="trHead">
    <div className="trHeadText"><h1>Transaction Register ({summary.total})</h1><p>Find and review your business transactions in one place.</p></div>
    <div className="trHeadActions">
-    <label className="trSearch"><IconSearch size={19}/><input aria-label="Search transactions" placeholder="Search transactions..." value={search} onChange={event=>setSearch(event.target.value)}/></label>
     <DateRangeSelect from={filters.from} to={filters.to} onChange={(start,end)=>{setFilters(current=>({...current,from:start,to:end}))}} onCustom={()=>setFiltersOpen(true)}/>
     <details className="trFiltersMore" open={filtersOpen} onToggle={event=>setFiltersOpen(event.currentTarget.open)}>
      <summary aria-label="Open filters"><IconAdjustments size={24} stroke={2.2}/>Filters{activeFilters>0&&<span>{activeFilters}</span>}</summary>
@@ -149,7 +148,7 @@ export default function TransactionRegister({onNavigate=()=>{}}){
       <td className="trPartyCol" title={entry.party||entry.description||undefined}>{entry.party||entry.description||DASH}</td>
       <td className="trRefCol" title={entry.reference||undefined}>{entry.reference||DASH}</td>
       <td className="trMoney trAmountCol">{money(entry.amount)}</td>
-      <td className="trStatusCol"><StatusPill status={entry.status} tone={STATUS_TONES[entry.status]||'neutral'}/></td>
+      <td className="trStatusCol"><StatusPill status={entry?.status} tone={STATUS_TONES[entry?.status]||'neutral'}/></td>
       <td className="trActionsCol">
        <details className="trActionsMenu">
         <summary aria-label={'Actions for '+entry.number}><IconDots size={18}/></summary>

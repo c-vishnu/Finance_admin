@@ -155,7 +155,6 @@ export default function JournalReport({notify,onNavigate={}}){
   <header className="cbHead">
    <div className="cbHeadText"><h1>Journal Report</h1><p>View every posted accounting entry and its debit/credit lines for the selected period.</p></div>
    <div className="cbHeadActions">
-    <label className="cbSearch"><IconSearch size={19}/><input aria-label="Search journals" placeholder="Search journals..." value={search} onChange={event=>setSearch(event.target.value)}/></label>
     <DateRangeSelect from={filters.from} to={filters.to} onChange={(start,end)=>{setFilters(current=>({...current,from:start,to:end}))}} onCustom={()=>setFiltersOpen(true)}/>
     <details className="cbFiltersMore" open={filtersOpen} onToggle={event=>setFiltersOpen(event.currentTarget.open)}>
      <summary aria-label="Open filters"><IconAdjustments size={24} stroke={2.2}/>Filters{activeFilters>0&&<span>{activeFilters}</span>}</summary>

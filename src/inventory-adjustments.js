@@ -31,11 +31,13 @@ ADJUSTMENT_ACTIONS={Draft:['View','Edit','Duplicate','Export','Delete','Cancel']
 
 /* The local role selector is a simulation of approval duty, never authentication.
    The same boundary is enforced in the command, not only by hiding buttons. */
-export const ADJUSTMENT_ROLES=['Accountant','Finance Manager','Admin'];
+export const ADJUSTMENT_ROLES=['Accountant','Finance Manager','Business Owner','Admin','Super Admin'];
 const permissions={
  Accountant:['save','submit','cancel','export'],
  'Finance Manager':['save','submit','cancel','export','approve','post','reverse'],
- Admin:['save','submit','cancel','export','approve','post','reverse']
+ 'Business Owner':['save','submit','cancel','export','approve','post','reverse'],
+ Admin:['save','submit','cancel','export','approve','post','reverse'],
+ 'Super Admin':['save','submit','cancel','export','approve','post','reverse']
 };
 export const adjustmentAllowed=(role,action)=>(permissions[role]||[]).includes(action);
 /* The command names an action after what it does, the role duty names what it

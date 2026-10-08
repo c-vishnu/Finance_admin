@@ -188,7 +188,7 @@ body:has(.itemCreatePage) .app>main{height:auto;max-height:none;overflow:visible
 .itemDetailSectionTitle h2{margin:0;font-size:13.5px;font-weight:650;color:#172033}
 .itemDetailSectionTitle svg{color:#245fd9;flex:none}
 .itemDetailSectionTitle>span{margin-left:auto;padding:2px 8px;border-radius:999px;background:#eef2f7;color:#475467;font-size:12px;font-weight:600}
-.itemDetailFacts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:0;padding:16px;gap:16px 22px}
+.itemDetailFacts{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));margin:0;padding:16px;gap:16px 18px}
 .itemDetailFacts>div{min-width:0}
 .itemDetailFacts dt{color:#6b7789;font-size:12px;font-weight:500;line-height:1.3}
 .itemDetailFacts dd{margin:4px 0 0;color:#172033;font-size:13px;font-weight:600;line-height:1.45;overflow-wrap:anywhere}
@@ -206,6 +206,7 @@ body:has(.itemCreatePage) .app>main{height:auto;max-height:none;overflow:visible
 .itemHistory b{font-size:13px;font-weight:600;color:#101828}
 .itemHistory p{margin:2px 0 4px;color:#475467;font-size:12px}
 .itemHistory small{display:block;color:#667085;font-size:12px}
+@media(max-width:1100px){.itemDetailFacts{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:800px){.itemDetailFacts{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.itemDetailFacts{grid-template-columns:minmax(0,1fr)}.itemRowActions{justify-content:flex-start}}
 

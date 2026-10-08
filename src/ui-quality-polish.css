@@ -675,8 +675,22 @@ a:focus-visible {
 
 /* Compact KPI Metric Cards & Inline Trend Alignment */
 .compactGrid {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
   gap: 14px !important;
-  margin-bottom: 24px !important;
+  margin-bottom: 20px !important;
+}
+
+@media (max-width: 1024px) {
+  .compactGrid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .compactGrid {
+    grid-template-columns: 1fr !important;
+  }
 }
 
 .compactMetric {
@@ -782,6 +796,286 @@ a:focus-visible {
   outline: 2px solid #2563eb;
   outline-offset: 2px;
 }
+
+.taskSeverity {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  vertical-align: middle;
+}
+.taskSeverity.red {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.taskSeverity.amber {
+  background: #fef3c7;
+  color: #b45309;
+}
+.taskSeverity.blue {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.taxComplianceWidget {
+  padding: 8px 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.taxComplianceRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed #e2e8f0;
+}
+
+.taxComplianceRow span {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.taxComplianceRow small {
+  font-size: 11.5px;
+  color: #64748b;
+  font-weight: 400;
+  margin-top: 1px;
+}
+
+.taxComplianceWidget a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #2563eb;
+  margin-top: 4px;
+  text-decoration: none;
+}
+.taxComplianceWidget a:hover {
+  text-decoration: underline;
+}
+
+/* Dashboard Grid & Card Alignment Fixes */
+.detailGrid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 16px !important;
+  margin-bottom: 20px !important;
+}
+
+@media (max-width: 1100px) {
+  .detailGrid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .detailGrid, .lowerGrid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.lowerGrid {
+  display: grid !important;
+  grid-template-columns: 1fr 1.15fr !important;
+  gap: 16px !important;
+  margin-bottom: 20px !important;
+}
+
+.exactHead {
+  height: 44px !important;
+  padding: 0 16px !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+
+.exactHead h3 {
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  color: #0f172a !important;
+}
+
+.exactBox {
+  border-radius: 10px !important;
+  border: 1px solid #e2e8f0 !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05) !important;
+  overflow: hidden !important;
+}
+
+/* Needs Attention Action List Fixes */
+.exactTasks button {
+  width: 100% !important;
+  min-height: 52px !important;
+  height: auto !important;
+  padding: 10px 16px !important;
+  display: grid !important;
+  grid-template-columns: 28px 1fr auto !important;
+  gap: 10px !important;
+  align-items: center !important;
+  border-top: 1px solid #f1f5f9 !important;
+  background: #fff !important;
+  text-align: left !important;
+  transition: background 0.15s ease !important;
+}
+
+.exactTasks button:hover {
+  background: #f8fafc !important;
+}
+
+.exactTasks span {
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+}
+
+.exactTasks span b {
+  font-size: 12.5px !important;
+  color: #0f172a !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+}
+
+.exactTasks span small {
+  font-size: 11.5px !important;
+  color: #64748b !important;
+  font-weight: 400 !important;
+}
+
+.exactTasks em {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #2563eb !important;
+  white-space: nowrap !important;
+}
+
+/* Top Expenses Grid Fixes */
+.topExpenses {
+  padding: 8px 16px 14px !important;
+}
+
+.topExpenses p {
+  display: grid !important;
+  grid-template-columns: 120px 1fr auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 8px 6px !important;
+  margin: 0 !important;
+}
+
+.topExpenses p > span {
+  font-size: 12.5px !important;
+  color: #1e293b !important;
+  font-weight: 500 !important;
+}
+
+.topExpenses strong {
+  text-align: right !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  color: #0f172a !important;
+  white-space: nowrap !important;
+  min-width: 75px !important;
+}
+
+/* Bank Accounts Widget Fixes */
+.exactBanks {
+  padding: 8px 16px 14px !important;
+}
+
+.exactBanks p {
+  display: grid !important;
+  grid-template-columns: 32px 1fr auto !important;
+  gap: 10px !important;
+  align-items: center !important;
+  padding: 8px 0 !important;
+  border-bottom: 1px dashed #e2e8f0 !important;
+}
+
+.exactBanks p > span small {
+  font-size: 11px !important;
+  color: #64748b !important;
+}
+
+.exactBanks p > b {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+.exactBanks > button {
+  width: 100% !important;
+  height: 32px !important;
+  margin-top: 10px !important;
+  border-radius: 6px !important;
+  background: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #2563eb !important;
+  font-weight: 600 !important;
+  font-size: 12.5px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.exactBanks > button:hover {
+  background: #eff6ff !important;
+  border-color: #93c5fd !important;
+}
+
+/* Ageing Donut Widget Fixes */
+.exactDonut {
+  height: 215px !important;
+  display: grid !important;
+  grid-template-columns: 1.1fr 1fr !important;
+  align-items: center !important;
+  padding: 0 12px 10px !important;
+  gap: 8px !important;
+}
+
+.piechart {
+  height: 180px !important;
+}
+
+.agelegend p {
+  display: grid !important;
+  grid-template-columns: 10px 1fr !important;
+  gap: 8px !important;
+  align-items: flex-start !important;
+  margin: 6px 0 !important;
+}
+
+.agelegend span {
+  font-size: 11.5px !important;
+  color: #475569 !important;
+}
+
+.agelegend span > b {
+  font-size: 12px !important;
+  color: #0f172a !important;
+}
+
+.agelegend small {
+  font-size: 11px !important;
+  color: #64748b !important;
+}
+
+
 
 
 

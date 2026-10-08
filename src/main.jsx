@@ -21,7 +21,19 @@ class StartError extends React.Component{
   static getDerivedStateFromError(error){return {error}}
   render(){
     if(!this.state.error)return this.props.children;
-    return <p style={{margin:24,font:"16px/1.45 Instrument Sans,Arial,sans-serif"}}>Wayvida Books could not start. {String(this.state.error.message||this.state.error)}</p>;
+    return (
+      <div style={{margin:24,font:"14px/1.45 monospace,Courier,sans-serif",color:"#721c24",background:"#f8d7da",padding:24,borderRadius:8,border:"1px solid #f5c6cb"}}>
+        <h3 style={{margin:"0 0 12px 0",fontFamily:"sans-serif"}}>Wayvida Books Startup Error</h3>
+        <p style={{fontWeight:600,margin:"0 0 12px 0"}}>{String(this.state.error.message||this.state.error)}</p>
+        <pre style={{whiteSpace:"pre-wrap",fontSize:12,background:"#fff",padding:12,borderRadius:4,border:"1px solid #f5c6cb",overflowX:"auto"}}>{this.state.error.stack}</pre>
+        <button
+          style={{marginTop:12,padding:"8px 16px",borderRadius:6,background:"#3478f6",color:"#fff",border:"none",cursor:"pointer",fontWeight:600,fontFamily:"sans-serif"}}
+          onClick={()=>{window.location.reload()}}
+        >
+          Reload Page
+        </button>
+      </div>
+    );
   }
 }
 

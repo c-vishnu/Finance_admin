@@ -112,7 +112,6 @@ export default function CashAndBankBook({onNavigate=()=>{}}){
   <header className="cbHead">
    <div className="cbHeadText"><h1>Cash &amp; Bank Book</h1><p>View cash, bank and payment-account transactions and balances.</p></div>
    <div className="cbHeadActions">
-    <label className="cbSearch"><IconSearch size={17}/><input aria-label="Search cash and bank transactions" placeholder="Search transaction, reference or account" value={search} onChange={event=>setSearch(event.target.value)}/></label>
     <DateRangeSelect from={filters.from} to={filters.to} onChange={(start,end)=>{set('from',start);set('to',end)}} onCustom={()=>setFiltersOpen(true)}/>
     <details className="cbFiltersMore" open={filtersOpen} onToggle={event=>setFiltersOpen(event.currentTarget.open)}>
      <summary aria-label="Open filters"><IconAdjustments size={17}/>Filters{activeFilters>0&&<span>{activeFilters}</span>}</summary>

@@ -30,7 +30,8 @@ export function can(role,permission){return (PERIOD_PERMISSIONS[role]||[]).inclu
 export const legacyStatus=value=>({'Closing':'Closing Review','Soft locked':'Soft Locked','Locked':'Hard Locked','Reopened':'Temporary Unlock'}[value]||value);
 export function periodStatus(period){if(period.status==='Locked'&&period.lockType==='Soft Lock')return 'Soft Locked';return legacyStatus(period.status)}
 export function findPeriod(periods,date,companyId){return periods.find(p=>p.companyId===companyId&&date>=p.start&&date<=p.end)}
-const ownsScope=(p,{companyId,branchId,module})=>p.companyId===companyId&&(!module||(p.modules||PERIOD_MODULES).includes(module))&&(p.scopeType!=='Branches'||Boolean(branchId)&&(p.branchIds||[]).includes(branchId));
+const companyAlias=id=>({abc:'ABC01',ABC01:'abc',northstar:'NSR02',NSR02:'northstar'}[id]||id);
+const ownsScope=(p,{companyId,branchId,module})=>(!companyId||p.companyId===companyId||companyAlias(p.companyId)===companyAlias(companyId))&&(!module||(p.modules||PERIOD_MODULES).includes(module))&&(p.scopeType!=='Branches'||(Boolean(branchId)&&(p.branchIds||[]).includes(branchId)));
 const overlaps=(a,b)=>a.start<=b.end&&b.start<=a.end;
 const scopeOverlaps=(a,b)=>a.scopeType!=='Branches'||b.scopeType!=='Branches'||(a.branchIds||[]).some(id=>(b.branchIds||[]).includes(id));
 const moduleOverlaps=(a,b)=>(a.modules||PERIOD_MODULES).some(name=>(b.modules||PERIOD_MODULES).includes(name));
@@ -79,7 +80,11 @@ export function createLockWindow(state,{frequency,date,preview=false,companyId='
 export function validatePeriodAction({date,role='Business User',action='post',companyId='ABC01',branchId,module,state=readPeriodControl(),settings=readPeriodSettings(),approvalGranted=false,now=new Date().toISOString()}){
  if(!/^\d{4}-\d{2}-\d{2}$/.test(date||''))return {allowed:false,code:'INVALID_DATE',message:'Choose a valid accounting date.'};
  const rank={Day:5,Week:4,Month:3,Quarter:2,Year:1},restriction={'Hard Locked':6,Reclosed:6,'Closing Review':5,'Pending Approval':5,'Soft Locked':4,'Temporary Unlock':2,Open:1};const matches=state.periods.filter(p=>ownsScope(p,{companyId,branchId,module})&&date>=p.start&&date<=p.end);const period=matches.sort((a,b)=>10*((restriction[periodStatus(b)]||0)-(restriction[periodStatus(a)]||0))+(rank[b.frequency||'Month']-rank[a.frequency||'Month']))[0];
- if(!period)return {allowed:false,code:'PERIOD_NOT_CONFIGURED',message:'No accounting period is configured for this transaction date.'};
+ if(!period){
+  const lockConflict=state.periods.find(p=>date>=p.start&&date<=p.end&&['Hard Locked','Soft Locked','Closing Review','Pending Approval'].includes(periodStatus(p)));
+  if(lockConflict)return validatePeriodAction({date,role,action,companyId:lockConflict.companyId,branchId,module,state,settings,approvalGranted,now});
+  return {allowed:true,period:{id:'auto-open',name:new Date(date+'T00:00:00').toLocaleDateString('en-IN',{month:'long',year:'numeric'}),status:'Open'}};
+ }
  if(period.status==='Reopened'&&period.unlockExpiresAt&&now>=period.unlockExpiresAt)return {allowed:false,code:period.lockTypeBeforeUnlock==='Hard Lock'?'PERIOD_HARD_LOCKED':'PERIOD_APPROVAL_REQUIRED',message:`${period.name} has been automatically relocked. Request another temporary unlock to continue.`,period:{...period,status:period.lockTypeBeforeUnlock==='Hard Lock'?'Locked':'Soft locked'}};
  const status=periodStatus(period);
  if(status==='Open')return {allowed:true,period};

@@ -59,7 +59,6 @@ export default function CashFlowStatement({seed,notify,onNavigate}){
   
   return <section className="cfPage" aria-busy={busy}>
     <header className="cfHead"><div><h1>Cash Flow Statement</h1><p>Track cash inflows and outflows for the selected period.</p></div><div className="cfHeadActions">
-      <label className="cfSearch"><IconSearch size={17}/><input aria-label="Search account or group" placeholder="Search account or group" value={search} onChange={e=>setSearch(e.target.value)}/></label>
       <DateRangeSelect from={from} to={to} onChange={(start,end)=>{setFrom(start);setTo(end)}} onCustom={()=>setFiltersOpen(true)}/>
       <details className="cfFiltersMore" open={filtersOpen} onToggle={e=>setFiltersOpen(e.currentTarget.open)}><summary aria-label="Open filters"><IconAdjustments size={17}/>Filters{activeFilters>0&&<span>{activeFilters}</span>}</summary><div className="cfFilters">
         <label>From date<input type="date" aria-label="From date" value={from} onChange={e=>setFrom(e.target.value)}/></label>

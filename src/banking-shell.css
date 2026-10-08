@@ -809,3 +809,193 @@
 /* Side-detail convention: banking match drawers open from the left. */
 .bankDrawerBackdrop{justify-content:flex-start}.bankMatchDrawer{position:relative!important;inset:auto!important;margin:0!important;border-right:1px solid #dfe6ef;box-shadow:16px 0 40px rgba(15,31,56,.14)}
 .bankDrawerBackdrop{justify-content:flex-end}.bankMatchDrawer{border-left:1px solid #dfe6ef;border-right:0;box-shadow:-16px 0 40px rgba(15,31,56,.14)}
+
+/* Bank Reconciliation Tables & Controls */
+.bankReconTable,
+.bankHistoryTable {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+
+.bankReconTable th,
+.bankHistoryTable th {
+  background: #f8fafc !important;
+  color: #475569 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  padding: 12px 14px !important;
+  line-height: 1.35 !important;
+  white-space: nowrap !important;
+}
+
+.bankReconTable td,
+.bankHistoryTable td {
+  padding: 12px 14px !important;
+  border-bottom: 1px solid #edf2f7 !important;
+  font-size: 13px !important;
+  vertical-align: middle !important;
+}
+
+.bankReconTable th:nth-child(1) { width: 11% !important; text-align: left !important; }
+.bankReconTable th:nth-child(2) { width: 32% !important; text-align: left !important; }
+.bankReconTable th:nth-child(3) { width: 15% !important; text-align: right !important; }
+.bankReconTable th:nth-child(4) { width: 12% !important; text-align: left !important; }
+.bankReconTable th:nth-child(5) { width: 12% !important; text-align: left !important; }
+.bankReconTable th:nth-child(6) { width: 10% !important; text-align: left !important; }
+.bankReconTable th:nth-child(7) { width: 8% !important; text-align: right !important; }
+
+.bankReconTable td:nth-child(1) { text-align: left !important; }
+.bankReconTable td:nth-child(2) { text-align: left !important; }
+.bankReconTable td:nth-child(3) { text-align: right !important; }
+.bankReconTable td:nth-child(4) { text-align: left !important; }
+.bankReconTable td:nth-child(5) { text-align: left !important; }
+.bankReconTable td:nth-child(6) { text-align: left !important; }
+.bankReconTable td:nth-child(7) { text-align: right !important; }
+
+.bankHistoryTable th:nth-child(1) { width: 22% !important; text-align: left !important; }
+.bankHistoryTable th:nth-child(2) { width: 20% !important; text-align: left !important; }
+.bankHistoryTable th:nth-child(3) { width: 15% !important; text-align: right !important; }
+.bankHistoryTable th:nth-child(4) { width: 12% !important; text-align: right !important; }
+.bankHistoryTable th:nth-child(5) { width: 11% !important; text-align: left !important; }
+.bankHistoryTable th:nth-child(6) { width: 12% !important; text-align: left !important; }
+.bankHistoryTable th:nth-child(7) { width: 8% !important; text-align: right !important; }
+
+.bankHistoryTable td:nth-child(1) { text-align: left !important; }
+.bankHistoryTable td:nth-child(2) { text-align: left !important; }
+.bankHistoryTable td:nth-child(3) { text-align: right !important; }
+.bankHistoryTable td:nth-child(4) { text-align: right !important; }
+.bankHistoryTable td:nth-child(5) { text-align: left !important; }
+.bankHistoryTable td:nth-child(6) { text-align: left !important; }
+.bankHistoryTable td:nth-child(7) { text-align: right !important; }
+
+label.bankStatementImportBtn,
+.bankStatementImportBtn {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  height: 36px !important;
+  padding: 0 14px !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 6px !important;
+  background: #fff !important;
+  color: #344054 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  white-space: nowrap !important;
+  margin: 0 !important;
+}
+
+label.bankStatementImportBtn:hover,
+.bankStatementImportBtn:hover {
+  background: #f8fafc !important;
+  border-color: #94a3b8 !important;
+}
+
+.reconMetrics {
+  display: grid !important;
+  grid-template-columns: repeat(6, 1fr) !important;
+  gap: 12px !important;
+  background: #fff !important;
+  border: 1px solid #dfe6ef !important;
+  border-radius: 10px !important;
+  padding: 16px 20px !important;
+  margin-bottom: 16px !important;
+}
+
+.reconMetrics > span {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  min-width: 0 !important;
+  padding-right: 12px !important;
+  border-right: 1px solid #edf2f7 !important;
+}
+
+.reconMetrics > span:last-child {
+  border-right: 0 !important;
+  padding-right: 0 !important;
+}
+
+.reconMetrics small {
+  color: #64748b !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.reconMetrics strong {
+  font-size: 17px !important;
+  font-weight: 650 !important;
+  color: #0f172a !important;
+  white-space: nowrap !important;
+  font-variant-numeric: tabular-nums !important;
+}
+
+.registerHeadText p {
+  overflow: visible !important;
+  line-height: 1.5 !important;
+}
+
+label.ivToolSearch,
+.ivToolSearch {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 8px !important;
+  height: 36px !important;
+  min-width: 260px !important;
+  max-width: 340px !important;
+  padding: 0 12px !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 6px !important;
+  background: #fff !important;
+  color: #64748b !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+label.ivToolSearch:focus-within,
+.ivToolSearch:focus-within {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+  color: #2563eb !important;
+}
+
+label.ivToolSearch svg,
+.ivToolSearch svg {
+  flex-shrink: 0 !important;
+  color: inherit !important;
+}
+
+label.ivToolSearch input,
+.ivToolSearch input {
+  flex: 1 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 100% !important;
+  border: 0 !important;
+  outline: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  color: #0f172a !important;
+  font-size: 13px !important;
+  box-shadow: none !important;
+}
+
+label.ivToolSearch input::placeholder,
+.ivToolSearch input::placeholder {
+  color: #94a3b8 !important;
+}
+
+
+

@@ -46,7 +46,7 @@ export default function InvoiceWorkspace({accounts,page,notify,onNavigate}){
  const {mode}=useTerminology();
  /* The same subscription the order page takes, so an invoice prints the figures the setting states. */
  useNumberFormat();
- const role=mode==='business'?'Admin':'Accountant';
+ const role='Admin';
  const [printDoc,setPrintDoc]=useState(null);
  const [db,setDb]=useState(()=>seedAccounts(read(KEY,initial()),accounts)),[selected,setSelected]=useState(()=>{
   /* The handoff from another screen opens one invoice ONCE and is then consumed. Leaving it in

@@ -52,7 +52,6 @@ export default function CustomerOutstanding({notify,onNavigate}){
       <header className="coHead">
         <div><h1>Customer Outstanding</h1><p>See what your customers currently owe you.</p></div>
         <div className="coHeadActions">
-          <label className="coSearch"><IconSearch size={17}/><input aria-label="Search customer" placeholder="Search customer, code, phone or email" value={search} onChange={e=>setSearch(e.target.value)}/></label>
           <AsOfDateSelect date={asOf} onChange={value=>setAsOf(value)} onCustom={()=>setFiltersOpen(true)}/>
           <details className="coFiltersMore" open={filtersOpen} onToggle={e=>setFiltersOpen(e.currentTarget.open)}>
             <summary aria-label="Open filters"><IconAdjustments size={17}/>Filters{activeFilters>0&&<span>{activeFilters}</span>}</summary>

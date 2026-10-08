@@ -110,7 +110,6 @@ export default function ExpenseReport({onNavigate=()=>{}}){
   <header className="brHead">
    <div className="brHeadText"><h1>Expense Report</h1><p>View business expenses by date, account and payee.</p></div>
    <div className="brHeadActions">
-    <label className="brSearch"><IconSearch size={17}/><input aria-label="Search expenses" placeholder="Search expense, payee or reference" value={search} onChange={event=>setSearch(event.target.value)}/></label>
     <DateRangeSelect from={filters.from} to={filters.to} onChange={(start,end)=>{set('from',start);set('to',end)}} onCustom={()=>setFiltersOpen(true)}/>
     <details className="brFiltersMore" open={filtersOpen} onToggle={event=>setFiltersOpen(event.currentTarget.open)}>
      <summary aria-label="Open filters"><IconAdjustments size={17}/>Filters{activeFilters>0&&<span>{activeFilters}</span>}</summary>

@@ -56,12 +56,14 @@ export function paymentStatus(s,i,date=today()){if(i.status==='Cancelled')return
    invoice, and a finance manager or admin approves, posts or cancels it. The role-less call keeps
    the engine's earlier contract for tests and importers - it is a compatibility shim, never an
    authentication boundary, and the app always passes a role. */
-export const INVOICE_ROLES=['Sales Executive','Accountant','Finance Manager','Admin'];
+export const INVOICE_ROLES=['Sales Executive','Accountant','Finance Manager','Business Owner','Admin','Super Admin'];
 const INVOICE_PERMISSIONS={
  'Sales Executive':['save','submit','send'],
  Accountant:['save','submit','send'],
  'Finance Manager':['save','submit','send','post','cancel','recurring'],
- Admin:['save','submit','send','post','cancel','recurring']
+ 'Business Owner':['save','submit','send','post','cancel','recurring'],
+ Admin:['save','submit','send','post','cancel','recurring'],
+ 'Super Admin':['save','submit','send','post','cancel','recurring']
 };
 export const invoiceAllowed=(role,action)=>(INVOICE_PERMISSIONS[role]||[]).includes(action);
 export function command(state,action,payload,ctx={}){

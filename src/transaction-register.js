@@ -68,10 +68,10 @@ export const TRANSACTION_SOURCES={
  'Bank Transaction':{page:'Bank Transactions',handshake:'wayvida-open-bank'}
 };
 
-const list=(source,key)=>Array.isArray(source&&source[key])?source[key]:[];
+const list=(source,key)=>Array.isArray(source&&source[key])?source[key].filter(Boolean):[];
 const text=value=>String(value==null?'':value).trim();
 const minor=value=>{const number=Number(value);return Number.isFinite(number)?Math.round(number):0};
-const sum=(rows,key)=>rows.reduce((total,row)=>total+minor(row[key]),0);
+const sum=(rows,key)=>(rows||[]).filter(Boolean).reduce((total,row)=>total+minor(row[key]),0);
 const missing='—';
 
 /* The lifecycle of one document, from its stored status and its own module's "is it posted?" rule.
@@ -241,7 +241,8 @@ export function filterTransactions(rows,filters={}){
  const from=text(filters.from),to=text(filters.to),needle=text(filters.search).toLowerCase();
  const type=text(filters.type)||ALL,status=text(filters.status)||ALL,branch=text(filters.branch)||ALL;
  const customer=text(filters.customer)||ALL,supplier=text(filters.supplier)||ALL;
- return rows.filter(entry=>{
+ return (rows||[]).filter(entry=>{
+  if(!entry)return false;
   if(from&&entry.date<from)return false;
   if(to&&entry.date>to)return false;
   if(type!==ALL&&entry.type!==type)return false;

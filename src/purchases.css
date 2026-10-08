@@ -10,6 +10,9 @@
 
 /* A purchase detail tab body takes the sheet gutter, the way the credit note and receipt tabs do. */
 .purchaseWorkspace.ivDetailOpen .ivDetailSheet>:not(.ivDetailIdentityRow):not(.ivDetailStats):not(.itemDetailTabs){padding-left:18px;padding-right:18px}
+.purchaseWorkspace .ivDetailStats,.debitNotes .ivDetailStats{grid-template-columns:repeat(6,minmax(0,1fr))}
+@media(max-width:1100px){.purchaseWorkspace .ivDetailStats,.debitNotes .ivDetailStats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:720px){.purchaseWorkspace .ivDetailStats,.debitNotes .ivDetailStats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .purchaseTabBody{padding:18px 0}
 .purchaseTabBody .itemDetailFacts{margin:0}
 .purchaseTabBody .ivMutedNote{margin:0 0 12px}

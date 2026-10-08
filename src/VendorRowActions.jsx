@@ -8,7 +8,7 @@ import './sales-order-actions.css';
 export default function VendorRowActions({vendor,onView,onEdit,onTransactions,onLedger,onToggle}){
  const [menu,setMenu]=useState(null);const trigger=useRef(null),root=useRef(null);
  useEffect(()=>{if(!menu)return;const close=e=>{if(!root.current?.contains(e.target)&&!trigger.current?.contains(e.target))setMenu(null)};const escape=e=>{if(e.key==='Escape'){setMenu(null);trigger.current?.focus()}};window.addEventListener('pointerdown',close);window.addEventListener('keydown',escape);window.addEventListener('resize',close);return()=>{window.removeEventListener('pointerdown',close);window.removeEventListener('keydown',escape);window.removeEventListener('resize',close)}},[menu]);
- const inactive=vendor.status==='Inactive';
+ const inactive=vendor?.status==='Inactive';
  const items=[
   {key:'view',label:'View',icon:IconEye,run:onView,disabled:false,reason:''},
   {key:'edit',label:'Edit',icon:IconEdit,run:onEdit,disabled:false,reason:''},

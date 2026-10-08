@@ -163,10 +163,6 @@ export default function TrialBalance({seed,notify,onNavigate}){
           <p>View debit and credit balances for all ledger accounts as of a selected date.</p>
         </div>
         <div className="tbHeadActions">
-          <label className="tbSearch">
-            <IconSearch size={18} aria-hidden="true"/>
-            <input aria-label="Search accounts" placeholder="Search accounts..." value={search} onChange={e=>setSearch(e.target.value)}/>
-          </label>
           <AsOfDateSelect date={date} onChange={value=>setDate(value)} onCustom={()=>setFiltersOpen(true)}/>
           <details className="tbFiltersMore" open={filtersOpen} onToggle={e=>setFiltersOpen(e.currentTarget.open)}>
             <summary aria-label="Open filters">

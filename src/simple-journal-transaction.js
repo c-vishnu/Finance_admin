@@ -52,11 +52,13 @@ export const postsToLedger=value=>normaliseStatus(value)===POSTING_STATUS;
 /* The acting role simulates approval duty for the prototype; it is never
    authentication. src/inventory-adjustments.js draws the same boundary, and the
    page derives this role from the View as switch rather than a second control. */
-export const JOURNAL_ROLES=['Accountant','Finance Manager','Admin'];
+export const JOURNAL_ROLES=['Accountant','Finance Manager','Business Owner','Admin','Super Admin'];
 const JOURNAL_PERMISSIONS={
  Accountant:['save','submit','export','delete'],
  'Finance Manager':['save','submit','export','delete','approve','post','reverse','cancel'],
- Admin:['save','submit','export','delete','approve','post','reverse','cancel']
+ 'Business Owner':['save','submit','export','delete','approve','post','reverse','cancel'],
+ Admin:['save','submit','export','delete','approve','post','reverse','cancel'],
+ 'Super Admin':['save','submit','export','delete','approve','post','reverse','cancel']
 };
 export const journalAllowed=(role,action)=>(JOURNAL_PERMISSIONS[role]||[]).includes(action);
 

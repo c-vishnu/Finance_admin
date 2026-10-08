@@ -182,7 +182,6 @@ export default function GstTaxReports({onNavigate=()=>{}}){
   <header className="tcHead">
    <div className="tcHeadText"><h1>GST / Tax Reports</h1><p>View GST collected, paid and tax positions for your business.</p></div>
    <div className="tcHeadActions">
-    <label className="tcSearch"><IconSearch size={17}/><input aria-label="Search document, customer, supplier, GSTIN or reference" placeholder="Search document, customer, GSTIN or reference" value={search} onChange={event=>setSearch(event.target.value)}/></label>
     <DateRangeSelect from={filters.from} to={filters.to} onChange={(start,end)=>{set('from',start);set('to',end)}} onCustom={()=>setFiltersOpen(true)}/>
     <details className="tcFiltersMore" open={filtersOpen} onToggle={event=>setFiltersOpen(event.currentTarget.open)}>
      <summary aria-label="Open filters"><IconAdjustments size={17}/>Filters{activeFilters>0&&<span>{activeFilters}</span>}</summary>

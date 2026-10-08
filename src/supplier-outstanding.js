@@ -126,7 +126,7 @@ export function supplierOutstanding(state,vendors=[],{asOf=today(),branch=ALL,su
   /* A debit note that has been applied to a bill carries that application in appliedAmount; a note
      that was only issued has not reduced anything yet and stays an available credit. */
   const appliedAmount=note=>money(note.appliedAmount)||money(note.total);
-  const creditedFor=id=>notes.filter(row=>row.billId===id&&row.status==='Adjusted').reduce((total,row)=>total+appliedAmount(row),0);
+  const creditedFor=id=>notes.filter(row=>row&&row.billId===id&&row.status==='Adjusted').reduce((total,row)=>total+appliedAmount(row),0);
 
   const index=branchIndex(books);
   const branchOf=row=>row?.branchId||row?.branch||index.get(row?.journalId)||'';
@@ -164,7 +164,7 @@ export function supplierOutstanding(state,vendors=[],{asOf=today(),branch=ALL,su
       bucket:agingBucket(days),
       status:billStatus({outstanding,applied:paid+creditApplied,dueDate,asOf:asOfDate}),
       paymentIds:unique(payments.filter(row=>row.billId===bill.id).map(row=>row.id)),
-      debitNoteIds:unique(notes.filter(row=>row.billId===bill.id&&row.status==='Adjusted').map(row=>row.id))
+      debitNoteIds:unique(notes.filter(row=>row&&row.billId===bill.id&&row.status==='Adjusted').map(row=>row.id))
     };
   };
 

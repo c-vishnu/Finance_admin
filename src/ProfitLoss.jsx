@@ -283,10 +283,6 @@ export default function ProfitLoss({seed,notify,onNavigate}){
           <p>View income, expenses and net profit for the selected period.</p>
         </div>
         <div className="plHeadActions">
-          <label className="plSearch">
-            <IconSearch size={18} aria-hidden="true"/>
-            <input aria-label="Search accounts..." placeholder="Search accounts..." value={search} onChange={e=>setSearch(e.target.value)}/>
-          </label>
           <DateRangeSelect from={from} to={to} onChange={(start,end)=>{setFrom(start);setTo(end)}} onCustom={()=>setFiltersOpen(true)}/>
           <details className="plFiltersMore" open={filtersOpen} onToggle={e=>setFiltersOpen(e.currentTarget.open)}>
             <summary aria-label="Open filters">

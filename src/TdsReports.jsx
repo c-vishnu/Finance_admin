@@ -243,7 +243,6 @@ export default function TdsReports({onNavigate=()=>{}}){
   <header className="tcHead">
    <div className="tcHeadText"><h1>TDS Reports</h1><p>View tax deducted at source for applicable payments.</p></div>
    <div className="tcHeadActions">
-    <label className="tcSearch"><IconSearch size={17}/><input aria-label="Search vendor, vendor code, PAN, document or payment reference" placeholder="Search vendor, code, PAN, document or reference" value={search} onChange={event=>setSearch(event.target.value)}/></label>
     <DateRangeSelect from={filters.from} to={filters.to} onChange={(start,end)=>{set('from',start);set('to',end)}} onCustom={()=>setFiltersOpen(true)}/>
     <details className="tcFiltersMore" open={filtersOpen} onToggle={event=>setFiltersOpen(event.currentTarget.open)}>
      <summary aria-label="Open filters"><IconAdjustments size={17}/>Filters{activeFilters>0&&<span>{activeFilters}</span>}</summary>

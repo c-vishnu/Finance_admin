@@ -10,8 +10,19 @@ import OrganisationBranchScope from './OrganisationBranchScope.jsx';
 import StatusPill from './StatusPill.jsx';
 import './items.css';
 
-const base=blankItem({salesAccount:'4000',purchaseAccount:'5000',inventoryAccount:'1200',cogsAccount:'5000'});
-const seed=[{...base,id:'item-1',name:'Office stationery box',sku:'ITEM-0001',unit:'box',category:'Products',hsnSac:'4820',price:'850',cost:'600'},{...base,id:'item-2',name:'Consulting service',sku:'ITEM-0002',type:'Service',unit:'hour',category:'Services',hsnSac:'9983',price:'2500',salesAccount:'4100',purchase:false,trackInventory:false}];
+const base=blankItem({salesAccount:'4000',purchaseAccount:'5000',inventoryAccount:'1200',cogsAccount:'5000',sales:true,purchase:true,trackInventory:true});
+const seed=[
+ {...base,id:'item-1',name:'A4 copier paper (ream)',sku:'ITEM-0001',unit:'pack',category:'Products',hsnSac:'4802',price:'320',cost:'240',taxRate:'18',taxPreference:'Taxable'},
+ {...base,id:'item-2',name:'Office stationery box',sku:'ITEM-0002',unit:'box',category:'Products',hsnSac:'4820',price:'850',cost:'600',taxRate:'18',taxPreference:'Taxable'},
+ {...base,id:'item-3',name:'Toner cartridge',sku:'ITEM-0003',unit:'pcs',category:'Products',hsnSac:'8443',price:'4200',cost:'3100',taxRate:'18',taxPreference:'Taxable'},
+ {...base,id:'item-4',name:'Ergonomic chair',sku:'ITEM-0004',unit:'pcs',category:'Products',hsnSac:'9401',price:'9500',cost:'7200',taxRate:'18',taxPreference:'Taxable'},
+ {...base,id:'item-5',name:'Laptop stand',sku:'ITEM-0005',unit:'pcs',category:'Products',hsnSac:'8304',price:'1800',cost:'1250',taxRate:'18',taxPreference:'Taxable'},
+ {...base,id:'item-6',name:'Network switch 24-port',sku:'ITEM-0006',unit:'pcs',category:'Products',hsnSac:'8517',price:'12500',cost:'9800',taxRate:'18',taxPreference:'Taxable'},
+ {...base,id:'item-7',name:'UPS battery bank',sku:'ITEM-0007',unit:'pcs',category:'Products',hsnSac:'8507',price:'6800',cost:'5200',taxRate:'18',taxPreference:'Taxable'},
+ {...base,id:'item-8',name:'Consulting service',sku:'ITEM-0008',type:'Service',unit:'hour',category:'Services',hsnSac:'9983',price:'2500',cost:'1800',salesAccount:'4100',purchaseAccount:'5000',sales:true,purchase:true,trackInventory:false,taxRate:'18',taxPreference:'Taxable'},
+ {...base,id:'item-9',name:'Website redesign',sku:'ITEM-0009',type:'Service',unit:'hour',category:'Services',hsnSac:'9983',price:'4500',cost:'3000',salesAccount:'4100',purchaseAccount:'5000',sales:true,purchase:true,trackInventory:false,taxRate:'18',taxPreference:'Taxable'},
+ {...base,id:'item-10',name:'Tax filing service',sku:'ITEM-0010',type:'Service',unit:'day',category:'Services',hsnSac:'9983',price:'5500',cost:'4000',salesAccount:'4100',purchaseAccount:'5000',sales:true,purchase:true,trackInventory:false,taxRate:'18',taxPreference:'Taxable'}
+];
 export {seed as itemSeeds};
 /* The item import reads the same columns the register exports, so a register export round-trips.
    Quoted cells and doubled quotes follow src/account-master.js, and a CRLF file reads like an LF one. */
@@ -37,9 +48,13 @@ function Section({title,children}){return <section className="itemSection">{titl
 
 export default function Items({accounts,seed:accountSeed,notify}){
  const organisations=getScopeOrganisations();
- const contextDefaults=itemDefaults(accounts),contextOrganisation=organisations.find(org=>org.code===contextDefaults.organizationId||org.id===contextDefaults.organizationId),contextBranch=(contextOrganisation?.branches||[]).find(branch=>branch.id===contextDefaults.warehouseId||branch.name===contextDefaults.warehouseId);
- const defaults={...contextDefaults,organizationIds:[contextDefaults.organizationId],branchIds:contextBranch?[contextBranch.id]:[],warehouseId:contextBranch?.id||contextDefaults.warehouseId};
- const [items,setItems]=useState(()=>{try{return (JSON.parse(localStorage.getItem('finance-erp-items'))||seed).map(item=>legacyItem(item,defaults))}catch{return seed.map(item=>legacyItem(item,defaults))}}),[query,setQuery]=useState(''),[filter,setFilter]=useState('All types'),[filters,setFilters]=useState(ITEM_FILTER_DEFAULTS),[form,setForm]=useState(null),[errors,setErrors]=useState({}),[uploadBusy,setUploadBusy]=useState(false),[selectedId,setSelectedId]=useState(''),[detailTab,setDetailTab]=useState('Basic Data');
+ const allOrgIds=Array.from(new Set(organisations.map(org=>org.id).filter(Boolean)));
+ const allBranchIds=Array.from(new Set(organisations.flatMap(org=>(org.branches||[]).map(branch=>branch.id)).filter(Boolean)));
+ const contextDefaults=itemDefaults(accounts);
+ const defaults={...contextDefaults,organizationIds:allOrgIds,branchIds:allBranchIds,warehouseId:allBranchIds[0]||contextDefaults.warehouseId};
+ const applyAllScope=item=>({...legacyItem(item,defaults),sales:true,purchase:true,organizationIds:allOrgIds,branchIds:allBranchIds});
+ const [items,setItems]=useState(()=>{try{const stored=JSON.parse(localStorage.getItem('finance-erp-items'))||seed;const names=new Set(stored.map(x=>(x.name||'').toLowerCase()));const merged=[...stored];seed.forEach(s=>{if(!names.has(s.name.toLowerCase()))merged.push(s)});const next=merged.map(applyAllScope);localStorage.setItem('finance-erp-items',JSON.stringify(next));return next}catch{const next=seed.map(applyAllScope);localStorage.setItem('finance-erp-items',JSON.stringify(next));return next}});
+ const [query,setQuery]=useState(''),[filter,setFilter]=useState('All types'),[filters,setFilters]=useState(ITEM_FILTER_DEFAULTS),[form,setForm]=useState(null),[errors,setErrors]=useState({}),[uploadBusy,setUploadBusy]=useState(false),[selectedId,setSelectedId]=useState(''),[detailTab,setDetailTab]=useState('Basic Data');
  const set=(key,value)=>setForm(current=>({...current,[key]:value}));
  const start=(item=null)=>{setSelectedId('');setForm(item?legacyItem(item,defaults):blankItem(defaults));setErrors({})};
  /* A sales document can send the operator here to set an item up mid-document. The marker is read

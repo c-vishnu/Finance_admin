@@ -52,7 +52,6 @@ export default function SupplierOutstanding({notify,onNavigate}){
       <header className="spoHead">
         <div><h1>Supplier Outstanding</h1><p>See what you currently owe your suppliers.</p></div>
         <div className="spoHeadActions">
-          <label className="spoSearch"><IconSearch size={17}/><input aria-label="Search supplier" placeholder="Search supplier, code, phone or email" value={search} onChange={e=>setSearch(e.target.value)}/></label>
           <AsOfDateSelect date={asOf} onChange={value=>setAsOf(value)} onCustom={()=>setFiltersOpen(true)}/>
           <details className="spoFiltersMore" open={filtersOpen} onToggle={e=>setFiltersOpen(e.currentTarget.open)}>
             <summary aria-label="Open filters"><IconAdjustments size={17}/>Filters{activeFilters>0&&<span>{activeFilters}</span>}</summary>

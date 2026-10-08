@@ -10,7 +10,8 @@
    so a page keeps its old header until it is migrated and the rollout can move one
    page at a time.
    --------------------------------------------------------------------------- */
-.registerHead{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;position:sticky;top:0;z-index:9;padding:10px 0;background:#f6f8fb;transition:none}
+.registerHead{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;position:sticky;top:0;z-index:100;padding:10px 0;background:#f6f8fb;transition:none}
+.registerHead:has(details[open]){z-index:250!important}
 .registerHead>.registerHeadText{flex:1 1 260px;min-width:0}
 .registerHead>.registerHeadText h1,.registerHead>.registerHeadText h2{margin:0}
 .registerHead>.registerHeadText p{margin:6px 0 0;color:#667085}
@@ -50,8 +51,8 @@
 .registerHead .registerSplit>.registerSplitMore>summary{display:inline-grid;place-items:center;width:38px;height:40px;min-height:40px;margin:0 0 0 -1px;padding:0;border:1px solid var(--je-blue,#3478f6);border-left-color:#8fb4fa;background:var(--je-blue,#3478f6);color:#fff;border-radius:0 7px 7px 0;cursor:pointer;list-style:none}
 .registerHead .registerSplit>.registerSplitMore>summary::-webkit-details-marker{display:none}
 .registerHead .registerSplit>.registerSplitMore>summary:hover,.registerHead .registerSplit>.registerSplitMore[open]>summary{background:#245bdd;border-color:#245bdd}
-.registerHead .registerSplit>.registerSplitMore[open]{z-index:80}
-.registerHead .registerSplit>.registerSplitMore>div{position:absolute;right:0;top:calc(100% + 6px);z-index:80;display:flex;flex-direction:column;min-width:212px;padding:8px;border:1px solid #e1e6ed;border-radius:9px;background:#fff;box-shadow:0 12px 30px #1018281f}
+.registerHead .registerSplit>.registerSplitMore[open]{z-index:300!important}
+.registerHead .registerSplit>.registerSplitMore>div{position:absolute;right:0;top:calc(100% + 6px);z-index:300!important;display:flex;flex-direction:column;min-width:212px;padding:8px;border:1px solid #e1e6ed;border-radius:9px;background:#fff;box-shadow:0 12px 30px #1018281f}
 .registerHead .registerSplit>.registerSplitMore>div>button{display:flex;flex:0 0 auto;width:100%;height:auto;min-height:40px;align-items:center;justify-content:flex-start;gap:11px;padding:0 12px;border:0;border-radius:7px;background:transparent;color:#344054;font-size:13px;font-weight:600;text-align:left;white-space:nowrap}
 .registerHead .registerSplit>.registerSplitMore>div>button:hover{background:#f4f7ff;color:#245fd9}
 .registerHead .registerSplit>.registerSplitMore>div>button svg{width:16px;height:16px;flex:0 0 auto}

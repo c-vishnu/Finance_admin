@@ -73,7 +73,6 @@ export default function AgingReport({kind='customer',onNavigate=()=>{}}){
   <header className="cbHead">
    <div className="cbHeadText"><h1>{partyLabel+' Aging'}</h1><p>{isCustomer?'See how long each customer has owed you, bucketed by due date.':'See how long each supplier has been owed, bucketed by due date.'}</p></div>
    <div className="cbHeadActions">
-    <label className="cbSearch"><IconSearch size={17}/><input aria-label={'Search '+partyLabel.toLowerCase()} placeholder={'Search '+partyLabel.toLowerCase()+', '+documentLabel.toLowerCase()+' or reference'} value={search} onChange={event=>setSearch(event.target.value)}/></label>
     <AsOfDateSelect date={asOf} onChange={value=>setAsOf(value)} onCustom={()=>setFiltersOpen(true)}/>
     <details className="cbFiltersMore" open={filtersOpen} onToggle={event=>setFiltersOpen(event.currentTarget.open)}>
      <summary aria-label="Open filters"><IconAdjustments size={17}/>Filters{activeFilters>0&&<span>{activeFilters}</span>}</summary>

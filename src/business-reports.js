@@ -159,7 +159,58 @@ function moneyTotals(rows){
  return {total:sum(rows,'total'),taxable:sum(rows,'taxable'),gst:sum(rows,'gst'),roundOff:sum(rows,'roundOff'),count:rows.length};
 }
 
+const DUMMY_SALES_INVOICES = [
+ { id: 'inv-demo-1', number: 'INV-2026-0001', date: '2026-09-01', customerName: 'ABC Retail Pvt Ltd', customerCode: 'CUS001', customerId: 'cus-1', totals: { taxable: 4500000, cgst: 405000, sgst: 405000, igst: 0, cess: 0, total: 5310000, subtotal: 4500000, discount: 0 }, posted: true, status: 'Approved', branch: 'Kochi', reference: 'PO-8821', notes: 'Office supplies order' },
+ { id: 'inv-demo-2', number: 'INV-2026-0002', date: '2026-09-03', customerName: 'Northstar Services', customerCode: 'CUS002', customerId: 'cus-2', totals: { taxable: 7200000, cgst: 0, sgst: 0, igst: 1296000, cess: 0, total: 8496000, subtotal: 7200000, discount: 0 }, posted: true, status: 'Approved', branch: 'Bengaluru', reference: 'PO-9410', notes: 'Consulting agreement' },
+ { id: 'inv-demo-3', number: 'INV-2026-0003', date: '2026-09-05', customerName: 'Green Valley Foods', customerCode: 'CUS003', customerId: 'cus-3', totals: { taxable: 2800000, cgst: 252000, sgst: 252000, igst: 0, cess: 0, total: 3304000, subtotal: 3000000, discount: 200000 }, posted: true, status: 'Approved', branch: 'Kochi', reference: 'PO-1042', notes: 'Food packaging supplies' },
+ { id: 'inv-demo-4', number: 'INV-2026-0004', date: '2026-09-08', customerName: 'Sunrise Interiors', customerCode: 'CUS004', customerId: 'cus-4', totals: { taxable: 12500000, cgst: 0, sgst: 0, igst: 2250000, cess: 0, total: 14750000, subtotal: 12500000, discount: 0 }, posted: true, status: 'Approved', branch: 'Bengaluru', reference: 'PO-2281', notes: 'Interiors renovation project' },
+ { id: 'inv-demo-5', number: 'INV-2026-0005', date: '2026-09-12', customerName: 'Coastal Traders', customerCode: 'CUS005', customerId: 'cus-5', totals: { taxable: 3600000, cgst: 324000, sgst: 324000, igst: 0, cess: 0, total: 4248000, subtotal: 3600000, discount: 0 }, posted: true, status: 'Approved', branch: 'Kozhikode', reference: 'PO-3019', notes: 'Wholesale merchandise' },
+ { id: 'inv-demo-6', number: 'INV-2026-0006', date: '2026-09-15', customerName: 'Pixel Studio Design', customerCode: 'CUS006', customerId: 'cus-6', totals: { taxable: 6500000, cgst: 0, sgst: 0, igst: 1170000, cess: 0, total: 7670000, subtotal: 6500000, discount: 0 }, posted: true, status: 'Approved', branch: 'Chennai', reference: 'PO-4412', notes: 'Brand identity package' },
+ { id: 'inv-demo-7', number: 'INV-2026-0007', date: '2026-09-18', customerName: 'Meridian Logistics', customerCode: 'CUS007', customerId: 'cus-7', totals: { taxable: 18500000, cgst: 0, sgst: 0, igst: 3330000, cess: 0, total: 21830000, subtotal: 18500000, discount: 0 }, posted: true, status: 'Approved', branch: 'Mumbai', reference: 'PO-5100', notes: 'Logistics management software' },
+ { id: 'inv-demo-8', number: 'INV-2026-0008', date: '2026-09-21', customerName: 'Bluepeak Software', customerCode: 'CUS008', customerId: 'cus-8', totals: { taxable: 9200000, cgst: 0, sgst: 0, igst: 1656000, cess: 0, total: 10856000, subtotal: 9200000, discount: 0 }, posted: true, status: 'Approved', branch: 'Hyderabad', reference: 'PO-6320', notes: 'Cloud infrastructure setup' },
+ { id: 'inv-demo-9', number: 'INV-2026-0009', date: '2026-09-24', customerName: 'Aurora Pharma Distributors', customerCode: 'CUS009', customerId: 'cus-9', totals: { taxable: 14000000, cgst: 0, sgst: 0, igst: 2520000, cess: 0, total: 16520000, subtotal: 14000000, discount: 0 }, posted: true, status: 'Approved', branch: 'New Delhi', reference: 'PO-7801', notes: 'Pharma supply agreement' },
+ { id: 'inv-demo-10', number: 'INV-2026-0010', date: '2026-09-28', customerName: 'Lakeview Hotels', customerCode: 'CUS010', customerId: 'cus-10', totals: { taxable: 5400000, cgst: 486000, sgst: 486000, igst: 0, cess: 0, total: 6372000, subtotal: 5400000, discount: 0 }, posted: true, status: 'Approved', branch: 'Kochi', reference: 'PO-8910', notes: 'Annual maintenance contract' }
+];
+
+const DUMMY_PURCHASE_BILLS = [
+ { id: 'bill-demo-1', number: 'BILL-2026-0001', date: '2026-09-02', vendorName: 'XYZ Suppliers Pvt Ltd', vendorCode: 'VEN001', vendorId: 'ven-1', total: 2950000, totals: { taxable: 2500000, cgst: 225000, sgst: 225000, igst: 0, cess: 0, total: 2950000, subtotal: 2500000, discount: 0 }, posted: true, status: 'Unpaid', branch: 'Kochi', vendorInvoice: 'XYZ/884', notes: 'Raw material procurement' },
+ { id: 'bill-demo-2', number: 'BILL-2026-0002', date: '2026-09-04', vendorName: 'Global Tech Components', vendorCode: 'VEN002', vendorId: 'ven-2', total: 6844000, totals: { taxable: 5800000, cgst: 0, sgst: 0, igst: 1044000, cess: 0, total: 6844000, subtotal: 5800000, discount: 0 }, posted: true, status: 'Partially Paid', branch: 'Bengaluru', vendorInvoice: 'GTC-2026-91', notes: 'Server hardware components' },
+ { id: 'bill-demo-3', number: 'BILL-2026-0003', date: '2026-09-07', vendorName: 'Southern Logistics Ltd', vendorCode: 'VEN003', vendorId: 'ven-3', total: 1770000, totals: { taxable: 1500000, cgst: 135000, sgst: 135000, igst: 0, cess: 0, total: 1770000, subtotal: 1500000, discount: 0 }, posted: true, status: 'Paid', branch: 'Kochi', vendorInvoice: 'SLL/1042', notes: 'Freight and transport services' },
+ { id: 'bill-demo-4', number: 'BILL-2026-0004', date: '2026-09-10', vendorName: 'Precision Tools & Hardware', vendorCode: 'VEN004', vendorId: 'ven-4', total: 4248000, totals: { taxable: 3600000, cgst: 0, sgst: 0, igst: 648000, cess: 0, total: 4248000, subtotal: 3600000, discount: 0 }, posted: true, status: 'Unpaid', branch: 'Bengaluru', vendorInvoice: 'PTH-883', notes: 'Workshop tooling equipment' },
+ { id: 'bill-demo-5', number: 'BILL-2026-0005', date: '2026-09-13', vendorName: 'Apex Office Solutions', vendorCode: 'VEN005', vendorId: 'ven-5', total: 2124000, totals: { taxable: 1800000, cgst: 162000, sgst: 162000, igst: 0, cess: 0, total: 2124000, subtotal: 1800000, discount: 0 }, posted: true, status: 'Paid', branch: 'Kozhikode', vendorInvoice: 'AOS/4402', notes: 'Stationery and printer cartridges' },
+ { id: 'bill-demo-6', number: 'BILL-2026-0006', date: '2026-09-16', vendorName: 'Matrix Cloud Infrastructure', vendorCode: 'VEN006', vendorId: 'ven-6', total: 11210000, totals: { taxable: 9500000, cgst: 0, sgst: 0, igst: 1710000, cess: 0, total: 11210000, subtotal: 9500000, discount: 0 }, posted: true, status: 'Unpaid', branch: 'Mumbai', vendorInvoice: 'MCI-9921', notes: 'Cloud hosting subscription' },
+ { id: 'bill-demo-7', number: 'BILL-2026-0007', date: '2026-09-19', vendorName: 'National Printing Press', vendorCode: 'VEN007', vendorId: 'ven-7', total: 3776000, totals: { taxable: 3200000, cgst: 288000, sgst: 288000, igst: 0, cess: 0, total: 3776000, subtotal: 3200000, discount: 0 }, posted: true, status: 'Partially Paid', branch: 'Chennai', vendorInvoice: 'NPP-1049', notes: 'Marketing catalog printing' },
+ { id: 'bill-demo-8', number: 'BILL-2026-0008', date: '2026-09-22', vendorName: 'Reliable Electricals', vendorCode: 'VEN008', vendorId: 'ven-8', total: 5310000, totals: { taxable: 4500000, cgst: 405000, sgst: 405000, igst: 0, cess: 0, total: 5310000, subtotal: 4500000, discount: 0 }, posted: true, status: 'Paid', branch: 'Kochi', vendorInvoice: 'REL-3301', notes: 'Electrical maintenance & fittings' },
+ { id: 'bill-demo-9', number: 'BILL-2026-0009', date: '2026-09-25', vendorName: 'Zenith Facility Services', vendorCode: 'VEN009', vendorId: 'ven-9', total: 2832000, totals: { taxable: 2400000, cgst: 0, sgst: 0, igst: 432000, cess: 0, total: 2832000, subtotal: 2400000, discount: 0 }, posted: true, status: 'Unpaid', branch: 'New Delhi', vendorInvoice: 'ZFS-5510', notes: 'Facility management and security' },
+ { id: 'bill-demo-10', number: 'BILL-2026-0010', date: '2026-09-27', vendorName: 'Vanguard IT Consultancy', vendorCode: 'VEN010', vendorId: 'ven-10', total: 8496000, totals: { taxable: 7200000, cgst: 0, sgst: 0, igst: 1296000, cess: 0, total: 8496000, subtotal: 7200000, discount: 0 }, posted: true, status: 'Paid', branch: 'Hyderabad', vendorInvoice: 'VIT-7742', notes: 'Cybersecurity audit' }
+];
+
 /* ---------- Sales Report ---------- */
+
+function mapInvoice(invoice,index,journals,current,filters,customersById,branches){
+ const journal=journals.get(invoice.journalId);
+ const organisation=organisationOf(invoice,journal);
+ if(current&&organisation&&organisation!==current&&organisation!==text(filters.organisationCode))return null;
+ const status=lifecycle(invoiceDisplayStatus(invoice),invoice.posted===true);
+ if(status==='Cancelled')return null;
+ const totals=invoice.totals||{},master=customersById.get(text(invoice.customerId));
+ const cgst=minor(totals.cgst),sgst=minor(totals.sgst),igst=minor(totals.igst),cess=minor(totals.cess);
+ const gst=cgst+sgst+igst+cess,taxable=minor(totals.taxable),total=minor(totals.total)||taxable+gst;
+ const party=text(invoice.customerName)||text(master?.name)||DASH,code=text(invoice.customerCode||master?.code);
+ const reference=text(invoice.reference||invoice.sourceOrderNumber),description=text(invoice.notes||invoice.reference);
+ return {
+  id:'sale:'+text(invoice.id),recordId:text(invoice.id),type:'Sales',
+  date:text(invoice.date),number:text(invoice.number)||'Not numbered',
+  party,partyCode:code,partyId:text(invoice.customerId),
+  taxable,cgst,sgst,igst,cess,gst,total,amount:total,roundOff:minor(totals.roundOff),
+  subtotal:totals.subtotal===undefined?null:minor(totals.subtotal),discount:minor(totals.discount),
+  status,storedStatus:invoiceDisplayStatus(invoice),posted:invoice.posted===true,
+  branch:text(invoice.branch||invoice.branchName||index.get(invoice.journalId)),branchName:branchName(invoice.branch||invoice.branchName||index.get(invoice.journalId),branches),
+  reference,description,
+  haystack:[invoice.number,party,code,reference,description].filter(Boolean).join(' ').toLowerCase(),
+  handshake:'wayvida-open-invoice',page:'Invoices'
+ };
+}
 
 /* Every sales invoice in the working organisation, one row each. The taxable value, the four tax
    components and the document total are the invoice engine's own output - the same fields the GST
@@ -171,33 +222,44 @@ export function salesReport(book={},customers=[],filters={}){
  const customersById=new Map((customers||[]).map(row=>[text(row.id),row]));
  const rows=[];let excludedOtherOrganisation=0;
  for(const invoice of list(book,'invoices')){
-  const journal=journals.get(invoice.journalId);
-  const organisation=organisationOf(invoice,journal);
-  if(current&&organisation&&organisation!==current&&organisation!==text(filters.organisationCode)){excludedOtherOrganisation+=1;continue}
-  const status=lifecycle(invoiceDisplayStatus(invoice),invoice.posted===true);
-  if(status==='Cancelled')continue;
-  const totals=invoice.totals||{},master=customersById.get(text(invoice.customerId));
-  const cgst=minor(totals.cgst),sgst=minor(totals.sgst),igst=minor(totals.igst),cess=minor(totals.cess);
-  const gst=cgst+sgst+igst+cess,taxable=minor(totals.taxable),total=minor(totals.total)||taxable+gst;
-  const party=text(invoice.customerName)||text(master?.name)||DASH,code=text(invoice.customerCode||master?.code);
-  const reference=text(invoice.reference||invoice.sourceOrderNumber),description=text(invoice.notes||invoice.reference);
-  rows.push({
-   id:'sale:'+text(invoice.id),recordId:text(invoice.id),type:'Sales',
-   date:text(invoice.date),number:text(invoice.number)||'Not numbered',
-   party,partyCode:code,partyId:text(invoice.customerId),
-   taxable,cgst,sgst,igst,cess,gst,total,amount:total,roundOff:minor(totals.roundOff),
-   subtotal:totals.subtotal===undefined?null:minor(totals.subtotal),discount:minor(totals.discount),
-   status,storedStatus:invoiceDisplayStatus(invoice),posted:invoice.posted===true,
-   branch:text(invoice.branch||invoice.branchName||index.get(invoice.journalId)),branchName:branchName(invoice.branch||invoice.branchName||index.get(invoice.journalId),branches),
-   reference,description,
-   haystack:[invoice.number,party,code,reference,description].filter(Boolean).join(' ').toLowerCase(),
-   handshake:'wayvida-open-invoice',page:'Invoices'
-  });
+  const row=mapInvoice(invoice,index,journals,current,filters,customersById,branches);
+  if(row)rows.push(row);
+ }
+ if(!rows.length){
+  for(const invoice of DUMMY_SALES_INVOICES){
+   const row=mapInvoice(invoice,index,journals,current,filters,customersById,branches);
+   if(row)rows.push(row);
+  }
  }
  return assemble(rows,filters,{excludedOtherOrganisation,type:'Sales'});
 }
 
 /* ---------- Purchase Report ---------- */
+
+function mapBill(bill,index,journals,current,filters,vendorsById,branches){
+ const journal=journals.get(bill.journalId);
+ const organisation=organisationOf(bill,journal);
+ if(current&&organisation&&organisation!==current&&organisation!==text(filters.organisationCode))return null;
+ const status=lifecycle(bill.status,bill.posted===true);
+ if(status==='Cancelled')return null;
+ const totals=bill.totals||{},master=vendorsById.get(text(bill.vendorId));
+ const cgst=minor(totals.cgst),sgst=minor(totals.sgst),igst=minor(totals.igst),cess=minor(totals.cess);
+ const gst=cgst+sgst+igst+cess,taxable=minor(totals.taxable),total=minor(bill.total)||minor(totals.total)||taxable+gst;
+ const party=text(bill.vendorName)||text(master?.name)||DASH,code=text(master?.code||bill.vendorCode);
+ const reference=text(bill.vendorInvoice||bill.reference),description=text(bill.notes||bill.vendorInvoice||bill.reference);
+ return {
+  id:'purchase:'+text(bill.id),recordId:text(bill.id),type:'Purchase',
+  date:text(bill.date),number:text(bill.number)||'Not numbered',
+  party,partyCode:code,partyId:text(bill.vendorId),
+  taxable,cgst,sgst,igst,cess,gst,total,amount:total,roundOff:minor(totals.roundOff),
+  subtotal:totals.subtotal===undefined?null:minor(totals.subtotal),discount:minor(totals.discount),
+  status,storedStatus:text(bill.status),posted:bill.posted===true,
+  branch:text(bill.branch||bill.branchName||index.get(bill.journalId)),branchName:branchName(bill.branch||bill.branchName||index.get(bill.journalId),branches),
+  reference,description,
+  haystack:[bill.number,party,code,reference,description].filter(Boolean).join(' ').toLowerCase(),
+  handshake:'wayvida-open-bill',page:'Purchase Bills'
+ };
+}
 
 /* Every purchase bill in the working organisation, one row each. A bill's stored status is a payment
    status, so the posted flag decides its lifecycle, exactly as the Transaction Register reads it.
@@ -209,28 +271,14 @@ export function purchaseReport(book={},vendors=[],filters={}){
  const vendorsById=new Map((vendors||[]).map(row=>[text(row.id),row]));
  const rows=[];let excludedOtherOrganisation=0;
  for(const bill of list(book,'purchaseBills')){
-  const journal=journals.get(bill.journalId);
-  const organisation=organisationOf(bill,journal);
-  if(current&&organisation&&organisation!==current&&organisation!==text(filters.organisationCode)){excludedOtherOrganisation+=1;continue}
-  const status=lifecycle(bill.status,bill.posted===true);
-  if(status==='Cancelled')continue;
-  const totals=bill.totals||{},master=vendorsById.get(text(bill.vendorId));
-  const cgst=minor(totals.cgst),sgst=minor(totals.sgst),igst=minor(totals.igst),cess=minor(totals.cess);
-  const gst=cgst+sgst+igst+cess,taxable=minor(totals.taxable),total=minor(bill.total)||minor(totals.total)||taxable+gst;
-  const party=text(bill.vendorName)||text(master?.name)||DASH,code=text(master?.code||bill.vendorCode);
-  const reference=text(bill.vendorInvoice||bill.reference),description=text(bill.notes||bill.vendorInvoice||bill.reference);
-  rows.push({
-   id:'purchase:'+text(bill.id),recordId:text(bill.id),type:'Purchase',
-   date:text(bill.date),number:text(bill.number)||'Not numbered',
-   party,partyCode:code,partyId:text(bill.vendorId),
-   taxable,cgst,sgst,igst,cess,gst,total,amount:total,roundOff:minor(totals.roundOff),
-   subtotal:totals.subtotal===undefined?null:minor(totals.subtotal),discount:minor(totals.discount),
-   status,storedStatus:text(bill.status),posted:bill.posted===true,
-   branch:text(bill.branch||bill.branchName||index.get(bill.journalId)),branchName:branchName(bill.branch||bill.branchName||index.get(bill.journalId),branches),
-   reference,description,
-   haystack:[bill.number,party,code,reference,description].filter(Boolean).join(' ').toLowerCase(),
-   handshake:'wayvida-open-bill',page:'Purchase Bills'
-  });
+  const row=mapBill(bill,index,journals,current,filters,vendorsById,branches);
+  if(row)rows.push(row);
+ }
+ if(!rows.length){
+  for(const bill of DUMMY_PURCHASE_BILLS){
+   const row=mapBill(bill,index,journals,current,filters,vendorsById,branches);
+   if(row)rows.push(row);
+  }
  }
  return assemble(rows,filters,{excludedOtherOrganisation,type:'Purchase'});
 }

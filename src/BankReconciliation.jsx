@@ -296,25 +296,28 @@ export default function BankReconciliation({
 
     return (
       <section className="invoiceWorkspace purchaseWorkspace ivDetailOpen">
-        <div className="ivDetailHead">
-          <button
-            type="button"
-            className="ivDetailBack"
-            aria-label="Back to reconciliation history"
-            onClick={() => setEditing(null)}
-          >
-            <IconArrowLeft size={19} />
-          </button>
-          <div className="ivDetailHeadText">
-            <h2>{details.bank.accountName}</h2>
-            <small>
-              {details.periodFrom} – {details.periodTo} · {details.financialYear}
-            </small>
+        <div className="ivDetailHead" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '12px 24px', background: '#fff', borderBottom: '1px solid #dfe6ef' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0 }}>
+            <button
+              type="button"
+              className="ivDetailBack"
+              aria-label="Back to reconciliation history"
+              onClick={() => setEditing(null)}
+              style={{ flexShrink: 0 }}
+            >
+              <IconArrowLeft size={19} />
+            </button>
+            <div className="ivDetailHeadText">
+              <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 650, color: '#0f172a', lineHeight: '1.3' }}>{details.bank.accountName}</h2>
+              <small style={{ margin: '2px 0 0', color: '#64748b', fontSize: '12px' }}>
+                {details.periodFrom} – {details.periodTo} · {details.financialYear}
+              </small>
+            </div>
           </div>
-          <div className="ivActions" style={{ marginLeft: 'auto' }}>
+          <div className="ivActions" style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
             <StatusPill status={details.status} tone={reconTone(details.status)} />
             {!locked && (
-              <button className="primary" disabled={!ready} onClick={finish}>
+              <button className="primary" disabled={!ready} onClick={finish} style={{ height: '36px', borderRadius: '6px' }}>
                 <IconLock size={16} />
                 Complete &amp; Lock
               </button>
@@ -335,7 +338,7 @@ export default function BankReconciliation({
             ))}
           </div>
 
-          <div className="ivDetailStats" style={{ marginBottom: '16px', background: '#fff', padding: '16px 20px', borderRadius: '10px', border: '1px solid #dfe6ef' }}>
+          <div className="reconMetrics" style={{ marginBottom: '16px' }}>
             <span>
               <small>Opening Balance</small>
               <strong>{money(details.openingBalance)}</strong>
@@ -367,22 +370,22 @@ export default function BankReconciliation({
           </div>
 
           {details.difference !== 0 && (
-            <div className="reconWarning" style={{ marginBottom: '10px' }}>
+            <div className="reconWarning" style={{ marginBottom: '16px' }}>
               <strong>Your reconciliation has an unexplained difference of {money(details.difference)}.</strong>
               <span>Review unmatched lines or record missing bank fees, interest, or transactions.</span>
             </div>
           )}
 
-          <div className="ivCard ivRegisterCard" style={{ padding: 0, overflow: 'hidden' }}>
-            <div className="ivHeading" style={{ borderBottom: '1px solid #e2e8f0', padding: '10px 16px', background: '#fafbfc' }}>
-              <div className="registerHeadText">
-                <h3 style={{ fontSize: '15px', margin: 0, fontWeight: 650 }}>Statement Transactions</h3>
-                <p style={{ margin: 0, fontSize: '12px', color: '#64748b' }}>
-                  Import bank CSV, auto-match against GL ledger entries, or resolve exceptions.
+          <div className="ivCard ivRegisterCard" style={{ padding: 0, overflow: 'hidden', border: '1px solid #dfe6ef', borderRadius: '10px' }}>
+            <div className="ivHeading" style={{ borderBottom: '1px solid #e2e8f0', padding: '12px 18px', background: '#fafbfc', margin: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
+              <div className="registerHeadText" style={{ flex: '1 1 300px', minWidth: 0 }}>
+                <h3 style={{ fontSize: '15px', margin: 0, fontWeight: 650, color: '#0f172a' }}>Statement Transactions</h3>
+                <p style={{ margin: '3px 0 0', fontSize: '12px', color: '#64748b', lineHeight: '1.4' }}>
+                  Import bank CSV, auto-match against General Ledger entries, or resolve exceptions.
                 </p>
               </div>
-              <div className="ivTools">
-                <label className="ivToolSearch">
+              <div className="ivTools" style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                <label className="ivToolSearch" style={{ margin: 0 }}>
                   <IconSearch size={17} />
                   <input
                     aria-label="Search statement"
@@ -391,35 +394,44 @@ export default function BankReconciliation({
                     onChange={event => setQuery(event.target.value)}
                   />
                 </label>
-              </div>
-              <div className="ivActions">
-                {!locked && (
-                  <>
-                    <label className="bankImport button ghost" style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '6px', border: '1px solid #cbd5e1', padding: '7px 12px', borderRadius: '6px', fontWeight: 600, fontSize: '13px' }}>
-                      <IconUpload size={16} />
-                      Import CSV Statement
-                      <input type="file" accept=".csv" onChange={upload} style={{ display: 'none' }} />
-                    </label>
-                    <button className="secondary" type="button" onClick={auto}>
-                      <IconSparkles size={16} />
-                      Auto match
-                    </button>
-                  </>
-                )}
+                <div className="ivActions" style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: 0 }}>
+                  {!locked && (
+                    <>
+                      <label className="bankStatementImportBtn">
+                        <IconUpload size={16} />
+                        Import CSV Statement
+                        <input type="file" accept=".csv" onChange={upload} style={{ display: 'none' }} />
+                      </label>
+                      <button className="secondary" type="button" onClick={auto} style={{ height: '36px', borderRadius: '6px' }}>
+                        <IconSparkles size={16} />
+                        Auto match
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
 
             <div className="ivScroll">
-              <table className="ivInvoiceTable">
+              <table className="bankReconTable">
+                <colgroup>
+                  <col style={{ width: '11%' }} />
+                  <col style={{ width: '31%' }} />
+                  <col style={{ width: '16%' }} />
+                  <col style={{ width: '13%' }} />
+                  <col style={{ width: '12%' }} />
+                  <col style={{ width: '9%' }} />
+                  <col style={{ width: '8%' }} />
+                </colgroup>
                 <thead>
                   <tr>
-                    <th style={{ width: '10%' }}>Date</th>
-                    <th style={{ width: '32%' }}>Description &amp; Reference</th>
-                    <th style={{ width: '15%', textAlign: 'right' }}>Amount (In / Out)</th>
-                    <th style={{ width: '12%' }}>Category</th>
-                    <th style={{ width: '12%' }}>Matched With</th>
-                    <th style={{ width: '12%' }}>Status</th>
-                    <th style={{ width: '7%', textAlign: 'right' }}>Actions</th>
+                    <th>Date</th>
+                    <th>Description &amp; Reference</th>
+                    <th style={{ textAlign: 'right' }}>Amount (In / Out)</th>
+                    <th>Category</th>
+                    <th>Matched With</th>
+                    <th>Status</th>
+                    <th style={{ textAlign: 'right' }}>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -473,17 +485,21 @@ export default function BankReconciliation({
                       </td>
                     </tr>
                   ))}
+                  {!filtered.length && (
+                    <tr>
+                      <td colSpan={7} style={{ padding: 0, border: 0 }}>
+                        <EmptyState
+                          variant="adjustment"
+                          title="No statement transactions imported"
+                          description="Import a CSV statement file from your bank to begin reconciling."
+                        />
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
-              {!filtered.length && (
-                <EmptyState
-                  variant="adjustment"
-                  title="No statement transactions imported"
-                  description="Import a CSV statement file from your bank to begin reconciling."
-                />
-              )}
             </div>
-            <div className="ivActions purchaseRegisterFoot">
+            <div className="ivActions purchaseRegisterFoot" style={{ padding: '12px 16px', borderTop: '1px solid #edf2f7' }}>
               <span>{filtered.length} of {details.rows.length} lines</span>
             </div>
           </div>
@@ -610,7 +626,7 @@ export default function BankReconciliation({
 
       <div className="ivCard ivRegisterCard" style={{ marginTop: '16px', padding: 0, overflow: 'hidden' }}>
         <div className="ivScroll">
-          <table className="ivInvoiceTable">
+          <table className="bankHistoryTable">
             <thead>
               <tr>
                 <th>Period &amp; Created By</th>
@@ -679,17 +695,21 @@ export default function BankReconciliation({
                   </tr>
                 );
               })}
+              {!filteredHistory.length && (
+                <tr>
+                  <td colSpan={7} style={{ padding: 0, border: 0 }}>
+                    <EmptyState
+                      variant="adjustment"
+                      title="No reconciliations yet"
+                      description="Create a reconciliation period to verify statement transactions against the General Ledger."
+                    />
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
-          {!filteredHistory.length && (
-            <EmptyState
-              variant="adjustment"
-              title="No reconciliations yet"
-              description="Create a reconciliation period to verify statement transactions against the General Ledger."
-            />
-          )}
         </div>
-        <div className="ivActions purchaseRegisterFoot">
+        <div className="ivActions purchaseRegisterFoot" style={{ padding: '12px 16px', borderTop: '1px solid #edf2f7' }}>
           <span>{filteredHistory.length} reconciliation periods</span>
         </div>
       </div>

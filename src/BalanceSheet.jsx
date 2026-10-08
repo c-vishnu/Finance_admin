@@ -80,20 +80,20 @@ export default function BalanceSheet({seed,notify,onNavigate}){
   const subgroup=row=>{
     const value=(row.name+' '+(row.accountNature||'')).toLowerCase();
     if(row.type==='Assets'){
-      if(/depreciation/.test(value)) return 'Accumulated Depreciation';
-      if(/cash|petty/.test(value)) return 'Cash & Cash Equivalents';
-      if(/bank/.test(value)) return 'Bank Accounts';
-      if(/receivable|debtor|customer/.test(value)) return 'Trade Receivables';
-      if(/inventory|stock/.test(value)) return 'Inventory';
-      return 'Other Current Assets';
+      if(/depreciation/.test(value)) return isEasy ? 'Value Reduced Over Time' : 'Accumulated Depreciation';
+      if(/cash|petty/.test(value)) return isEasy ? 'Cash & Bank' : 'Cash & Cash Equivalents';
+      if(/bank/.test(value)) return isEasy ? 'Bank Accounts' : 'Bank Accounts';
+      if(/receivable|debtor|customer/.test(value)) return isEasy ? 'Customer Money to Receive' : 'Trade Receivables';
+      if(/inventory|stock/.test(value)) return isEasy ? 'Stock / Inventory' : 'Inventory';
+      return isEasy ? 'Short-term Assets' : 'Other Current Assets';
     }
     if(row.type==='Liabilities'){
-      if(/tax|gst|tds|vat|duty|duties|service tax|sales tax/.test(value)) return 'Taxes Payable';
-      if(/payable|creditor|supplier|vendor|trade/.test(value)) return 'Trade Payables';
-      if(/advance|unearned/.test(value)) return 'Customer Advances';
-      return 'Other Current Liabilities';
+      if(/tax|gst|tds|vat|duty|duties|service tax|sales tax/.test(value)) return isEasy ? 'GST & TDS to Pay' : 'Taxes Payable';
+      if(/payable|creditor|supplier|vendor|trade/.test(value)) return isEasy ? 'Supplier Money to Pay' : 'Trade Payables';
+      if(/advance|unearned/.test(value)) return isEasy ? 'Customer Advance Payments' : 'Customer Advances';
+      return isEasy ? 'Amounts to Pay Soon' : 'Other Current Liabilities';
     }
-    return /capital|drawing/.test(value)?'Owner Capital':/retained/.test(value)?'Retained Earnings':'Owner Equity';
+    return /capital|drawing/.test(value)?(isEasy ? "Owner's Investment" : 'Owner Capital'):/retained/.test(value)?(isEasy ? 'Accumulated Business Profit' : 'Retained Earnings'):(isEasy ? "Owner's Value" : 'Owner Equity');
   };
 
   const sectionRows=(type,section)=>visibleRows.filter(row=>row.type===type&&row.section===section);
@@ -293,10 +293,6 @@ export default function BalanceSheet({seed,notify,onNavigate}){
           <p>Track your business financial position as of a selected date.</p>
         </div>
         <div className="bsHeadActions">
-          <label className="bsSearch">
-            <IconSearch size={18} aria-hidden="true"/>
-            <input aria-label="Search accounts..." placeholder="Search accounts..." value={search} onChange={e=>setSearch(e.target.value)}/>
-          </label>
           <AsOfDateSelect date={date} onChange={value=>setDate(value)} onCustom={()=>setFiltersOpen(true)}/>
           <details className="bsFiltersMore" open={filtersOpen} onToggle={e=>setFiltersOpen(e.currentTarget.open)}>
             <summary aria-label="Open filters">

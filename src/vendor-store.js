@@ -15,7 +15,7 @@ export const vendorSeeds=[
   {...vendorDefaults,id:'ven-3',code:'VEN-00003',name:'Metro Maintenance Works',displayName:'Metro Maintenance Works',type:'Contractor',phone:'+91 98950 88221',paymentTerms:'Due Immediately',tdsApplicable:true,tdsSection:'194C',tdsRate:'1',status:'Blocked',balance:0,createdBy:'Admin',createdAt:'2026-09-03T12:00:00.000Z'}
 ];
 
-export function readVendors(storage=globalThis.localStorage){try{const value=JSON.parse(storage.getItem(VENDOR_KEY));return Array.isArray(value)?value:vendorSeeds}catch{return vendorSeeds}}
+export function readVendors(storage=globalThis.localStorage){try{const value=JSON.parse(storage.getItem(VENDOR_KEY));return Array.isArray(value)?value.filter(Boolean):vendorSeeds}catch{return vendorSeeds}}
 export function writeVendors(rows,storage=globalThis.localStorage){storage.setItem(VENDOR_KEY,JSON.stringify(rows));return rows}
 export function nextVendorCode(rows){const next=Math.max(0,...rows.map(x=>Number(String(x.code||'').match(/\d+/)?.[0]||0)))+1;return `VEN-${String(next).padStart(5,'0')}`}
 export function validateVendor(vendor,rows=[]){

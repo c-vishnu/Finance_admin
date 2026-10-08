@@ -265,8 +265,8 @@ export default function GeneralLedgerPro({accounts = [], notify, onNavigate}) {
       {/* 1. PAGE HEADER */}
       <header className="gl-heading">
         <div>
-          <h1>General Ledger</h1>
-          <p>View account movements and running balances.</p>
+          <h1>{isEasy ? 'Account Activity' : 'General Ledger'}</h1>
+          <p>{isEasy ? 'See all changes that increased or decreased a selected account.' : 'View account movements and running balances.'}</p>
         </div>
         <div className="gl-heading-actions">
           <label className="gl-account-picker">
@@ -331,7 +331,7 @@ export default function GeneralLedgerPro({accounts = [], notify, onNavigate}) {
             <div>
               <IconAdjustments size={18} />
               <span>
-                <b>Filter General Ledger</b>
+                <b>Filter {isEasy ? 'Account Activity' : 'General Ledger'}</b>
                 <small>Refine financial year, branch, cost centre and voucher types.</small>
               </span>
               <button onClick={() => setFilters(false)} aria-label="Close filters">
@@ -423,21 +423,21 @@ export default function GeneralLedgerPro({accounts = [], notify, onNavigate}) {
 
             <div className="gl-summary-container">
               <div className="gl-summary-item">
-                <span className="gl-summary-label">OPENING BALANCE</span>
+                <span className="gl-summary-label">{isEasy ? 'STARTING BALANCE' : 'OPENING BALANCE'}</span>
                 <strong className="gl-summary-value">
                   {money(singleGroup.opening)} {singleGroup.openingSign}
                 </strong>
               </div>
               <div className="gl-summary-item">
-                <span className="gl-summary-label">TOTAL DEBITS</span>
+                <span className="gl-summary-label">{isEasy ? 'TOTAL INCREASE' : 'TOTAL DEBITS'}</span>
                 <strong className="gl-summary-value">{money(singleGroup.debitTotal)}</strong>
               </div>
               <div className="gl-summary-item">
-                <span className="gl-summary-label">TOTAL CREDITS</span>
+                <span className="gl-summary-label">{isEasy ? 'TOTAL DECREASE' : 'TOTAL CREDITS'}</span>
                 <strong className="gl-summary-value">{money(singleGroup.creditTotal)}</strong>
               </div>
               <div className="gl-summary-item gl-summary-closing">
-                <span className="gl-summary-label">CLOSING BALANCE</span>
+                <span className="gl-summary-label">{isEasy ? 'ENDING BALANCE' : 'CLOSING BALANCE'}</span>
                 <strong className="gl-summary-value">
                   {money(singleGroup.closing)} {singleGroup.closingSign}
                 </strong>
@@ -466,8 +466,8 @@ export default function GeneralLedgerPro({accounts = [], notify, onNavigate}) {
                 <th scope="col" style={{width: '12%', minWidth: '110px'}}>DATE</th>
                 <th scope="col" style={{width: '15%', minWidth: '140px'}}>{isEasy ? 'DOCUMENT' : 'VOUCHER'}</th>
                 <th scope="col" style={{width: '37%', minWidth: '240px'}}>{isEasy ? 'PARTY / DETAILS' : 'DETAILS'}</th>
-                <th scope="col" style={{width: '12%', minWidth: '120px', textAlign: 'right'}}>{isEasy ? 'MONEY IN' : 'DEBIT'}</th>
-                <th scope="col" style={{width: '12%', minWidth: '120px', textAlign: 'right'}}>{isEasy ? 'MONEY OUT' : 'CREDIT'}</th>
+                <th scope="col" style={{width: '12%', minWidth: '120px', textAlign: 'right'}}>{isEasy ? 'INCREASE (+)' : 'DEBIT'}</th>
+                <th scope="col" style={{width: '12%', minWidth: '120px', textAlign: 'right'}}>{isEasy ? 'DECREASE (−)' : 'CREDIT'}</th>
                 <th scope="col" style={{width: '12%', minWidth: '150px', textAlign: 'right', paddingRight: '24px'}}>BALANCE</th>
               </tr>
             </thead>
@@ -526,10 +526,10 @@ export default function GeneralLedgerPro({accounts = [], notify, onNavigate}) {
                             )}
                           </div>
                         </td>
-                        <td className="gl-money">
+                        <td className="gl-money" title={isEasy && row.debit ? `Accounting entry: Debit ${money(row.debit)}` : undefined}>
                           {row.debit ? money(row.debit) : <span className="gl-empty-val">—</span>}
                         </td>
-                        <td className="gl-money">
+                        <td className="gl-money" title={isEasy && row.credit ? `Accounting entry: Credit ${money(row.credit)}` : undefined}>
                           {row.credit ? money(row.credit) : <span className="gl-empty-val">—</span>}
                         </td>
                         <td className="gl-money balance" style={{paddingRight: '24px'}}>

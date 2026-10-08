@@ -1,7 +1,7 @@
 import {minor,account,journal,outstanding,today,ledger} from './invoice-engine.js';
 export const MODES=['Bank Transfer','UPI','Cheque','Cash','Card','Other'];
-export const RECEIPT_ROLES=['Accountant','Finance Manager','Admin'];
-const permissions={Accountant:['save','submit','allocate','cancel','import-bank','match'],'Finance Manager':['save','submit','allocate','cancel','import-bank','match','approve','post','reconcile'],Admin:['save','submit','allocate','cancel','import-bank','match','approve','post','reconcile','reverse','unmatch','settings']};
+export const RECEIPT_ROLES=['Accountant','Finance Manager','Business Owner','Admin','Super Admin'];
+const permissions={Accountant:['save','submit','allocate','cancel','import-bank','match'],'Finance Manager':['save','submit','allocate','cancel','import-bank','match','approve','post','reconcile'],'Business Owner':['save','submit','allocate','cancel','import-bank','match','approve','post','reconcile','reverse','unmatch','settings'],Admin:['save','submit','allocate','cancel','import-bank','match','approve','post','reconcile','reverse','unmatch','settings'],'Super Admin':['save','submit','allocate','cancel','import-bank','match','approve','post','reconcile','reverse','unmatch','settings']};
 export const receiptAllowed=(role,action)=>(permissions[role]||[]).includes(action);
 const copy=x=>JSON.parse(JSON.stringify(x)),sum=(a,k)=>a.reduce((n,x)=>n+(x[k]||0),0);
 const validDate=d=>/^\d{4}-\d{2}-\d{2}$/.test(d)&&!isNaN(Date.parse(d))&&new Date(d).toISOString().slice(0,10)===d;
@@ -19,7 +19,7 @@ function allocate(s,r,rows,date,token,ctx){if(s.receiptAllocations.some(a=>a.tok
 export function receiptCommand(state,action,payload={},ctx={}){
  // Explicit roles are enforced at the command boundary, not just by buttons.
  // Role-less trusted adapters retain their existing contract; this is not authentication.
- if(ctx.role){if(!receiptAllowed(ctx.role,action))throw Error('Your receipt role cannot perform this action. Ask a finance manager or admin.');ctx={...ctx,canApprove:['Finance Manager','Admin'].includes(ctx.role)};}
+ if(ctx.role){if(!receiptAllowed(ctx.role,action))throw Error('Your role cannot perform this action. Ask a finance manager, business owner, or admin.');ctx={...ctx,canApprove:['Finance Manager','Admin','Business Owner','Super Admin'].includes(ctx.role)};}
  const s=copy(state),p=copy(payload),now=new Date().toISOString();s.receipts||=[];s.receiptAllocations||=[];s.receiptBankLines||=[];s.receiptMatches||=[];s.receiptRequests||=[];let r=s.receipts.find(r=>r.id===p.id);
  if(action==='settings'){if(!ctx.canApprove)throw Error('Manager approval is required for receipt settings.');const threshold=minor(p.threshold);if(p.closedThrough&&!validDate(p.closedThrough))throw Error('Invalid period lock date.');if(p.advanceAccount)account(s,p.advanceAccount,['Liabilities']);s.config.receipts={threshold,closedThrough:p.closedThrough||'',advanceAccount:p.advanceAccount||''};audit(s,null,action,ctx,now);return {state:s,result:s.config.receipts};}
  if(action==='import-bank'){const seen=new Set(s.receiptBankLines.map(b=>b.id));for(const b of p.lines||[]){if(!b.id||seen.has(b.id))throw Error('Bank transaction ID is missing or duplicated.');seen.add(b.id);period(s,b.date);bankAccount(s,b.bank);const amount=minor(b.amount);if(!amount)throw Error('Bank receipt amount must be positive.');s.receiptBankLines.push({...b,amount,status:'Unmatched',importedAt:now});}audit(s,null,action,ctx,now);return {state:s,result:null};}

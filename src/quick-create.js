@@ -32,7 +32,8 @@ export const quickCreateActions=[
 const contextCategory=page=>/Purchase|Vendor|Debit|Goods/.test(page)?'Purchases':/Invoice|Sales|Customer|Credit|Receipt/.test(page)?'Sales':/Bank/.test(page)?'Accounting':/Account|Journal|Ledger|Trial/.test(page)?'Accounting':'';
 export function visibleQuickActions(role='Admin',query='',activePage='Dashboard'){
  const term=query.trim().toLowerCase(),priority=contextCategory(activePage);
- return quickCreateActions.filter(action=>action.roles.includes(role)&&(!term||`${action.label} ${action.category} ${action.keywords}`.toLowerCase().includes(term))).sort((a,b)=>(b.category===priority)-(a.category===priority)||quickCreateActions.indexOf(a)-quickCreateActions.indexOf(b));
+ const isFullAdmin=['Admin','Super Admin','Business Owner'].includes(role);
+ return quickCreateActions.filter(action=>(isFullAdmin||action.roles.includes(role))&&(!term||`${action.label} ${action.category} ${action.keywords}`.toLowerCase().includes(term))).sort((a,b)=>(b.category===priority)-(a.category===priority)||quickCreateActions.indexOf(a)-quickCreateActions.indexOf(b));
 }
 export function openQuickAction(action,onNavigate){
  if(typeof sessionStorage!=='undefined')sessionStorage.setItem(QUICK_CREATE_KEY,action.id);
