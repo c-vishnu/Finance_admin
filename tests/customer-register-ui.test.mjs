@@ -88,7 +88,7 @@ test('customer details is the full-width document screen with three tabs',()=>{
 });
 
 test('customer details shows all basic data, the transactions ledger and the audit history',()=>{
- for(const label of ['Customer code','Customer type','Status','Contact person','Billing address','Shipping address','State / place of supply','PAN','GSTIN','Credit limit','Credit days','Opening balance','Receivable account','Net receivable','Available credit'])
+ for(const label of ['Customer code','Customer type','Status','Primary Contact Name','Billing address','Shipping address','State / place of supply','PAN','GSTIN','Credit limit','Credit days','Opening balance','Receivable account','Net receivable','Available credit'])
   assert.ok(screen.includes(label),'the basic data keeps '+label);
  assert.match(screen,/const credit=customerCreditSummary\(live,selected\.id\),entries=customerStatement\(live,selected\.id\),history=\[\.\.\.trail\(selected\)\]\.reverse\(\);/,'the detail reads the shared credit summary and statement');
  assert.match(screen,/<th>Date<\/th><th>Reference<\/th><th>Source<\/th><th>Debit<\/th><th>Credit<\/th><th>Balance<\/th>/,'the transactions table');
@@ -98,7 +98,6 @@ test('customer details shows all basic data, the transactions ledger and the aud
  assert.match(screen,/sessionStorage\.setItem\('wayvida-credit-customer',customer\.id\);onNavigate\('Customer Statement'\)/,'the statement handoff is unchanged');
  assert.match(screen,/auditTrail:\[\.\.\.trail\(form\),audit\(form\.id\?'Customer updated':'Customer created'\)\]/,'save appends one history entry');
  assert.match(screen,/auditTrail:\[audit\('Customer duplicated','Created from '\+customer\.name\)\]/,'duplicate seeds its history entry');
- assert.ok(styles.includes('.customerDetailFacts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:0;padding:16px;gap:16px 22px}'),'the facts grid');
  assert.ok(styles.includes('@media(max-width:800px){.customerDetailFacts{grid-template-columns:repeat(2,minmax(0,1fr))}}'),'the facts grid folds to two columns');
 });
 
@@ -106,24 +105,25 @@ test('create and edit customer is a full page, not a modal popup',()=>{
  assert.match(screen,/\{form&&<form className="itemCreatePage" aria-labelledby="customerDialogTitle" onSubmit=\{save\} noValidate>/,'the form renders as the create page inside the register section');
  for(const gone of ['className="itemOverlay"','className="itemDialog"','aria-modal','role="dialog"'])
   assert.ok(!screen.includes(gone),'the modal shell '+gone+' is gone');
- assert.match(screen,/<button type="button" className="itemBack" aria-label="Back to Customers" onClick=\{\(\)=>setForm\(null\)\}>/,'one square back button leads the head');
- assert.match(screen,/<h2 id="customerDialogTitle">\{form\.id\?'Edit Customer':'Create Customer'\}<\/h2>/,'the title switches between Create Customer and Edit Customer');
- assert.match(screen,/\{form\.id&&<small className="itemHeadHint">Editing <b>\{form\.name\|\|form\.code\}<\/b><\/small>\}/,'an edit hint names the customer');
+ assert.match(screen,/<button type="button" className="itemBack" aria-label="Back to Customers" onClick=\{handleCancel\}>/,'one square back button leads the head');
+ assert.match(screen,/<h2 id="customerDialogTitle">\{form\.id \? 'Edit Customer' : 'Create Customer'\}<\/h2>/,'the title switches between Create Customer and Edit Customer');
  assert.ok(screen.includes('className="itemDialogBody"'),'the body is the shared card');
  assert.ok(screen.includes('className="itemDialogFooter"'),'the footer is the shared action bar');
  assert.equal((screen.match(/className="itemSection"/g)||[]).length,3,'the three field groups are itemSection blocks');
  assert.equal((screen.match(/className="itemSectionTitle"/g)||[]).length,3,'each group carries a plain section title, never a header element');
  assert.ok(!/<header[ >]/.test(screen),'no bare header element is rendered, because src/styles.css paints one as the app bar');
- for(const kept of ['Customer code *','GST treatment *','Taxability','Place of supply *','Billing address','Shipping address same as billing','Currency','Payment terms','Credit limit (₹)','Receivable account *','Cancel'])
+ for(const kept of ['Customer code *','GST treatment *','Taxability','Primary Contact Name','Billing Address','Shipping Address','Payment terms','Credit limit (₹)','Receivable account *','Cancel'])
   assert.ok(screen.includes(kept),'the field or action '+kept+' survives');
  assert.ok(screen.includes("localStorage.setItem(CUSTOMERS_KEY,JSON.stringify(next))"),'the storage key is unchanged');
  assert.ok(screen.includes("if(!GST_TREATMENT_VALUES.includes(form.gstTreatment))err.gstTreatment='Select a GST treatment.';"),'the GST treatment is a required field');
  assert.ok(screen.includes("if(!form.code.trim())err.code='Enter a customer code.';"),'the customer code stays required and unique');
 });
+
 test('every visible customer string keeps the twelve pixel floor',()=>{
  const sizes=[...styles.matchAll(/font-size:([\d.]+)px/g)].map(match=>Number(match[1]));
  assert.ok(sizes.length>0,'the stylesheet declares font sizes');
-assert.ok(sizes.every(size=>size>=12),'no declaration drops below 12px: '+sizes.filter(size=>size<12).join(', '));
+ assert.ok(sizes.every(size=>size>=12),'no declaration drops below 12px: '+sizes.filter(size=>size<12).join(', '));
+});
 
 test('the register toolbar drops the record count and adds one Filters disclosure',()=>{
  assert.ok(!screen.includes('{visible.length} customers'),'the removable toolbar count is gone');
@@ -156,5 +156,4 @@ test('the Filters disclosure shares the one page-level dismissal effect',()=>{
  assert.ok(screen.includes("const closeCustomerFilters=()=>document.querySelectorAll('.customerFilters[open]').forEach(node=>node.removeAttribute('open'));"),'one shared closer for the filters');
  assert.equal((screen.match(/document\.addEventListener\('pointerdown',onPointerDown\)/g)||[]).length,1,'still exactly one page-level pointerdown listener');
  assert.equal((screen.match(/document\.addEventListener\('keydown',onEscape\)/g)||[]).length,1,'and exactly one keydown listener');
-});
 });

@@ -1372,3 +1372,279 @@ body:has(.je-create:not(.je-business)) {
    content area and touches the page edges on both sides, with the cards under it inset. */
 .app main:has(> .je-create:not(.je-business)) .je-create .rt-header{margin-left:-24px!important;margin-right:-24px!important}
 @media(max-width:760px){.app main:has(> .je-create:not(.je-business)) .je-create .rt-header{margin-left:-12px!important;margin-right:-12px!important}}
+
+
+/* Top 4 inputs single row layout */
+.app main:has(> .je-create:not(.je-business)) .je-create .je-form-card .je-form-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  align-items: flex-start !important;
+}
+
+.je-period-inline {
+  font-weight: normal !important;
+  font-size: 12px !important;
+  color: #667085 !important;
+  margin-left: 4px !important;
+}
+
+.je-reason-input-group {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+
+.je-reason-input-group input {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+.je-attach-button-inline {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  height: 40px !important;
+  padding: 0 12px !important;
+  border: 1px solid #d0d5dd !important;
+  border-radius: 6px !important;
+  background: #fdfdfd !important;
+  color: #344054 !important;
+  font-size: 12.5px !important;
+  font-weight: 500 !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  transition: all .15s ease !important;
+}
+
+.je-attach-button-inline:hover {
+  background: #f2f5f9 !important;
+  border-color: #b8c4d0 !important;
+  color: #1d2939 !important;
+}
+
+.je-attach-button-inline input {
+  display: none !important;
+}
+
+.je-selected-files-inline {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+  margin-top: 6px !important;
+}
+
+.je-selected-files-inline span {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  padding: 2px 8px !important;
+  background: #f0f4f9 !important;
+  border: 1px solid #d0dbe5 !important;
+  border-radius: 4px !important;
+  font-size: 11.5px !important;
+  color: #344054 !important;
+}
+
+.je-selected-files-inline button {
+  background: none !important;
+  border: 0 !important;
+  color: #667085 !important;
+  font-weight: bold !important;
+  cursor: pointer !important;
+  padding: 0 2px !important;
+}
+
+@media (max-width: 1050px) {
+  .app main:has(> .je-create:not(.je-business)) .je-create .je-form-card .je-form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 650px) {
+  .app main:has(> .je-create:not(.je-business)) .je-create .je-form-card .je-form-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
+/* Screenshot layout matching rules */
+.je-header-right {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin-left: auto !important;
+}
+
+.je-mode-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  background: #f2f4f8 !important;
+  border: 1px solid #d8e0eb !important;
+  border-radius: 8px !important;
+  padding: 3px !important;
+}
+
+.je-mode-btn {
+  padding: 4px 14px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #475467 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  transition: all .15s ease !important;
+}
+
+.je-mode-btn.active {
+  background: #fff !important;
+  color: #101828 !important;
+  font-weight: 600 !important;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.1) !important;
+}
+
+.je-period-note {
+  display: block !important;
+  margin-top: 4px !important;
+  font-size: 11.5px !important;
+  color: #667085 !important;
+  font-weight: normal !important;
+}
+
+.app main:has(> .je-create:not(.je-business)) .je-create .je-form-card .je-form-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 16px 18px !important;
+}
+
+
+/* Header styling matching Create Item / Journal Entry screenshot */
+.app main:has(> .je-create:not(.je-business)) .rt-header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  min-height: 64px !important;
+  margin: 0 -24px 20px -24px !important;
+  padding: 12px 24px !important;
+  background: #ffffff !important;
+  border-bottom: 1px solid #eaecf0 !important;
+}
+
+.app main:has(> .je-create:not(.je-business)) .rt-header h1 {
+  margin: 0 !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  color: #101828 !important;
+  line-height: 1.3 !important;
+}
+
+.app main:has(> .je-create:not(.je-business)) .rt-back {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: none !important;
+  width: 38px !important;
+  height: 38px !important;
+  padding: 0 !important;
+  border: 1px solid #d0d5dd !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  color: #344054 !important;
+  cursor: pointer !important;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05) !important;
+  transition: all .15s ease !important;
+}
+
+.app main:has(> .je-create:not(.je-business)) .rt-back:hover {
+  background: #f9fafb !important;
+  border-color: #d0d5dd !important;
+  color: #101828 !important;
+}
+
+
+/* Vacant space utilization & 6-column line grid layout */
+.je-create .je-lines {
+  display: block !important;
+  width: 100% !important;
+  overflow-x: auto !important;
+  padding: 0 !important;
+}
+
+.je-create .je-line {
+  display: grid !important;
+  grid-template-columns: minmax(230px, 1.4fr) minmax(200px, 1.3fr) minmax(170px, 1fr) 130px 130px 42px !important;
+  gap: 12px !important;
+  align-items: center !important;
+  min-width: 0 !important;
+  width: 100% !important;
+}
+
+.je-create .je-line > .je-cell {
+  min-width: 0 !important;
+  width: 100% !important;
+}
+
+.je-create .je-line > .je-cell input {
+  width: 100% !important;
+}
+
+
+/* 4 inputs single row grid layout */
+.app main:has(> .je-create:not(.je-business)) .je-create .je-form-card .je-form-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  align-items: flex-start !important;
+}
+
+
+/* Fixed UI alignment and text overlap rules */
+.je-label-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 6px !important;
+  min-height: 20px !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  color: #344054 !important;
+  width: 100% !important;
+}
+
+.je-create .je-optional {
+  position: static !important;
+  display: inline-block !important;
+  margin-left: 4px !important;
+  color: #98a2b3 !important;
+  font-size: 11.5px !important;
+  font-weight: 400 !important;
+  top: auto !important;
+  left: auto !important;
+}
+
+.je-period-inline {
+  position: static !important;
+  display: inline-block !important;
+  font-size: 11px !important;
+  font-weight: 400 !important;
+  color: #667085 !important;
+  white-space: nowrap !important;
+}
+
+.app main:has(> .je-create:not(.je-business)) .je-create .je-form-card .je-form-grid > label {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-end !important;
+  gap: 6px !important;
+  margin: 0 !important;
+}
+
+.app main:has(> .je-create:not(.je-business)) .je-create .je-form-card .je-form-grid input,
+.app main:has(> .je-create:not(.je-business)) .je-create .je-form-card .je-form-grid select {
+  height: 42px !important;
+  min-height: 42px !important;
+  box-sizing: border-box !important;
+}

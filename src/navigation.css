@@ -44,7 +44,7 @@
 .erpNavigation ul{list-style:none;margin:0;padding:0}
 .erpNavigation ul[hidden]{display:none}
 .erpNavigation>ul>li{margin-bottom:5px}
-.erpNavigation button{min-height:36px;height:auto;padding:8px 9px;gap:8px;font-family:'Instrument Sans',Arial,sans-serif;font-size:12px;text-align:left;line-height:1.35;border-radius:6px;transition:background .15s,color .15s}
+.erpNavigation button{min-height:38px;height:auto;padding:8px 10px;gap:10px;font-family:'Instrument Sans',Arial,sans-serif;font-size:14px;text-align:left;line-height:1.4;border-radius:7px;transition:background .15s,color .15s}
 .erpNavigation button:hover{background:#f2f5fa;color:#175cd3}
 .erpNavigation button:focus-visible{outline:2px solid #3478f6;outline-offset:-2px}
 .erpNavigation button>span{flex:1;min-width:0}

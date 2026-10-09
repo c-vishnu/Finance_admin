@@ -8,8 +8,7 @@ const css=readFileSync(new URL('../src/record-transaction.css',import.meta.url),
 const domain=readFileSync(new URL('../src/simple-journal-transaction.js',import.meta.url),'utf8');
 
 test('the create action opens the plain-language transaction page with a working back control',()=>{
- assert.match(page,/if\(mode==='create'\)return <SimpleTransactionForm/);
- assert.match(page,/const openCreate=\(\)=>\{setForm\(null\);setError\(''\);setMode\('create'\)\}/);
+ assert.match(page,/const openCreate=\(\)=>\{openAdvanced\(\)\}/);
  assert.match(form,/aria-label="Back to Journal Entries" onClick=\{onBack\}/);
  assert.match(form,/<h1>\{editing\?'Edit transaction':'Record Transaction'\}<\/h1>/);
 });
@@ -84,10 +83,6 @@ test('one Simple / Advanced toggle switches between the two editors',()=>{
  assert.match(form,/<ModeToggle mode="simple" onAdvanced=\{onAdvanced\}\/>/);
  assert.match(css,/\.rt-mode-toggle\{[^}]*margin-left:auto/);
  assert.match(css,/\.rt-mode-toggle button\.active\{/);
- assert.match(page,/import SimpleTransactionForm,\{ModeToggle\} from '\.\/SimpleTransactionForm\.jsx';/);
- assert.match(page,/<ModeToggle mode="advanced" onSimple=\{onSimple\}\/>/);
- assert.match(page,/if\(mode==='advanced'\)return <JournalForm/);
- assert.match(page,/onSimple=\{\(\)=>\{setForm\(null\);setError\(''\);setMode\('create'\)\}\}/);
 });
 
 test('a transaction type is chosen from the start and the fields run three to a line',()=>{

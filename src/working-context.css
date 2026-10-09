@@ -5,15 +5,16 @@
    inheriting the sidebar's, and it is placed from the trigger's measured box by
    src/WorkingContextSwitcher.jsx. */
 .headerActions>:is(.companySelect,.branchSelect,.yearSelect){display:none!important}
-.workingContext{flex:none;display:flex;flex-direction:column;margin:0 0 12px;padding:7px;border:1px solid #dbe6f5;border-radius:14px;background:#eef3fb;box-shadow:0 1px 2px #1018280f,inset 0 1px 0 #fff}
-.workingContext[data-theme=dark]{border-color:#dbe6f5;background:#eef3fb}
-.workingContext .wcTrigger:hover{background:#e3ecfa;border-color:#cfe0f7}
-.workingContext .wcTrigger[aria-expanded=true]{background:#dae7fb;border-color:#b9d1f5}
-.workingContext[data-theme=dark] .wcTrigger:hover{background:#e3ecfa;border-color:#cfe0f7}
-.workingContext[data-theme=dark] .wcTrigger[aria-expanded=true]{background:#dae7fb;border-color:#b9d1f5}
-.erpNavigation[data-theme=dark] .workingContext[data-theme=light] .wcTrigger:hover,.erpNavigation[data-theme=dark] .workingContext[data-theme=light] .wcTrigger[aria-expanded=true]{background:#e3ecfa;border-color:#b9d1f5;color:#182230}
-.erpNavigation[data-theme=dark] .workingContext[data-theme=light] .wcTrigger:hover .wcTriggerText b,.erpNavigation[data-theme=dark] .workingContext[data-theme=light] .wcTrigger[aria-expanded=true] .wcTriggerText b{color:#182230}
-.erpNavigation[data-theme=dark] .workingContext[data-theme=light] .wcTrigger:hover .wcTriggerText small,.erpNavigation[data-theme=dark] .workingContext[data-theme=light] .wcTrigger[aria-expanded=true] .wcTriggerText small{color:#667085}
+.sidebarFooterContext{flex:none;padding:10px 12px 12px;border-top:1px solid #e4e9f0;background:inherit}
+.app>aside:has(.erpNavigation[data-theme=dark]) .sidebarFooterContext{border-top-color:#2a3a54}
+.app.navCollapsed .sidebarFooterContext{padding:8px 10px 10px}
+.workingContext{flex:none;display:flex;flex-direction:column;margin:0;padding:4px;border:1px solid #dbe6f5;border-radius:12px;background:#f4f8ff;box-shadow:0 1px 2px #1018280f}
+.workingContext[data-theme=dark]{border-color:#2d3e58;background:#1d2b40;box-shadow:none}
+.workingContext[data-theme=dark] .wcTrigger{color:#e3eaf4}
+.workingContext[data-theme=dark] .wcTriggerText b{color:#eef3fb}
+.workingContext[data-theme=dark] .wcTriggerText small{color:#9fb0c6}
+.workingContext[data-theme=dark] .wcTrigger:hover{background:#25364d;border-color:#31425b}
+.workingContext[data-theme=dark] .wcTrigger[aria-expanded=true]{background:#263e63;border-color:#3a5480}
 .wcIdentity{display:flex;align-items:center;min-width:0}
 .wcTrigger{position:relative;width:100%;display:flex;align-items:center;gap:10px;min-height:44px;padding:6px 8px;border:1px solid transparent;border-radius:9px;background:transparent;color:#182230;font:13px 'Instrument Sans',sans-serif;text-align:left;transition:background .15s,border-color .15s}
 .wcTrigger:hover{background:#f1f5fb;border-color:#e2e8f0}

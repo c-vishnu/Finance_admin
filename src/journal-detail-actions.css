@@ -67,3 +67,117 @@
 /* With nothing attached the section states it in one quiet line under its heading, so it never reads as another field row. */
 .je-docs-empty{display:flex;align-items:center;gap:7px;margin:0;color:#667085;font-size:12px}
 .je-docs-empty svg{flex:none;color:#98a2b3}
+
+/* Save as Template modal styles */
+.je-template-save-dialog {
+  width: min(480px, 92vw);
+  padding: 24px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 20px 60px rgba(16, 24, 40, 0.22);
+}
+.je-template-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.je-template-dialog-header h2 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  color: #101828;
+}
+.je-modal-close-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #667085;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.je-modal-close-icon:hover {
+  background: #f2f4f7;
+  color: #101828;
+}
+.je-template-modal-desc {
+  margin: 0 0 18px 0;
+  font-size: 13.5px;
+  color: #667085;
+  line-height: 1.5;
+}
+.je-template-input-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 22px;
+  color: #344054;
+  font-size: 13px;
+  font-weight: 600;
+}
+.je-template-input-label input {
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #d0d5dd;
+  border-radius: 7px;
+  font-size: 14px;
+  color: #101828;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.je-template-input-label input:focus {
+  border-color: #006644;
+  box-shadow: 0 0 0 3px rgba(0, 102, 68, 0.15);
+}
+.je-template-dialog-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+.je-template-dialog-footer button.secondary {
+  min-height: 38px;
+  padding: 0 16px;
+  border: 1px solid #d0d5dd;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #344054;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+}
+.je-template-dialog-footer button.secondary:hover {
+  background: #f9fafb;
+  border-color: #c4c9d0;
+}
+.je-template-dialog-footer button.primary {
+  min-height: 38px;
+  padding: 0 18px;
+  border: 1px solid #006644;
+  border-radius: 7px;
+  background: #006644;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: opacity 0.15s ease, background 0.15s ease;
+}
+.je-template-dialog-footer button.primary:hover:not(:disabled) {
+  background: #005237;
+}
+.je-template-dialog-footer button.primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background: #006644;
+}

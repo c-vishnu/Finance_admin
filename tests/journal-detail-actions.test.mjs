@@ -9,10 +9,10 @@ const css=readFileSync(new URL('../src/journal-detail-actions.css',import.meta.u
 test('manual journal detail exposes only the actions the status and role allow',()=>{
   for(const label of ['Submit for approval','Resubmit','Approve','Reject','Reverse journal','Duplicate','Delete draft'])assert.ok(page.includes(label),label);
   assert.match(page,/actions=actionEntries\(journal,role,16\),canDo=name=>actions\.find\(entry=>entry\.action===name\)\|\|null/);
-  assert.match(page,/\{canDo\('Approve'\)&&<button className="je-primary-action" onClick=\{\(\)=>onAction\(journal,'Approve'\)\}>Publish journal<\/button>\}/);
+  assert.match(page,/\{canDo\('Approve'\)&&<button className="je-primary-action"[^>]*onClick=\{\(\)=>onAction\(journal,'Approve'\)\}>Publish journal<\/button>\}/);
   assert.match(page,/\{canDo\('Reject'\)&&<button className="je-danger-action" onClick=\{\(\)=>setRejectOpen\(true\)\}>Reject<\/button>\}/);
   assert.match(page,/\{canDo\('Submit for Approval'\)&&<button className="je-primary-action" onClick=\{\(\)=>onAction\(journal,'Submit for Approval'\)\}>/,'a draft submits for approval from the primary button');
-  assert.match(page,/\{canDo\('Approve'\)&&<button className="je-primary-action" onClick=\{\(\)=>onAction\(journal,'Approve'\)\}>Publish journal<\/button>\}/,'a pending journal publishes from the primary button');
+  assert.match(page,/\{canDo\('Approve'\)&&<button className="je-primary-action"[^>]*onClick=\{\(\)=>onAction\(journal,'Approve'\)\}>Publish journal<\/button>\}/,'a pending journal publishes from the primary button');
   assert.match(css,/\.je-detail-actions\{/);
 });
 

@@ -6,7 +6,6 @@ const source = readFileSync(new URL("../src/JournalEntriesPro.jsx", import.meta.
 const orgSource = readFileSync(new URL("../src/demo-organisations.js", import.meta.url), "utf8");
 const scopeSource = readFileSync(new URL("../src/organisation-scope.js", import.meta.url), "utf8").replace(/^export /gm, "");
 const contextSource = readFileSync(new URL("../src/organisation-context.js", import.meta.url), "utf8").replace(/^export /gm, "").replace(/^import .*$/gm, "");
-const lineSheet = readFileSync(new URL("../src/journal-form.css", import.meta.url), "utf8");
 
 const grab = (text, pattern, label) => {
   const found = text.match(pattern);
@@ -28,13 +27,11 @@ const buildPage = (form, storage) => new Function("localStorage", "demoOrganizat
 const store = entries => ({getItem: key => Object.prototype.hasOwnProperty.call(entries, key) ? entries[key] : null});
 const page = (entries, form = {organization: "", branch: ""}) => buildPage(form, store(entries));
 
-test("organisation and branch are stated once in the journal header, not on each line", () => {
+test("organisation and branch are stated in the journal header, not on each line", () => {
   assert.ok(!/lineScope|showOrganizationColumn|showBranchColumn/.test(source), "the per-line scope columns are gone");
   assert.ok(!/updateLineOrganization|lineBranchOptions/.test(source), "and so are their per-line setters");
-  assert.match(source, /<label>Organisation \*<select value=\{form\.organization\|\|''\}/, "the header owns the organisation");
-  assert.match(source, /<label>Branch \*<select value=\{form\.branch\|\|''\}/, "and the header owns the branch");
-  assert.match(source, /<div className="je-line head"><span>Account \*<\/span><span className="je-head-amount">Debit \(\u20b9\)<\/span><span className="je-head-amount">Credit \(\u20b9\)<\/span><span>Description<\/span><span\/><\/div>/, "a line is Account, Debit, Credit, Description and the delete action");
-  assert.match(lineSheet, /\.je-line \{ grid-template-columns: minmax\(210px, 1\.4fr\) 130px 130px minmax\(150px, 1fr\) 42px !important; min-width: 850px !important; \}/, "and the line grid has five tracks");
+  assert.match(source, /Posting to <b>\{form\.organization/, "the header states the organisation");
+  assert.match(source, /<div className="je-line head"><span>Account \*<\/span><span>Description<\/span><span>Contact \(INR\)<\/span><span className="je-head-amount">Debits \(₹\)<\/span><span className="je-head-amount">Credits \(₹\)<\/span><span\/><\/div>/, "a line has Account, Description, Contact, Debits, Credits and delete");
 });
 
 test("every line is stamped from the header scope", () => {

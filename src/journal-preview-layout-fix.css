@@ -94,13 +94,15 @@
 
 /* The voucher number is the list's primary View details action. */
 .je-page .je-table-wrap th:nth-child(1) { width: 14% !important; }
-.je-page .je-table-wrap th:nth-child(2) { width: 10% !important; }
-.je-page .je-table-wrap th:nth-child(3) { width: 19% !important; }
+.je-page .je-table-wrap th:nth-child(2) { width: 24% !important; min-width: 180px !important; padding-right: 24px !important; }
+.je-page .je-table-wrap th:nth-child(3) { width: 13% !important; min-width: 110px !important; padding-left: 12px !important; padding-right: 18px !important; }
+.je-page .je-table-wrap td:nth-child(2) { padding-right: 24px !important; }
+.je-page .je-table-wrap td:nth-child(3) { padding-left: 12px !important; padding-right: 18px !important; }
 .je-page .je-table-wrap th:nth-child(4),
-.je-page .je-table-wrap th:nth-child(5) { width: 12% !important; }
-.je-page .je-table-wrap th:nth-child(6) { width: 11% !important; }
+.je-page .je-table-wrap th:nth-child(5) { width: 11% !important; }
+.je-page .je-table-wrap th:nth-child(6) { width: 10% !important; }
 .je-page .je-table-wrap th:nth-child(7) { width: 11% !important; }
-.je-page .je-table-wrap th:nth-child(8) { width: 11% !important; }
+.je-page .je-table-wrap th:nth-child(8) { width: 9% !important; }
 .je-page .je-row-actions { justify-content: flex-end !important; }
 
 @media (max-width: 760px) {

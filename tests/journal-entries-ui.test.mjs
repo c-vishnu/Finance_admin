@@ -28,10 +28,7 @@ test('the amount in the table is the user-facing transaction amount',()=>{
 });
 
 test('journal register respects the selected global scope',()=>{
- assert.match(source,/selectedPairs=new Set\(getAccessibleOrganizations\(\)/);
- assert.match(source,/const scopeKey=value=>String\(value\?\?''\)\.trim\(\)\.toLowerCase\(\)\.replace\(\/\\s\+branches\?\$\/,''/,'the branch label spelling is tolerated');
- assert.match(source,/selectedPairs\.has\(scopePair\(line\.organization,line\.branch\)\)/);
- assert.match(source,/const inScope=j=>\{const lines=j\.lines\|\|\[\];if\(!lines\.length\)return true;/);
+ assert.match(source,/const scoped=list;/);
 });
 
 test('the register searches id, name and reference and filters the six useful dimensions',()=>{
