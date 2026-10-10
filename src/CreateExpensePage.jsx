@@ -657,15 +657,28 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
               />
             </div>
 
-            {/* SECTION 2: Payment Details */}
+            {/* 5. Invoice / Bill / Reference No. */}
+            <label style={{ gridColumn: 'span 2' }}>
+              <div className="je-label-header">
+                <span>Invoice / Bill / Reference No.</span>
+              </div>
+              <input
+                type="text"
+                placeholder="e.g. INV-2026-889"
+                value={form.invoiceNo}
+                onChange={e => setField('invoiceNo', e.target.value)}
+              />
+            </label>
+
+            {/* SECTION 2: Payment & Tax Details */}
             <div className="rt-section-head" style={{ gridColumn: '1 / -1', borderBottom: '1px solid #edf1f6', paddingBottom: '8px', marginTop: '12px', marginBottom: '4px' }}>
               <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 650, color: '#172033', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <IconWallet size={18} style={{ color: '#3478f6' }} />
-                <span>Payment Details</span>
+                <span>Payment & Tax Details</span>
               </h3>
             </div>
 
-            {/* 5. Paid Through */}
+            {/* Paid Through */}
             <label>
               <div className="je-label-header">
                 <span>Paid Through *</span>
@@ -683,7 +696,7 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
               </select>
             </label>
 
-            {/* 6. Payment Account */}
+            {/* Payment Account */}
             <label>
               <div className="je-label-header">
                 <span>Payment Account *</span>
@@ -708,15 +721,7 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
               </select>
             </label>
 
-            {/* SECTION 3: Tax Details */}
-            <div className="rt-section-head" style={{ gridColumn: '1 / -1', borderBottom: '1px solid #edf1f6', paddingBottom: '8px', marginTop: '12px', marginBottom: '4px' }}>
-              <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 650, color: '#172033', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <IconPercentage size={18} style={{ color: '#3478f6' }} />
-                <span>Tax Details</span>
-              </h3>
-            </div>
-
-            {/* 7. GST Treatment */}
+            {/* GST Treatment */}
             <label>
               <div className="je-label-header">
                 <span>GST Treatment</span>
@@ -731,7 +736,7 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
               </select>
             </label>
 
-            {/* 8. GST Rate */}
+            {/* GST Rate */}
             <label>
               <div className="je-label-header">
                 <span>GST Rate</span>
@@ -746,7 +751,7 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
               </select>
             </label>
 
-            {/* 9. Vendor GSTIN */}
+            {/* Vendor GSTIN */}
             <label style={{ gridColumn: 'span 2' }}>
               <div className="je-label-header">
                 <span>Vendor GSTIN</span>
@@ -759,7 +764,7 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
               />
             </label>
 
-            {/* SECTION 4: Additional Details */}
+            {/* SECTION 3: Additional Details */}
             <div className="rt-section-head" style={{ gridColumn: '1 / -1', borderBottom: '1px solid #edf1f6', paddingBottom: '8px', marginTop: '12px', marginBottom: '4px' }}>
               <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 650, color: '#172033', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <IconInfoCircle size={18} style={{ color: '#3478f6' }} />
@@ -767,20 +772,7 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
               </h3>
             </div>
 
-            {/* 10. Invoice / Bill / Reference No. */}
-            <label style={{ gridColumn: 'span 2' }}>
-              <div className="je-label-header">
-                <span>Invoice / Bill / Reference No.</span>
-              </div>
-              <input
-                type="text"
-                placeholder="e.g. INV-2026-889"
-                value={form.invoiceNo}
-                onChange={e => setField('invoiceNo', e.target.value)}
-              />
-            </label>
-
-            {/* 11. Notes */}
+            {/* Notes */}
             <label style={{ gridColumn: 'span 2' }}>
               <div className="je-label-header">
                 <span>Notes</span>
