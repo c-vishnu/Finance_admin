@@ -600,10 +600,10 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
               />
             </label>
 
-            {/* 2. Expense Account */}
+            {/* 2. Expense Type */}
             <label>
               <div className="je-label-header">
-                <span>Expense Account *</span>
+                <span>Expense Type *</span>
               </div>
               <select
                 value={form.expenseAccount}
@@ -636,29 +636,10 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
               />
             </label>
 
-            {/* 4. Paid Through */}
-            <label>
-              <div className="je-label-header">
-                <span>Paid Through *</span>
-              </div>
-              <select
-                value={form.paidThrough}
-                onChange={e => setField('paidThrough', e.target.value)}
-              >
-                <option value="1010">1010 · HDFC Bank Operating Account</option>
-                <option value="1000">1000 · Petty Cash</option>
-                <option value="1020">1020 · Undeposited Cash Funds</option>
-                {assetAccounts.map(a => (
-                  <option key={a.code} value={a.code}>{a.code} · {a.name}</option>
-                ))}
-              </select>
-            </label>
-
-
-            {/* 6. Vendor (Searchable Dropdown with Source of Supply auto-detect) */}
+            {/* 4. Paid To */}
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <div className="je-label-header" style={{ marginBottom: '6px' }}>
-                <span>Vendor (Search & Select)</span>
+                <span>Paid To (Vendor)</span>
               </div>
               <SearchableVendorSelect
                 vendors={vendors}
@@ -667,6 +648,49 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
                 onSelect={handleVendorSelect}
               />
             </div>
+
+            {/* 5. Paid Through (Bank / Cash in hand) */}
+            <label>
+              <div className="je-label-header">
+                <span>Paid Through *</span>
+              </div>
+              <select
+                value={form.paidThroughMode || 'Bank'}
+                onChange={e => {
+                  const mode = e.target.value;
+                  const defaultAcc = mode === 'Cash' ? '1000' : '1010';
+                  setForm(f => ({ ...f, paidThroughMode: mode, paidThrough: defaultAcc }));
+                }}
+              >
+                <option value="Bank">Bank</option>
+                <option value="Cash">Cash in hand</option>
+              </select>
+            </label>
+
+            {/* 6. Payment Account */}
+            <label>
+              <div className="je-label-header">
+                <span>Payment Account *</span>
+              </div>
+              <select
+                value={form.paidThrough}
+                onChange={e => setField('paidThrough', e.target.value)}
+              >
+                {form.paidThroughMode === 'Cash' ? (
+                  <>
+                    <option value="1000">1000 · Cash / Petty Cash</option>
+                    <option value="1020">1020 · Undeposited Cash Funds</option>
+                  </>
+                ) : (
+                  <>
+                    <option value="1010">1010 · HDFC Bank Operating Account</option>
+                    {assetAccounts.filter(a => a.code !== '1000').map(a => (
+                      <option key={a.code} value={a.code}>{a.code} · {a.name}</option>
+                    ))}
+                  </>
+                )}
+              </select>
+            </label>
 
             {/* 7. GST Treatment */}
             <label>
@@ -683,7 +707,22 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
               </select>
             </label>
 
-            {/* 8. Vendor GSTIN */}
+            {/* 8. GST Rate */}
+            <label>
+              <div className="je-label-header">
+                <span>GST Rate</span>
+              </div>
+              <select
+                value={form.tax}
+                onChange={e => setField('tax', e.target.value)}
+              >
+                {TAX_OPTIONS.map(tax => (
+                  <option key={tax} value={tax}>{tax}</option>
+                ))}
+              </select>
+            </label>
+
+            {/* 9. Vendor GSTIN */}
             <label>
               <div className="je-label-header">
                 <span>Vendor GSTIN</span>
@@ -696,37 +735,10 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
               />
             </label>
 
-            {/* 9. Customer Name (Searchable Dropdown) */}
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <div className="je-label-header" style={{ marginBottom: '6px' }}>
-                <span>Customer Name</span>
-              </div>
-              <SearchableCustomerSelect
-                customers={customers}
-                selectedCustomerId={form.customerId}
-                onSelect={handleCustomerSelect}
-              />
-            </div>
-
-            {/* 10. Tax Rate */}
+            {/* 10. Invoice or Bill / Reference No */}
             <label>
               <div className="je-label-header">
-                <span>Tax Rate</span>
-              </div>
-              <select
-                value={form.tax}
-                onChange={e => setField('tax', e.target.value)}
-              >
-                {TAX_OPTIONS.map(tax => (
-                  <option key={tax} value={tax}>{tax}</option>
-                ))}
-              </select>
-            </label>
-
-            {/* 11. Invoice# */}
-            <label>
-              <div className="je-label-header">
-                <span>Invoice# / Bill Ref</span>
+                <span>Invoice or Bill / Reference No</span>
               </div>
               <input
                 type="text"
@@ -736,8 +748,8 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
               />
             </label>
 
-            {/* 12. Notes */}
-            <label>
+            {/* 11. Notes */}
+            <label style={{ gridColumn: 'span 2' }}>
               <div className="je-label-header">
                 <span>Notes</span>
               </div>
@@ -749,8 +761,8 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
               />
             </label>
 
-            {/* Attachments Control */}
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
+            {/* 12. Attachments */}
+            <div style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column' }}>
               <div className="je-label-header" style={{ marginBottom: '6px' }}>
                 <span>Attachments</span>
               </div>
