@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
-import { IconArrowLeft, IconAlertTriangle, IconPaperclip, IconTrash, IconPlus, IconSearch, IconChevronDown } from '@tabler/icons-react';
+import { IconArrowLeft, IconAlertTriangle, IconPaperclip, IconTrash, IconPlus, IconSearch, IconChevronDown, IconReceipt, IconWallet, IconPercentage, IconInfoCircle } from '@tabler/icons-react';
 import { readAccounts } from './account-store.js';
 import { readOperations, saveOperations, createExpense, accountingState } from './operations-store.js';
 import { readVendors } from './vendor-store.js';
@@ -587,6 +587,14 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
       {/* 2. Main Form Container */}
       <div className="je-form-card" style={{ padding: '24px', background: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px', margin: '16px 24px 0' }}>
         <div className="je-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '18px 20px' }}>
+            {/* SECTION 1: Expense Details */}
+            <div className="rt-section-head" style={{ gridColumn: '1 / -1', borderBottom: '1px solid #edf1f6', paddingBottom: '8px', marginBottom: '4px' }}>
+              <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 650, color: '#172033', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <IconReceipt size={18} style={{ color: '#3478f6' }} />
+                <span>Expense Details</span>
+              </h3>
+            </div>
+
             {/* 1. Date */}
             <label>
               <div className="je-label-header">
@@ -636,7 +644,7 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
               />
             </label>
 
-            {/* 4. Paid To */}
+            {/* 4. Paid To (Vendor) */}
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <div className="je-label-header" style={{ marginBottom: '6px' }}>
                 <span>Paid To (Vendor)</span>
@@ -649,7 +657,15 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
               />
             </div>
 
-            {/* 5. Paid Through (Bank / Cash in hand) */}
+            {/* SECTION 2: Payment Details */}
+            <div className="rt-section-head" style={{ gridColumn: '1 / -1', borderBottom: '1px solid #edf1f6', paddingBottom: '8px', marginTop: '12px', marginBottom: '4px' }}>
+              <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 650, color: '#172033', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <IconWallet size={18} style={{ color: '#3478f6' }} />
+                <span>Payment Details</span>
+              </h3>
+            </div>
+
+            {/* 5. Paid Through */}
             <label>
               <div className="je-label-header">
                 <span>Paid Through *</span>
@@ -692,6 +708,14 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
               </select>
             </label>
 
+            {/* SECTION 3: Tax Details */}
+            <div className="rt-section-head" style={{ gridColumn: '1 / -1', borderBottom: '1px solid #edf1f6', paddingBottom: '8px', marginTop: '12px', marginBottom: '4px' }}>
+              <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 650, color: '#172033', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <IconPercentage size={18} style={{ color: '#3478f6' }} />
+                <span>Tax Details</span>
+              </h3>
+            </div>
+
             {/* 7. GST Treatment */}
             <label>
               <div className="je-label-header">
@@ -723,7 +747,7 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
             </label>
 
             {/* 9. Vendor GSTIN */}
-            <label>
+            <label style={{ gridColumn: 'span 2' }}>
               <div className="je-label-header">
                 <span>Vendor GSTIN</span>
               </div>
@@ -735,10 +759,18 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
               />
             </label>
 
-            {/* 10. Invoice or Bill / Reference No */}
-            <label>
+            {/* SECTION 4: Additional Details */}
+            <div className="rt-section-head" style={{ gridColumn: '1 / -1', borderBottom: '1px solid #edf1f6', paddingBottom: '8px', marginTop: '12px', marginBottom: '4px' }}>
+              <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 650, color: '#172033', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <IconInfoCircle size={18} style={{ color: '#3478f6' }} />
+                <span>Additional Details</span>
+              </h3>
+            </div>
+
+            {/* 10. Invoice / Bill / Reference No. */}
+            <label style={{ gridColumn: 'span 2' }}>
               <div className="je-label-header">
-                <span>Invoice or Bill / Reference No</span>
+                <span>Invoice / Bill / Reference No.</span>
               </div>
               <input
                 type="text"
