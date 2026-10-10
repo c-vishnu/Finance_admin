@@ -1,3 +1,6 @@
+import ExpenseReport from './ExpenseReport.jsx';
+import IncomeReport from './IncomeReport.jsx';
+import IncomeCategories from './IncomeCategories.jsx';
 import {useMemo,useState} from 'react';
 import {IconArrowLeft,IconBuilding,IconCalendar,IconCheck,IconChevronRight,IconDownload,IconEye,IconFileInvoice,IconFilter,IconPlus,IconReport,IconSearch,IconShieldCheck,IconTrash,IconX} from '@tabler/icons-react';
 import {KEY,money} from './invoice-engine.js';
@@ -20,6 +23,9 @@ const blank={expense:{date:'2026-09-07',name:'',category:'',payee:'',reference:'
 const handoffRecord=()=>{try{const id=sessionStorage.getItem('wayvida-open-expense');if(!id)return null;sessionStorage.removeItem('wayvida-open-expense');const store=readOperations();return (store.expenses||[]).find(row=>row.id===id)||null}catch{return null}};
 
 export default function OperationalModules({page,onNavigate=()=>{},notify=()=>{}}){
+ if(page==='Expense Claims'||page==='Expenses')return <ExpenseReport onNavigate={onNavigate}/>;
+ if(page==='Income')return <IncomeReport page="Income" onNavigate={onNavigate}/>;
+ if(page==='Income Categories')return <IncomeCategories onBack={()=>onNavigate('Income')}/>;
  const [store,setStore]=useState(readOperations),[db,setDb]=useState(accountingState),[query,setQuery]=useState(''),[status,setStatus]=useState('All'),[form,setForm]=useState(null),[detail,setDetail]=useState(page==='Expense Claims'?handoffRecord:null),[error,setError]=useState('');
  const [title,description,action]=defs[page]||defs['Expense Claims'];
  const persist=(next,nextDb=db)=>{saveOperations(next);localStorage.setItem(KEY,JSON.stringify(nextDb));setStore(next);setDb(nextDb)};

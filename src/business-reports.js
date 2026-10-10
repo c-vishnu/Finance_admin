@@ -302,6 +302,7 @@ export function expenseReport(book={},operations={},filters={}){
   const expenseAccount=text(expense.account),paymentAccount=text(expense.paidThrough);
   const tax=text(expense.tax),hasTax=Boolean(tax)&&!/^no\s*tax$/i.test(tax);
   const category=text(expense.category),payee=text(expense.payee),reference=text(expense.reference),description=text(expense.description);
+   const customerName=text(expense.customerName||expense.customer||expense.customer_name);
   const branch=text(expense.branch||expense.branchName||index.get(expense.journalId));
   rows.push({
    id:'expense:'+text(expense.id),recordId:text(expense.id),type:'Expense',
@@ -309,6 +310,7 @@ export function expenseReport(book={},operations={},filters={}){
    name:text(expense.name),party:payee||DASH,partyCode:'',partyId:'',
    expenseAccount,expenseAccountName:accountName(book,expenseAccount),
    paymentAccount,paymentAccountName:accountName(book,paymentAccount),
+    customerName:customerName||DASH,customer:customerName||DASH,
    method:text(expense.method),category,
    taxable:0,cgst:0,sgst:0,igst:0,cess:0,gst:0,total:amount,amount,roundOff:0,
    subtotal:null,discount:0,tax,taxLabel:hasTax?tax:DASH,
@@ -319,7 +321,47 @@ export function expenseReport(book={},operations={},filters={}){
    handshake:'wayvida-open-expense',page:'Expense Claims'
   });
  }
- return assemble(rows,filters,{excludedOtherOrganisation,type:'Expense'});
+  return assemble(rows,filters,{excludedOtherOrganisation,type:'Expense'});
+}
+
+/* ---------- Income Report ---------- */
+
+export function incomeReport(book={},operations={},filters={}){
+ const branches=list(filters,'branches'),index=branchIndex(book),journals=new Map(list(book,'journals').map(journal=>[journal.id,journal]));
+ const current=text(filters.organisation);
+ const rows=[];let excludedOtherOrganisation=0;
+ for(const income of list(operations,'incomes')){
+  const journal=journals.get(income.journalId);
+  const organisation=organisationOf(income,journal);
+  if(current&&organisation&&organisation!==current&&organisation!==text(filters.organisationCode)){excludedOtherOrganisation+=1;continue}
+  const status=lifecycle(income.status,income.status==='Posted');
+  if(status==='Cancelled')continue;
+  const amount=minor(income.amount);
+  const incomeAccount=text(income.account||'4100'),paymentAccount=text(income.paidThrough||'1010');
+  const tax=text(income.tax),hasTax=Boolean(tax)&&!/^no\s*tax$/i.test(tax);
+  const category=text(income.category),receivedFrom=text(income.receivedFrom||income.payee||income.customerName),reference=text(income.reference),description=text(income.description||income.name);
+  const branch=text(income.branch||income.branchName||index.get(income.journalId));
+  const isReceived=income.received===true||income.received==='true'||income.received==='Yes';
+  rows.push({
+   id:'income:'+text(income.id),recordId:text(income.id),type:'Income',
+   date:text(income.date),number:text(income.number)||'Not numbered',
+   name:text(income.name||description||category),party:receivedFrom||DASH,receivedFrom:receivedFrom||DASH,partyCode:'',partyId:'',
+   incomeAccount,incomeAccountName:accountName(book,incomeAccount),
+   expenseAccount:incomeAccount,expenseAccountName:accountName(book,incomeAccount),
+   paymentAccount,paymentAccountName:accountName(book,paymentAccount),
+   method:text(income.method),category,
+   received:isReceived,
+   expectedDate:text(income.expectedDate),
+   amount,total:amount,
+   tax,taxLabel:hasTax?tax:DASH,
+   status:income.status==='Draft'?'Draft':(isReceived?'Received':'Unpaid'),storedStatus:text(income.status),posted:income.status==='Posted',
+   branch,branchName:branchName(branch,branches),
+   reference,description,
+   haystack:[income.number,income.name,receivedFrom,category,incomeAccount,accountName(book,incomeAccount),reference,description].filter(Boolean).join(' ').toLowerCase(),
+   handshake:'wayvida-open-income',page:'Income'
+  });
+ }
+ return assemble(rows,filters,{excludedOtherOrganisation,type:'Income'});
 }
 
 /* ---------- The shared assembly ---------- */
@@ -329,8 +371,8 @@ export function expenseReport(book={},operations={},filters={}){
    cards always describe exactly what the table below them shows. */
 function assemble(rows,filters,{excludedOtherOrganisation=0,type=''}={}){
  const visible=narrow(rows,filters);
- const totals=type==='Expense'
-  ? {total:sum(visible,'amount'),taxable:0,gst:0,roundOff:0,count:visible.length}
+ const totals=(type==='Expense'||type==='Income')
+  ? {total:sum(visible,'amount'),received:sum(visible.filter(r=>r.received),'amount'),yetToReceive:sum(visible.filter(r=>!r.received),'amount'),taxable:0,gst:0,roundOff:0,count:visible.length}
   : moneyTotals(visible);
  const applied={from:text(filters.from),to:text(filters.to),status:text(filters.status)||ALL,party:text(filters.party)||ALL,branch:text(filters.branch)||ALL,account:text(filters.account)||ALL,category:text(filters.category)||ALL,payment:text(filters.payment)||ALL,search:text(filters.search)};
  const filtersActive=Boolean(applied.from||applied.to||applied.search)||applied.status!==POSTED||applied.party!==ALL||applied.branch!==ALL||applied.account!==ALL||applied.category!==ALL||applied.payment!==ALL;
@@ -378,5 +420,12 @@ export function expenseExportSheet(report){
  return {
   header:['Date','Expense No.','Expense Account','Payee','Category','Amount INR','Tax','Total INR','Status'],
   rows:report.rows.map(row=>[row.date,row.number,row.expenseAccountName,row.party,row.category,row.amount/100,row.taxLabel,row.total/100,row.status])
+ };
+}
+
+export function incomeExportSheet(report){
+ return {
+  header:['Date','Income No.','Income Category','Received From','Description','Amount INR','Received?','Payment Account','Status'],
+  rows:report.rows.map(row=>[row.date,row.number,row.category,row.party,row.description,row.amount/100,row.received?'Yes':'No',row.paymentAccountName||'Receivable',row.status])
  };
 }

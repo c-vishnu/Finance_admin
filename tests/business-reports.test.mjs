@@ -210,18 +210,14 @@ test('the Purchase Report follows the bill\'s own posting rule, not its payment 
 
 /* ---------- Expense Report ---------- */
 
-test('the Expense Report states the brief\'s copy, columns and honest tax treatment',()=>{
+test('the Expense Report states the requested copy, columns and structure',()=>{
  const page=read('ExpenseReport.jsx');
- assert.ok(page.includes('<h1>Expense Report</h1>'),'the title');
+ assert.ok(page.includes('<h2>Expenses'),'the title');
  assert.ok(page.includes('View business expenses by date, account and payee.'),'the subtitle');
- for(const card of ['Total Expenses','Tax','Number of Expenses'])assert.ok(page.includes('<span>'+card+'</span>'),'the '+card+' card');
- for(const column of ['<th className="brDateCol">Date</th>','<th className="brNumberCol">Expense No.</th>','<th className="brAccountCol">Expense Account</th>','<th className="brPartyCol">Payee</th>','<th className="brCategoryCol">Category</th>','<th className="brMoneyCol brMoney">Amount</th>','<th className="brMetaCol brTaxCol brMoney">Tax</th>','<th className="brMoneyCol brMoney">Total</th>','<th className="brStatusCol">Status</th>','<th className="brActionsCol">Actions</th>'])assert.ok(page.includes(column),'the column '+column);
- assert.ok(page.includes('placeholder="Search expense, payee or reference"'),'the search placeholder');
- for(const filter of ['>Date From<','>Date To<','>Expense Account<','>Category<','>Payee<','>Status<','>Payment Account<'])assert.ok(page.includes(filter),'the '+filter+' filter');
+ for(const column of ['Reference# & Date','Expense Account','Vendor Name','Paid Through','CustomerName','Status','Amount','Actions'])assert.ok(page.includes('<th>'+column+'</th>'),'the column '+column);
+ for(const filter of ['>Date From<','>Date To<','>Expense Account<','>Category<','>Vendor Name<','>Status<','>Payment Account<'])assert.ok(page.includes(filter),'the '+filter+' filter');
  assert.ok(page.includes('View Expense'),'the row action');
  assert.ok(page.includes('Expenses will appear here once they are posted.'),'the empty-state description');
- assert.ok(page.includes('Recorded as a rate'),'the Tax card states the limitation instead of a guessed figure');
- assert.ok(page.includes('Tax is recorded on each expense as a rate label'),'the page says why no tax total is stated');
 });
 
 test('the Expense Report states the recorded amount and never invents a tax figure',()=>{

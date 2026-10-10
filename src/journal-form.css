@@ -1648,3 +1648,116 @@ body:has(.je-create:not(.je-business)) {
   min-height: 42px !important;
   box-sizing: border-box !important;
 }
+
+/* Create Expense Page clean single-card and fixed bottom footer rules */
+.exp-create-page .je-form-card::before {
+  display: none !important;
+}
+.exp-create-page {
+  padding-bottom: 90px !important;
+}
+.exp-create-page > footer {
+  position: sticky !important;
+  bottom: 16px !important;
+  left: auto !important;
+  transform: none !important;
+  width: auto !important;
+  max-width: none !important;
+  z-index: 99 !important;
+  margin: 24px 24px 0 24px !important;
+  background: rgba(255, 255, 255, 0.98) !important;
+  box-shadow: 0 4px 20px rgba(16, 24, 40, .12), 0 0 0 1px rgba(16, 24, 40, .06) !important;
+  backdrop-filter: blur(10px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 12px !important;
+  padding: 12px 20px !important;
+  border-radius: 12px !important;
+}
+
+/* Eliminate duplicate double scrollbars: lock root and scroll only inside main */
+html:has(.itemCreatePage),
+body:has(.itemCreatePage),
+body:has(.itemCreatePage) #root,
+body:has(.exp-create-page),
+body:has(.exp-create-page) #root {
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+body:has(.itemCreatePage) .app,
+body:has(.exp-create-page) .app {
+  height: 100vh !important;
+  height: 100dvh !important;
+  overflow: hidden !important;
+}
+
+body:has(.exp-create-page) .app main,
+body:has(.rt-page) .app main,
+body:has(.itemCreatePage) .app main,
+body:has(.exp-create-page) .app > main,
+body:has(.rt-page) .app > main,
+body:has(.itemCreatePage) .app > main {
+  padding: 0 !important;
+  margin: 0 !important;
+  max-width: none !important;
+  height: calc(100vh - 52px) !important;
+  height: calc(100dvh - 52px) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+
+body:has(.exp-create-page) .welcome,
+body:has(.rt-page) .welcome {
+  display: none !important;
+}
+
+.exp-create-page,
+.rt-page.exp-create-page {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  background: transparent !important;
+}
+
+.exp-create-page .itemDialogHead,
+.rt-page.exp-create-page .itemDialogHead {
+  border: 0 !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  margin-top: 0 !important;
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+  padding-left: 24px !important;
+  padding-right: 24px !important;
+  width: 100% !important;
+  background: #ffffff !important;
+  box-sizing: border-box !important;
+  box-shadow: none !important;
+}
+
+
+.exp-create-page .je-form-card {
+  overflow: visible !important;
+}
+
+.exp-create-page .je-form-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px 20px !important;
+}
+
+.inc-create-page .je-form-card {
+  overflow: visible !important;
+}
+
+.inc-create-page .je-form-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 16px 20px !important;
+}
+
+
+
+

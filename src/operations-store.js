@@ -2,6 +2,16 @@ import {initial,journal,KEY,minor} from './invoice-engine.js';
 
 export const OPERATIONS_KEY='wayvida-operations-v1';
 const today='2026-09-07';
+export const DEFAULT_INCOME_CATEGORIES = [
+ { id: 'inc-cat-service', name: 'Service Income', account: '4100', tax: 'GST 18%', description: 'Earnings from professional and business services', status: 'Active' },
+ { id: 'inc-cat-sales', name: 'Sales Income', account: '4000', tax: 'GST 18%', description: 'Revenue from direct product or item sales', status: 'Active' },
+ { id: 'inc-cat-rental', name: 'Rental Income', account: '4150', tax: 'GST 18%', description: 'Income from property, machinery or equipment rentals', status: 'Active' },
+ { id: 'inc-cat-interest', name: 'Interest Income', account: '4200', tax: 'No tax', description: 'Interest earned on bank deposits or investments', status: 'Active' },
+ { id: 'inc-cat-commission', name: 'Commission Income', account: '4300', tax: 'GST 18%', description: 'Commission or agency earnings', status: 'Active' },
+ { id: 'inc-cat-consultancy', name: 'Consultancy Income', account: '4400', tax: 'GST 18%', description: 'Advisory and consultancy service fees', status: 'Active' },
+ { id: 'inc-cat-other', name: 'Other Income', account: '4900', tax: 'No tax', description: 'Miscellaneous business revenue and gains', status: 'Active' }
+];
+
 export const seedOperations=()=>({version:1,categories:[
  {id:'cat-software',name:'Software & subscriptions',account:'5600',tax:'GST 18%',description:'Cloud tools and recurring software',status:'Active'},
  {id:'cat-travel',name:'Travel & conveyance',account:'5400',tax:'GST 5%',description:'Business travel and local conveyance',status:'Active'},
@@ -12,7 +22,12 @@ export const seedOperations=()=>({version:1,categories:[
  {id:'cat-repairs',name:'Repairs & maintenance',account:'5900',tax:'GST 18%',description:'Equipment repairs and premises upkeep',status:'Active'},
  {id:'cat-rent',name:'Rent & lease',account:'5300',tax:'GST 18%',description:'Office and warehouse rentals',status:'Active'},
  {id:'cat-welfare',name:'Employee welfare',account:'5900',tax:'GST 5%',description:'Staff events, meals and welfare',status:'Active'},
- {id:'cat-bank',name:'Bank charges',account:'5700',tax:'No tax',description:'Bank fees, charges and commission',status:'Active'}],expenses:[
+ {id:'cat-bank',name:'Bank charges',account:'5700',tax:'No tax',description:'Bank fees, charges and commission',status:'Active'}],incomeCategories:[...DEFAULT_INCOME_CATEGORIES],incomes:[
+ {id:'inc-1',number:'INC-00001',date:'2026-09-02',name:'Website Design & Setup',category:'Service Income',receivedFrom:'Acme Corporation',amount:3500000,account:'4100',received:true,paidThrough:'1010',method:'Bank transfer',reference:'TXN-984321',gstTreatment:'Registered Business - Regular',tax:'GST 18%',taxMode:'exclusive',status:'Posted',journalId:'JE-DEMO-INC-01',description:'Web development setup fees'},
+ {id:'inc-2',number:'INC-00002',date:'2026-09-05',name:'Equipment Rental - Sep',category:'Rental Income',receivedFrom:'BuildRight Contractors',amount:1500000,account:'4150',received:true,paidThrough:'1010',method:'UPI',reference:'UPI-77621',gstTreatment:'Registered Business - Regular',tax:'GST 18%',taxMode:'exclusive',status:'Posted',journalId:'JE-DEMO-INC-02',description:'Monthly excavator rental fee'},
+ {id:'inc-3',number:'INC-00003',date:'2026-09-08',name:'Advisory Retainer',category:'Consultancy Income',receivedFrom:'Apex Systems',amount:2000000,account:'4400',received:false,expectedDate:'2026-09-25',accountReceivable:'1100',gstTreatment:'Registered Business - Regular',tax:'GST 18%',taxMode:'exclusive',status:'Pending',description:'Q3 IT strategy consultation retainer'},
+ {id:'inc-4',number:'INC-00004',date:'2026-09-10',name:'Fixed Deposit Interest',category:'Interest Income',receivedFrom:'HDFC Bank',amount:125000,account:'4200',received:true,paidThrough:'1010',method:'Bank transfer',reference:'INT-SEP-26',gstTreatment:'Unregistered Business',tax:'No tax',taxMode:'exclusive',status:'Posted',journalId:'JE-DEMO-INC-04',description:'Quarterly FD interest payout'},
+ {id:'inc-5',number:'INC-00005',date:'2026-09-12',name:'Software Licensing Commission',category:'Commission Income',receivedFrom:'Cloudstack Services',amount:450000,account:'4300',received:false,expectedDate:'2026-09-30',accountReceivable:'1100',gstTreatment:'Registered Business - Regular',tax:'GST 18%',taxMode:'exclusive',status:'Draft',description:'Reseller referral commission'}],expenses:[
  {id:'exp-1',number:'EXP-00041',date:'2026-09-05',name:'Cloud hosting',category:'Software & subscriptions',payee:'Cloudstack Services',amount:118000,account:'5600',paidThrough:'1010',method:'UPI',tax:'GST 18%',status:'Posted',journalId:'JE-DEMO-EXP-41',description:'September hosting subscription'},
  {id:'exp-2',number:'EXP-00042',date:'2026-09-06',name:'Client visit',category:'Travel & conveyance',payee:'Metro Cabs',amount:245000,account:'5400',paidThrough:'1010',method:'Card',tax:'GST 5%',status:'Pending',description:'Travel for customer implementation'},
  {id:'exp-3',number:'EXP-00043',date:'2026-09-07',name:'Internet charges',category:'Utilities',payee:'FiberNet India',amount:177000,account:'5300',paidThrough:'1010',method:'Bank transfer',tax:'GST 18%',status:'Draft',description:'Branch broadband charges'},
@@ -61,10 +76,134 @@ export const seedOperations=()=>({version:1,categories:[
  {id:'bud-10',name:'Bank charges FY27',account:'Bank charges',period:'Yearly',branch:'All branches',amount:600000,actual:240000,status:'On track'}],audit:[]});
 
 const clone=v=>JSON.parse(JSON.stringify(v));
-export function readOperations(){try{const value=JSON.parse(localStorage.getItem(OPERATIONS_KEY)||'null');return value?.expenses?value:seedOperations()}catch{return seedOperations()}}
+export function readOperations(){
+ try{
+  const value=JSON.parse(localStorage.getItem(OPERATIONS_KEY)||'null');
+  if(!value)return seedOperations();
+  if(!value.incomes)value.incomes=seedOperations().incomes;
+  if(!value.incomeCategories)value.incomeCategories=DEFAULT_INCOME_CATEGORIES;
+  return value;
+ }catch{return seedOperations()}
+}
 export function saveOperations(value){localStorage.setItem(OPERATIONS_KEY,JSON.stringify(value));return value}
 export function accountingState(){try{return JSON.parse(localStorage.getItem(KEY)||'null')||initial()}catch{return initial()}}
-const ensure=(state,code,name,type,nature)=>{let row=state.accounts.find(x=>x.code===code);if(!row){row={id:`operations:${code}`,code,name,type,nature,group:type==='Assets'?'Fixed Assets':'Operating Expenses',active:true,isGroup:false,system:true,revision:1};state.accounts.push(row)}if(!row.active||row.isGroup)throw Error(`Configure active posting account ${code}.`);return code};
+const ensure=(state,code,name,type,nature)=>{let row=state.accounts.find(x=>x.code===code);if(!row){row={id:`operations:${code}`,code,name,type,nature,group:type==='Assets'?'Current Assets':type==='Income'?'Operating Income':'Operating Expenses',active:true,isGroup:false,system:true,revision:1};state.accounts.push(row)}if(!row.active||row.isGroup)throw Error(`Configure active posting account ${code}.`);return code};
+
+export function createIncome(store,accounting,input){
+ const next=clone(store),state=clone(accounting),amount=minor(input.amount);
+ const name=input.name?.trim()||input.description?.trim()||input.category;
+ if(!name||!input.date||!input.category||amount<=0)throw Error('Enter the date, income title or description, category, and a valid positive amount.');
+ 
+ const isReceived=input.received===true||input.received==='true'||input.received==='Yes';
+ const status=input.status==='Draft'?'Draft':(isReceived?'Posted':'Pending');
+ const number=input.number||`INC-${String((next.incomes||[]).length+1).padStart(5,'0')}`;
+ 
+ const record={
+  ...input,
+  id:crypto.randomUUID(),
+  number,
+  name,
+  amount,
+  received:isReceived,
+  status,
+  createdAt:new Date().toISOString()
+ };
+
+ if(status!=='Draft'){
+  const incomeAccount=ensure(state,input.account||'4100','Income Account','Income','Credit');
+  const debitAccount=isReceived
+   ? ensure(state,input.paidThrough||'1010','Bank','Assets','Debit')
+   : ensure(state,input.accountReceivable||'1100','Accounts Receivable','Assets','Debit');
+
+  const gstRateMatch=(input.tax||'').match(/\d+/);
+  const gstRate=gstRateMatch?Number(gstRateMatch[0]):0;
+  
+  let netAmount=amount, gstAmount=0;
+  if(gstRate>0){
+   if(input.taxMode==='inclusive'){
+    gstAmount=Math.round((amount*gstRate)/(100+gstRate));
+    netAmount=amount-gstAmount;
+   }else{
+    gstAmount=Math.round((amount*gstRate)/100);
+   }
+  }
+
+  const journalLines=[
+   {account:debitAccount,debit:isReceived||input.taxMode!=='exclusive'?amount:amount+gstAmount,credit:0,description:isReceived?`Income received from ${input.receivedFrom||'customer'}`:`Unpaid income receivable from ${input.receivedFrom||'customer'}`},
+   {account:incomeAccount,debit:0,credit:netAmount,description:name}
+  ];
+
+  if(gstAmount>0){
+   ensure(state,'2100','GST Payable','Liabilities','Credit');
+   journalLines.push({account:'2100',debit:0,credit:gstAmount,description:`GST payable on ${name}`});
+  }
+
+  const entry=journal(state,record,'Income',journalLines,record.date,`income:${record.id}`);
+  record.journalId=entry.id;
+ }
+
+ if(!next.incomes)next.incomes=[];
+ next.incomes.unshift(record);
+ next.audit.push({id:crypto.randomUUID(),action:'income recorded',recordId:record.id,journalId:record.journalId,at:new Date().toISOString(),by:'Admin'});
+ return {store:next,accounting:state,record};
+}
+
+export function markIncomeAsReceived(store,accounting,incomeId,paymentDetails={}){
+ const next=clone(store),state=clone(accounting);
+ const record=next.incomes?.find(x=>x.id===incomeId);
+ if(!record)throw Error('Income record not found.');
+ if(record.received)throw Error('This income is already marked as received.');
+
+ const bankAccount=ensure(state,paymentDetails.paidThrough||'1010','Bank','Assets','Debit');
+ const arAccount=ensure(state,record.accountReceivable||'1100','Accounts Receivable','Assets','Debit');
+
+ record.received=true;
+ record.status='Posted';
+ record.paidThrough=paymentDetails.paidThrough||'1010';
+ record.method=paymentDetails.method||'Bank transfer';
+ record.reference=paymentDetails.reference||'';
+
+ const entry=journal(state,record,'Income Collection',[
+  {account:bankAccount,debit:record.amount,credit:0,description:`Collection for ${record.number} - ${record.name}`},
+  {account:arAccount,debit:0,credit:record.amount,description:`Clear receivable for ${record.number}`}
+ ],paymentDetails.date||new Date().toISOString().split('T')[0],`income-collection:${record.id}`);
+
+ record.collectionJournalId=entry.id;
+ next.audit.push({id:crypto.randomUUID(),action:'income marked as received',recordId:record.id,journalId:entry.id,at:new Date().toISOString(),by:'Admin'});
+ return {store:next,accounting:state,record};
+}
+
+export function createIncomeCategory(store,input){
+ if(!input.name?.trim()||!input.account)throw Error('Category name and default account are required.');
+ const next=clone(store),record={...input,id:crypto.randomUUID(),status:input.status||'Active'};
+ if(!next.incomeCategories)next.incomeCategories=[...DEFAULT_INCOME_CATEGORIES];
+ next.incomeCategories.unshift(record);
+ return next;
+}
+
+export function reverseIncome(store,accounting,incomeId){
+ const next=clone(store),state=clone(accounting);
+ const record=next.incomes?.find(x=>x.id===incomeId);
+ if(!record)throw Error('Income record not found.');
+ if(record.status==='Cancelled')throw Error('Income is already cancelled.');
+
+ if(record.journalId){
+  const origJournal=state.journals?.find(j=>j.id===record.journalId);
+  if(origJournal){
+   const revLines=origJournal.lines.map(l=>({
+    account:l.account,
+    debit:l.credit,
+    credit:l.debit,
+    description:`Reversal of ${l.description}`
+   }));
+   journal(state,record,'Income Reversal',revLines,new Date().toISOString().split('T')[0],`income-reversal:${record.id}`);
+  }
+ }
+ record.status='Cancelled';
+ next.audit.push({id:crypto.randomUUID(),action:'income cancelled',recordId:record.id,at:new Date().toISOString(),by:'Admin'});
+ return {store:next,accounting:state,record};
+}
+
 export function createExpense(store,accounting,input){const next=clone(store),state=clone(accounting),amount=minor(input.amount);if(!input.name?.trim()||!input.date||!input.category||amount<=0)throw Error('Enter the date, expense, category, and a valid amount.');ensure(state,input.account||'5900','Other Expenses','Expenses','Debit');ensure(state,input.paidThrough||'1010','Bank','Assets','Debit');const record={...input,id:crypto.randomUUID(),number:`EXP-${String(next.expenses.length+44).padStart(5,'0')}`,amount,status:'Posted',createdAt:new Date().toISOString()};const entry=journal(state,record,'Expense',[{account:record.account||'5900',debit:amount,credit:0,description:record.name},{account:record.paidThrough||'1010',debit:0,credit:amount,description:`Paid to ${record.payee||'payee'}`}],record.date,`expense:${record.id}`);record.journalId=entry.id;next.expenses.unshift(record);next.audit.push({id:crypto.randomUUID(),action:'expense posted',recordId:record.id,journalId:entry.id,at:new Date().toISOString(),by:'Admin'});return {store:next,accounting:state,record}}
 export function createCategory(store,input){if(!input.name?.trim()||!input.account)throw Error('Category name and default account are required.');const next=clone(store),record={...input,id:crypto.randomUUID(),status:input.status||'Active'};next.categories.unshift(record);return next}
 export function createAsset(store,input,accounting){const next=clone(store),cost=minor(input.cost);if(!input.name?.trim()||!input.category||!input.purchaseDate||cost<=0)throw Error('Enter the asset name, category, purchase date, and cost.');const record={...input,id:crypto.randomUUID(),code:input.code||`AST-${String(next.assets.length+1).padStart(4,'0')}`,cost,accumulated:0,bookValue:cost,status:'Active'};next.assets.unshift(record);const transaction={id:crypto.randomUUID(),date:record.purchaseDate,asset:record.name,type:'Purchase',reference:record.invoice||record.code,amount:cost,status:accounting?'Posted':'Recorded'};next.assetTransactions.unshift(transaction);if(!accounting)return next;const state=clone(accounting),assetAccount=ensure(state,input.assetAccount||'1300','Fixed Assets','Assets','Debit'),creditAccount=input.purchaseMode==='On credit'?ensure(state,input.payableAccount||'2000','Accounts Payable','Liabilities','Credit'):ensure(state,input.paymentAccount||'1010','Bank','Assets','Debit'),entry=journal(state,{...record,number:transaction.reference},'Asset Acquisition',[{account:assetAccount,debit:cost,credit:0,description:`Acquire ${record.name}`},{account:creditAccount,debit:0,credit:cost,description:input.purchaseMode==='On credit'?`Payable to ${record.vendor||'vendor'}`:`Paid for ${record.name}`}],record.purchaseDate,`asset-acquisition:${record.id}`);Object.assign(transaction,{journalId:entry.id});record.journalId=entry.id;next.audit.push({id:crypto.randomUUID(),action:'asset acquisition posted',recordId:record.id,journalId:entry.id,at:entry.createdAt,by:'Admin'});return {store:next,accounting:state,record,journal:entry}}

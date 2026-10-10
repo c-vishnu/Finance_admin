@@ -240,9 +240,9 @@ body:has(.soCreatePage) .app>main{height:auto;max-height:none;overflow:visible;s
    rather than a squeezed 36px box with no padding. */
 .soCreatePage .ivLineTable td:last-child button{width:32px;min-width:32px;height:32px;min-height:32px;padding:0;display:inline-flex;align-items:center;justify-content:center;color:#b42318;background:#fff5f4;border-color:#f0c8c4;border-radius:7px}
 .soCreatePage .ivLineTable td:last-child button:hover:not(:disabled){color:#912018;background:#fde8e6;border-color:#e3a49e}
-.soCreatePage .ivCard{padding:16px}
-.soCreatePage .salesOrderForm .ivCard+.ivCard{margin-top:12px}
-.soCreatePage .ivCard .ivHeading{margin-bottom:12px}
+.soCreatePage .ivCard{padding:14px 16px}
+.soCreatePage .salesOrderForm .ivCard+.ivCard{margin-top:10px}
+.soCreatePage .ivCard .ivHeading{margin-bottom:8px;padding:2px 0}
 /* ---------------------------------------------------------------------------
    Create / Edit Sales Order - section heads, field rows, billing summary,
    additional details and the pinned action bar.
@@ -366,7 +366,7 @@ body:has(.soCreatePage) .app>main{height:auto;max-height:none;overflow:visible;s
    Sticky rather than fixed keeps the page gutter; the opaque background and the top hairline keep
    the form from showing through behind the buttons, and the bar stays layered under the row menus
    (z-index 80) and the address dialog (z-index 1200). */
-.soCreatePage .soActionBar{position:sticky;bottom:0;z-index:6;display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 0 0;margin-left:calc(-1 * clamp(16px,2.2vw,24px));margin-right:calc(-1 * clamp(16px,2.2vw,24px));padding:12px clamp(16px,2.2vw,24px);background:#f6f8fb;border-top:1px solid #e3e8ef}
+.soCreatePage .soActionBar{position:sticky;bottom:0;z-index:6;display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 0 0;margin-left:calc(-1 * clamp(16px,2.2vw,24px));margin-right:calc(-1 * clamp(16px,2.2vw,24px));padding:12px clamp(16px,2.2vw,24px);background:#ffffff !important;border-top:1px solid #e3e8ef;box-shadow: 0 -4px 16px rgba(16, 24, 40, 0.06) !important;}
 @media(max-width:760px){.soCreatePage .soActionBar{margin-left:-12px;margin-right:-12px;padding:12px}}
 
 /* The credit-limit warning sits under the customer's facts: a warning tint, the 12px floor and the
@@ -405,7 +405,7 @@ body:has(.soCreatePage) .app>main{height:auto;max-height:none;overflow:visible;s
 /* The add-item control is the section's one primary action, so it carries the primary fill, and
    offers the two ways a line is born plus the way out to a reusable item. */
 .soCreatePage .soAddItem{position:relative;flex:none}
-.soCreatePage .soAddItemMain{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:0 14px;border:1px solid #bcd0f5;border-radius:7px;background:#eef4ff;color:#245fd9;font-size:13px;font-weight:600;cursor:pointer;list-style:none}
+.soCreatePage .soAddItemMain{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 12px;border:1px solid #bcd0f5;border-radius:7px;background:#eef4ff;color:#245fd9;font-size:12px;font-weight:600;cursor:pointer;list-style:none}
 .soCreatePage .soAddItemMain::-webkit-details-marker{display:none}
 .soCreatePage .soAddItemMain:hover,.soCreatePage .soAddItem[open] .soAddItemMain{border-color:#8fb4f2;background:#e2ecff;color:#1d4fbb}
 .soCreatePage .soAddItemMain:focus-visible{outline:2px solid #245fd9;outline-offset:2px}
