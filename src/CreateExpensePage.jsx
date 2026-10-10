@@ -355,7 +355,10 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
     date: new Date().toISOString().split('T')[0],
     expenseAccount: '5900',
     amount: '',
+    paidThroughMode: 'Bank',
     paidThrough: '1010',
+    paymentMethod: 'Bank Transfer',
+    transactionRef: '',
     sac: '',
     vendorId: '',
     vendor: '',
@@ -721,6 +724,40 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
               </select>
             </label>
 
+            {/* Conditionally ask Payment Method and Transaction Ref if Bank */}
+            {(form.paidThroughMode || 'Bank') === 'Bank' && (
+              <>
+                <label>
+                  <div className="je-label-header">
+                    <span>Payment Method</span>
+                  </div>
+                  <select
+                    value={form.paymentMethod || 'Bank Transfer'}
+                    onChange={e => setField('paymentMethod', e.target.value)}
+                  >
+                    <option value="Bank Transfer">Bank Transfer / NEFT / RTGS / IMPS</option>
+                    <option value="UPI">UPI / QR Code</option>
+                    <option value="Cheque">Cheque</option>
+                    <option value="Credit Card">Credit / Debit Card</option>
+                    <option value="Online">Online Banking / Gateway</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </label>
+
+                <label>
+                  <div className="je-label-header">
+                    <span>Transaction Reference / UTR #</span>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="e.g. UTR1234567890"
+                    value={form.transactionRef || ''}
+                    onChange={e => setField('transactionRef', e.target.value)}
+                  />
+                </label>
+              </>
+            )}
+
             {/* GST Treatment */}
             <label>
               <div className="je-label-header">
@@ -752,7 +789,7 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
             </label>
 
             {/* Vendor GSTIN */}
-            <label style={{ gridColumn: 'span 2' }}>
+            <label>
               <div className="je-label-header">
                 <span>Vendor GSTIN</span>
               </div>
