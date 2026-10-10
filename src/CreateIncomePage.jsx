@@ -228,6 +228,7 @@ export default function CreateIncomePage({ onCancel, onSaved }) {
     customerId: '',
     amount: '',
     received: true, // true = Yes money received, false = No expected later
+    paymentType: 'Bank', // 'Bank' or 'Cash'
     paidThrough: '1010', // 1010 = Bank Account
     accountReceivable: '1100', // Accounts Receivable
     method: 'Bank transfer',
@@ -429,8 +430,15 @@ export default function CreateIncomePage({ onCancel, onSaved }) {
             </h3>
           </div>
 
-          {/* All Payment Inputs in a Single Row */}
-          <div style={{ gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: form.received ? 'repeat(4, minmax(0, 1fr))' : 'repeat(2, minmax(0, 1fr))', gap: '16px', alignItems: 'flex-start', width: '100%' }}>
+          {/* All Payment Inputs in Grid Row */}
+          <div style={{
+            gridColumn: '1 / -1',
+            display: 'grid',
+            gridTemplateColumns: !form.received ? 'repeat(2, minmax(0, 1fr))' : (form.paymentType === 'Cash' ? 'repeat(3, minmax(0, 1fr))' : 'repeat(4, minmax(0, 1fr))'),
+            gap: '16px',
+            alignItems: 'flex-start',
+            width: '100%'
+          }}>
             {/* Payment Received? Toggle */}
             <label style={{ margin: 0 }}>
               <div className="je-label-header">
@@ -474,60 +482,95 @@ export default function CreateIncomePage({ onCancel, onSaved }) {
 
             {form.received ? (
               <>
+                {/* Which type: Bank or Cash payment */}
                 <label style={{ margin: 0 }}>
                   <div className="je-label-header">
-                    <span>Deposit To (Bank / Cash) *</span>
+                    <span>Payment Received Via *</span>
                   </div>
                   <select
-                    value={form.paidThrough}
-                    onChange={e => setField('paidThrough', e.target.value)}
+                    value={form.paymentType}
+                    onChange={e => {
+                      const mode = e.target.value;
+                      if (mode === 'Cash') {
+                        setForm(f => ({
+                          ...f,
+                          paymentType: 'Cash',
+                          paidThrough: '1000',
+                          method: 'Cash',
+                          reference: ''
+                        }));
+                      } else {
+                        const defaultBank = bankAccounts[0]?.code || '1010';
+                        setForm(f => ({
+                          ...f,
+                          paymentType: 'Bank',
+                          paidThrough: defaultBank,
+                          method: 'Bank transfer'
+                        }));
+                      }
+                    }}
                   >
-                    <optgroup label="Cash Account (Chart of Accounts)">
-                      {cashAccounts.length > 0 ? (
-                        cashAccounts.map(a => (
-                          <option key={a.code} value={a.code}>{a.code} · {a.name}</option>
-                        ))
-                      ) : (
-                        <option value="1000">1000 · Petty Cash</option>
-                      )}
-                    </optgroup>
-                    <optgroup label="Bank Accounts (Chart of Accounts)">
-                      {bankAccounts.length > 0 ? (
-                        bankAccounts.map(a => (
-                          <option key={a.code} value={a.code}>{a.code} · {a.name}</option>
-                        ))
-                      ) : (
-                        <option value="1010">1010 · Bank Account</option>
-                      )}
-                    </optgroup>
+                    <option value="Bank">Bank Payment</option>
+                    <option value="Cash">Cash Payment</option>
                   </select>
                 </label>
 
-                <label style={{ margin: 0 }}>
-                  <div className="je-label-header">
-                    <span>Payment Method</span>
-                  </div>
-                  <select
-                    value={form.method}
-                    onChange={e => setField('method', e.target.value)}
-                  >
-                    {PAYMENT_METHODS.map(m => (
-                      <option key={m} value={m}>{m}</option>
-                    ))}
-                  </select>
-                </label>
+                {form.paymentType === 'Cash' ? (
+                  <label style={{ margin: 0 }}>
+                    <div className="je-label-header">
+                      <span>Deposit Account</span>
+                    </div>
+                    <select value="1000" disabled style={{ background: '#f8fafc', color: '#475569', cursor: 'not-allowed' }}>
+                      <option value="1000">1000 · Cash / Petty Cash (Chart of Accounts)</option>
+                    </select>
+                  </label>
+                ) : (
+                  <>
+                    <label style={{ margin: 0 }}>
+                      <div className="je-label-header">
+                        <span>Bank Account *</span>
+                      </div>
+                      <select
+                        value={form.paidThrough}
+                        onChange={e => setField('paidThrough', e.target.value)}
+                      >
+                        {bankAccounts.length > 0 ? (
+                          bankAccounts.map(a => (
+                            <option key={a.code} value={a.code}>{a.code} · {a.name}</option>
+                          ))
+                        ) : (
+                          <option value="1010">1010 · Bank Account</option>
+                        )}
+                      </select>
+                    </label>
 
-                <label style={{ margin: 0 }}>
-                  <div className="je-label-header">
-                    <span>Transaction Reference / UTR #</span>
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="e.g. TXN-984321 / UTR #"
-                    value={form.reference}
-                    onChange={e => setField('reference', e.target.value)}
-                  />
-                </label>
+                    <label style={{ margin: 0 }}>
+                      <div className="je-label-header">
+                        <span>Payment Method</span>
+                      </div>
+                      <select
+                        value={form.method}
+                        onChange={e => setField('method', e.target.value)}
+                      >
+                        {PAYMENT_METHODS.filter(m => m !== 'Cash').map(m => (
+                          <option key={m} value={m}>{m}</option>
+                        ))}
+                      </select>
+                    </label>
+
+                    <label style={{ margin: 0 }}>
+                      <div className="je-label-header">
+                        <span>Transaction Reference / UTR #</span>
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="e.g. TXN-984321 / UTR #"
+                        value={form.reference}
+                        onChange={e => setField('reference', e.target.value)}
+                      />
+                    </label>
+                  </>
+                )}
               </>
             ) : (
               <label style={{ margin: 0 }}>
