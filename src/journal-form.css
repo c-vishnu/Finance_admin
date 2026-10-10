@@ -1751,6 +1751,10 @@ body:has(.rt-page) .welcome {
 .inc-create-page .je-form-card {
   overflow: visible !important;
 }
+.inc-create-page .je-form-card::before {
+  content: none !important;
+  display: none !important;
+}
 
 .inc-create-page .je-form-grid {
   display: grid !important;

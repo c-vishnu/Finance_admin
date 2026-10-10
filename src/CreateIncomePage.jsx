@@ -4,9 +4,12 @@ import {
   IconAlertTriangle,
   IconPaperclip,
   IconTrash,
-  IconChevronDown,
-  IconChevronUp,
-  IconSearch
+  IconReceipt,
+  IconWallet,
+  IconPercentage,
+  IconFileText,
+  IconSearch,
+  IconChevronDown
 } from '@tabler/icons-react';
 import { readAccounts } from './account-store.js';
 import { readOperations, saveOperations, createIncome, accountingState, DEFAULT_INCOME_CATEGORIES } from './operations-store.js';
@@ -33,124 +36,7 @@ const PAYMENT_METHODS = [
   'Bank transfer', 'UPI', 'Credit / Debit Card', 'Cheque', 'Cash', 'Demand Draft', 'Other'
 ];
 
-// Searchable Income Type Selector
-function SearchableIncomeTypeSelect({ categories, selectedCategory, onSelect }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [search, setSearch] = useState('');
-  const containerRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (containerRef.current && !containerRef.current.contains(e.target)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const filtered = useMemo(() => {
-    if (!search.trim()) return categories;
-    const q = search.toLowerCase();
-    return categories.filter(c => c.name.toLowerCase().includes(q) || (c.account && c.account.includes(q)));
-  }, [categories, search]);
-
-  const currentCategory = categories.find(c => c.name === selectedCategory);
-
-  return (
-    <div ref={containerRef} style={{ position: 'relative', width: '100%' }}>
-      <button
-        type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        style={{
-          width: '100%',
-          minHeight: '38px',
-          padding: '6px 12px',
-          borderRadius: '8px',
-          border: '1px solid #cbd5e1',
-          background: '#fff',
-          textAlign: 'left',
-          fontSize: '14px',
-          color: selectedCategory ? '#0f172a' : '#94a3b8',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          cursor: 'pointer'
-        }}
-      >
-        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {selectedCategory || 'Select Income Type...'}
-        </span>
-        <IconChevronDown size={16} style={{ color: '#64748b', marginLeft: '6px', flexShrink: 0 }} />
-      </button>
-
-      {isOpen && (
-        <div style={{
-          position: 'absolute',
-          top: 'calc(100% + 4px)',
-          left: 0,
-          right: 0,
-          zIndex: 999,
-          background: '#fff',
-          border: '1px solid #cbd5e1',
-          borderRadius: '8px',
-          boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)',
-          maxHeight: '260px',
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden'
-        }}>
-          <div style={{ padding: '8px', borderBottom: '1px solid #e2e8f0', background: '#f8fafc', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <IconSearch size={15} style={{ color: '#64748b', flexShrink: 0 }} />
-            <input
-              type="text"
-              autoFocus
-              placeholder="Search income type..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              style={{
-                width: '100%',
-                border: 'none',
-                background: 'transparent',
-                outline: 'none',
-                fontSize: '13px',
-                color: '#0f172a'
-              }}
-            />
-          </div>
-          <div style={{ overflowY: 'auto', flex: 1, padding: '4px 0' }}>
-            {filtered.length === 0 ? (
-              <div style={{ padding: '12px', textAlign: 'center', fontSize: '13px', color: '#94a3b8' }}>
-                No matching income categories
-              </div>
-            ) : (
-              filtered.map(c => (
-                <div
-                  key={c.id || c.name}
-                  onClick={() => { onSelect(c.name); setIsOpen(false); setSearch(''); }}
-                  style={{
-                    padding: '8px 12px',
-                    fontSize: '13px',
-                    color: '#0f172a',
-                    cursor: 'pointer',
-                    background: c.name === selectedCategory ? '#eff6ff' : 'transparent',
-                    fontWeight: c.name === selectedCategory ? 600 : 400,
-                    borderBottom: '1px solid #f8fafc'
-                  }}
-                >
-                  {c.name} {c.account ? `(${c.account})` : ''}
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// Searchable Customer / Contact Selector with custom input support
-function SearchableCustomerSelect({ customers, selectedValue, onSelect }) {
+function SearchableCustomerSelect({ customers, selectedCustomerId, onSelect }) {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const containerRef = useRef(null);
@@ -168,12 +54,15 @@ function SearchableCustomerSelect({ customers, selectedValue, onSelect }) {
   const filtered = useMemo(() => {
     if (!search.trim()) return customers;
     const q = search.toLowerCase();
-    return customers.filter(c =>
+    return customers.filter(c => 
       (c.name && c.name.toLowerCase().includes(q)) ||
-      (c.companyName && c.companyName.toLowerCase().includes(q)) ||
-      (c.code && c.code.toLowerCase().includes(q))
+      (c.code && c.code.toLowerCase().includes(q)) ||
+      (c.email && c.email.toLowerCase().includes(q)) ||
+      (c.companyName && c.companyName.toLowerCase().includes(q))
     );
   }, [customers, search]);
+
+  const selectedCustomer = customers.find(c => c.id === selectedCustomerId || c.name === selectedCustomerId);
 
   return (
     <div ref={containerRef} style={{ position: 'relative', width: '100%' }}>
@@ -189,7 +78,7 @@ function SearchableCustomerSelect({ customers, selectedValue, onSelect }) {
           background: '#fff',
           textAlign: 'left',
           fontSize: '14px',
-          color: selectedValue ? '#0f172a' : '#94a3b8',
+          color: selectedCustomer ? '#0f172a' : '#94a3b8',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -197,7 +86,7 @@ function SearchableCustomerSelect({ customers, selectedValue, onSelect }) {
         }}
       >
         <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {selectedValue || 'Customer or person'}
+          {selectedCustomer ? `${selectedCustomer.name}${selectedCustomer.companyName ? ` (${selectedCustomer.companyName})` : ''}` : 'Search & Select Customer *'}
         </span>
         <IconChevronDown size={16} style={{ color: '#64748b', marginLeft: '6px', flexShrink: 0 }} />
       </button>
@@ -223,12 +112,9 @@ function SearchableCustomerSelect({ customers, selectedValue, onSelect }) {
             <input
               type="text"
               autoFocus
-              placeholder="Search or enter customer/person..."
+              placeholder="Search customer by name, company, email..."
               value={search}
-              onChange={e => {
-                setSearch(e.target.value);
-                onSelect(e.target.value);
-              }}
+              onChange={e => setSearch(e.target.value)}
               style={{
                 width: '100%',
                 border: 'none',
@@ -238,37 +124,55 @@ function SearchableCustomerSelect({ customers, selectedValue, onSelect }) {
                 color: '#0f172a'
               }}
             />
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch('')}
+                style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: '#64748b', padding: 0 }}
+              >
+                ×
+              </button>
+            )}
           </div>
           <div style={{ overflowY: 'auto', flex: 1, padding: '4px 0' }}>
             <div
-              onClick={() => { onSelect(''); setIsOpen(false); setSearch(''); }}
+              onClick={() => { onSelect(null); setIsOpen(false); setSearch(''); }}
               style={{
                 padding: '8px 12px',
                 fontSize: '13px',
                 color: '#64748b',
                 cursor: 'pointer',
-                background: !selectedValue ? '#f1f5f9' : 'transparent'
+                background: !selectedCustomer ? '#f1f5f9' : 'transparent'
               }}
             >
-              -- Clear / None --
+              -- Select Customer --
             </div>
-            {filtered.map(c => (
-              <div
-                key={c.id}
-                onClick={() => { onSelect(c.name); setIsOpen(false); setSearch(''); }}
-                style={{
-                  padding: '8px 12px',
-                  fontSize: '13px',
-                  color: '#0f172a',
-                  cursor: 'pointer',
-                  background: c.name === selectedValue ? '#eff6ff' : 'transparent',
-                  fontWeight: c.name === selectedValue ? 600 : 400,
-                  borderBottom: '1px solid #f8fafc'
-                }}
-              >
-                {c.name} {c.companyName ? `(${c.companyName})` : ''}
+            {filtered.length === 0 ? (
+              <div style={{ padding: '12px', textAlign: 'center', fontSize: '13px', color: '#94a3b8' }}>
+                No matching customers found
               </div>
-            ))}
+            ) : (
+              filtered.map(c => (
+                <div
+                  key={c.id}
+                  onClick={() => { onSelect(c); setIsOpen(false); setSearch(''); }}
+                  style={{
+                    padding: '8px 12px',
+                    fontSize: '13px',
+                    color: '#0f172a',
+                    cursor: 'pointer',
+                    background: (c.id === selectedCustomerId || c.name === selectedCustomer?.name) ? '#eff6ff' : 'transparent',
+                    fontWeight: (c.id === selectedCustomerId || c.name === selectedCustomer?.name) ? 600 : 400,
+                    borderBottom: '1px solid #f8fafc'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span>{c.name} {c.companyName ? `(${c.companyName})` : ''}</span>
+                    {c.email && <span style={{ fontSize: '11px', color: '#64748b' }}>{c.email}</span>}
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       )}
@@ -278,31 +182,11 @@ function SearchableCustomerSelect({ customers, selectedValue, onSelect }) {
 
 export default function CreateIncomePage({ onCancel, onSaved }) {
   const [error, setError] = useState('');
-  const [showMore, setShowMore] = useState(false);
 
   const accounts = readAccounts();
-
-  // Active Cash accounts from Chart of Accounts
-  const cashAccounts = useMemo(() => {
-    const all = accounts?.accounts || [];
-    const filtered = all.filter(a => a.type === 'Assets' && (a.name?.toLowerCase().includes('cash') || a.code === '1000'));
-    if (filtered.length > 0) return filtered;
-    return [
-      { code: '1000', name: 'Petty Cash' },
-      { code: '1005', name: 'Cash in Hand' }
-    ];
-  }, [accounts]);
-
-  // Active Bank accounts from Chart of Accounts
-  const bankAccounts = useMemo(() => {
-    const all = accounts?.accounts || [];
-    const filtered = all.filter(a => a.type === 'Assets' && (a.name?.toLowerCase().includes('bank') || a.code === '1010' || a.code?.startsWith('10')) && !a.name?.toLowerCase().includes('cash') && a.code !== '1000');
-    if (filtered.length > 0) return filtered;
-    return [
-      { code: '1010', name: 'HDFC Bank' },
-      { code: '1020', name: 'SBI Bank' }
-    ];
-  }, [accounts]);
+  const allAccounts = accounts?.accounts || [];
+  const cashAccounts = allAccounts.filter(a => a.type === 'Assets' && (a.code === '1000' || a.name?.toLowerCase().includes('cash')));
+  const bankAccounts = allAccounts.filter(a => a.type === 'Assets' && a.code !== '1000' && (a.code?.startsWith('10') || a.name?.toLowerCase().includes('bank')));
 
   // Customers list
   const customers = useMemo(() => {
@@ -314,7 +198,17 @@ export default function CreateIncomePage({ onCancel, onSaved }) {
     return customerSeeds;
   }, []);
 
-  // Income Categories list
+  // Sales Invoices list for linking
+  const salesInvoices = useMemo(() => {
+    try {
+      const raw = localStorage.getItem('wayvida-invoices');
+      const list = raw ? JSON.parse(raw) : [];
+      if (Array.isArray(list)) return list.filter(i => i.status !== 'Cancelled');
+    } catch {}
+    return [];
+  }, []);
+
+  // Categories list
   const categories = useMemo(() => {
     try {
       const store = readOperations();
@@ -326,7 +220,6 @@ export default function CreateIncomePage({ onCancel, onSaved }) {
   }, []);
 
   // Form State
-  const [receivedVia, setReceivedVia] = useState('Bank / UPI'); // 'Cash' or 'Bank / UPI'
   const [form, setForm] = useState({
     date: new Date().toISOString().split('T')[0],
     category: 'Service Income',
@@ -334,12 +227,17 @@ export default function CreateIncomePage({ onCancel, onSaved }) {
     receivedFrom: '',
     customerId: '',
     amount: '',
-    paidThrough: '1010', // Default bank account
+    received: true, // true = Yes money received, false = No expected later
+    paidThrough: '1010', // 1010 = Bank Account
+    accountReceivable: '1100', // Accounts Receivable
     method: 'Bank transfer',
-    referenceNo: '',
+    reference: '',
+    expectedDate: '',
     gstTreatment: 'Registered Business - Regular',
     tax: 'GST 18%',
     taxMode: 'exclusive',
+    referenceNo: '',
+    salesInvoiceId: '',
     description: '',
     files: []
   });
@@ -347,17 +245,6 @@ export default function CreateIncomePage({ onCancel, onSaved }) {
   const setField = (key, value) => {
     setError('');
     setForm(f => ({ ...f, [key]: value }));
-  };
-
-  const handleReceivedViaChange = (via) => {
-    setReceivedVia(via);
-    if (via === 'Cash') {
-      const defaultCash = cashAccounts[0]?.code || '1000';
-      setForm(f => ({ ...f, paidThrough: defaultCash, method: 'Cash' }));
-    } else {
-      const defaultBank = bankAccounts[0]?.code || '1010';
-      setForm(f => ({ ...f, paidThrough: defaultBank, method: 'Bank transfer' }));
-    }
   };
 
   const handleCategoryChange = (categoryName) => {
@@ -369,14 +256,17 @@ export default function CreateIncomePage({ onCancel, onSaved }) {
     }));
   };
 
-  const handleCustomerSelect = (val) => {
+  const handleCustomerSelect = (customerObj) => {
     setError('');
-    const found = customers.find(c => c.name.toLowerCase() === val.toLowerCase() || c.id === val);
-    setForm(f => ({
-      ...f,
-      receivedFrom: val,
-      customerId: found ? found.id : ''
-    }));
+    if (!customerObj) {
+      setForm(f => ({ ...f, receivedFrom: '', customerId: '' }));
+    } else {
+      setForm(f => ({
+        ...f,
+        receivedFrom: customerObj.name,
+        customerId: customerObj.id
+      }));
+    }
   };
 
   const handleFileUpload = (e) => {
@@ -397,29 +287,35 @@ export default function CreateIncomePage({ onCancel, onSaved }) {
       if (!form.amount || Number(form.amount) <= 0) {
         throw new Error('Please enter a valid income amount.');
       }
+      if (!form.receivedFrom?.trim()) {
+        throw new Error('Please select who the income was received from.');
+      }
 
       const store = readOperations();
       const db = accountingState();
 
       const input = {
         date: form.date,
-        name: form.description?.trim() || `${form.category} ${form.receivedFrom ? `from ${form.receivedFrom}` : ''}`.trim(),
+        name: form.description?.trim() || `${form.category} from ${form.receivedFrom}`,
         category: form.category,
         receivedFrom: form.receivedFrom,
         payee: form.receivedFrom,
         account: form.account || '4100',
         amount: Number(form.amount),
-        received: true,
-        paidThrough: form.paidThrough,
-        method: form.method,
-        reference: form.referenceNo,
-        referenceNo: form.referenceNo,
+        received: form.received,
+        paidThrough: form.received ? (form.paidThrough || '1010') : null,
+        accountReceivable: form.accountReceivable || '1100',
+        method: form.received ? form.method : null,
+        reference: form.reference,
+        expectedDate: !form.received ? form.expectedDate : null,
         gstTreatment: form.gstTreatment,
         tax: form.tax,
         taxMode: form.taxMode,
+        referenceNo: form.referenceNo,
+        salesInvoiceId: form.salesInvoiceId,
         description: form.description,
         files: form.files,
-        status: targetStatus === 'Draft' ? 'Draft' : 'Posted'
+        status: targetStatus === 'Draft' ? 'Draft' : (form.received ? 'Posted' : 'Pending')
       };
 
       const out = createIncome(store, db, input);
@@ -435,7 +331,7 @@ export default function CreateIncomePage({ onCancel, onSaved }) {
   return (
     <section className="rt-page itemCreatePage je-create inc-create-page" style={{ margin: 0, paddingBottom: '32px' }}>
       {/* 1. Page Header */}
-      <div className="itemDialogHead" style={{ borderBottom: '1px solid #e2e8f0', background: '#ffffff', padding: '16px 24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+      <div className="itemDialogHead">
         <button
           className="itemBack"
           type="button"
@@ -446,8 +342,7 @@ export default function CreateIncomePage({ onCancel, onSaved }) {
           <IconArrowLeft size={19} />
         </button>
         <div className="itemHeadText">
-          <h2 id="incomeDialogTitle" style={{ margin: 0, fontSize: '18px', fontWeight: 650, color: '#0f172a' }}>Record Income</h2>
-          <p style={{ margin: '2px 0 0', fontSize: '13px', color: '#64748b' }}>Add money received by your business.</p>
+          <h2 id="incomeDialogTitle">Record Income</h2>
         </div>
       </div>
 
@@ -459,13 +354,21 @@ export default function CreateIncomePage({ onCancel, onSaved }) {
       )}
 
       {/* 2. Main Form Container */}
-      <div className="je-form-card" style={{ padding: '24px', background: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px', margin: '16px 24px 0', overflow: 'visible' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '20px 24px', alignItems: 'start' }}>
+      <div className="je-form-card" style={{ padding: '24px', background: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px', margin: '16px 24px 0' }}>
+        <div className="je-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '18px 20px' }}>
           
-          {/* Row 1: Date & Income Type */}
-          <label style={{ display: 'flex', flexDirection: 'column' }}>
-            <div className="je-label-header" style={{ marginBottom: '6px' }}>
-              <span style={{ fontWeight: 600, fontSize: '13px', color: '#334155' }}>Date *</span>
+          {/* SECTION 1: Income Details */}
+          <div className="rt-section-head" style={{ gridColumn: '1 / -1', borderBottom: '1px solid #edf1f6', paddingBottom: '8px', marginBottom: '4px' }}>
+            <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 650, color: '#172033', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <IconReceipt size={18} style={{ color: '#3478f6' }} />
+              <span>Income Details</span>
+            </h3>
+          </div>
+
+          {/* Income Date */}
+          <label>
+            <div className="je-label-header">
+              <span>Date *</span>
             </div>
             <input
               type="date"
@@ -475,32 +378,37 @@ export default function CreateIncomePage({ onCancel, onSaved }) {
             />
           </label>
 
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div className="je-label-header" style={{ marginBottom: '6px' }}>
-              <span style={{ fontWeight: 600, fontSize: '13px', color: '#334155' }}>Income Type *</span>
+          {/* Income Type */}
+          <label>
+            <div className="je-label-header">
+              <span>Income Type *</span>
             </div>
-            <SearchableIncomeTypeSelect
-              categories={categories}
-              selectedCategory={form.category}
-              onSelect={handleCategoryChange}
-            />
-          </div>
+            <select
+              value={form.category}
+              onChange={e => handleCategoryChange(e.target.value)}
+            >
+              {categories.map(c => (
+                <option key={c.id || c.name} value={c.name}>{c.name}</option>
+              ))}
+            </select>
+          </label>
 
-          {/* Row 2: Received From & Amount */}
+          {/* Received From (Customer Dropdown) */}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <div className="je-label-header" style={{ marginBottom: '6px' }}>
-              <span style={{ fontWeight: 600, fontSize: '13px', color: '#334155' }}>Received From</span>
+              <span>Received From (Customer) *</span>
             </div>
             <SearchableCustomerSelect
               customers={customers}
-              selectedValue={form.receivedFrom}
+              selectedCustomerId={form.customerId || form.receivedFrom}
               onSelect={handleCustomerSelect}
             />
           </div>
 
-          <label style={{ display: 'flex', flexDirection: 'column' }}>
-            <div className="je-label-header" style={{ marginBottom: '6px' }}>
-              <span style={{ fontWeight: 600, fontSize: '13px', color: '#334155' }}>Amount (₹) *</span>
+          {/* Amount */}
+          <label>
+            <div className="je-label-header">
+              <span>Amount (₹) *</span>
             </div>
             <input
               type="number"
@@ -513,106 +421,91 @@ export default function CreateIncomePage({ onCancel, onSaved }) {
             />
           </label>
 
-          {/* Row 3: Received Via & Bank Account / Cash Account */}
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div className="je-label-header" style={{ marginBottom: '6px' }}>
-              <span style={{ fontWeight: 600, fontSize: '13px', color: '#334155' }}>Received Via *</span>
-            </div>
-            <div style={{ display: 'flex', background: '#f1f5f9', padding: '3px', borderRadius: '8px', gap: '4px', border: '1px solid #cbd5e1', height: '38px', alignItems: 'center' }}>
-              <button
-                type="button"
-                onClick={() => handleReceivedViaChange('Cash')}
-                style={{
-                  flex: 1,
-                  height: '32px',
-                  border: 'none',
-                  borderRadius: '6px',
-                  background: receivedVia === 'Cash' ? '#ffffff' : 'transparent',
-                  color: receivedVia === 'Cash' ? '#0f172a' : '#64748b',
-                  fontWeight: receivedVia === 'Cash' ? 600 : 500,
-                  fontSize: '13px',
-                  boxShadow: receivedVia === 'Cash' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease'
-                }}
-              >
-                Cash
-              </button>
-              <button
-                type="button"
-                onClick={() => handleReceivedViaChange('Bank / UPI')}
-                style={{
-                  flex: 1,
-                  height: '32px',
-                  border: 'none',
-                  borderRadius: '6px',
-                  background: receivedVia === 'Bank / UPI' ? '#ffffff' : 'transparent',
-                  color: receivedVia === 'Bank / UPI' ? '#0f172a' : '#64748b',
-                  fontWeight: receivedVia === 'Bank / UPI' ? 600 : 500,
-                  fontSize: '13px',
-                  boxShadow: receivedVia === 'Bank / UPI' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease'
-                }}
-              >
-                Bank / UPI
-              </button>
-            </div>
+          {/* SECTION 2: Payment Details */}
+          <div className="rt-section-head" style={{ gridColumn: '1 / -1', borderBottom: '1px solid #edf1f6', paddingBottom: '8px', marginTop: '12px', marginBottom: '4px' }}>
+            <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 650, color: '#172033', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <IconWallet size={18} style={{ color: '#3478f6' }} />
+              <span>Payment Details</span>
+            </h3>
           </div>
 
-          <label style={{ display: 'flex', flexDirection: 'column' }}>
-            <div className="je-label-header" style={{ marginBottom: '6px' }}>
-              <span style={{ fontWeight: 600, fontSize: '13px', color: '#334155' }}>
-                {receivedVia === 'Cash' ? 'Cash Account *' : 'Bank Account *'}
-              </span>
-            </div>
-            <select
-              value={form.paidThrough}
-              onChange={e => setField('paidThrough', e.target.value)}
-            >
-              {receivedVia === 'Cash' ? (
-                cashAccounts.map(a => (
-                  <option key={a.code} value={a.code}>{a.code} · {a.name}</option>
-                ))
-              ) : (
-                bankAccounts.map(a => (
-                  <option key={a.code} value={a.code}>{a.code} · {a.name}</option>
-                ))
-              )}
-            </select>
-          </label>
+          {/* All Payment Inputs in a Single Row */}
+          <div style={{ gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: form.received ? 'repeat(4, minmax(0, 1fr))' : 'repeat(2, minmax(0, 1fr))', gap: '16px', alignItems: 'flex-start', width: '100%' }}>
+            {/* Payment Received? Toggle */}
+            <label style={{ margin: 0 }}>
+              <div className="je-label-header">
+                <span>Have you received the money?</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minHeight: '38px' }}>
+                <button
+                  type="button"
+                  onClick={() => setField('received', !form.received)}
+                  style={{
+                    position: 'relative',
+                    width: '46px',
+                    height: '24px',
+                    borderRadius: '12px',
+                    background: form.received ? '#3478f6' : '#cbd5e1',
+                    border: 'none',
+                    cursor: 'pointer',
+                    transition: 'background 0.2s ease',
+                    padding: '2px',
+                    display: 'inline-block',
+                    flexShrink: 0
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      borderRadius: '50%',
+                      background: '#ffffff',
+                      transform: form.received ? 'translateX(22px)' : 'translateX(0px)',
+                      transition: 'transform 0.2s ease',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
+                    }}
+                  />
+                </button>
+                <span style={{ fontWeight: 600, color: form.received ? '#10b981' : '#f59e0b', fontSize: '13px' }}>
+                  {form.received ? 'Yes, Received' : 'Not Yet'}
+                </span>
+              </div>
+            </label>
 
-        </div>
+            {form.received ? (
+              <>
+                <label style={{ margin: 0 }}>
+                  <div className="je-label-header">
+                    <span>Deposit To (Bank / Cash) *</span>
+                  </div>
+                  <select
+                    value={form.paidThrough}
+                    onChange={e => setField('paidThrough', e.target.value)}
+                  >
+                    <optgroup label="Cash Account (Chart of Accounts)">
+                      {cashAccounts.length > 0 ? (
+                        cashAccounts.map(a => (
+                          <option key={a.code} value={a.code}>{a.code} · {a.name}</option>
+                        ))
+                      ) : (
+                        <option value="1000">1000 · Petty Cash</option>
+                      )}
+                    </optgroup>
+                    <optgroup label="Bank Accounts (Chart of Accounts)">
+                      {bankAccounts.length > 0 ? (
+                        bankAccounts.map(a => (
+                          <option key={a.code} value={a.code}>{a.code} · {a.name}</option>
+                        ))
+                      ) : (
+                        <option value="1010">1010 · Bank Account</option>
+                      )}
+                    </optgroup>
+                  </select>
+                </label>
 
-        {/* 3. Collapsible Section: More Details (Optional) */}
-        <div style={{ marginTop: '24px', borderTop: '1px solid #e2e8f0', paddingTop: '16px' }}>
-          <button
-            type="button"
-            onClick={() => setShowMore(!showMore)}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              padding: 0,
-              fontSize: '14px',
-              fontWeight: 600,
-              color: '#3478f6',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              cursor: 'pointer'
-            }}
-          >
-            <span>More Details (Optional)</span>
-            {showMore ? <IconChevronUp size={16} /> : <IconChevronDown size={16} />}
-          </button>
-
-          {showMore && (
-            <div style={{ marginTop: '16px', display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '16px 20px' }}>
-              {/* Payment Mode (for Bank / UPI) */}
-              {receivedVia === 'Bank / UPI' && (
-                <label style={{ display: 'flex', flexDirection: 'column' }}>
-                  <div className="je-label-header" style={{ marginBottom: '6px' }}>
-                    <span>Payment Mode</span>
+                <label style={{ margin: 0 }}>
+                  <div className="je-label-header">
+                    <span>Payment Method</span>
                   </div>
                   <select
                     value={form.method}
@@ -623,147 +516,192 @@ export default function CreateIncomePage({ onCancel, onSaved }) {
                     ))}
                   </select>
                 </label>
-              )}
 
-              {/* Reference No. / UTR # */}
-              <label style={{ display: 'flex', flexDirection: 'column' }}>
-                <div className="je-label-header" style={{ marginBottom: '6px' }}>
-                  <span>Reference No. / UTR #</span>
+                <label style={{ margin: 0 }}>
+                  <div className="je-label-header">
+                    <span>Transaction Reference / UTR #</span>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="e.g. TXN-984321 / UTR #"
+                    value={form.reference}
+                    onChange={e => setField('reference', e.target.value)}
+                  />
+                </label>
+              </>
+            ) : (
+              <label style={{ margin: 0 }}>
+                <div className="je-label-header">
+                  <span>Expected Payment Date</span>
                 </div>
                 <input
-                  type="text"
-                  placeholder="e.g. UTR-984321 / Ref #"
-                  value={form.referenceNo}
-                  onChange={e => setField('referenceNo', e.target.value)}
+                  type="date"
+                  value={form.expectedDate}
+                  onChange={e => setField('expectedDate', e.target.value)}
                 />
               </label>
+            )}
+          </div>
 
-              {/* Description / Notes */}
-              <label style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column' }}>
-                <div className="je-label-header" style={{ marginBottom: '6px' }}>
-                  <span>Description / Notes</span>
-                </div>
-                <textarea
-                  rows={2}
-                  placeholder="Add details or purpose of this income record..."
-                  value={form.description}
-                  onChange={e => setField('description', e.target.value)}
-                />
-              </label>
+          {/* SECTION 3: Tax Details */}
+          <div className="rt-section-head" style={{ gridColumn: '1 / -1', borderBottom: '1px solid #edf1f6', paddingBottom: '8px', marginTop: '12px', marginBottom: '4px' }}>
+            <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 650, color: '#172033', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <IconPercentage size={18} style={{ color: '#3478f6' }} />
+              <span>Tax Details</span>
+            </h3>
+          </div>
 
-              {/* GST Details */}
-              <div style={{ gridColumn: 'span 2', borderTop: '1px solid #f1f5f9', paddingTop: '12px', marginTop: '4px' }}>
-                <h4 style={{ margin: '0 0 12px', fontSize: '13px', fontWeight: 600, color: '#475569' }}>GST Details</h4>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '12px' }}>
-                  <label style={{ display: 'flex', flexDirection: 'column' }}>
-                    <div className="je-label-header" style={{ marginBottom: '6px' }}>
-                      <span>GST Treatment</span>
-                    </div>
-                    <select
-                      value={form.gstTreatment}
-                      onChange={e => setField('gstTreatment', e.target.value)}
-                    >
-                      {GST_TREATMENTS.map(t => (
-                        <option key={t} value={t}>{t}</option>
-                      ))}
-                    </select>
-                  </label>
-
-                  <label style={{ display: 'flex', flexDirection: 'column' }}>
-                    <div className="je-label-header" style={{ marginBottom: '6px' }}>
-                      <span>GST Rate</span>
-                    </div>
-                    <select
-                      value={form.tax}
-                      onChange={e => setField('tax', e.target.value)}
-                    >
-                      {TAX_OPTIONS.map(tax => (
-                        <option key={tax} value={tax}>{tax}</option>
-                      ))}
-                    </select>
-                  </label>
-
-                  <label style={{ display: 'flex', flexDirection: 'column' }}>
-                    <div className="je-label-header" style={{ marginBottom: '6px' }}>
-                      <span>Tax Mode</span>
-                    </div>
-                    <select
-                      value={form.taxMode}
-                      onChange={e => setField('taxMode', e.target.value)}
-                    >
-                      <option value="exclusive">Tax Exclusive (Amount + Tax)</option>
-                      <option value="inclusive">Tax Inclusive (Amount includes Tax)</option>
-                    </select>
-                  </label>
-                </div>
-              </div>
-
-              {/* Attachments Section */}
-              <div style={{ gridColumn: 'span 2', marginTop: '8px' }}>
-                <div className="je-label-header" style={{ marginBottom: '6px' }}>
-                  <span>Attach Receipts / Documents</span>
-                </div>
-                <div className="je-attachments" style={{ minHeight: '38px', padding: '8px 12px', border: '1px dashed #bcd0f5', borderRadius: '8px', background: '#fafcff' }}>
-                  <span className="je-attach-note">PDF, images, Word or Excel files</span>
-                  <label className="je-attach-button" style={{ minHeight: '32px', margin: '4px 0 0' }}>
-                    <input
-                      type="file"
-                      multiple
-                      accept=".pdf,image/*,.doc,.docx,.xls,.xlsx"
-                      onChange={handleFileUpload}
-                    />
-                    <IconPaperclip size={15} /> Attach files
-                  </label>
-                  {form.files.length > 0 && (
-                    <div className="je-selected-files" style={{ width: '100%', marginTop: '6px' }}>
-                      {form.files.map((f, i) => (
-                        <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 8px', background: '#fff', border: '1px solid #d0d5dd', borderRadius: '6px', fontSize: '12px', margin: '4px 6px 0 0' }}>
-                          <IconPaperclip size={14} style={{ color: '#1f61c9' }} />
-                          <b>{f.name}</b> ({f.size})
-                          <button
-                            type="button"
-                            aria-label={`Remove ${f.name}`}
-                            onClick={() => removeFile(i)}
-                            style={{ border: 0, background: 'transparent', cursor: 'pointer', color: '#667085' }}
-                          >
-                            <IconTrash size={14} />
-                          </button>
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
+          <label>
+            <div className="je-label-header">
+              <span>GST Treatment</span>
             </div>
+            <select
+              value={form.gstTreatment}
+              onChange={e => setField('gstTreatment', e.target.value)}
+            >
+              {GST_TREATMENTS.map(t => (
+                <option key={t} value={t}>{t}</option>
+              ))}
+            </select>
+          </label>
+
+          <label>
+            <div className="je-label-header">
+              <span>GST Rate</span>
+            </div>
+            <select
+              value={form.tax}
+              onChange={e => setField('tax', e.target.value)}
+            >
+              {TAX_OPTIONS.map(tax => (
+                <option key={tax} value={tax}>{tax}</option>
+              ))}
+            </select>
+          </label>
+
+          <label>
+            <div className="je-label-header">
+              <span>Tax Mode</span>
+            </div>
+            <select
+              value={form.taxMode}
+              onChange={e => setField('taxMode', e.target.value)}
+            >
+              <option value="exclusive">Tax Exclusive (Amount + Tax)</option>
+              <option value="inclusive">Tax Inclusive (Amount includes Tax)</option>
+            </select>
+          </label>
+
+          <label>
+            <div className="je-label-header">
+              <span>Ref / Agreement Number</span>
+            </div>
+            <input
+              type="text"
+              placeholder="e.g. AGR-2026-09"
+              value={form.referenceNo}
+              onChange={e => setField('referenceNo', e.target.value)}
+            />
+          </label>
+
+          {/* SECTION 4: Additional Details */}
+          <div className="rt-section-head" style={{ gridColumn: '1 / -1', borderBottom: '1px solid #edf1f6', paddingBottom: '8px', marginTop: '12px', marginBottom: '4px' }}>
+            <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 650, color: '#172033', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <IconFileText size={18} style={{ color: '#3478f6' }} />
+              <span>Additional Details</span>
+            </h3>
+          </div>
+
+          {/* Linked Sales Invoice */}
+          {salesInvoices.length > 0 && (
+            <label style={{ gridColumn: '1 / -1' }}>
+              <div className="je-label-header">
+                <span>Link to Existing Sales Invoice (Optional)</span>
+              </div>
+              <select
+                value={form.salesInvoiceId}
+                onChange={e => setField('salesInvoiceId', e.target.value)}
+              >
+                <option value="">-- Direct Income Entry (Not linked to invoice) --</option>
+                {salesInvoices.map(inv => (
+                  <option key={inv.id} value={inv.id}>
+                    {inv.number} - {inv.customerName} (₹{(inv.totals?.total / 100 || 0).toLocaleString('en-IN')})
+                  </option>
+                ))}
+              </select>
+            </label>
           )}
+
+          {/* Description / Notes (Moved to Additional Details) */}
+          <label style={{ gridColumn: 'span 2' }}>
+            <div className="je-label-header">
+              <span>Description / Notes</span>
+            </div>
+            <textarea
+              rows={2}
+              placeholder="Add details or purpose of this income record..."
+              value={form.description}
+              onChange={e => setField('description', e.target.value)}
+            />
+          </label>
+
+          {/* Attachments Section */}
+          <div style={{ gridColumn: 'span 2' }}>
+            <div className="je-label-header">
+              <span>Attach Receipts / Documents</span>
+            </div>
+            <div className="je-attachments" style={{ minHeight: '38px', padding: '8px 12px', border: '1px dashed #bcd0f5', borderRadius: '8px', background: '#fafcff' }}>
+              <span className="je-attach-note">PDF, images, Word or Excel files</span>
+              <label className="je-attach-button" style={{ minHeight: '32px', margin: '4px 0 0' }}>
+                <input
+                  type="file"
+                  multiple
+                  accept=".pdf,image/*,.doc,.docx,.xls,.xlsx"
+                  onChange={handleFileUpload}
+                />
+                <IconPaperclip size={15} /> Attach files
+              </label>
+              {form.files.length > 0 && (
+                <div className="je-selected-files" style={{ width: '100%', marginTop: '6px' }}>
+                  {form.files.map((f, i) => (
+                    <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 8px', background: '#fff', border: '1px solid #d0d5dd', borderRadius: '6px', fontSize: '12px', margin: '4px 6px 0 0' }}>
+                      <IconPaperclip size={14} style={{ color: '#1f61c9' }} />
+                      <b>{f.name}</b> ({f.size})
+                      <button
+                        type="button"
+                        aria-label={`Remove ${f.name}`}
+                        onClick={() => removeFile(i)}
+                        style={{ border: 0, background: 'transparent', cursor: 'pointer', color: '#667085' }}
+                      >
+                        <IconTrash size={14} />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
         </div>
       </div>
 
-      {/* 4. Footer Buttons */}
-      <footer style={{
-        display: 'flex',
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        gap: '12px',
-        padding: '16px 24px',
-        background: '#ffffff',
-        borderTop: '1px solid #e2e8f0',
-        marginTop: '24px'
-      }}>
-        <button type="button" onClick={onCancel} style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#fff', color: '#475569', fontWeight: 500, fontSize: '14px', cursor: 'pointer' }}>
+      {/* 7. Sticky Footer Bar */}
+      <footer>
+        <button type="button" onClick={onCancel}>
           Cancel
         </button>
-        <button type="button" onClick={(e) => handleSubmit(e, 'Draft')} style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#fff', color: '#0f172a', fontWeight: 600, fontSize: '14px', cursor: 'pointer' }}>
+        <button type="button" onClick={(e) => handleSubmit(e, 'Draft')}>
           Save Draft
         </button>
         <button
           type="button"
+          className="primary"
           onClick={(e) => handleSubmit(e, 'Posted')}
-          style={{ padding: '8px 20px', borderRadius: '8px', border: 'none', background: '#3478f6', color: '#ffffff', fontWeight: 600, fontSize: '14px', cursor: 'pointer', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}
         >
-          Save Income
+          Save & Record Income
         </button>
       </footer>
     </section>
   );
 }
+
