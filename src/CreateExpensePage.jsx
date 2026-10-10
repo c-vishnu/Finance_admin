@@ -586,7 +586,7 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
 
       {/* 2. Main Form Container */}
       <div className="je-form-card" style={{ padding: '24px', background: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px', margin: '16px 24px 0' }}>
-        <div className="je-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '18px 20px' }}>
+        <div className="je-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '18px 20px' }}>
             {/* SECTION 1: Expense Details */}
             <div className="rt-section-head" style={{ gridColumn: '1 / -1', borderBottom: '1px solid #edf1f6', paddingBottom: '8px', marginBottom: '4px' }}>
               <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 650, color: '#172033', display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -773,7 +773,7 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
             </div>
 
             {/* Notes */}
-            <label style={{ gridColumn: 'span 2' }}>
+            <label style={{ gridColumn: '1 / -1' }}>
               <div className="je-label-header">
                 <span>Notes</span>
               </div>
@@ -786,7 +786,7 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
             </label>
 
             {/* 12. Attachments */}
-            <div style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column' }}>
               <div className="je-label-header" style={{ marginBottom: '6px' }}>
                 <span>Attachments</span>
               </div>
