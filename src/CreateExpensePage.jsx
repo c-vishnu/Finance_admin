@@ -660,19 +660,6 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
               />
             </div>
 
-            {/* 5. Invoice / Bill / Reference No. */}
-            <label style={{ gridColumn: 'span 2' }}>
-              <div className="je-label-header">
-                <span>Invoice / Bill / Reference No.</span>
-              </div>
-              <input
-                type="text"
-                placeholder="e.g. INV-2026-889"
-                value={form.invoiceNo}
-                onChange={e => setField('invoiceNo', e.target.value)}
-              />
-            </label>
-
             {/* SECTION 2: Payment & Tax Details */}
             <div className="rt-section-head" style={{ gridColumn: '1 / -1', borderBottom: '1px solid #edf1f6', paddingBottom: '8px', marginTop: '12px', marginBottom: '4px' }}>
               <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 650, color: '#172033', display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -798,6 +785,19 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
                 placeholder="e.g. 32ABCDE1234F1Z5"
                 value={form.vendorGstin}
                 onChange={e => setField('vendorGstin', e.target.value)}
+              />
+            </label>
+
+            {/* Invoice / Bill / Reference No. */}
+            <label>
+              <div className="je-label-header">
+                <span>Invoice / Bill / Reference No.</span>
+              </div>
+              <input
+                type="text"
+                placeholder="e.g. INV-2026-889"
+                value={form.invoiceNo}
+                onChange={e => setField('invoiceNo', e.target.value)}
               />
             </label>
 
