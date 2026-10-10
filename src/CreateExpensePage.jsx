@@ -809,35 +809,38 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
               </h3>
             </div>
 
-            {/* Notes */}
-            <label style={{ gridColumn: '1 / -1' }}>
-              <div className="je-label-header">
-                <span>Notes</span>
-              </div>
-              <input
-                type="text"
-                placeholder="Add notes or description regarding this expense..."
-                value={form.notes}
-                onChange={e => setField('notes', e.target.value)}
-              />
-            </label>
+            {/* Notes & Attachments in a single row */}
+            <div style={{ gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '18px 20px', alignItems: 'start' }}>
+              {/* Notes */}
+              <label>
+                <div className="je-label-header">
+                  <span>Notes</span>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Add notes or description regarding this expense..."
+                  value={form.notes}
+                  onChange={e => setField('notes', e.target.value)}
+                />
+              </label>
 
-            {/* 12. Attachments */}
-            <div style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column' }}>
-              <div className="je-label-header" style={{ marginBottom: '6px' }}>
-                <span>Attachments</span>
-              </div>
-              <div className="je-attachments" style={{ minHeight: '38px', padding: '4px 10px', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-                <span className="je-attach-note">PDF, images, Word or Excel files</span>
-                <label className="je-attach-button" style={{ minHeight: '32px', margin: 0 }}>
-                  <input
-                    type="file"
-                    multiple
-                    accept=".pdf,image/*,.doc,.docx,.xls,.xlsx"
-                    onChange={handleFileUpload}
-                  />
-                  <IconPaperclip size={15} /> Attach files
-                </label>
+              {/* Attachments */}
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <div className="je-label-header" style={{ marginBottom: '6px' }}>
+                  <span>Attachments</span>
+                </div>
+                <div className="je-attachments" style={{ minHeight: '38px', padding: '4px 10px', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                  <span className="je-attach-note">PDF, images, Word or Excel files</span>
+                  <label className="je-attach-button" style={{ minHeight: '32px', margin: 0 }}>
+                    <input
+                      type="file"
+                      multiple
+                      accept=".pdf,image/*,.doc,.docx,.xls,.xlsx"
+                      onChange={handleFileUpload}
+                    />
+                    <IconPaperclip size={15} /> Attach files
+                  </label>
+                </div>
                 {form.files.length > 0 && (
                   <div className="je-selected-files" style={{ width: '100%', marginTop: '4px' }}>
                     {form.files.map((f, i) => (
@@ -857,7 +860,7 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
                 )}
               </div>
             </div>
-          </div>
+        </div>
       </div>
 
       {/* Sticky Footer Bar */}
