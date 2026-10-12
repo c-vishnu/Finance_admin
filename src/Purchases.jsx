@@ -21,11 +21,7 @@ const fmtDate=value=>value?new Date(value+'T00:00:00').toLocaleDateString('en-IN
 const BILL_HANDOFF='wayvida-open-bill';
 const handoffBill=()=>{try{const id=sessionStorage.getItem(BILL_HANDOFF);if(!id)return null;sessionStorage.removeItem(BILL_HANDOFF);return read(PURCHASE_BILL_KEY).find(row=>row.id===id)||null}catch{return null}};
 
-import {getScopeOrganisations} from './organisation-context.js';
-import {demoOrganizations} from './demo-organisations.js';
-
-const ORG_KEY='wayvida-organisations-v1';
-const defaultOrganisations=demoOrganizations;
+import {getAccessibleOrganizations} from './organisation-context.js';
 
 export default function Purchases({page='Purchase Orders',onNavigate=()=>{}}){
  const isBill=page==='Purchase Bills';
@@ -41,10 +37,10 @@ export default function Purchases({page='Purchase Orders',onNavigate=()=>{}}){
  const [to,setTo]=useState('');
  const [sort,setSort]=useState('newest');
  const [current,setCurrent]=useState(1);
+ const [organisations,setOrganisations]=useState(getAccessibleOrganizations);
 
  const vendors=readVendors().filter(v=>v?.status==='Active');
  const items=read('finance-erp-items',itemSeeds).filter(item=>item.purchase!==false);
- const organisations=read(ORG_KEY,defaultOrganisations);
  const rows=isBill?bills:orders;
 
  const config=(()=>{try{return JSON.parse(localStorage.getItem(KEY)||'null')?.config||initial().config}catch{return initial().config}})();
@@ -63,6 +59,14 @@ export default function Purchases({page='Purchase Orders',onNavigate=()=>{}}){
     setForm(JSON.parse(draft));
    }
   }catch{}
+ },[]);
+
+ useEffect(()=>{
+  const refreshScope=()=>setOrganisations(getAccessibleOrganizations());
+  window.addEventListener('wayvida-working-context-change',refreshScope);
+  window.addEventListener('wayvida-organization-change',refreshScope);
+  window.addEventListener('storage',refreshScope);
+  return()=>{window.removeEventListener('wayvida-working-context-change',refreshScope);window.removeEventListener('wayvida-organization-change',refreshScope);window.removeEventListener('storage',refreshScope)};
  },[]);
 
  const PURCHASE_TONES=(value,isOverdue=false)=>{
@@ -93,7 +97,7 @@ export default function Purchases({page='Purchase Orders',onNavigate=()=>{}}){
  const accounting=(()=>{try{return JSON.parse(localStorage.getItem(KEY)||'null')||initial()}catch{return initial()}})();
  const outstandingPayable=form?.vendorId?vendorOutstanding(accounting,form.vendorId):0;
 
- const totals=(()=>{try{return form?calculatePurchase(form.lines,{placeOfSupply:form.place||'Kerala'}):null}catch{return null}})();
+ const totals=(()=>{try{return form?calculatePurchase(form.lines,{placeOfSupply:form.place||'Kerala',orderDiscount:form.orderDiscount,orderDiscountType:form.orderDiscountType,roundOffEnabled:form.roundOffEnabled??!!config?.roundRupee}):null}catch{return null}})();
  const totalQty=(form?.lines||[]).reduce((sum,l)=>sum+Number(l.qty||0),0);
 
  const nextPoNumber=(()=>{
@@ -125,14 +129,14 @@ export default function Purchases({page='Purchase Orders',onNavigate=()=>{}}){
  function open(row=null){
   setView(null);
   setError('');
-  if(row){setForm(structuredClone(row));return}
+  if(row){setForm({...structuredClone(row),orderDiscount:row.orderDiscount||'0',orderDiscountType:row.orderDiscountType||'%',roundOffEnabled:row.roundOffEnabled});return}
   const date=today();
-  const defaultOrg=organisations[0]||defaultOrganisations[0];
-  const defaultBranch=defaultOrg.branches?.[0]||{id:'br-1',name:'Kochi Branch'};
+  const defaultOrg=organisations.length===1?organisations[0]:null;
+  const defaultBranch=defaultOrg?.branches?.length===1?defaultOrg.branches[0]:null;
   setForm(isBill?{
-   number:'',vendorId:'',vendorName:'',vendorInvoice:'',date,dueDate:date,referenceOrder:'',reference:'',status:'Draft',paymentTerms:'30 Days',terms:'30',vendorAddress:'',vendorContact:'',vendorGstin:'',organizationId:defaultOrg.id,organizationName:defaultOrg.name,branchId:defaultBranch.id,branchName:defaultBranch.name,place:'Kerala',lines:[blankDocumentLine()],purchaseAccount:'5000',inputTaxAccount:'1400',payableAccount:'2000',files:[],notes:''
+   number:'',vendorId:'',vendorName:'',vendorInvoice:'',date,dueDate:date,referenceOrder:'',reference:'',status:'Draft',paymentTerms:'30 Days',terms:'30',vendorAddress:'',vendorContact:'',vendorGstin:'',organizationId:defaultOrg?.id||'',organizationName:defaultOrg?.name||'',branchId:defaultBranch?.id||'',branchName:defaultBranch?.name||'',place:config?.state||'Kerala',lines:[blankDocumentLine()],purchaseAccount:'5000',inputTaxAccount:'1400',payableAccount:'2000',files:[],notes:'',orderDiscount:'0',orderDiscountType:'%',roundOffEnabled:!!config?.roundRupee
   }:{
-   number:nextPoNumber,date,vendorId:'',vendorName:'',expectedDate:'',reference:'',status:'Draft',paymentTerms:'Net 30 days',terms:'30',vendorAddress:'',vendorContact:'',vendorGstin:'',organizationId:defaultOrg.id,organizationName:defaultOrg.name,branchId:defaultBranch.id,branchName:defaultBranch.name,place:'Kerala',lines:[blankDocumentLine()],deliveryAddress:'Kochi Branch',shippingMethod:'',deliveryTerms:'',warranty:'',notes:'',termsAndConditions:'',files:[]
+   number:nextPoNumber,date,vendorId:'',vendorName:'',expectedDate:'',reference:'',status:'Draft',paymentTerms:'Net 30 days',terms:'30',vendorAddress:'',vendorContact:'',vendorGstin:'',organizationId:defaultOrg?.id||'',organizationName:defaultOrg?.name||'',branchId:defaultBranch?.id||'',branchName:defaultBranch?.name||'',place:config?.state||'Kerala',lines:[blankDocumentLine()],deliveryAddress:'Kochi Branch',shippingMethod:'',deliveryTerms:'',warranty:'',notes:'',termsAndConditions:'',files:[],orderDiscount:'0',orderDiscountType:'%',roundOffEnabled:!!config?.roundRupee
   });
  }
 

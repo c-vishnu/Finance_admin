@@ -4,7 +4,6 @@ import {ItemSearch,TaxSelection} from './InvoiceLineControls.jsx';
 import {calculatePurchase} from './purchase-service.js';
 import {customerStates} from './Customers.jsx';
 import {COUNTRIES,PAYMENT_TERM_DAYS,blankAddress,composeAddress,gstStateCode,parseAddress,placeOfSupplySuggestion,placeOfSupplyStatus,PLACE_OF_SUPPLY_SOURCE} from './customer-tax.js';
-import EmptyState from './EmptyState.jsx';
 import {itemScopeError} from './sales-order-service.js';
 import {formatRupees} from './number-format.js';
 import './sales-document-tax.css';
@@ -98,10 +97,13 @@ export default function PurchaseDocumentFields({form,setForm,vendors,items,confi
  const selectedOrganisation=organisations.find(entry=>entry.id===form.organizationId)||null;
  function changeScope(organisationId,branchId){
   const organisation=organisations.find(entry=>entry.id===organisationId)||null;
-  const branch=(organisation?.branches||[]).find(item=>String(item.id)===String(branchId))||null;
-  setForm(current=>({...current,organizationId:organisationId,organizationName:organisation?.name||'',branchId:branchId||'',branchName:branch?.name||''}));
+  const choices=organisation?.branches||[];
+  const branch=choices.find(item=>String(item.id)===String(branchId))||(choices.length===1?choices[0]:null);
+  setForm(current=>({...current,organizationId:organisationId,organizationName:organisation?.name||'',branchId:branch?.id||'',branchName:branch?.name||''}));
  }
  const selectedBranch=(selectedOrganisation?.branches||[]).find(item=>String(item.id)===String(form.branchId))||null;
+ const showOrganisation=organisations.length>1;
+ const showBranch=(selectedOrganisation?.branches||[]).length>1;
  const scope={organisationRefs:[selectedOrganisation?.id,selectedOrganisation?.code],branchRefs:[selectedBranch?.id,selectedBranch?.name],organisationName:selectedOrganisation?.name||form.organizationName||'',branchName:selectedBranch?.name||form.branchName||''};
  const lineScopeError=line=>{const item=(items||[]).find(entry=>entry.id===line.itemId||entry.id===line.item);return item?itemScopeError(item,scope):''};
 
@@ -207,7 +209,7 @@ export default function PurchaseDocumentFields({form,setForm,vendors,items,confi
 
  let preview,previewError;
  try{
-  preview=calculatePurchase(form.lines,{companyState:config?.state||'Kerala',placeOfSupply:form.place||'Kerala'});
+  preview=calculatePurchase(form.lines,{companyState:config?.state||'Kerala',placeOfSupply:form.place||'Kerala',orderDiscount:form.orderDiscount,orderDiscountType:form.orderDiscountType,roundOffEnabled:form.roundOffEnabled??!!config?.roundRupee});
  }catch(e){
   previewError=e.message;
  }
@@ -215,7 +217,8 @@ export default function PurchaseDocumentFields({form,setForm,vendors,items,confi
  const totals=t=><dl className="ivTotals">
   {[
    ['Subtotal',t.subtotal],
-   ['Discount',t.discount],
+   ['Item discount',t.itemDiscount],
+   ['Order discount',t.orderDiscount],
    ['Taxable amount',t.taxable],
    ...(t.cgst+t.sgst?[['CGST',t.cgst],['SGST',t.sgst]]:[['IGST',t.igst]]),
    ...(t.cess?[['Cess',t.cess]]:[]),
@@ -227,7 +230,6 @@ export default function PurchaseDocumentFields({form,setForm,vendors,items,confi
 
  return <>
   <div className="ivCard soFormSection">
-   <div className="soSectionHead"><h3>Vendor *</h3></div>
    <div className="soCustomerRow">
     <div className="soField soFieldSearch">
      <VendorSearch vendors={vendors} value={form.vendorId||form.vendor} onSelect={id=>chooseVendor(id)} onCreateVendor={onCreateVendor}/>
@@ -237,12 +239,8 @@ export default function PurchaseDocumentFields({form,setForm,vendors,items,confi
     </button>
    </div>
    <div className="soCustomerRef">
-    {selectedVendor?<><div className="soCustomerProfile"><span className="soCustomerAvatar" aria-hidden="true">{vendorInitials(selectedVendor?.displayName||selectedVendor?.name)}</span><div className="soCustomerLines"><span className="soCustomerHead"><strong className="soCustomerName">{selectedVendor?.displayName||selectedVendor?.name||'Vendor'}</strong><span className="soCustomerType">{selectedVendor?.type||'Supplier'}</span></span><span className="soCustomerAddress"><b>Billing Address:</b> {addressLine('billing')||form.vendorAddress||'Not provided'}</span></div><div className="soCustomerMeta" title="Actual open vendor payables"><span>Outstanding payable</span><strong>{money(outstandingPayable)}</strong></div></div><div className="soCustomerActions"><details className="soFactEdit"><summary aria-label="Edit address" title="Edit address"><IconPencil size={15}/></summary><div className="soFactEditMenu"><button type="button" onClick={()=>{closeFactEditMenus();setAddressEdit('billing')}}>Edit billing address</button><button type="button" onClick={()=>{closeFactEditMenus();setAddressEdit('shipping')}}>Edit shipping address</button><button type="button" onClick={()=>{closeFactEditMenus();onEditVendor&&form.vendorId&&onEditVendor(form.vendorId)}}>Edit vendor details</button></div></details><button type="button" className="soCustomerMoreToggle" aria-label="View vendor details" title="View vendor details" aria-expanded={vendorMore} onClick={()=>setVendorMore(!vendorMore)}><IconEye size={17}/></button></div>{vendorMore&&<div className="soCustomerMoreBody"><p className="soFactCaption">Read from the vendor record. The tax identity and contact come from the vendor master; the address can be changed on this {docWord} only.</p><dl className="soFactList"><div className="soFactItem"><dt>GST treatment</dt><dd>{selectedVendor?.gstTreatment||'Not recorded'}</dd></div><div className="soFactItem"><dt>GSTIN</dt><dd>{selectedVendor?.gstin||'Not registered'}{documentGstin&&documentGstin!==selectedVendor?.gstin&&<small className="soDocumentIdentityNote">This document keeps {documentGstin}.</small>}</dd></div><div className="soFactItem"><dt>PAN</dt><dd>{selectedVendor?.pan||'Not recorded'}</dd></div><div className="soFactItem"><dt>Contact person</dt><dd>{selectedVendor?.contactName||selectedVendor?.phone||'Not recorded'}</dd></div><div className="soFactItem"><dt>Phone</dt><dd>{selectedVendor?.phone||'Not recorded'}</dd></div><div className="soFactItem"><dt>Credit limit</dt><dd>{selectedVendor?.creditLimit?money(Number(selectedVendor.creditLimit)):'Not set'}</dd></div><div className="soFactItem soFactWide"><dt>Billing address</dt><dd>{billingText||form.vendorAddress||'Not provided'}</dd></div>{!sameAddress&&<div className="soFactItem soFactWide"><dt>Shipping address</dt><dd>{shippingText||'Not provided'}</dd></div>}</dl></div>}</>:<EmptyState variant="customer" className="soCustomerEmpty" title="No vendor selected" description={`Search for or select a vendor above to load their tax identity, contact and addresses onto this ${docWord}.`}/>}
+    {selectedVendor?<><div className="soCustomerProfile"><span className="soCustomerAvatar" aria-hidden="true">{vendorInitials(selectedVendor?.displayName||selectedVendor?.name)}</span><div className="soCustomerLines"><span className="soCustomerHead"><strong className="soCustomerName">{selectedVendor?.displayName||selectedVendor?.name||'Vendor'}</strong><span className="soCustomerType">{selectedVendor?.type||'Supplier'}</span></span><span className="soCustomerAddress"><b>Billing Address:</b> {addressLine('billing')||form.vendorAddress||'Not provided'}</span></div><div className="soCustomerMeta" title="Actual open vendor payables"><span>Outstanding payable</span><strong>{money(outstandingPayable)}</strong></div></div><div className="soCustomerActions"><details className="soFactEdit"><summary aria-label="Edit address" title="Edit address"><IconPencil size={15}/></summary><div className="soFactEditMenu"><button type="button" onClick={()=>{closeFactEditMenus();setAddressEdit('billing')}}>Edit billing address</button><button type="button" onClick={()=>{closeFactEditMenus();setAddressEdit('shipping')}}>Edit shipping address</button><button type="button" onClick={()=>{closeFactEditMenus();onEditVendor&&form.vendorId&&onEditVendor(form.vendorId)}}>Edit vendor details</button></div></details><button type="button" className="soCustomerMoreToggle" aria-label="View vendor details" title="View vendor details" aria-expanded={vendorMore} onClick={()=>setVendorMore(!vendorMore)}><IconEye size={17}/></button></div>{vendorMore&&<div className="soCustomerMoreBody"><p className="soFactCaption">Read from the vendor record. The tax identity and contact come from the vendor master; the address can be changed on this {docWord} only.</p><dl className="soFactList"><div className="soFactItem"><dt>GST treatment</dt><dd>{selectedVendor?.gstTreatment||'Not recorded'}</dd></div><div className="soFactItem"><dt>GSTIN</dt><dd>{selectedVendor?.gstin||'Not registered'}{documentGstin&&documentGstin!==selectedVendor?.gstin&&<small className="soDocumentIdentityNote">This document keeps {documentGstin}.</small>}</dd></div><div className="soFactItem"><dt>PAN</dt><dd>{selectedVendor?.pan||'Not recorded'}</dd></div><div className="soFactItem"><dt>Contact person</dt><dd>{selectedVendor?.contactName||selectedVendor?.phone||'Not recorded'}</dd></div><div className="soFactItem"><dt>Phone</dt><dd>{selectedVendor?.phone||'Not recorded'}</dd></div><div className="soFactItem"><dt>Credit limit</dt><dd>{selectedVendor?.creditLimit?money(Number(selectedVendor.creditLimit)):'Not set'}</dd></div><div className="soFactItem soFactWide"><dt>Billing address</dt><dd>{billingText||form.vendorAddress||'Not provided'}</dd></div>{!sameAddress&&<div className="soFactItem soFactWide"><dt>Shipping address</dt><dd>{shippingText||'Not provided'}</dd></div>}</dl></div>}</>:null}
    </div>
-  </div>
-
-  <div className="ivCard soFormSection">
-   <div className="soSectionHead"><h3>{kind==='order'?'Order details':'Bill details'}</h3></div>
    <div className="ivFields soFieldRow soFieldRow4">
     <Field label={docTitle+' ID'} icon={IconHash}>
      <input placeholder={autoNumber||'PO-2026-00001'} value={form.number||''} onChange={e=>setForm({...form,number:e.target.value})}/>
@@ -260,21 +258,29 @@ export default function PurchaseDocumentFields({form,setForm,vendors,items,confi
     </Field>
    </div>
    <div className="ivFields soFieldRow soFieldRow4">
-    <Field label="Organisation *" icon={IconBuildingBank}>
+    {showOrganisation&&<Field label="Organisation *" icon={IconBuildingBank}>
      <select value={form.organizationId||''} onChange={event=>changeScope(event.target.value,'')} required>
       <option value=''>Select organisation</option>
       {organisations.map(entry=><option key={entry.id} value={entry.id}>{entry.name}</option>)}
      </select>
-    </Field>
-    <Field label="Branch *" icon={IconSitemap}>
+    </Field>}
+    {showBranch&&<Field label="Branch *" icon={IconSitemap}>
      <select value={form.branchId||''} onChange={event=>changeScope(form.organizationId,event.target.value)} required disabled={!selectedOrganisation}>
       <option value=''>{selectedOrganisation?'Select branch':'Select an organisation first'}</option>
       {(selectedOrganisation?.branches||[]).map(entry=><option key={entry.id} value={entry.id}>{entry.name}</option>)}
      </select>
+    </Field>}
+    <Field label="Place of supply" icon={IconMapPin} hint={<small className="soDueHint">Set automatically from the vendor’s billing location for GST.</small>}>
+     <input readOnly value={form.place||selectedVendor?.billing?.state||selectedVendor?.state||config?.state||''} aria-label="Place of supply" />
     </Field>
-    <PlaceOfSupplyField form={form} setForm={setForm} vendor={selectedVendor}/>
     <Field label="Expected delivery date" icon={IconCalendar}>
      <input type="date" value={form.expectedDate||''} onChange={e=>setForm({...form,expectedDate:e.target.value})}/>
+    </Field>
+    <Field label="Delivery address" icon={IconMapPin}>
+     <input value={form.deliveryAddress||''} onChange={e=>setForm({...form,deliveryAddress:e.target.value})} placeholder="Delivery location / branch address"/>
+    </Field>
+    <Field label="Shipping method" icon={IconFileText}>
+     <input value={form.shippingMethod||''} onChange={e=>setForm({...form,shippingMethod:e.target.value})} placeholder="Carrier, freight, or shipping terms"/>
     </Field>
    </div>
   </div>
@@ -360,15 +366,6 @@ export default function PurchaseDocumentFields({form,setForm,vendors,items,confi
       <textarea value={form.termsAndConditions||form.deliveryTerms||''} onChange={e=>setForm({...form,termsAndConditions:e.target.value,deliveryTerms:e.target.value})} placeholder="Standard terms and conditions for this purchase order." aria-label="Terms & conditions"/>
      </label>
 
-     <div className="ivFields soFieldRow soFieldRow2" style={{marginTop:'14px'}}>
-      <Field label="Delivery address" icon={IconMapPin}>
-       <input value={form.deliveryAddress||''} onChange={e=>setForm({...form,deliveryAddress:e.target.value})} placeholder="Delivery location / branch address"/>
-      </Field>
-      <Field label="Shipping method" icon={IconFileText}>
-       <input value={form.shippingMethod||''} onChange={e=>setForm({...form,shippingMethod:e.target.value})} placeholder="Carrier, freight, or shipping terms"/>
-      </Field>
-     </div>
-
      <section className="soMoreGroup" style={{marginTop:'18px'}}>
       <div className="soUploadField">
        <h4 className="soMoreGroupTitle soUploadLabel">Documents</h4>
@@ -392,6 +389,19 @@ export default function PurchaseDocumentFields({form,setForm,vendors,items,confi
       <h3>Order summary</h3>
       <span className="soCurrencyChip" title="Every amount on this document is in Indian rupees">INR ₹</span>
      </div>
+    <div className="soOrderAdjustments">
+     <label>
+      {kind==='order'?'Order discount (₹)':'Bill discount (₹)'}
+      <span className="soOrderDiscountControl">
+       <input type="number" min="0" step="0.01" inputMode="decimal" value={form.orderDiscount??'0'} onChange={event=>setForm({...form,orderDiscount:event.target.value})}/>
+       <select aria-label="Order discount type" value={form.orderDiscountType||'%'} onChange={event=>setForm({...form,orderDiscountType:event.target.value})}><option value="%">%</option><option value="fixed">₹</option></select>
+      </span>
+     </label>
+     <label>
+      <span>Round off</span>
+      <span className="soRoundOffToggle"><input type="checkbox" checked={form.roundOffEnabled??!!config?.roundRupee} onChange={event=>setForm({...form,roundOffEnabled:event.target.checked})}/><span>Round to nearest rupee</span></span>
+     </label>
+    </div>
      <div className="soSummaryMoney">
       {preview?totals(preview):<p role="status">{previewError||'Select an item and place of supply to calculate totals.'}</p>}
      </div>

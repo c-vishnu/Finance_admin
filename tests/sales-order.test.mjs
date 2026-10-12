@@ -1,10 +1,24 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {initial,seedAccounts,command,today} from '../src/invoice-engine.js';
+import {initial,seedAccounts,command,today,calculate} from '../src/invoice-engine.js';
 import {ordersCsv,saveSalesOrder,convertSalesOrder} from '../src/sales-order-service.js';
 const data={number:'SO-00001',date:'2026-09-04',dueDate:'2026-10-04',terms:'30',customerId:'abc',customerName:'ABC Technologies',billing:'Kochi billing',shipping:'Kochi shipping',place:'Kerala',reference:'REF-1',lines:[{item:'website',description:'Website Development',unit:'hour',qty:'1',rate:'100000',discount:'10',discountType:'%',taxes:{cgst:9,sgst:9,igst:0,cess:1},income:'4100'}]};
 test('sales order stays non-posting; invoice carries exact fields and posts only on request',()=>{const state=seedAccounts(initial(),{Assets:[['1100','Receivable']],Income:[['4100','Service Income']],Liabilities:[['2100','GST Payable']]});const {order}=saveSalesOrder([],data,state.config,'Confirmed');assert.equal(state.invoices.length,0);assert.equal(state.journals.length,0);const output=convertSalesOrder(state,order);const invoice=output.result;assert.equal(invoice.status,'Draft');assert.equal(invoice.posted,false);assert.equal(output.state.journals.length,0);for(const k of ['billing','shipping','place','terms','reference','customerId'])assert.equal(invoice[k],order[k]);assert.equal(invoice.date,today(),'the invoice is dated when it is raised, not when the order was taken');assert.ok(invoice.dueDate>=invoice.date,'and its due date follows from its own date');assert.deepEqual(invoice.lines,order.lines);assert.equal(invoice.totals.total,order.totals.total);assert.equal(invoice.totals.total,10710000);assert.equal(convertSalesOrder(output.state,order).state.invoices.length,1);const sourced=convertSalesOrder(state,saveSalesOrder([],{...data,placeSource:'shipping_address',placeCode:'32'},state.config,'Confirmed').order).result;assert.equal(sourced.place,'Kerala','the place of supply itself is carried unchanged');assert.equal(sourced.placeSource,'shipping_address','the invoice inherits the place of supply AND where the order got it from');assert.equal(sourced.placeCode,'32','with the GST state code alongside it')});
 test('cancelled orders and invalid dates are blocked; duplicate numbers rejected',()=>{const state=initial();const saved=saveSalesOrder([],data,state.config,'Draft');assert.throws(()=>convertSalesOrder(state,{...saved.order,status:'Cancelled'}),/Cancelled/);assert.throws(()=>saveSalesOrder(saved.orders,data,state.config,'Draft'),/unique/);assert.throws(()=>saveSalesOrder([],{...data,dueDate:'2026-01-01'},state.config,'Draft'),/date/);assert.throws(()=>convertSalesOrder(state,{...saved.order,status:'Confirmed',schemaVersion:1}),/legacy/);assert.throws(()=>convertSalesOrder(state,{...saved.order,status:'Draft'}),/Confirm the order/,'a draft order cannot be invoiced')});
+
+test('order discounts are allocated before GST and automatic round off is a separate adjustment',()=>{
+ const document={...data,orderDiscount:'10',orderDiscountType:'%',roundOffEnabled:true,lines:[
+  {...data.lines[0],rate:'100',discount:'0',taxes:{cgst:9,sgst:9,igst:0,cess:0}},
+  {...data.lines[0],item:'support',description:'Support',rate:'200',discount:'0',taxes:{cgst:2.5,sgst:2.5,igst:0,cess:0}}
+ ]};
+ const totals=calculate(document,initial().config);
+ assert.equal(totals.orderDiscount,3000);
+ assert.equal(totals.lines.reduce((sum,line)=>sum+line.orderDiscount,0),3000);
+ assert.equal(totals.taxable,27000);
+ assert.equal(totals.total%100,0);
+ assert.equal(totals.total,totals.taxable+totals.cgst+totals.sgst+totals.igst+totals.cess+totals.roundOff);
+ assert.throws(()=>calculate({...document,orderDiscount:'301',orderDiscountType:'fixed'},initial().config),/cannot exceed/);
+});
 
 test('the invoice inherits the order scope and the customer receivable ledger',()=>{
  const state=seedAccounts(initial(),{Assets:[['1100','Receivable']],Income:[['4100','Service Income']],Liabilities:[['2100','GST Payable']]});

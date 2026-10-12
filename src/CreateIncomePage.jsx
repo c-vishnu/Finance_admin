@@ -9,7 +9,12 @@ import {
   IconPercentage,
   IconFileText,
   IconSearch,
-  IconChevronDown
+  IconChevronDown,
+  IconCalendar,
+  IconUser,
+  IconBuildingBank,
+  IconCashBanknote,
+  IconPaperclip as IconAttachment
 } from '@tabler/icons-react';
 import { readAccounts } from './account-store.js';
 import { readOperations, saveOperations, createIncome, accountingState, DEFAULT_INCOME_CATEGORIES } from './operations-store.js';
@@ -328,6 +333,72 @@ export default function CreateIncomePage({ onCancel, onSaved }) {
       setError(err.message);
     }
   };
+
+  return (
+    <section className="rt-page itemCreatePage je-create inc-create-page inc-reference-page">
+      <div className="itemDialogHead">
+        <button className="itemBack" type="button" onClick={onCancel} aria-label="Back to Income" title="Back to Income"><IconArrowLeft size={19} /></button>
+        <div className="itemHeadText"><h2 id="incomeDialogTitle">Record Income</h2></div>
+      </div>
+
+      {error && <div className="je-error inc-error"><IconAlertTriangle size={18} /><span>{error}</span></div>}
+
+      <main className="inc-reference-content">
+        <section className="inc-reference-card" aria-labelledby="income-basic-title">
+          <div className="inc-reference-heading">
+            <i><IconFileText size={22} /></i>
+            <div><h3 id="income-basic-title">Basic Details</h3><p>Tell us about the money you received.</p></div>
+          </div>
+
+          <div className="inc-reference-grid">
+            <label><span>Date <b>*</b></span><input type="date" required value={form.date} onChange={e => setField('date', e.target.value)} /></label>
+            <label><span>Income Type <b>*</b></span><select value={form.category} onChange={e => handleCategoryChange(e.target.value)}>{categories.map(c => <option key={c.id || c.name} value={c.name}>{c.name}</option>)}</select></label>
+            <label className="inc-customer-field"><span>Received From <b>*</b></span><SearchableCustomerSelect customers={customers} selectedCustomerId={form.customerId || form.receivedFrom} onSelect={handleCustomerSelect} /></label>
+            <label className="inc-amount-input"><span>Amount (₹) <b>*</b></span><input type="number" step="0.01" min="0" required placeholder="0.00" value={form.amount} onChange={e => setField('amount', e.target.value)} /></label>
+          </div>
+
+          <div className="inc-reference-payment">
+            <label className="inc-received-question">
+              <span>Have you received the income?</span>
+              <button type="button" role="switch" aria-checked={form.received} className={'inc-received-switch'+(form.received ? ' is-received' : '')} onClick={() => setField('received', !form.received)}><i /><b>{form.received ? 'Yes, received' : 'Not yet received'}</b></button>
+            </label>
+            {form.received ? <>
+            <div className="inc-method-picker">
+              <span>Received Via <b>*</b></span>
+              <div className="inc-method-options" role="group" aria-label="Received via">
+                <button className={'inc-method-option'+(form.paymentType === 'Cash' ? ' selected' : '')} type="button" aria-pressed={form.paymentType === 'Cash'} onClick={() => setForm(f => ({...f,received:true,paymentType:'Cash',paidThrough:'1000',method:'Cash',reference:''}))}><IconCashBanknote size={19} />Cash</button>
+                <button className={'inc-method-option'+(form.paymentType === 'Bank' ? ' selected' : '')} type="button" aria-pressed={form.paymentType === 'Bank'} onClick={() => setForm(f => ({...f,received:true,paymentType:'Bank',paidThrough:bankAccounts[0]?.code || '1010',method:'Bank transfer'}))}><IconBuildingBank size={19} />Bank</button>
+              </div>
+            </div>
+            <label><span>{form.paymentType === 'Cash' ? 'Cash Account' : 'Bank Account'} <b>*</b></span><select value={form.paymentType === 'Cash' ? '1000' : form.paidThrough} disabled={form.paymentType === 'Cash'} onChange={e => setField('paidThrough', e.target.value)}>{form.paymentType === 'Cash' ? <option value="1000">1000 · Cash / Petty Cash</option> : (bankAccounts.length ? bankAccounts.map(a => <option key={a.code} value={a.code}>{a.code} · {a.name}</option>) : <option value="1010">1010 · Bank</option>)}</select></label>
+            </> : <label className="inc-expected-date"><span>Expected date for receiving income <b>*</b></span><input type="date" value={form.expectedDate} onChange={e => setField('expectedDate', e.target.value)} /></label>}
+          </div>
+        </section>
+
+        <details className="inc-more-details">
+          <summary><span className="inc-reference-heading"><i><IconFileText size={22} /></i><span><strong>More Details <em>(Optional)</em></strong><small>Add tax details, reference number or notes if needed.</small></span></span><IconChevronDown size={20} /></summary>
+          <div className="inc-more-grid">
+            <label><span>GST Details</span><select value={form.gstTreatment} onChange={e => setField('gstTreatment', e.target.value)}>{GST_TREATMENTS.map(t => <option key={t} value={t}>{t}</option>)}</select></label>
+            <label><span>GST Rate</span><select value={form.tax} onChange={e => setField('tax', e.target.value)}>{TAX_OPTIONS.map(t => <option key={t} value={t}>{t}</option>)}</select></label>
+            <label><span>Reference No.</span><input type="text" placeholder="e.g. TXN-984321 / UTR #" value={form.reference} onChange={e => setField('reference', e.target.value)} /></label>
+            <label><span>Notes</span><textarea rows={2} placeholder="Add any notes (optional)" value={form.description} onChange={e => setField('description', e.target.value)} /></label>
+            <div className="inc-attachments"><span>Attachments</span><label className="inc-dropzone"><IconPaperclip size={24} /><span><b>Choose files</b> or drag and drop<small>PDF, JPG, PNG (Max 5 MB)</small></span><input type="file" multiple accept=".pdf,image/*,.doc,.docx,.xls,.xlsx" onChange={handleFileUpload} /></label>{form.files.length > 0 && <div className="inc-file-list">{form.files.map((file,index) => <span key={index}><IconPaperclip size={14} />{file.name} <button type="button" aria-label={`Remove ${file.name}`} onClick={() => removeFile(index)}><IconTrash size={14} /></button></span>)}</div>}</div>
+          </div>
+        </details>
+      </main>
+
+      <footer className="inc-footer">
+        <div className="inc-footer-summary" aria-live="polite">
+          <span>Ready to record</span>
+          <strong>{form.amount ? `₹${Number(form.amount).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '₹0.00'}</strong>
+          <small>{form.category} · {form.paymentType}</small>
+        </div>
+        <button type="button" onClick={onCancel}>Cancel</button>
+        <button type="button" onClick={e => handleSubmit(e,'Draft')}>Save Draft</button>
+        <button type="button" className="primary" onClick={e => handleSubmit(e,'Posted')}>Save Income</button>
+      </footer>
+    </section>
+  );
 
   return (
     <section className="rt-page itemCreatePage je-create inc-create-page" style={{ margin: 0, paddingBottom: '32px' }}>

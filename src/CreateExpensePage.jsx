@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
-import { IconArrowLeft, IconAlertTriangle, IconPaperclip, IconTrash, IconPlus, IconSearch, IconChevronDown, IconReceipt, IconWallet, IconPercentage, IconInfoCircle } from '@tabler/icons-react';
+import { IconArrowLeft, IconAlertTriangle, IconPaperclip, IconTrash, IconPlus, IconSearch, IconChevronDown, IconReceipt, IconWallet, IconPercentage, IconInfoCircle, IconBuildingBank, IconCashBanknote, IconFileText } from '@tabler/icons-react';
 import { readAccounts } from './account-store.js';
 import { readOperations, saveOperations, createExpense, accountingState } from './operations-store.js';
 import { readVendors } from './vendor-store.js';
@@ -559,6 +559,33 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
       setError(err.message);
     }
   };
+
+  return (
+    <section className="rt-page itemCreatePage je-create exp-create-page exp-reference-page">
+      <div className="itemDialogHead"><button className="itemBack" type="button" onClick={onCancel} aria-label="Back to Expenses"><IconArrowLeft size={19} /></button><div className="itemHeadText"><h2 id="expenseDialogTitle">Create Expense</h2></div></div>
+      {error && <div className="je-error exp-error"><IconAlertTriangle size={18} /><span>{error}</span></div>}
+      <main className="exp-reference-content">
+        <section className="exp-reference-card">
+          <div className="exp-reference-heading"><i><IconFileText size={21} /></i><div><h3>Basic Details</h3><p>Tell us about the expense.</p></div></div>
+          <div className="exp-reference-grid">
+            <label><span>Date <b>*</b></span><input type="date" required value={form.date} onChange={e => setField('date', e.target.value)} /></label>
+            <label><span>Expense Type <b>*</b></span><select value={form.expenseAccount} onChange={e => setField('expenseAccount', e.target.value)}><option value="5900">5900 · Other Operating Expenses</option><option value="5000">5000 · Office Supplies</option><option value="5300">5300 · Rent & Utilities</option><option value="5400">5400 · Travel & Conveyance</option><option value="5600">5600 · Professional Fees</option>{expenseAccounts.map(a => <option key={a.code} value={a.code}>{a.code} · {a.name}</option>)}</select></label>
+            <label><span>Paid To</span><SearchableVendorSelect vendors={vendors} selectedVendorId={form.vendorId} selectedVendorName={form.vendor} onSelect={handleVendorSelect} /></label>
+            <label className="exp-amount"><span>Amount (₹) <b>*</b></span><input type="number" step="0.01" required placeholder="0.00" value={form.amount} onChange={e => setField('amount', e.target.value)} /></label>
+          </div>
+          <div className="exp-reference-payment">
+            <div className="exp-method-picker"><span>Paid Via <b>*</b></span><div className="exp-method-options"><button type="button" className={form.paidThroughMode==='Cash'?'selected':''} aria-pressed={form.paidThroughMode==='Cash'} onClick={() => setForm(f => ({...f,paidThroughMode:'Cash',paidThrough:'1000',paymentMethod:'Cash'}))}><IconCashBanknote size={18} />Cash</button><button type="button" className={form.paidThroughMode!=='Cash'?'selected':''} aria-pressed={form.paidThroughMode!=='Cash'} onClick={() => setForm(f => ({...f,paidThroughMode:'Bank',paidThrough:'1010',paymentMethod:'Bank Transfer'}))}><IconBuildingBank size={18} />Bank</button></div></div>
+            <label><span>Payment Account <b>*</b></span><select value={form.paidThrough} onChange={e => setField('paidThrough', e.target.value)}>{form.paidThroughMode==='Cash'?<><option value="1000">1000 · Cash / Petty Cash</option><option value="1020">1020 · Undeposited Cash Funds</option></>:<><option value="1010">1010 · HDFC Bank Operating Account</option>{assetAccounts.filter(a=>a.code!=='1000').map(a=><option key={a.code} value={a.code}>{a.code} · {a.name}</option>)}</>}</select></label>
+          </div>
+        </section>
+        <details className="exp-more-details">
+          <summary><span className="exp-reference-heading"><i><IconInfoCircle size={21} /></i><span><strong>More Details <em>(Optional)</em></strong><small>Add tax details, reference number or notes if needed.</small></span></span><IconChevronDown size={19} /></summary>
+          <div className="exp-more-grid"><label><span>GST Details</span><select value={form.gstTreatment} onChange={e=>setField('gstTreatment',e.target.value)}>{GST_TREATMENTS.map(x=><option key={x}>{x}</option>)}</select></label><label><span>GST Rate</span><select value={form.tax} onChange={e=>setField('tax',e.target.value)}>{TAX_OPTIONS.map(x=><option key={x}>{x}</option>)}</select></label><label><span>Reference No.</span><input placeholder="e.g. INV-2026-889 / UTR #" value={form.invoiceNo} onChange={e=>setField('invoiceNo',e.target.value)} /></label><label className="exp-notes"><span>Notes</span><textarea rows={2} placeholder="Add any notes (optional)" value={form.notes} onChange={e=>setField('notes',e.target.value)} /></label><div className="exp-attachments"><span>Attachments</span><label className="exp-dropzone"><IconPaperclip size={24}/><span><b>Choose files</b> or drag and drop<small>PDF, JPG, PNG (Max 5 MB)</small></span><input type="file" multiple accept=".pdf,image/*,.doc,.docx,.xls,.xlsx" onChange={handleFileUpload}/></label>{form.files.length>0&&<div className="exp-file-list">{form.files.map((file,index)=><span key={index}>{file.name}<button type="button" aria-label={`Remove ${file.name}`} onClick={()=>removeFile(index)}><IconTrash size={14}/></button></span>)}</div>}</div></div>
+        </details>
+      </main>
+      <footer className="exp-footer"><button type="button" onClick={onCancel}>Cancel</button><button type="button" onClick={e=>handleSubmit(e,'Draft')}>Save Draft</button><button type="button" className="primary" onClick={e=>handleSubmit(e,'Posted')}>Save Expense</button></footer>
+    </section>
+  );
 
   return (
     <section className="rt-page itemCreatePage je-create exp-create-page" style={{ margin: 0, paddingBottom: '32px' }}>

@@ -4,6 +4,10 @@
 .rt-page{min-width:0;padding:0 24px 28px;color:#17233a;font:13px/1.4 'Instrument Sans',sans-serif}
 .rt-page *{box-sizing:border-box}
 .rt-page button,.rt-page input,.rt-page select,.rt-page textarea{font:inherit}
+
+/* Create Expense follows the established Create Item geometry: the page bar is
+   full width, and one fluid gutter belongs to the body/card only. */
+.rt-page.exp-reference-page{--exp-item-gutter:clamp(16px,2.2vw,24px);padding:0!important}.rt-page.exp-reference-page .itemDialogHead{width:100%!important;margin:0!important;padding-right:24px!important;padding-left:24px!important}.rt-page.exp-reference-page .exp-reference-content{width:auto!important;margin:12px var(--exp-item-gutter) 0!important;padding:0 0 16px!important}.rt-page.exp-reference-page .exp-footer{margin:0 var(--exp-item-gutter)!important;padding:0 0 24px!important;width:auto!important}@media(max-width:600px){.rt-page.exp-reference-page{--exp-item-gutter:12px}.rt-page.exp-reference-page .itemDialogHead{padding-right:12px!important;padding-left:12px!important}}
 .rt-header{display:flex;align-items:center;gap:14px;min-height:70px;margin:0 -24px 16px;padding:8px 24px;background:#fff;border-bottom:1px solid #e2e8f0}
 .rt-header h1{margin:0;color:#17233a;font-size:16px;font-weight:650;line-height:1.25}
 .rt-back{display:grid;place-items:center;flex:none;width:40px;height:40px;padding:0;border:1px solid #d7e0eb;border-radius:8px;background:#fff;color:#475467;cursor:pointer}
