@@ -33,8 +33,9 @@ test('the collapsed shell keeps a compact icon rail with visible labels on deskt
   assert.ok(desktop.includes('body.navCollapsed .guideBackdrop{left:72px!important}'),'the guide backdrop starts after the rail');
   assert.ok(desktop.includes('.app.navCollapsed .erpNavigation .navGroup>ul{display:none}'),'nested lists fold away in rail mode');
   assert.ok(desktop.includes('.app.navCollapsed .erpNavigation :is(.navLeaf,.navGroupButton){flex-direction:column;justify-content:center;gap:3px'),'rail buttons stack the icon over the label');
-  assert.ok(desktop.includes('.app.navCollapsed .erpNavigation :is(.navLeaf,.navGroupButton)>span{display:-webkit-box')&&desktop.includes('-webkit-line-clamp:2'),'rail buttons reveal the menu name under the icon');
+  assert.ok(desktop.includes('.app.navCollapsed .erpNavigation :is(.navLeaf,.navGroupButton)>span{display:block')&&desktop.includes('white-space:nowrap')&&desktop.includes('text-overflow:ellipsis'),'the rail label sits on one line and ellipsizes rather than covering two rows');
   assert.ok(!/\.app\.navCollapsed \.erpNavigation :is\(\.navLeaf,\.navGroupButton\)>span\{[^}]*display:none/.test(desktop),'rail labels are never hidden');
+  assert.ok(!/\.app\.navCollapsed \.erpNavigation :is\(\.navLeaf,\.navGroupButton\)>span\{[^}]*break-word/.test(desktop),'a rail label is never broken mid-word across rows');
   const navigation=readFileSync(new URL('../src/Navigation.jsx',import.meta.url),'utf8');
   assert.match(navigation,/if\(collapsed\)\{const box=event\.currentTarget\.getBoundingClientRect\(\);setRailMenu\(/,'a compact group opens its submenu flyout instead of expanding the rail');
   assert.match(navigation,/className="railSubmenu"/,'the rail renders a submenu flyout for grouped sections');
