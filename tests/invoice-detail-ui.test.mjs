@@ -66,11 +66,15 @@ test('the Sales invoices register search carries its own magnifier',()=>{
  assert.match(workspaceCss,/@media\(max-width:540px\)\{\n \.ivTools \.ivToolSearch\{flex:1 1 100%;min-width:0;max-width:none\}\n\}/,'the narrow viewport lets the field take the row');
 });
 
-test('the overview is the invoice read top to bottom, with no side panel',()=>{
+test('the overview is the invoice read top to bottom, and the detail opens as a right-side panel',()=>{
  for(const label of ['<h2>Customer</h2>','<h2>More details</h2>','<h2>Items</h2>','<h3>Invoice summary</h3>'])assert.ok(workspace.includes(label),'the overview states '+label);
  assert.match(workspace,/tab==='Payments'\?<div className="ivOverviewPage"><section className="ivOverviewPanel"><div className="ivSectionTitle"><h3>Payments<\/h3>/,'and Payments is its own tab');
  assert.ok(!workspace.includes('<p>Billed party, tax identity and both addresses</p>'),'the customer panel carries no descriptive subtitle');
- assert.doesNotMatch(css,/position:\s*fixed/,'nothing on the overview is pinned to the viewport');
+ assert.ok(workspace.includes("invoice?<div className=\"ivDetailOverlay\" onMouseDown={event=>{if(event.target===event.currentTarget){setSelected(null);setTab('Overview')}}}><aside className=\"ivDetailPanel\" role=\"dialog\" aria-modal=\"true\" aria-label={'Invoice details '+invoice.number}>"),'the whole detail block is carried by ONE right-side panel that opens over the register, rather than replacing the page');
+ assert.ok(workspace.includes("</aside></div>:<>"),'and closes back to it, without a single node inside the head, the sheet, the figures, the tab row or the tab body changing');
+ assert.ok(css.includes(".ivDetailOverlay{position:fixed;inset:0;z-index:1100;display:flex;justify-content:flex-end;background:#10182873}"),'the overlay is pinned to the viewport, packs the panel against the RIGHT edge - the side the shared drawer shell uses - and sits above the register heading (100) and the application header (101)');
+ assert.ok(css.includes(".ivDetailPanel{display:flex;flex-direction:column;width:min(880px,100%);height:100%;overflow-y:auto;overscroll-behavior:contain;background:#f7f9fc;box-shadow:-18px 0 50px #10182826}"),'the panel is the scrollport the sheet scrolls inside, it casts its shadow to the left over the scrim, and it does not chain that scroll to the page behind the scrim');
+ assert.ok(css.includes(".ivDetailPanel>.ivDetailHead{position:sticky;top:0;z-index:3}"),'and the head bar stays put above the scrolling sheet');
 });
 
 test('invoice details provide four tabs and journal ledger navigation',()=>{

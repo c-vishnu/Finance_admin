@@ -1,6 +1,6 @@
 # Wayvida Books Knowledge Base
 
-**Last verified:** 2026-09-29
+**Last verified:** 2026-10-13
 
 **Reports structure checkpoint:** the `Reports` section is now the seven-group tree the brief names, in its order - `Transaction Reports` (Transaction Register, Day Book, Journal Report), `Accounting Reports` (General Ledger, Account Statement, Trial Balance), `Financial Statements` (Profit & Loss, Balance Sheet, Cash Flow Statement), `Receivables & Payables` (Customer Outstanding, Customer Aging, Supplier Outstanding, Supplier Aging), `Cash & Banking` (Cash & Bank Book, Bank Reconciliation), `Tax & Compliance` (GST / Tax Reports, TDS Reports) and `Business Reports` (Sales Report, Purchase Report, Expense Report) - followed by the `Audit Log` leaf. Four destinations did not exist and were built: `src/JournalReport.jsx` over ONE pure projection `src/journal-report.js` (one row per POSTED journal line, with the Day Book own transaction type, a reversed journal marked `Reversal` rather than dropped, and each voucher re-proved from its own lines), `src/AccountStatement.jsx` over `src/account-statement.js` (the statement of ONE account, `opening + movements === closing`, every balance stated on the account own normal side, and the whole-ledger closing computed separately so a branch statement prints its difference instead of absorbing it), and `src/CustomerAging.jsx` / `src/SupplierAging.jsx`, two thin wrappers over the ONE shared grid `src/aging.js` + `src/AgingReport.jsx` (bucketed by DAYS PAST THE DOCUMENT OWN DUE DATE, with the grid total re-proved against the AR/AP control account). All four pages reuse the report shell owned by `src/cash-banking.css` and add only `src/report-pages.css` for their column widths; all four mount through `createPortal` from `src/Navigation.jsx`, and `src/App.jsx` excludes their route names from the operational-module switch and the welcome banner. The pre-existing standalone `Purchase Reports` leaf left the sidebar to match the brief exactly, while its route stays in `src/App.jsx` so the page is still reachable by name. Read `docs/REPORTS-STRUCTURE.md` before changing the tree or any of the four reports.
 
@@ -88,15 +88,16 @@ The fastest clean-context route is: read `AGENTS.md`, then this file, then `TRAN
 2. [Project Overview](PROJECT-OVERVIEW.md)
 3. [Technical Architecture](TECHNICAL-ARCHITECTURE.md)
 4. [Accounting Domain](ACCOUNTING-DOMAIN.md)
-5. [Modules](MODULES.md)
-6. [Data Model](DATA-MODEL.md)
-7. [Developer Guide](DEVELOPER-GUIDE.md)
-8. [Security and Controls](SECURITY-AND-CONTROLS.md)
-9. [Testing and QA](TESTING-AND-QA.md)
-10. [Known Gaps and Roadmap](KNOWN-GAPS-AND-ROADMAP.md)
-11. [UI Design System](UI-DESIGN-SYSTEM.md)
-12. [Glossary](GLOSSARY.md)
-13. [Period Locking Specification](PERIOD-LOCKING-SPECIFICATION.md)
+5. [Page & Accounting Map](PAGE-ACCOUNTING-MAP.md)
+6. [Modules](MODULES.md)
+7. [Data Model](DATA-MODEL.md)
+8. [Developer Guide](DEVELOPER-GUIDE.md)
+9. [Security and Controls](SECURITY-AND-CONTROLS.md)
+10. [Testing and QA](TESTING-AND-QA.md)
+11. [Known Gaps and Roadmap](KNOWN-GAPS-AND-ROADMAP.md)
+12. [UI Design System](UI-DESIGN-SYSTEM.md)
+13. [Glossary](GLOSSARY.md)
+14. [Period Locking Specification](PERIOD-LOCKING-SPECIFICATION.md)
 
 For a single-file transfer, use [Wayvida Books Handbook](WAYVIDA-BOOKS-HANDBOOK.md). For a new AI session, paste [AI Handoff Prompt](AI-HANDOFF-PROMPT.md) and attach this folder or repository. Machine-readable inventory is in [project-manifest.json](project-manifest.json).
 

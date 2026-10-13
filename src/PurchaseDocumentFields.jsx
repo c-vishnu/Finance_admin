@@ -270,9 +270,9 @@ export default function PurchaseDocumentFields({form,setForm,vendors,items,confi
       {(selectedOrganisation?.branches||[]).map(entry=><option key={entry.id} value={entry.id}>{entry.name}</option>)}
      </select>
     </Field>}
-    <Field label="Place of supply" icon={IconMapPin} hint={<small className="soDueHint">Set automatically from the vendor’s billing location for GST.</small>}>
+    {kind!=='order'&&<Field label="Place of supply" icon={IconMapPin} hint={<small className="soDueHint">Set automatically from the vendor’s billing location for GST.</small>}>
      <input readOnly value={form.place||selectedVendor?.billing?.state||selectedVendor?.state||config?.state||''} aria-label="Place of supply" />
-    </Field>
+    </Field>}
     <Field label="Expected delivery date" icon={IconCalendar}>
      <input type="date" value={form.expectedDate||''} onChange={e=>setForm({...form,expectedDate:e.target.value})}/>
     </Field>

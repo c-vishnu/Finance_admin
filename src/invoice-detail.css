@@ -148,3 +148,32 @@ body:has(.ivDetailOpen) .app>main{height:auto;max-height:none;overflow:visible;s
 .ivOverviewPage{padding:16px}
 .ivOverviewGrid{align-items:stretch}
 .ivInvoiceSummary{padding:10px 16px 2px}
+
+
+/* ---------------------------------------------------------------------------
+   Invoice details open as a RIGHT-SIDE POPUP over the register.
+
+   The whole detail block is unchanged - the head bar, the one detail sheet, the
+   four figures, the tab row and the tab body are the same nodes, so every rule
+   above still styles them - and only the two boxes that carry them are new.
+   `position: fixed` needs no portal here: the invoices page mounts inside
+   `<main>`, which carries no transform, filter, contain or z-index of its own,
+   so nothing between the section and the viewport re-parents the fixed overlay.
+   1100 is the layer the shared `.opsOverlay` drawer shell uses, and it clears
+   the sticky register heading (100) and the application header (101).
+
+   The panel is the scrollport, so the head bar stays put and the sheet scrolls
+   under it; `overscroll-behavior` keeps that scroll from chaining to the page
+   behind the scrim. The overlay packs the panel against the RIGHT edge
+   (`justify-content: flex-end`), the same side the shared drawer shell puts every `.opsDrawer` on,
+   and the panel casts its shadow to the left over the scrim. The scrim closes the panel on a click
+   outside it, the same gesture the other drawers in the application accept.
+   --------------------------------------------------------------------------- */
+.ivDetailOverlay{position:fixed;inset:0;z-index:1100;display:flex;justify-content:flex-end;background:#10182873}
+.ivDetailPanel{display:flex;flex-direction:column;width:min(880px,100%);height:100%;overflow-y:auto;overscroll-behavior:contain;background:#f7f9fc;box-shadow:-18px 0 50px #10182826}
+/* The head bar is the one element that must stay reachable while the sheet scrolls, so it sticks to
+   the panel's top edge. Its stacking order stays BELOW `.ivMoreActions>div` (20), because the More
+   actions menu opens inside the scrolling body and must never be covered by the bar. */
+.ivDetailPanel>.ivDetailHead{position:sticky;top:0;z-index:3}
+.ivDetailPanel>.ivDetailBody{flex:none}
+@media(max-width:880px){.ivDetailPanel{width:100%}}

@@ -1,4 +1,5 @@
 import { useDeferredValue, useEffect, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   IconAdjustments, IconAlertTriangle, IconChevronDown, IconDownload, IconEye,
   IconFileSpreadsheet, IconFileTypePdf, IconFilter, IconPlus, IconRefresh,
@@ -17,6 +18,7 @@ import OutstandingActions from './OutstandingActions.jsx';
 import StatusPill from './StatusPill.jsx';
 import './journal-entries.css';
 import './business-reports.css';
+import './income-detail-drawer.css';
 
 const dateText = value => value ? new Date(value + 'T00:00:00').toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : DASH;
 
@@ -426,8 +428,8 @@ export default function IncomeReport({ page = 'Income', onNavigate = () => {} })
       </div>
 
       {/* Modal: Mark Unpaid Income as Received */}
-      {markPaidModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
+      {markPaidModal && createPortal(
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
           <div style={{ background: '#fff', borderRadius: '12px', maxWidth: '440px', width: '100%', padding: '24px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
               <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 600 }}>Mark Income Received</h3>
@@ -467,64 +469,68 @@ export default function IncomeReport({ page = 'Income', onNavigate = () => {} })
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Drawer: Income Detail View */}
-      {activeDrawerIncome && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 900, display: 'flex', justifyContent: 'flex-end' }}>
-          <div style={{ background: '#fff', width: '500px', maxWidth: '100%', height: '100%', padding: '24px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '20px', boxShadow: '-10px 0 25px rgba(0,0,0,0.1)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e2e8f0', pb: '12px' }}>
+      {activeDrawerIncome && createPortal(
+        <div className="opsOverlay irOverlay" onMouseDown={event => { if (event.target === event.currentTarget) setActiveDrawerIncome(null); }}>
+          <aside className="opsDrawer irDrawer" role="dialog" aria-modal="true" aria-label={'Income details ' + activeDrawerIncome.number}>
+            <header>
               <div>
-                <h3 style={{ margin: 0, fontSize: '1.2rem' }}>{activeDrawerIncome.number}</h3>
-                <span style={{ fontSize: '0.85rem', color: '#64748b' }}>{dateText(activeDrawerIncome.date)}</span>
+                <h2>{activeDrawerIncome.number}</h2>
+                <p>{dateText(activeDrawerIncome.date)}</p>
               </div>
-              <button type="button" onClick={() => setActiveDrawerIncome(null)} style={{ border: 0, background: 'transparent', cursor: 'pointer' }}><IconX size={20} /></button>
-            </div>
+              <button type="button" className="irDrawerClose" aria-label="Close income details" onClick={() => setActiveDrawerIncome(null)}><IconX size={20} /></button>
+            </header>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', fontSize: '0.875rem' }}>
-              <div>
-                <span style={{ color: '#64748b', display: 'block', fontSize: '0.75rem', textTransform: 'uppercase' }}>Income Category</span>
-                <strong>{activeDrawerIncome.category}</strong>
-              </div>
-              <div>
-                <span style={{ color: '#64748b', display: 'block', fontSize: '0.75rem', textTransform: 'uppercase' }}>Received From</span>
-                <strong>{activeDrawerIncome.party}</strong>
-              </div>
-              <div>
-                <span style={{ color: '#64748b', display: 'block', fontSize: '0.75rem', textTransform: 'uppercase' }}>Amount</span>
-                <strong style={{ fontSize: '1.1rem', color: '#0f172a' }}>{money(activeDrawerIncome.amount)}</strong>
-              </div>
-              <div>
-                <span style={{ color: '#64748b', display: 'block', fontSize: '0.75rem', textTransform: 'uppercase' }}>Status</span>
-                <StatusPill status={activeDrawerIncome.status} tone={STATUS_TONES[activeDrawerIncome.status] || 'neutral'} />
-              </div>
-            </div>
+            <div className="opsDrawerBody irDrawerBody">
+              <dl className="irFacts">
+                <div>
+                  <dt>Income Category</dt>
+                  <dd>{activeDrawerIncome.category}</dd>
+                </div>
+                <div>
+                  <dt>Received From</dt>
+                  <dd>{activeDrawerIncome.party}</dd>
+                </div>
+                <div>
+                  <dt>Amount</dt>
+                  <dd><b>{money(activeDrawerIncome.amount)}</b></dd>
+                </div>
+                <div>
+                  <dt>Status</dt>
+                  <dd><StatusPill status={activeDrawerIncome.status} tone={STATUS_TONES[activeDrawerIncome.status] || 'neutral'} /></dd>
+                </div>
+              </dl>
 
-            <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '0.85rem' }}>
-              <span style={{ fontWeight: 600, display: 'block', marginBottom: '6px' }}>Accounting Posting Details:</span>
-              • Income Account: {activeDrawerIncome.incomeAccountName || activeDrawerIncome.incomeAccount || '4100 Service Income'}<br />
-              • Deposit Ledger: {activeDrawerIncome.received ? (activeDrawerIncome.paymentAccountName || '1010 Bank Account') : '1100 Accounts Receivable'}<br />
-              • GST Tax Rate: {activeDrawerIncome.taxLabel || 'No tax'}
-            </div>
-
-            {activeDrawerIncome.description && (
-              <div>
-                <span style={{ color: '#64748b', display: 'block', fontSize: '0.75rem', textTransform: 'uppercase' }}>Description / Notes</span>
-                <p style={{ margin: '4px 0', fontSize: '0.875rem', color: '#334155' }}>{activeDrawerIncome.description}</p>
+              <div className="irPosting">
+                <h3>Accounting Posting Details:</h3>
+                <ul>
+                  <li>Income Account: {activeDrawerIncome.incomeAccountName || activeDrawerIncome.incomeAccount || '4100 Service Income'}</li>
+                  <li>Deposit Ledger: {activeDrawerIncome.received ? (activeDrawerIncome.paymentAccountName || '1010 Bank Account') : '1100 Accounts Receivable'}</li>
+                  <li>GST Tax Rate: {activeDrawerIncome.taxLabel || 'No tax'}</li>
+                </ul>
               </div>
-            )}
 
-            <div style={{ marginTop: 'auto', display: 'flex', gap: '12px', justifyContent: 'flex-end', borderTop: '1px solid #e2e8f0', paddingTop: '16px' }}>
-              <button type="button" className="rt-btn rt-btn-secondary" onClick={() => setActiveDrawerIncome(null)}>Close</button>
-              {activeDrawerIncome.status !== 'Cancelled' && (
-                <button type="button" className="rt-btn" style={{ color: '#ef4444', border: '1px solid #fca5a5', background: '#fef2f2' }} onClick={() => handleReverseIncome(activeDrawerIncome.recordId)}>
-                  Cancel Record
-                </button>
+              {activeDrawerIncome.description && (
+                <div className="irNotes">
+                  <h3>Description / Notes</h3>
+                  <p>{activeDrawerIncome.description}</p>
+                </div>
               )}
             </div>
-          </div>
-        </div>
+
+            <footer>
+              <button type="button" onClick={() => setActiveDrawerIncome(null)}>Close</button>
+              {activeDrawerIncome.status !== 'Cancelled' && (
+                <button type="button" className="irDanger" onClick={() => handleReverseIncome(activeDrawerIncome.recordId)}>Cancel Record</button>
+              )}
+            </footer>
+          </aside>
+        </div>,
+        document.body
       )}
     </section>
   );

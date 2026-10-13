@@ -1,0 +1,63 @@
+/* ---------------------------------------------------------------------------
+   The Expense register's row detail drawer.
+
+   A row used to leave the register for another page: `View Expense` set the
+   `wayvida-open-expense` handshake and navigated, and the page it landed on was
+   the Expense register the operator was already looking at, so nothing opened.
+   The drawer renders the same record in place, on the right, where the shared shell puts it.
+
+   It mounts on `document.body` through `createPortal` on the same `.opsOverlay`
+   / `.opsDrawer` shell every other detail drawer in the application uses;
+   `.exDrawer` carries only what that shell cannot know.
+
+   The portal is required in one of the two hosts. The report ALSO routes
+   through `active==='Expense Report'`, where it is mounted inside
+   `.transactionPortal` - a `position: fixed` stacking context at `z-index: 45`
+   - so an overlay raised inside it still paints below the sticky register
+   heading and below the application chrome. The shared shell's `z-index: 1100`
+   clears both.
+
+   Every rule here is scoped to `.exOverlay` so it outranks the generic shell
+   whatever order the stylesheets are concatenated in.
+   --------------------------------------------------------------------------- */
+
+/* Right-side slide-over. This drawer rests on the shared shell, which packs every `.opsDrawer`
+   against the RIGHT edge with `border-left` and a left-cast shadow, and this drawer takes that
+   side rather than restating it. */
+.exOverlay .exDrawer{--line:#e2e8f0;--muted:#667085;width:min(560px,100%)}
+
+/* Slide-over: the panel enters the way the Create Account drawer does - a short slide in from the
+   right edge (`amDrawerIn`'s 28px) with a matching fade, so the right-anchored shell reads as a
+   slide-over rather than a panel that blinks into place. `exDrawerIn` is scoped to `.exOverlay
+   .exDrawer` so it outranks the shared shell. `ui-quality-polish.css`'s global
+   `@media(prefers-reduced-motion:reduce)` rule neutralises it when motion is reduced. */
+.exOverlay .exDrawer{animation:exDrawerIn .22s ease-out both}
+@keyframes exDrawerIn{from{transform:translateX(28px);opacity:.55}to{transform:translateX(0);opacity:1}}
+
+.exOverlay .exDrawer>header{padding:18px 22px;min-height:0}
+.exOverlay .exDrawer>header h2{margin:0;font-size:19px;line-height:1.3;color:#172033}
+.exOverlay .exDrawer>header p{margin:3px 0 0;font-size:13px}
+.exOverlay .exDrawerClose{display:grid;place-items:center;border:0;border-radius:7px;background:transparent;color:#475467;cursor:pointer}
+.exOverlay .exDrawerClose:hover{background:#f2f4f7}
+
+.exOverlay .exDrawerBody{display:flex;flex-direction:column;gap:20px;padding:18px 22px}
+
+/* The recorded facts reuse the two-column grid the Income drawer states its facts in. */
+.exOverlay .exFacts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0;font-size:.875rem}
+.exOverlay .exFacts>div{min-width:0}
+.exOverlay .exFacts dt{margin:0;color:#667085;font-size:.75rem;text-transform:uppercase;letter-spacing:.02em}
+.exOverlay .exFacts dd{margin:4px 0 0;overflow-wrap:anywhere}
+.exOverlay .exFacts dd b{font-size:1.1rem;color:#0f172a}
+
+.exOverlay .exPosting{padding:12px;border:1px solid #e2e8f0;border-radius:8px;background:#f8fafc;font-size:.85rem}
+.exOverlay .exPosting h3{margin:0 0 6px;font-size:.85rem;font-weight:600}
+.exOverlay .exPosting ul{margin:0;padding-left:18px;color:#334155}
+
+.exOverlay .exNotes h3{margin:0;color:#667085;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.02em}
+.exOverlay .exNotes p{margin:4px 0 0;font-size:.875rem;color:#334155}
+
+.exOverlay .exDrawer>footer{align-items:center}
+.exOverlay .exDrawer>footer button{min-height:38px;padding:0 14px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;font-weight:600;cursor:pointer}
+.exOverlay .exDrawer>footer button:hover{background:#f5f8ff;border-color:#aac2ed}
+
+@media(max-width:560px){.exOverlay .exFacts{grid-template-columns:1fr}}

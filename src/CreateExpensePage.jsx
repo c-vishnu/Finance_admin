@@ -567,13 +567,13 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
       <main className="exp-reference-content">
         <section className="exp-reference-card">
           <div className="exp-reference-heading"><i><IconFileText size={21} /></i><div><h3>Basic Details</h3><p>Tell us about the expense.</p></div></div>
-          <div className="exp-reference-grid">
+          <div className="exp-reference-grid exp-reference-top">
             <label><span>Date <b>*</b></span><input type="date" required value={form.date} onChange={e => setField('date', e.target.value)} /></label>
             <label><span>Expense Type <b>*</b></span><select value={form.expenseAccount} onChange={e => setField('expenseAccount', e.target.value)}><option value="5900">5900 · Other Operating Expenses</option><option value="5000">5000 · Office Supplies</option><option value="5300">5300 · Rent & Utilities</option><option value="5400">5400 · Travel & Conveyance</option><option value="5600">5600 · Professional Fees</option>{expenseAccounts.map(a => <option key={a.code} value={a.code}>{a.code} · {a.name}</option>)}</select></label>
             <label><span>Paid To</span><SearchableVendorSelect vendors={vendors} selectedVendorId={form.vendorId} selectedVendorName={form.vendor} onSelect={handleVendorSelect} /></label>
-            <label className="exp-amount"><span>Amount (₹) <b>*</b></span><input type="number" step="0.01" required placeholder="0.00" value={form.amount} onChange={e => setField('amount', e.target.value)} /></label>
           </div>
           <div className="exp-reference-payment">
+            <label className="exp-amount"><span>Amount (₹) <b>*</b></span><input type="number" step="0.01" required placeholder="0.00" value={form.amount} onChange={e => setField('amount', e.target.value)} /></label>
             <div className="exp-method-picker"><span>Paid Via <b>*</b></span><div className="exp-method-options"><button type="button" className={form.paidThroughMode==='Cash'?'selected':''} aria-pressed={form.paidThroughMode==='Cash'} onClick={() => setForm(f => ({...f,paidThroughMode:'Cash',paidThrough:'1000',paymentMethod:'Cash'}))}><IconCashBanknote size={18} />Cash</button><button type="button" className={form.paidThroughMode!=='Cash'?'selected':''} aria-pressed={form.paidThroughMode!=='Cash'} onClick={() => setForm(f => ({...f,paidThroughMode:'Bank',paidThrough:'1010',paymentMethod:'Bank Transfer'}))}><IconBuildingBank size={18} />Bank</button></div></div>
             <label><span>Payment Account <b>*</b></span><select value={form.paidThrough} onChange={e => setField('paidThrough', e.target.value)}>{form.paidThroughMode==='Cash'?<><option value="1000">1000 · Cash / Petty Cash</option><option value="1020">1020 · Undeposited Cash Funds</option></>:<><option value="1010">1010 · HDFC Bank Operating Account</option>{assetAccounts.filter(a=>a.code!=='1000').map(a=><option key={a.code} value={a.code}>{a.code} · {a.name}</option>)}</>}</select></label>
           </div>

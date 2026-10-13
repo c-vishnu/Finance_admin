@@ -1820,7 +1820,7 @@ body:has(.inc-reference-page) .app main .inc-reference-page.je-create,
 body:has(.inc-reference-page) .app main .inc-reference-page { margin:0!important; padding:0!important; }
 .inc-reference-page .itemDialogHead{width:100%!important;margin:0!important}.inc-reference-page .inc-reference-content{width:100%;max-width:none;margin:0!important;padding:0!important}.inc-reference-page .inc-reference-card,.inc-reference-page .inc-more-details{border-right:0;border-left:0;border-radius:0}.inc-reference-page .inc-reference-card{border-top:0}.inc-reference-page .inc-more-details{margin-top:0}
 /* Received income is explicit: payment controls appear only after confirmation. */
-.inc-reference-page .inc-reference-payment{grid-template-columns:repeat(3,minmax(0,1fr))}.inc-reference-page .inc-received-question{grid-column:auto;display:flex;align-items:center;justify-content:space-between;min-height:48px;padding:8px 12px;border:1px solid #d9e5f3;border-radius:9px;background:#f8fbff}.inc-reference-page .inc-received-switch{display:inline-flex;align-items:center;gap:9px;min-height:32px;padding:0;border:0;background:transparent;color:#8a5d08;font-size:13px;font-weight:650}.inc-reference-page .inc-received-switch>i{position:relative;width:42px;height:23px;border-radius:999px;background:#b9c6d8;transition:background .16s}.inc-reference-page .inc-received-switch>i::after{content:'';position:absolute;top:3px;left:3px;width:17px;height:17px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #10182833;transition:transform .16s}.inc-reference-page .inc-received-switch.is-received{color:#19734c}.inc-reference-page .inc-received-switch.is-received>i{background:#2879f8}.inc-reference-page .inc-received-switch.is-received>i::after{transform:translateX(19px)}.inc-reference-page .inc-received-switch:focus-visible{outline:3px solid #2879f840;outline-offset:3px}.inc-reference-page .inc-expected-date{grid-column:span 2;max-width:none}.inc-reference-page .inc-method-options{grid-template-columns:repeat(2,minmax(0,1fr))}@media(max-width:760px){.inc-reference-page .inc-reference-payment{grid-template-columns:1fr}.inc-reference-page .inc-expected-date{grid-column:auto}}
+.inc-reference-page .inc-reference-payment{grid-template-columns:repeat(3,minmax(0,1fr))}.inc-reference-page .inc-received-question{grid-column:auto;display:flex;align-items:center;justify-content:space-between;min-height:48px;padding:8px 12px;border:1px solid #d9e5f3;border-radius:9px;background:#f8fbff}.inc-reference-page .inc-received-switch{display:inline-flex;align-items:center;gap:9px;min-height:32px;padding:0;border:0;background:transparent;color:#8a5d08;font-size:13px;font-weight:650}.inc-reference-page .inc-received-switch>i{position:relative;width:42px;height:23px;border-radius:999px;background:#b9c6d8;transition:background .16s}.inc-reference-page .inc-received-switch>i::after{content:'';position:absolute;top:3px;left:3px;width:17px;height:17px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #10182833;transition:transform .16s}.inc-reference-page .inc-received-switch.is-received{color:#19734c}.inc-reference-page .inc-received-switch.is-received>i{background:#2879f8}.inc-reference-page .inc-received-switch.is-received>i::after{transform:translateX(19px)}.inc-reference-page .inc-received-switch:focus-visible{outline:3px solid #2879f840;outline-offset:3px}.inc-reference-page .inc-expected-date{grid-column:auto;max-width:none}.inc-reference-page .inc-method-options{grid-template-columns:repeat(2,minmax(0,1fr))}@media(max-width:760px){.inc-reference-page .inc-reference-payment{grid-template-columns:1fr}.inc-reference-page .inc-expected-date{grid-column:auto}}
 .inc-reference-page .inc-received-switch.is-received>b{color:#19734c!important}
 
 /* Record Income uses the same full-bleed page-bar boundary as the other
@@ -1855,6 +1855,16 @@ body:has(.inc-reference-page) .app main > .rt-page.inc-reference-page > .itemDia
   body:has(.inc-reference-page) .app main > .rt-page.inc-reference-page > .itemDialogHead{padding-right:12px!important;padding-left:12px!important}
   body:has(.inc-reference-page) .app main > .rt-page.inc-reference-page > .itemDialogHead + .inc-error{margin-right:12px!important;margin-left:12px!important}
 }
+/* Record Income does not render inside .app main the way the other create pages
+   do: Navigation.jsx mounts IncomeReport through a body-level div.transactionPortal,
+   so every .app main rule above misses it. That portal keeps a 24px padding and a
+   #f5f7fb background, which framed the page and stopped its full-bleed page bar
+   from ever meeting the sidebar. Drop the padding and background for this page
+   only - the portal keeps its fixed frame (inset:59px 0 0 250px) and its scroll -
+   so the header joins the nav rail and the app header exactly as it does on the
+   create pages that render in main. */
+.transactionPortal:has(.inc-reference-page){padding:0!important;background:#fff!important}
+
 /* Create Expense reference flow. */
 body:has(.exp-reference-page) .app main,body:has(.exp-reference-page) .app main .exp-reference-page{margin:0!important;padding:0!important;max-width:none!important}.exp-reference-page{background:#f7faff!important;padding-bottom:86px!important}.exp-reference-page .itemDialogHead{width:100%!important;margin:0!important;padding:8px 24px!important;background:#fff!important;border:0!important;border-bottom:1px solid #dfe7f1!important}.exp-reference-content{display:grid;gap:14px;max-width:1280px;margin:0 auto;padding:20px 24px 0}.exp-reference-card,.exp-more-details{border:1px solid #dce6f3;border-radius:12px;background:#fff;box-shadow:0 4px 16px rgba(31,62,109,.04)}.exp-reference-card{padding:17px 21px}.exp-reference-heading,.exp-payment-heading{display:flex;align-items:center;gap:12px}.exp-reference-heading i,.exp-payment-heading i{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:#eaf3ff;color:#146cf4;flex:none}.exp-reference-heading h3,.exp-payment-heading h3,.exp-reference-heading strong{display:block;margin:0;color:#172b4d;font-size:16px;font-weight:700}.exp-reference-heading p,.exp-payment-heading p,.exp-reference-heading small{display:block;margin:2px 0 0;color:#7082a5;font-size:12px}.exp-reference-heading em{font-style:normal;color:#405474}.exp-reference-grid,.exp-reference-payment{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 24px;margin-top:16px}.exp-reference-page label,.exp-method-picker{display:grid;gap:7px;min-width:0;color:#162b4e;font-size:12px;font-weight:700}.exp-reference-page label b,.exp-method-picker b{color:#e54861}.exp-reference-page input,.exp-reference-page select,.exp-reference-page textarea{width:100%;min-height:42px;padding:0 12px;border:1px solid #cfdced;border-radius:8px;background:#fff;color:#203655;font:13px 'Instrument Sans',Arial,sans-serif;outline:0}.exp-reference-page textarea{min-height:68px;padding:10px 12px;resize:vertical}.exp-reference-page input:focus,.exp-reference-page select:focus,.exp-reference-page textarea:focus{border-color:#2879f8;box-shadow:0 0 0 3px #2879f81f}.exp-reference-page .exp-amount input{font-size:16px;font-weight:650}.exp-reference-page .exp-reference-grid label>div button{min-height:42px!important;border:1px solid #cfdced!important;border-radius:8px!important}.exp-payment-heading{margin-top:16px;padding-top:14px;border-top:1px solid #e4ebf4}.exp-method-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.exp-method-options button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:42px;border:1px solid #d5e0ef;border-radius:8px;background:#f5f8fd;color:#304565;font-size:13px;font-weight:600}.exp-method-options button.selected{border-color:#2778f7;background:#edf5ff;color:#146cf4;box-shadow:0 0 0 1px #2778f7 inset}.exp-more-details{overflow:hidden}.exp-more-details summary{display:flex;align-items:center;justify-content:space-between;padding:13px 20px;list-style:none;cursor:pointer;background:#f5f9ff}.exp-more-details summary::-webkit-details-marker{display:none}.exp-more-details:not([open]) summary>svg{transform:rotate(-90deg)}.exp-more-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 18px;padding:16px 20px}.exp-notes{grid-column:span 2}.exp-attachments{display:grid;gap:7px;color:#162b4e;font-size:12px;font-weight:700}.exp-dropzone{display:flex!important;align-items:center;gap:12px;min-height:68px;padding:10px 14px;border:1px dashed #a8c3eb!important;border-radius:8px;background:#fbfdff;cursor:pointer}.exp-dropzone>svg{color:#356ba9}.exp-dropzone>span{display:grid;gap:2px;color:#597196;font-size:12px;font-weight:400}.exp-dropzone b{color:#146cf4}.exp-dropzone small{color:#7990af}.exp-dropzone input{position:absolute;width:1px!important;min-height:1px!important;opacity:0}.exp-file-list{display:flex;flex-wrap:wrap;gap:5px}.exp-file-list span{display:inline-flex;align-items:center;gap:5px;padding:4px 6px;border:1px solid #d8e3f0;border-radius:5px;background:#fff;font-size:12px}.exp-file-list button{display:grid;place-items:center;border:0;background:transparent;color:#667085}.exp-reference-page .exp-footer{position:fixed;right:0;bottom:0;left:250px;z-index:30;display:flex;justify-content:flex-end;gap:10px;min-height:70px;padding:12px 28px;border-top:1px solid #dce5f0;background:rgba(255,255,255,.97);box-shadow:0 -5px 18px #10264c12}.exp-footer button{min-width:112px;height:42px;border:1px solid #cfdbeb;border-radius:8px;background:#fff;color:#1d3153;font-weight:650}.exp-footer .primary{min-width:144px;border-color:#146cf4;background:#146cf4;color:#fff}@media(max-width:760px){.exp-reference-content{padding:12px}.exp-reference-grid,.exp-reference-payment,.exp-more-grid{grid-template-columns:1fr}.exp-notes{grid-column:auto}.exp-reference-page .exp-footer{left:0;padding:10px 12px}.exp-footer button{min-width:0;flex:1}}
 .app.navCollapsed .exp-reference-page .exp-footer{left:72px}
@@ -1868,7 +1878,11 @@ body:has(.exp-reference-page) .app main .exp-reference-page.je-create{display:bl
 /* One shared horizontal inset keeps both expense sections perfectly aligned. */
 .exp-reference-page{--exp-section-gutter:24px}.exp-reference-page .exp-reference-content{padding-inline:var(--exp-section-gutter)!important}.exp-reference-page .exp-reference-card{padding-inline:var(--exp-section-gutter)!important}.exp-reference-page .exp-more-details :is(summary,.exp-more-grid){padding-left:var(--exp-section-gutter)!important;padding-right:var(--exp-section-gutter)!important}@media(max-width:1024px){.exp-reference-page{--exp-section-gutter:20px}}@media(max-width:600px){.exp-reference-page{--exp-section-gutter:16px}}
 
-/* Expense actions belong after the form, not in a fixed overlay. */
+/* Expense actions belong after the form, not in a fixed overlay. Superseded on
+   2026-10-13, when the operator asked for the Record Income bar and then said
+   the bar still had to be scrolled to: the rules at the end of this file pin
+   the actions in both mounts, and this pair is kept only as the record of the
+   static treatment it replaces. */
 .exp-reference-page .exp-reference-content{padding-bottom:24px!important}.exp-reference-page .exp-footer{position:static!important;right:auto!important;bottom:auto!important;left:auto!important;width:100%;min-height:0!important;margin:0!important;padding:0 var(--exp-section-gutter) 24px!important;border:0!important;box-shadow:none!important}
 
 /* Match the Create Item page's one fluid side gutter. */
@@ -1878,9 +1892,95 @@ body:has(.exp-reference-page) .app main .exp-reference-page.je-create{display:bl
    Entry child margins and keeps the Create Item header/body relationship. */
 body:has(.exp-reference-page) .app main .rt-page.exp-reference-page{padding:0!important}body:has(.exp-reference-page) .app main .rt-page.exp-reference-page>.itemDialogHead{width:100%!important;margin:0!important;padding-right:24px!important;padding-left:24px!important}body:has(.exp-reference-page) .app main .rt-page.exp-reference-page>.exp-reference-content{width:auto!important;margin:12px clamp(16px,2.2vw,24px) 0!important;padding:0 0 16px!important}body:has(.exp-reference-page) .app main .rt-page.exp-reference-page>.exp-footer{width:auto!important;margin:0 clamp(16px,2.2vw,24px)!important;padding:0 0 24px!important}@media(max-width:600px){body:has(.exp-reference-page) .app main .rt-page.exp-reference-page>.itemDialogHead{padding-right:12px!important;padding-left:12px!important}body:has(.exp-reference-page) .app main .rt-page.exp-reference-page>:is(.exp-reference-content,.exp-footer){margin-right:12px!important;margin-left:12px!important}}
 
-/* Static Create Expense actions. */
+/* Static Create Expense actions - superseded by the pinned bar at the end of this file. */
 body:has(.exp-reference-page) .app main .rt-page.exp-reference-page>.exp-footer{position:static!important;inset:auto!important;z-index:auto!important;display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:10px!important;min-height:72px!important;padding:14px 16px!important;border:1px solid #dce6f3!important;border-radius:10px!important;background:#fff!important;box-shadow:0 3px 12px rgba(31,62,109,.05)!important}body:has(.exp-reference-page) .app main .rt-page.exp-reference-page>.exp-footer button{height:42px!important;min-width:112px!important;border:1px solid #cfdbeb!important;border-radius:8px!important;background:#fff!important;color:#1d3153!important;font-weight:650!important}body:has(.exp-reference-page) .app main .rt-page.exp-reference-page>.exp-footer .primary{min-width:144px!important;border-color:#146cf4!important;background:#146cf4!important;color:#fff!important}@media(max-width:600px){body:has(.exp-reference-page) .app main .rt-page.exp-reference-page>.exp-footer{min-height:0!important;padding:12px!important;flex-wrap:wrap!important}body:has(.exp-reference-page) .app main .rt-page.exp-reference-page>.exp-footer button{flex:1 1 120px!important;min-width:0!important}}
 
+/* Create Expense asks its five details in two rows of three. Date, Expense Type and Paid To share the
+   top row, and Amount, the Paid Via Cash/Bank picker and Payment Account share the second, so no row
+   carries a lone field or an empty track. Both rows state their own three-track rule at 0,2,0 against
+   the shared .exp-reference-grid,.exp-reference-payment row's 0,1,0, which also means each one outranks
+   the shared 760px collapse - so each carries its own @media steps, two tracks at 1024px and one at
+   760px, because a media query adds no specificity and source order alone would lose at phone width. */
+.exp-reference-page .exp-reference-top,
+.exp-reference-page .exp-reference-payment{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:1024px){
+  .exp-reference-page .exp-reference-top,
+  .exp-reference-page .exp-reference-payment{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+  .exp-reference-page .exp-reference-top,
+  .exp-reference-page .exp-reference-payment{grid-template-columns:1fr}
+}
 
+/* Record Income asks its three compact Basic Details - Date, Income Type and Amount - in one
+   three-track row, and its second row pairs Received From with the received question and the Received
+   Via picker, so no row is left holding a lone control beside an empty track. The row after that is
+   the account the money landed in, which spans the whole row and caps its own select so it does not
+   stretch across the full-bleed card. The basic row states its own three-track rule at 0,2,0 against
+   the shared .inc-reference-grid,.inc-reference-payment,.inc-more-grid row's 0,1,0, which also means
+   it outranks the shared 760px collapse - so it carries its own @media steps, two tracks at 1024px
+   and one at 760px, because a media query adds no specificity and source order alone would lose at
+   phone width. The payment row keeps the three-track rule it already states, and its expected-date
+   cell no longer spans two tracks now that Received From shares the row. */
+.inc-reference-page .inc-reference-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.inc-reference-page .inc-account-field{grid-column:1/-1}
+.inc-reference-page .inc-account-field select{max-width:420px}
+@media(max-width:1024px){
+  .inc-reference-page .inc-reference-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+  .inc-reference-page .inc-reference-grid{grid-template-columns:1fr}
+}
 
+/* The page bar above stays full-bleed, but the Basic Details and More Details cards
+   get a left/right gutter so their fields stop hugging the nav rail and the window
+   edge. The value is the same fluid gutter the other create pages use, with their
+   one 600px step. */
+.inc-reference-page .inc-reference-content{padding-left:clamp(16px,2.2vw,24px)!important;padding-right:clamp(16px,2.2vw,24px)!important}
+@media(max-width:600px){
+  .inc-reference-page .inc-reference-content{padding-left:12px!important;padding-right:12px!important}
+}
 
+/* The Create Expense actions - Cancel, Save Draft and Save Expense - sit in the
+   same bottom bar the Record Income page uses instead of trailing the form, so
+   they stay visible along the window's lower edge and the sheet never has to be
+   scrolled before they can be reached. The form's own 94px tail is what keeps
+   the bar off the last field.
+
+   The sheet is reachable two ways and the bar has to cover both: the sidebar's
+   Expenses entry renders this page inside .app main as an operational module,
+   and the Expense Report page mounts the same sheet through the body-level
+   div.transactionPortal. No single rule wins in both - the .app main rules above
+   own one mount only - so the bar is stated for both paths, and both read the
+   same left edge from one token: 250px at the rail, 72px once the rail
+   collapses, and the reports sidebar's extra 240px while it is open, which is
+   the 490px and 312px the portal is offset by and the 240px the main pads its
+   content by. Under 900px the sidebar overlay takes no rail space, and under
+   700px the rail itself folds away, so the token steps down to the rail width
+   and then to zero. */
+body:has(.exp-reference-page){--exp-footer-left:250px}
+body.navCollapsed:has(.exp-reference-page){--exp-footer-left:72px}
+body.hasReportsNav:has(.exp-reference-page){--exp-footer-left:490px}
+body.navCollapsed.hasReportsNav:has(.exp-reference-page){--exp-footer-left:312px}
+@media(max-width:900px){
+  body.hasReportsNav:has(.exp-reference-page){--exp-footer-left:250px}
+  body.navCollapsed.hasReportsNav:has(.exp-reference-page){--exp-footer-left:72px}
+}
+@media(max-width:700px){
+  body:has(.exp-reference-page),
+  body.navCollapsed:has(.exp-reference-page),
+  body.hasReportsNav:has(.exp-reference-page),
+  body.navCollapsed.hasReportsNav:has(.exp-reference-page){--exp-footer-left:0}
+}
+.transactionPortal:has(.exp-reference-page) .rt-page.exp-reference-page>.exp-footer,
+body:has(.exp-reference-page) .app main .rt-page.exp-reference-page>.exp-footer{position:fixed!important;top:auto!important;right:0!important;bottom:0!important;left:var(--exp-footer-left,250px)!important;z-index:30!important;display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:10px!important;width:auto!important;max-width:none!important;min-height:72px!important;margin:0!important;padding:12px 28px!important;border:0!important;border-top:1px solid #dce5f0!important;border-radius:0!important;background:rgba(255,255,255,.97)!important;box-shadow:0 -5px 18px rgba(16,38,76,.07)!important}
+.transactionPortal:has(.exp-reference-page) .rt-page.exp-reference-page>.exp-footer button,
+body:has(.exp-reference-page) .app main .rt-page.exp-reference-page>.exp-footer button{min-width:112px!important;height:44px!important;border:1px solid #cfdbeb!important;border-radius:8px!important;background:#fff!important;color:#1d3153!important;font-weight:650!important}
+.transactionPortal:has(.exp-reference-page) .rt-page.exp-reference-page>.exp-footer .primary,
+body:has(.exp-reference-page) .app main .rt-page.exp-reference-page>.exp-footer .primary{min-width:144px!important;border-color:#146cf4!important;background:#146cf4!important;color:#fff!important}
+@media(max-width:760px){
+  .transactionPortal:has(.exp-reference-page) .rt-page.exp-reference-page>.exp-footer,
+  body:has(.exp-reference-page) .app main .rt-page.exp-reference-page>.exp-footer{padding:10px 12px!important}
+  .transactionPortal:has(.exp-reference-page) .rt-page.exp-reference-page>.exp-footer button,
+  body:has(.exp-reference-page) .app main .rt-page.exp-reference-page>.exp-footer button{min-width:0!important;flex:1 1 100px!important}
+}

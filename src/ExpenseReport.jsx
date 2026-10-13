@@ -1,5 +1,6 @@
 import {useDeferredValue,useEffect,useMemo,useState} from 'react';
-import {IconAdjustments,IconAlertTriangle,IconChevronDown,IconDownload,IconEye,IconFileSpreadsheet,IconFileTypePdf,IconFilter,IconPlus,IconRefresh,IconSearch,IconUpload} from '@tabler/icons-react';
+import {createPortal} from 'react-dom';
+import {IconAdjustments,IconAlertTriangle,IconChevronDown,IconDownload,IconEye,IconFileSpreadsheet,IconFileTypePdf,IconFilter,IconPlus,IconRefresh,IconSearch,IconUpload,IconX} from '@tabler/icons-react';
 import {readAccounts} from './account-store.js';
 import {money} from './invoice-engine.js';
 import {ALL,DASH,DEFAULT_SORT,POSTED,SORT_OPTIONS,expenseExportSheet,expenseReport,sortTransactions} from './business-reports.js';
@@ -14,6 +15,7 @@ import StatusPill from './StatusPill.jsx';
 import {ReportExportMenu} from './ReportToolbar.jsx';
 import './journal-entries.css';
 import './business-reports.css';
+import './expense-detail-drawer.css';
 
 const dateText=value=>value?new Date(value+'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):DASH;
 
@@ -21,9 +23,16 @@ const STATUS_TONES={Draft:'neutral',Pending:'warn',Posted:'ok'};
 
 const blankFilters=()=>({from:'',to:'',party:ALL,status:POSTED,branch:ALL,account:ALL,category:ALL,payment:ALL});
 
+/* The Transaction Register's View action hands an expense over through sessionStorage. This register
+   consumes that handshake as it mounts and drops the key, so arriving any other way opens the list.
+   The id is held rather than the row, because the row is derived from the report built below it and
+   the handshake is read before that report exists. */
+const consumeExpenseHandoff=()=>{try{const id=sessionStorage.getItem('wayvida-open-expense');if(!id)return null;sessionStorage.removeItem('wayvida-open-expense');return id}catch{return null}};
+
 export default function ExpenseReport({onNavigate=()=>{}}){
  const [revision,setRevision]=useState(0),[filters,setFilters]=useState(blankFilters),[search,setSearch]=useState(''),[filtersOpen,setFiltersOpen]=useState(false),[sort,setSort]=useState(DEFAULT_SORT),[perPage,setPerPage]=useState(25),[page,setPage]=useState(1),[stamp,setStamp]=useState(()=>new Date());
  const [mode, setMode] = useState('list'); // 'list' | 'create'
+ const [detail,setDetail]=useState(null),[handoff,setHandoff]=useState(consumeExpenseHandoff);
  const deferredSearch=useDeferredValue(search),busy=deferredSearch!==search;
  const organisation=getCurrentOrganizationContext().company;
  const branches=useMemo(()=>getAccessibleOrganizations().find(item=>item.id===organisation.id)?.branches||[],[organisation.id]);
@@ -39,6 +48,8 @@ export default function ExpenseReport({onNavigate=()=>{}}){
  },[book,operations,filters,deferredSearch,branches,organisation.id,organisation.code]);
 
  const ordered=useMemo(()=>sortTransactions(report.rows,sort),[report.rows,sort]);
+ /* One source for the open drawer: the row the operator clicked, or the row the handoff names. */
+ const detailRow=detail||(handoff?ordered.find(row=>row.recordId===handoff):null);
  const pageCount=Math.max(1,Math.ceil(ordered.length/perPage)),pageIndex=Math.min(page,pageCount);
  const startIndex=(pageIndex-1)*perPage,firstRow=ordered.length?startIndex+1:0,lastRow=Math.min(startIndex+perPage,ordered.length);
  useEffect(()=>{setPage(1)},[deferredSearch,filters,sort,perPage]);
@@ -48,8 +59,7 @@ export default function ExpenseReport({onNavigate=()=>{}}){
  const sortLabel=(SORT_OPTIONS.find(option=>option.value===sort)||{}).label||'Newest first';
  const activeFilters=['from','to'].filter(key=>filters[key]).length+['party','account','category','payment'].filter(key=>filters[key]!==ALL).length+(filters.status!==POSTED?1:0)+(filters.branch!==ALL?1:0)+(sort!==DEFAULT_SORT?1:0);
 
- function remember(key,value){try{sessionStorage.setItem(key,value)}catch{}}
- function openDocument(entry){if(entry.handshake)remember(entry.handshake,entry.recordId);if(entry.page)onNavigate(entry.page)}
+ function openDocument(entry){setHandoff(null);setDetail(entry)}
  function rowActions(entry){return [{key:'view',label:'View Expense',icon:IconEye,run:()=>openDocument(entry)}]}
  function print(){setStamp(new Date());setTimeout(()=>window.print(),50)}
 
@@ -216,5 +226,67 @@ export default function ExpenseReport({onNavigate=()=>{}}){
     </div>
    </div>}
   </div>
+
+  {detailRow&&<ExpenseDetailDrawer entry={detailRow} close={()=>{setDetail(null);setHandoff(null)}} onNavigate={onNavigate}/>}
  </section>;
+}
+
+/* The expense a register row names, read in place: the recorded figures, the posting the engine makes
+   from them, and the description. It renders through `createPortal` on the shared drawer shell for
+   the reason its stylesheet records - this page is also mounted inside `.transactionPortal`, a
+   stacking context at z-index 45, where a fixed overlay raised in the page cannot clear the
+   application chrome. `Close` and `View journal` are the two things left to do with a posted expense
+   from here; nothing in this drawer posts, edits or deletes one. */
+function ExpenseDetailDrawer({entry,close,onNavigate}){
+ const account=(name,code)=>[name,code].filter(Boolean).join(' · ')||'Not recorded';
+ const label=value=>value||DASH;
+ return createPortal(
+  <div className="opsOverlay exOverlay" onMouseDown={event=>{if(event.target===event.currentTarget)close()}}>
+   <aside className="opsDrawer exDrawer" role="dialog" aria-modal="true" aria-label={'Expense details '+entry.number}>
+    <header>
+     <div>
+      <h2>{entry.name||entry.number}</h2>
+      <p>{entry.number} &middot; {dateText(entry.date)}</p>
+     </div>
+     <button type="button" className="exDrawerClose" aria-label="Close expense details" onClick={close}><IconX size={20}/></button>
+    </header>
+
+    <div className="opsDrawerBody exDrawerBody">
+     <dl className="exFacts">
+      <div><dt>Amount</dt><dd><b>{money(entry.amount)}</b></dd></div>
+      <div><dt>Status</dt><dd><StatusPill status={entry.status} tone={STATUS_TONES[entry.status]||'neutral'}/></dd></div>
+      <div><dt>Expense Account</dt><dd>{account(entry.expenseAccountName,entry.expenseAccount)}</dd></div>
+      <div><dt>Paid Through</dt><dd>{account(entry.paymentAccountName,entry.paymentAccount)}</dd></div>
+      <div><dt>Vendor / Payee</dt><dd>{label(entry.party)}</dd></div>
+      <div><dt>Category</dt><dd>{label(entry.category)}</dd></div>
+      <div><dt>Customer</dt><dd>{label(entry.customerName)}</dd></div>
+      <div><dt>Branch</dt><dd>{label(entry.branchName)}</dd></div>
+      <div><dt>Payment Method</dt><dd>{label(entry.method)}</dd></div>
+      <div><dt>Tax</dt><dd>{label(entry.taxLabel)}</dd></div>
+      <div><dt>Reference</dt><dd>{label(entry.reference)}</dd></div>
+     </dl>
+
+     <div className="exPosting">
+      <h3>Accounting posting details:</h3>
+      <ul>
+       <li>Debit &middot; {account(entry.expenseAccountName,entry.expenseAccount)}</li>
+       <li>Credit &middot; {account(entry.paymentAccountName,entry.paymentAccount)}</li>
+       {entry.taxLabel&&entry.taxLabel!==DASH&&<li>Tax &middot; {entry.taxLabel}</li>}
+      </ul>
+     </div>
+
+     <div className="exNotes">
+      <h3>Description</h3>
+      <p>{entry.description||'No description recorded.'}</p>
+     </div>
+    </div>
+
+    <footer>
+     <button type="button" onClick={close}>Close</button>
+     <button type="button" onClick={()=>onNavigate('Journal Entries')}>View journal</button>
+    </footer>
+   </aside>
+  </div>,
+  document.body
+ );
 }

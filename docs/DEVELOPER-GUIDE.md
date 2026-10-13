@@ -1,7 +1,7 @@
 # Developer Guide
 
-**Last verified:** 2026-09-17
-**Primary sources:** `package.json`, `vite.config.mjs`, `Dockerfile`, `docker-compose.yml`, `AGENTS.md`.
+**Last verified:** 2026-10-13
+**Primary sources:** `package.json`, `scripts/dev-local.mjs`, `vite.config.mjs`, `Dockerfile`, `docker-compose.yml`, `AGENTS.md`.
 
 ## Requirements and commands
 
@@ -10,6 +10,7 @@ Use a supported Node.js runtime and install dependencies from the checked-in loc
 ```bash
 npm install
 npm run dev
+npm run dev:local
 npm run build
 npm run test:sites
 npm run docs:check
@@ -17,6 +18,16 @@ node --test tests/*.test.mjs
 ```
 
 `npm run dev` and `npm run preview` bind to host `0.0.0.0` on port 4001 with `strictPort`, so they fail instead of moving to another port. Both servers set `allowedHosts: true` so a VM IP or hostname is accepted. Open `http://localhost:4001/` or `http://<vm-host>:4001/`.
+
+`npm run dev:local` (`scripts/dev-local.mjs`) is the local-preview companion to `npm run dev`, for when port 4001 or 5173 is already held: it defaults to port 5173, steps to the next free port instead of stopping on `strictPort`, prints the URL it settled on, and reads its port from `--port <n>` (flag first), `DEV_PORT` or `PORT`. It also installs a fallback for the `fs.realpath` family before Vite loads, because Vite resolves module paths through `fs.realpath.native` and a shell that refuses that syscall otherwise dies with `EPERM ... realpath` and `Failed to resolve dependency: react`. It is additive: `npm run dev` and `npm run preview` keep their pinned `--port 4001 --strictPort` behaviour and their `vite.config.mjs` ports.
+
+If a preview still reports `Port 5173 is already in use`, an earlier run is holding it. A restricted shell can neither see nor stop that process - `netstat`, `tasklist` and `taskkill` all refuse it - so list and stop the owner from a normal PowerShell prompt:
+
+```powershell
+Get-NetTCPConnection -LocalPort 5173 -State Listen | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force }
+```
+
+Run npm commands from `Finance_admin/`. The parent `wayvida/` folder holds no `package.json`, so `npm run dev` there fails with `ENOENT ... package.json`.
 
 If the machine has no system Node/npm, or the sandbox denies child-process spawn so Vite cannot start its esbuild helper, use the spawn-free static preview instead. `scripts/preview-server.mjs` serves the same origin on port 4001, transforms JSX in-process with the vendored Babel, and rewrites Vite's pre-bundled CommonJS dependencies (React, React DOM) into browser-legal default imports, and caches every transform in memory. It pre-transforms all source modules before it starts listening (87 modules in about 3.5 s), so the first page load is fast; touching a file invalidates just that module. Run `npm run preview:static`, or on Windows double-click `preview.cmd`, which finds Node on `PATH` or falls back to the bundled runtime. It is a local development and preview aid only; it is not the production build and does not run in Docker or Sites.
 

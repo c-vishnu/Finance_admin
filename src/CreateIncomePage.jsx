@@ -353,11 +353,11 @@ export default function CreateIncomePage({ onCancel, onSaved }) {
           <div className="inc-reference-grid">
             <label><span>Date <b>*</b></span><input type="date" required value={form.date} onChange={e => setField('date', e.target.value)} /></label>
             <label><span>Income Type <b>*</b></span><select value={form.category} onChange={e => handleCategoryChange(e.target.value)}>{categories.map(c => <option key={c.id || c.name} value={c.name}>{c.name}</option>)}</select></label>
-            <label className="inc-customer-field"><span>Received From <b>*</b></span><SearchableCustomerSelect customers={customers} selectedCustomerId={form.customerId || form.receivedFrom} onSelect={handleCustomerSelect} /></label>
             <label className="inc-amount-input"><span>Amount (₹) <b>*</b></span><input type="number" step="0.01" min="0" required placeholder="0.00" value={form.amount} onChange={e => setField('amount', e.target.value)} /></label>
           </div>
 
           <div className="inc-reference-payment">
+            <label className="inc-customer-field"><span>Received From <b>*</b></span><SearchableCustomerSelect customers={customers} selectedCustomerId={form.customerId || form.receivedFrom} onSelect={handleCustomerSelect} /></label>
             <label className="inc-received-question">
               <span>Have you received the income?</span>
               <button type="button" role="switch" aria-checked={form.received} className={'inc-received-switch'+(form.received ? ' is-received' : '')} onClick={() => setField('received', !form.received)}><i /><b>{form.received ? 'Yes, received' : 'Not yet received'}</b></button>
@@ -370,7 +370,7 @@ export default function CreateIncomePage({ onCancel, onSaved }) {
                 <button className={'inc-method-option'+(form.paymentType === 'Bank' ? ' selected' : '')} type="button" aria-pressed={form.paymentType === 'Bank'} onClick={() => setForm(f => ({...f,received:true,paymentType:'Bank',paidThrough:bankAccounts[0]?.code || '1010',method:'Bank transfer'}))}><IconBuildingBank size={19} />Bank</button>
               </div>
             </div>
-            <label><span>{form.paymentType === 'Cash' ? 'Cash Account' : 'Bank Account'} <b>*</b></span><select value={form.paymentType === 'Cash' ? '1000' : form.paidThrough} disabled={form.paymentType === 'Cash'} onChange={e => setField('paidThrough', e.target.value)}>{form.paymentType === 'Cash' ? <option value="1000">1000 · Cash / Petty Cash</option> : (bankAccounts.length ? bankAccounts.map(a => <option key={a.code} value={a.code}>{a.code} · {a.name}</option>) : <option value="1010">1010 · Bank</option>)}</select></label>
+            <label className="inc-account-field"><span>{form.paymentType === 'Cash' ? 'Cash Account' : 'Bank Account'} <b>*</b></span><select value={form.paymentType === 'Cash' ? '1000' : form.paidThrough} disabled={form.paymentType === 'Cash'} onChange={e => setField('paidThrough', e.target.value)}>{form.paymentType === 'Cash' ? <option value="1000">1000 · Cash / Petty Cash</option> : (bankAccounts.length ? bankAccounts.map(a => <option key={a.code} value={a.code}>{a.code} · {a.name}</option>) : <option value="1010">1010 · Bank</option>)}</select></label>
             </> : <label className="inc-expected-date"><span>Expected date for receiving income <b>*</b></span><input type="date" value={form.expectedDate} onChange={e => setField('expectedDate', e.target.value)} /></label>}
           </div>
         </section>

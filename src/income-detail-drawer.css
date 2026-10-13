@@ -1,0 +1,63 @@
+/* ---------------------------------------------------------------------------
+   The Income register's row detail drawer.
+
+   The drawer mounts on `document.body` through `createPortal` on the same
+   `.opsOverlay` / `.opsDrawer` shell every other detail drawer in the
+   application uses; `.irDrawer` carries only what that shell cannot know.
+
+
+
+
+   It must never be rendered inside the page. Report pages are mounted inside
+   `.transactionPortal`, which is a `position: fixed` stacking context at
+   `z-index: 45`, so an overlay raised inside it still paints below the sticky
+   register heading and below the application chrome - the drawer's own header
+   ends up under the search box and the `Record Income` split button. The shared
+   shell's `z-index: 1100` clears both.
+
+   Every rule here is scoped to `.irOverlay` so it outranks the generic shell
+   whatever order the stylesheets are concatenated in.
+   --------------------------------------------------------------------------- */
+
+/* Right-side slide-over. This drawer rests on the shared shell, which packs every `.opsDrawer`
+   against the RIGHT edge with `border-left` and a left-cast shadow, and this drawer takes that
+   side rather than restating it. */
+.irOverlay .irDrawer{--line:#e2e8f0;--muted:#667085;width:min(500px,100%)}
+
+/* Slide-over: the panel enters the way the Expense details drawer does - the short slide in from
+   the right edge (`exDrawerIn`'s 28px over .22s ease-out, the Create Account drawer's canonical
+   motion) with a matching fade, so the register's two detail drawers read as one right-anchored
+   slide-over. `irDrawerIn` is scoped to `.irOverlay .irDrawer` so it outranks the shared shell.
+   `ui-quality-polish.css`'s global `@media(prefers-reduced-motion:reduce)` rule neutralises it. */
+.irOverlay .irDrawer{animation:irDrawerIn .22s ease-out both}
+@keyframes irDrawerIn{from{transform:translateX(28px);opacity:.55}to{transform:translateX(0);opacity:1}}
+
+.irOverlay .irDrawer>header{padding:18px 22px;min-height:0}
+.irOverlay .irDrawer>header h2{margin:0;font-size:19px;line-height:1.3;color:#172033}
+.irOverlay .irDrawer>header p{margin:3px 0 0;font-size:13px}
+.irOverlay .irDrawerClose{display:grid;place-items:center;border:0;border-radius:7px;background:transparent;color:#475467;cursor:pointer}
+.irOverlay .irDrawerClose:hover{background:#f2f4f7}
+
+.irOverlay .irDrawerBody{display:flex;flex-direction:column;gap:20px;padding:18px 22px}
+
+/* The four headline facts keep the two-column grid the drawer has always had. */
+.irOverlay .irFacts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0;font-size:.875rem}
+.irOverlay .irFacts>div{min-width:0}
+.irOverlay .irFacts dt{margin:0;color:#667085;font-size:.75rem;text-transform:uppercase;letter-spacing:.02em}
+.irOverlay .irFacts dd{margin:4px 0 0;overflow-wrap:anywhere}
+.irOverlay .irFacts dd b{font-size:1.1rem;color:#0f172a}
+
+.irOverlay .irPosting{padding:12px;border:1px solid #e2e8f0;border-radius:8px;background:#f8fafc;font-size:.85rem}
+.irOverlay .irPosting h3{margin:0 0 6px;font-size:.85rem;font-weight:600}
+.irOverlay .irPosting ul{margin:0;padding-left:18px;color:#334155}
+
+.irOverlay .irNotes h3{margin:0;color:#667085;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.02em}
+.irOverlay .irNotes p{margin:4px 0 0;font-size:.875rem;color:#334155}
+
+.irOverlay .irDrawer>footer{align-items:center}
+.irOverlay .irDrawer>footer button{min-height:38px;padding:0 14px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;font-weight:600;cursor:pointer}
+.irOverlay .irDrawer>footer button:hover{background:#f5f8ff;border-color:#aac2ed}
+.irOverlay .irDrawer>footer button.irDanger{border-color:#fca5a5;background:#fef2f2;color:#b42318}
+.irOverlay .irDrawer>footer button.irDanger:hover{border-color:#f87171;background:#fee2e2}
+
+@media(max-width:560px){.irOverlay .irFacts{grid-template-columns:1fr}}
