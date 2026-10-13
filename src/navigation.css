@@ -27,11 +27,12 @@
   body.navCollapsed .guideBackdrop{left:72px!important}
   .app.navCollapsed>aside>.brand{justify-content:center;padding:11px 0}
   .app.navCollapsed>aside>.brand>span:not(.wayvidaLogo),.app.navCollapsed>aside>.brand>button{display:none}
-  .app.navCollapsed>aside .erpNavigation{padding-left:12px;padding-right:12px}
+  .app.navCollapsed>aside .erpNavigation{padding-left:8px;padding-right:8px;overflow-y:auto;overflow-x:hidden}
   .app.navCollapsed .erpNavigation>ul>li{margin-bottom:6px}
   .app.navCollapsed .erpNavigation .navGroup>ul{display:none}
-  .app.navCollapsed .erpNavigation :is(.navLeaf,.navGroupButton){justify-content:center;width:48px;min-height:42px;padding:10px}
-  .app.navCollapsed .erpNavigation :is(.navLeaf,.navGroupButton)>span,.app.navCollapsed .erpNavigation .navGroupButton>svg:last-child{display:none}
+  .app.navCollapsed .erpNavigation :is(.navLeaf,.navGroupButton){flex-direction:column;justify-content:center;gap:3px;width:100%;box-sizing:border-box;min-height:52px;padding:7px 4px}
+  .app.navCollapsed .erpNavigation :is(.navLeaf,.navGroupButton)>span{display:-webkit-box;flex:none;width:100%;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;font-size:10px;line-height:1.15;font-weight:600;letter-spacing:-.02em;text-align:center;overflow-wrap:break-word}
+  .app.navCollapsed .erpNavigation .navGroupButton>svg:last-child{display:none}
   .app.navCollapsed .erpNavigation :is(.navLeaf,.navGroupButton)>svg:first-child{width:19px;height:19px}
   .app.navCollapsed .erpNavigation .navStandalone{margin:0}
   .app.navCollapsed aside .workingContext{padding:3px;margin-bottom:10px;border-radius:11px}
