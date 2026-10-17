@@ -68,20 +68,22 @@ body:has(.ivCreatePage) .app{height:auto;min-height:100vh;overflow:visible}
 .invoiceWorkspace .ivInvoiceTable{table-layout:fixed;width:100%;min-width:0;white-space:nowrap}
 .invoiceWorkspace .ivInvoiceTable th,.invoiceWorkspace .ivInvoiceTable td{padding:12px 10px;overflow:hidden;text-overflow:ellipsis;vertical-align:top}
 .invoiceWorkspace .ivInvoiceTable th{white-space:normal;line-height:1.3;font-weight:600}
-/* Nine columns now: the lifecycle Status sits beside the payment status, and organisation and branch
-   are cells of their own rather than one merged cell. The widths are positional, so they are restated
-   together - and the credit-note register overrides all nine for its own table. */
-.invoiceWorkspace .ivInvoiceTable th:nth-child(1){width:13%}
-.invoiceWorkspace .ivInvoiceTable th:nth-child(2){width:16%}
-.invoiceWorkspace .ivInvoiceTable th:nth-child(3){width:11%}
-.invoiceWorkspace .ivInvoiceTable th:nth-child(4){width:12%}
+/* The invoice register's widths are supplied inline by visibleScopeColumns(): it drops the
+   Organisation and Branch columns when the working scope does not span more than one of each, then
+   renormalises the rest to 100%. These positional widths remain the fallback for the other tables
+   that share `.ivInvoiceTable` in this workspace; the credit-note register overrides all nine. */
+.invoiceWorkspace .ivInvoiceTable th:nth-child(1){width:11%}
+.invoiceWorkspace .ivInvoiceTable th:nth-child(2){width:8%}
+.invoiceWorkspace .ivInvoiceTable th:nth-child(3){width:14%}
+.invoiceWorkspace .ivInvoiceTable th:nth-child(4){width:10%}
 .invoiceWorkspace .ivInvoiceTable th:nth-child(5){width:12%}
-.invoiceWorkspace .ivInvoiceTable th:nth-child(6){width:16%}
-.invoiceWorkspace .ivInvoiceTable th:nth-child(7){width:11%}
-.invoiceWorkspace .ivInvoiceTable th:nth-child(8){width:9%}
+.invoiceWorkspace .ivInvoiceTable th:nth-child(6){width:12%}
+.invoiceWorkspace .ivInvoiceTable th:nth-child(7){width:14%}
+.invoiceWorkspace .ivInvoiceTable th:nth-child(8){width:10%}
+.invoiceWorkspace .ivInvoiceTable th:nth-child(9){width:9%}
 .invoiceWorkspace .ivInvoiceTable td small{display:block;margin-top:3px;overflow:hidden;text-overflow:ellipsis;color:#667085;font-size:12px;font-weight:400;line-height:1.35}
-.invoiceWorkspace .ivInvoiceTable td:nth-child(4),.invoiceWorkspace .ivInvoiceTable th:nth-child(4){text-align:right}
-.invoiceWorkspace .ivInvoiceTable td:nth-child(8),.invoiceWorkspace .ivInvoiceTable th:nth-child(8){text-align:right;overflow:visible}
+.invoiceWorkspace .ivInvoiceTable td.ivAmountCell,.invoiceWorkspace .ivInvoiceTable th.ivAmountCell{text-align:right}
+.invoiceWorkspace .ivInvoiceTable td.ivRegisterActions,.invoiceWorkspace .ivInvoiceTable th.ivRegisterActions{text-align:right;overflow:visible}
 /* The filter panel is the sales order register's disclosure and grid; only the field reset has to be
    restated, because this page's own `.invoiceWorkspace label` rule is a 13px stacked field. */
 .invoiceWorkspace .soFiltersPanel label{display:flex;flex-direction:column;align-items:stretch;gap:7px;width:auto;max-width:none;min-width:0;padding:0;border:0;border-radius:0;background:transparent;color:#344054;font-size:12px;font-weight:600}
@@ -175,3 +177,6 @@ body:has(.ivCreatePage) .app{height:auto;min-height:100vh;overflow:visible}
 .soAdvancedAccounting>summary small{color:#667085!important;font-size:12px!important;font-weight:400!important}
 .soAdvancedAccounting[open]>summary{border-bottom:1px solid #e7ecf3!important}
 .soAdvancedAccounting>.soFieldRow{padding:14px!important}
+/* Organisation and branch values are the only scope cells a multi-organisation
+   register shows, so they wrap instead of ellipsising inside a narrow column. */
+.invoiceWorkspace .ivInvoiceTable td.scopeCell{white-space:normal;overflow-wrap:anywhere}

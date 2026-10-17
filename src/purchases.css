@@ -29,7 +29,7 @@
 .purchaseWorkspace .ivInvoiceTable{min-width:0;width:100%;table-layout:auto}
 .purchaseWorkspace .ivInvoiceTable th{white-space:nowrap}
 .purchaseWorkspace .ivInvoiceTable td{white-space:normal}
-.purchaseWorkspace .ivInvoiceTable td:nth-child(2){max-width:260px;overflow:hidden;text-overflow:ellipsis}
+.purchaseWorkspace .ivInvoiceTable td:nth-child(3){max-width:260px;overflow:hidden;text-overflow:ellipsis}
 .purchaseWorkspace .ivInvoiceTable td small{white-space:nowrap}
 
 /* The purchase register now uses the Sales Orders registerHead layout, so the
@@ -48,16 +48,24 @@
 .purchaseWorkspace .ivInvoiceTable th:last-child,.purchaseWorkspace .ivInvoiceTable td:last-child{padding-right:20px}
 .purchaseWorkspace .ivInvoiceTable th,.purchaseWorkspace thead th,.purchaseWorkspace [data-sticky-head] thead th{position:static!important;top:0!important;padding-top:10px;padding-bottom:10px;background:#f7f9fc;color:#5b6b81;font-size:12px;font-weight:600;line-height:1.3}
 .purchaseWorkspace .ivInvoiceTable tbody tr:hover{background:#f8fbff}
-.purchaseWorkspace .ivInvoiceTable td:nth-child(4){font-weight:650;font-variant-numeric:tabular-nums;text-align:right}
+.purchaseWorkspace .ivInvoiceTable.purchaseRegisterTable td.purchaseAmountCell{font-weight:650;font-variant-numeric:tabular-nums;text-align:right}
 .purchaseWorkspace .ivInvoiceTable th:last-child,.purchaseWorkspace .ivInvoiceTable td:last-child{text-align:right;overflow:visible}
-/* Order & date column: bold blue number over a muted formatted date, same as Sales Orders. */
+/* The document number and its date are separate columns; the number keeps the blue register
+   token, and the date sits in the column beside it. */
 .purchaseWorkspace .ivInvoiceTable .soOrderNumber{color:#1849a9;font-weight:650}
 .purchaseWorkspace .ivInvoiceTable td small{display:block;margin-top:3px;color:#667085;font-size:12px;font-weight:400}
+.purchaseWorkspace .ivInvoiceTable.purchaseRegisterTable td:nth-child(1),
+.purchaseWorkspace .ivInvoiceTable.purchaseRegisterTable td:nth-child(2){white-space:nowrap}
+.purchaseWorkspace .ivInvoiceTable.purchaseRegisterTable td.scopeCell{font-weight:400;font-variant-numeric:normal;text-align:left;white-space:normal;overflow-wrap:anywhere}
+.purchaseWorkspace .ivInvoiceTable.purchaseRegisterTable th.purchaseAmountCell{text-align:right}
 .purchaseWorkspace .ivRowActions{gap:6px}
 .purchaseWorkspace .ivRowActions .ivIconButton{width:36px;height:36px;min-width:36px;padding:0;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#475467}
 .purchaseWorkspace .ivRowActions .ivIconButton:hover{border-color:#98a2b3;background:#f9fafb}
 
 /* Payments Made (Vendor Payments) table column alignment */
+.purchaseWorkspace .vpTable td:nth-child(1),
+.purchaseWorkspace .vpTable td:nth-child(2){white-space:nowrap}
+.purchaseWorkspace .vpTable td.scopeCell{white-space:normal;overflow-wrap:anywhere}
 .purchaseWorkspace .vpTable td:nth-child(4){font-weight:400;font-variant-numeric:normal;text-align:left}
 .purchaseWorkspace .vpTable th.vpAmount,.purchaseWorkspace .vpTable td.vpAmount{text-align:right;font-weight:650;font-variant-numeric:tabular-nums}
 .purchaseWorkspace .vpTable th.vpStatus,.purchaseWorkspace .vpTable td.vpStatus{text-align:center}

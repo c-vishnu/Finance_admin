@@ -59,5 +59,9 @@
 .irOverlay .irDrawer>footer button:hover{background:#f5f8ff;border-color:#aac2ed}
 .irOverlay .irDrawer>footer button.irDanger{border-color:#fca5a5;background:#fef2f2;color:#b42318}
 .irOverlay .irDrawer>footer button.irDanger:hover{border-color:#f87171;background:#fee2e2}
+/* Mark as received is the drawer's one affirmative action: the receipt the register used to offer
+   as a row action, kept on the surface where the record's own facts are in front of the operator. */
+.irOverlay .irDrawer>footer button.irReceive{border-color:#a7dcbd;background:#f0fdf4;color:#047857}
+.irOverlay .irDrawer>footer button.irReceive:hover{border-color:#6ee7b7;background:#dcfce7}
 
 @media(max-width:560px){.irOverlay .irFacts{grid-template-columns:1fr}}

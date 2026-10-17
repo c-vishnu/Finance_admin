@@ -36,7 +36,16 @@
    value the rest of the product scopes by - the same rule Customer Outstanding and the Transaction
    Register already apply. The stored value is then resolved to the organisation's own branch NAME,
    so the Branch filter offers "Kochi" rather than the internal "abc-kochi", and a value that names
-   no branch is stated as it was stored rather than dropped. */
+   no branch is stated as it was stored rather than dropped.
+
+   THE INCOME REGISTER'S TWO EXTRA COLUMNS. The Income register is the one report whose table can
+   state an Organisation and a Branch column, and only when the working context reaches past one
+   organisation or one branch - see src/organisation-scope.js, the single rule the journal lines,
+   Period Lock and the Chart of Accounts already read. Both columns are read the way the posting
+   engine reads them (src/invoice-engine.js periodContext): a stored organisation is resolved to
+   its own name, and an income that names neither an organisation nor a branch is read as the one
+   the operator is working in rather than left blank, because that is the context the record was
+   posted in. The caller supplies those two names as organisationName and workingBranch. */
 
 import {invoiceDisplayStatus} from './invoice-register-display.js';
 import {ALL,DEFAULT_SORT,SORT_OPTIONS,sortTransactions} from './transaction-register.js';
@@ -54,6 +63,12 @@ export const POSTED='Posted';
 /* The three lifecycle words these reports print and filter by. Cancelled and Reversed are missing on
    purpose: a dead document is excluded from the report rather than offered as a filter value. */
 export const BUSINESS_STATUSES=['Draft','Pending','Posted'];
+
+/* The two answers the register's Receipt control can give. They are the register's own words, so a
+   filter value is never a status the books do not have: an income is either received or still
+   awaiting the money, and the Status column states the lifecycle rather than the receipt. */
+export const RECEIPT_RECEIVED='Received';
+export const RECEIPT_AWAITING='Awaiting receipt';
 
 const list=(source,key)=>Array.isArray(source&&source[key])?source[key]:[];
 const text=value=>String(value==null?'':value).trim();
@@ -103,12 +118,13 @@ function accountName(book,code){
 
 /* The branch filter, applied together with every other narrowing control. Date From and Date To are
    inclusive at both ends: a document dated on either boundary is inside the range. */
-function narrow(rows,{from='',to='',status=ALL,party=ALL,branch=ALL,account=ALL,category=ALL,payment=ALL,search=''}={}){
+function narrow(rows,{from='',to='',status=ALL,receipt=ALL,party=ALL,branch=ALL,account=ALL,category=ALL,payment=ALL,search=''}={}){
  const needle=text(search).toLowerCase();
  return rows.filter(row=>{
   if(from&&row.date<from)return false;
   if(to&&row.date>to)return false;
   if(status&&status!==ALL&&row.status!==status)return false;
+  if(receipt&&receipt!==ALL&&Boolean(row.received)!==(receipt===RECEIPT_RECEIVED))return false;
   if(branch&&branch!==ALL&&row.branchName!==branch)return false;
   if(party&&party!==ALL&&row.party!==party)return false;
   if(account&&account!==ALL&&row.expenseAccountName!==account)return false;
@@ -125,6 +141,11 @@ const unique=values=>[...new Set(values.filter(Boolean))];
    names a state no document is in. */
 const statusOptions=rows=>BUSINESS_STATUSES.filter(state=>rows.some(row=>row.status===state));
 
+/* The statuses an income report can offer. An income is Draft, Recorded or Cancelled rather
+   than Draft, Pending or Posted, so the filter names the register's own vocabulary and never a
+   state no income record is in. */
+const incomeStatusOptions=rows=>INCOME_STATUSES.filter(state=>rows.some(row=>row.status===state));
+
 /* The parties a report can offer - a customer, a supplier or a payee - each with the code the master
    carries when the document or the master states one. */
 function partyOptions(rows){
@@ -138,10 +159,10 @@ function partyOptions(rows){
    document's own subtotal and discount, which is an independent path to the taxable value the
    engine stored, so it can catch a real disagreement rather than restating one number twice. */
 function checks(rows,totals,filters,type){
- const identity=type==='Expense'
-  ?{key:'totalIdentity',label:'Expense totals add up',ok:totals.total===sum(rows,'amount')}
+ const identity=type==='Expense'||type==='Income'
+  ?{key:'totalIdentity',label:(type==='Income'?'Income':'Expense')+' totals add up',ok:totals.total===sum(rows,'amount')}
   :{key:'totalIdentity',label:'Document totals add up',ok:totals.total===totals.taxable+totals.gst+totals.roundOff};
- const documentMath=type==='Expense'?[]:[{key:'documentMath',label:'Taxable value agrees with the document subtotal',ok:rows.every(row=>row.subtotal===null||row.taxable===row.subtotal-row.discount)}];
+ const documentMath=type==='Expense'||type==='Income'?[]:[{key:'documentMath',label:'Taxable value agrees with the document subtotal',ok:rows.every(row=>row.subtotal===null||row.taxable===row.subtotal-row.discount)}];
  return [
   {key:'oneRowPerDocument',label:'Every document is stated once',ok:new Set(rows.map(row=>row.recordId)).size===rows.length},
   ...documentMath,
@@ -326,42 +347,108 @@ export function expenseReport(book={},operations={},filters={}){
 
 /* ---------- Income Report ---------- */
 
+/* The three words the income register prints. A draft has not been recorded yet, a recorded
+   income is in the books whether or not the money has arrived, and a cancelled income has been
+   reversed and stays on the register as the record of that reversal: the register is where the
+   operator looks for an income they cancelled, so it is not dropped the way a cancelled invoice
+   is dropped from a sales total. The receipt question is a COLUMN here rather than a fourth
+   status, so nothing printed as a status is a state the books do not have.
+
+   THE RECEIVED IN COLUMN AND THE RECEIPT FILTER. The operator asked for that column to state the
+   destination of the money and nothing else: Cash or Bank, the two answers the Record Income
+   surface itself offers, read off the account the money landed in through `incomeReceivedIn` on the
+   row. An income whose money has NOT arrived states the dash, because where it will land is not a
+   fact yet - the awaiting truth is carried by the Receipt filter, whose two words live here with
+   the rule and not in the page, and the drawer still names the ledger the money is owed into. The
+   table and the export print that one value rather than deriving it a second time. */
+export const INCOME_STATUSES=['Draft','Recorded','Cancelled'];
+
+/* The stored status reduced to those three words. Anything that is neither a draft nor a
+   cancellation has been recorded, whatever word the record happens to carry: Posted from the
+   create surface, Pending while the money is expected, or a status an import supplied. */
+function incomeLifecycle(status){
+ const raw=text(status);
+ if(/^(cancelled|canceled|voided|excluded|reversed)$/i.test(raw))return 'Cancelled';
+ return /^draft$/i.test(raw)?'Draft':'Recorded';
+}
+
+/* The one word the Received In column prints. Only the two answers the Record Income surface
+   offers are ever stated - the money landed in cash or in a bank - so an account the register
+   cannot read as either is stated as Bank rather than as an account name the column was never
+   asked for. A record that has not received its money yet has no destination to state at all. */
+function incomeReceivedIn(income,isReceived){
+ if(!isReceived)return DASH;
+ const account=text(income.paidThrough||income.paymentAccount),method=text(income.method||income.paymentType);
+ return /^(1000|cash)$/i.test(account)||/^cash$/i.test(method)?'Cash':'Bank';
+}
+
+/* The organisations the register is scoped to. The working context can cover more than one
+   organisation, so the scope is a SET of references rather than a single id: an income is kept
+   when it belongs to one of them, and kept as well when it names no organisation at all, which
+   is read as the working organisation rather than as a foreign document. The same set is the
+   id-to-name map the Organisation column prints, so a row states the organisation's own name
+   and never an internal id, and a reference no organisation resolves is stated as it was
+   stored rather than dropped. */
+function organisationScope(filters){
+ const list=(Array.isArray(filters.organisations)?filters.organisations:[]).filter(Boolean);
+ const references=new Set(),names=new Map();
+ const add=(key,name)=>{const reference=text(key);if(!reference||references.has(reference))return;references.add(reference);names.set(reference,text(name)||reference)};
+ for(const item of list)for(const key of [item.id||item.organisationId,item.code||item.organisationCode])add(key,item.name||item.organisationName);
+ if(!list.length)for(const key of [filters.organisation,filters.organisationCode])add(key,filters.organisationName);
+ return {references,names};
+}
+
 export function incomeReport(book={},operations={},filters={}){
  const branches=list(filters,'branches'),index=branchIndex(book),journals=new Map(list(book,'journals').map(journal=>[journal.id,journal]));
- const current=text(filters.organisation);
+ const scope=organisationScope(filters);
+ /* Every invoice the book has filed, by id, so the register can print the number of the document an
+    income was recorded against without reading a second store: the book it already reads is the one
+    place an invoice lives. */
+ const invoices=new Map(list(book,'invoices').map(invoice=>[text(invoice.id),text(invoice.number)]));
  const rows=[];let excludedOtherOrganisation=0;
  for(const income of list(operations,'incomes')){
   const journal=journals.get(income.journalId);
   const organisation=organisationOf(income,journal);
-  if(current&&organisation&&organisation!==current&&organisation!==text(filters.organisationCode)){excludedOtherOrganisation+=1;continue}
-  const status=lifecycle(income.status,income.status==='Posted');
-  if(status==='Cancelled')continue;
+  if(organisation&&scope.references.size&&!scope.references.has(organisation)){excludedOtherOrganisation+=1;continue}
+  const status=incomeLifecycle(income.status);
   const amount=minor(income.amount);
   const incomeAccount=text(income.account||'4100'),paymentAccount=text(income.paidThrough||'1010');
   const tax=text(income.tax),hasTax=Boolean(tax)&&!/^no\s*tax$/i.test(tax);
-  const category=text(income.category),receivedFrom=text(income.receivedFrom||income.payee||income.customerName),reference=text(income.reference),description=text(income.description||income.name);
+  const category=text(income.category),receivedFrom=text(income.receivedFrom||income.payee||income.customerName),reference=text(income.reference||income.referenceNo),description=text(income.description||income.name);
   const branch=text(income.branch||income.branchName||index.get(income.journalId));
   const isReceived=income.received===true||income.received==='true'||income.received==='Yes';
+  /* WHICH DOCUMENT NUMBER THE ROW IS KNOWN BY. An income recorded against a sales invoice is known
+     by that invoice's number, because the invoice is the document the operator is reconciling it
+     against; an income recorded against no invoice - or against one that has since left the book -
+     keeps its own income number, which every income is given when it is recorded. Both are resolved
+     here, once, so the table and the export cannot disagree about which of the two a row carries. */
+  const number=text(income.number)||'Not numbered';
+  const invoiceNumber=invoices.get(text(income.salesInvoiceId))||'';
   rows.push({
    id:'income:'+text(income.id),recordId:text(income.id),type:'Income',
-   date:text(income.date),number:text(income.number)||'Not numbered',
+   date:text(income.date),number,invoiceNumber,documentNumber:invoiceNumber||number,
    name:text(income.name||description||category),party:receivedFrom||DASH,receivedFrom:receivedFrom||DASH,partyCode:'',partyId:'',
    incomeAccount,incomeAccountName:accountName(book,incomeAccount),
    expenseAccount:incomeAccount,expenseAccountName:accountName(book,incomeAccount),
    paymentAccount,paymentAccountName:accountName(book,paymentAccount),
+   receivedIn:incomeReceivedIn(income,isReceived),
    method:text(income.method),category,
    received:isReceived,
    expectedDate:text(income.expectedDate),
    amount,total:amount,
+   taxable:0,gst:0,roundOff:0,
    tax,taxLabel:hasTax?tax:DASH,
-   status:income.status==='Draft'?'Draft':(isReceived?'Received':'Unpaid'),storedStatus:text(income.status),posted:income.status==='Posted',
-   branch,branchName:branchName(branch,branches),
-   reference,description,
+   status,storedStatus:text(income.status),posted:status==='Recorded',
+   organisation,organisationName:organisation?(scope.names.get(organisation)||organisation):text(filters.organisationName),
+   branch,branchName:branchName(branch,branches)||text(filters.workingBranch),
+   reference:reference||DASH,description,
    haystack:[income.number,income.name,receivedFrom,category,incomeAccount,accountName(book,incomeAccount),reference,description].filter(Boolean).join(' ').toLowerCase(),
    handshake:'wayvida-open-income',page:'Income'
   });
  }
- return assemble(rows,filters,{excludedOtherOrganisation,type:'Income'});
+ /* Whether the two scope columns are printed is the page's decision, and the export mirrors the
+    table it was taken from, so the report carries the same two answers out with the rows. */
+ return {...assemble(rows,filters,{excludedOtherOrganisation,type:'Income'}),showOrganisation:Boolean(filters.showOrganisation),showBranch:Boolean(filters.showBranch)};
 }
 
 /* ---------- The shared assembly ---------- */
@@ -381,7 +468,7 @@ function assemble(rows,filters,{excludedOtherOrganisation=0,type=''}={}){
   from:applied.from,to:applied.to,status:applied.status,party:applied.party,branch:applied.branch,account:applied.account,category:applied.category,payment:applied.payment,search:applied.search,
   rows:visible,
   totals,
-  statusOptions:statusOptions(rows),
+  statusOptions:type==='Income'?incomeStatusOptions(rows):statusOptions(rows),
   partyOptions:partyOptions(rows),
   branchOptions:unique(rows.map(row=>row.branchName)).sort(),
   paymentOptions:unique(rows.map(row=>row.paymentAccountName)).sort(),
@@ -418,14 +505,20 @@ export function purchaseExportSheet(report){
 
 export function expenseExportSheet(report){
  return {
-  header:['Date','Expense No.','Expense Account','Payee','Category','Amount INR','Tax','Total INR','Status'],
-  rows:report.rows.map(row=>[row.date,row.number,row.expenseAccountName,row.party,row.category,row.amount/100,row.taxLabel,row.total/100,row.status])
+  header:['Date','Expense No.','Paid To','Payment For','Bill Reference','Payment Method','Paid From','Amount Paid INR','Status'],
+  rows:report.rows.map(row=>[row.date,row.number,row.party,row.expenseAccountName,row.reference,row.method,row.paymentAccountName,row.amount/100,row.status])
  };
 }
 
+/* The Income sheet states the register's own columns in the register's own order, and the
+   Organisation and Branch columns join it only when the working context made the page print them:
+   the sheet and the table it was exported from describe the same rows. The receipt is stated as
+   'Received In' - Cash, Bank or the dash - rather than as a Yes/No column, because that is the one
+   receipt fact the register itself prints. */
 export function incomeExportSheet(report){
- return {
-  header:['Date','Income No.','Income Category','Received From','Description','Amount INR','Received?','Payment Account','Status'],
-  rows:report.rows.map(row=>[row.date,row.number,row.category,row.party,row.description,row.amount/100,row.received?'Yes':'No',row.paymentAccountName||'Receivable',row.status])
- };
-}
+  const scopeColumns=[...(report.showOrganisation?['Organisation']:[]),...(report.showBranch?['Branch']:[])];
+  return {
+   header:['Date','Income No./Inv No.','Income From','Income Type','Received In','Reference Number','Amount INR','Status',...scopeColumns],
+   rows:report.rows.map(row=>[row.date,row.documentNumber,row.party,row.category,row.receivedIn,row.reference,row.amount/100,row.status,...(report.showOrganisation?[row.organisationName]:[]),...(report.showBranch?[row.branchName]:[])])
+  };
+ }

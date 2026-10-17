@@ -214,7 +214,11 @@ test('the Expense Report states the requested copy, columns and structure',()=>{
  const page=read('ExpenseReport.jsx');
  assert.ok(page.includes('<h2>Expenses'),'the title');
  assert.ok(page.includes('View business expenses by date, account and payee.'),'the subtitle');
- for(const column of ['Reference# & Date','Expense Account','Vendor Name','Paid Through','CustomerName','Status','Amount','Actions'])assert.ok(page.includes('<th>'+column+'</th>'),'the column '+column);
+ const columns=['Date','Expense No.','Paid To','Payment For','Bill Reference','Payment Method','Paid From','Amount Paid','Status','Actions'];
+ assert.deepEqual([...page.matchAll(/<th>(.*?)<\/th>/g)].map(match=>match[1]),columns,'the columns in the requested order');
+ assert.ok(page.includes('<td>{dateText(entry.date)}</td>'),'the date is its own cell');
+ assert.ok(page.includes("onClick={()=>openDocument(entry)}>{entry.number}</button>"),'the expense number is its own cell');
+ assert.ok(page.includes('colSpan={10}'),'the empty state spans every column');
  for(const filter of ['>Date From<','>Date To<','>Expense Account<','>Category<','>Vendor Name<','>Status<','>Payment Account<'])assert.ok(page.includes(filter),'the '+filter+' filter');
  assert.ok(page.includes('View Expense'),'the row action');
  assert.ok(page.includes('Expenses will appear here once they are posted.'),'the empty-state description');
@@ -256,7 +260,7 @@ test('the Expense Report offers no Branch filter when no expense carries a branc
 test('each export states exactly the columns the brief lists',()=>{
  assert.deepEqual(salesExportSheet(sales()).header,['Date','Invoice','Customer','Taxable Amount INR','GST INR','Total INR','Status'],'the sales export header');
  assert.deepEqual(purchaseExportSheet(purchases()).header,['Date','Bill','Supplier','Taxable Amount INR','GST INR','Total INR','Status'],'the purchase export header');
- assert.deepEqual(expenseExportSheet(expenses_()).header,['Date','Expense No.','Expense Account','Payee','Category','Amount INR','Tax','Total INR','Status'],'the expense export header');
+ assert.deepEqual(expenseExportSheet(expenses_()).header,['Date','Expense No.','Paid To','Payment For','Bill Reference','Payment Method','Paid From','Amount Paid INR','Status'],'the expense export header');
  assert.equal(salesExportSheet(sales()).rows.length,4,'the sales export states every filtered row');
  assert.equal(expenseExportSheet(expenses_()).rows.length,2,'the expense export states every filtered row');
  assert.equal(salesExportSheet(sales()).rows[0]===undefined,false,'the sales export is a header plus rows');

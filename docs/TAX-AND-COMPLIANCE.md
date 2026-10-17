@@ -1,6 +1,10 @@
 # Tax & Compliance
 
-**Last verified:** 2026-09-29
+**Last verified:** 2026-10-16
+
+> **Record Income GST - 2026-10-16:** the Record Income page now states the GST of the workflow the operator chose, through the new pure `src/income-tax.js` (see `docs/MODULES.md`). A receipt settling an existing sales invoice adds NO tax - the invoice carried its own taxable value and output tax, so `additionalGst()` is zero by construction and nothing is posted twice - while a direct income splits the money received (never enlarged) between the taxable income and its output tax, and a customer advance is classified by the supply it is for (goods at receipt outside the charge, taxable services chargeable, unclassified refused) before it is held as a liability. Rates come from the organisation's own tax configuration via `configuredRates`, the CGST/SGST against IGST split from `placeOfSupply`, and the store posts exactly the figures the page shows.
+
+**Last verified:** 2026-10-16
 
 > **Report toolbar update — 2026-09-29:** the heading action row now carries a date-range preset dropdown (`All dates`, `Today`, `This week`, `This month`, `This year`, `Custom selection`) beside the search box and the `Filters` disclosure, and ONE `Export` button whose dropdown holds the report own exports. Where a sentence below still describes `Export Excel` and `Export PDF` as two side-by-side buttons, the dropdown supersedes it. See `docs/REPORT-TOOLBAR.md`.
 

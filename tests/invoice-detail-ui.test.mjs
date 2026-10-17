@@ -203,19 +203,26 @@ test('the invoice tab row is the Item Details row, value for value',()=>{
  assert.match(css,/@media\(max-width:520px\)\{\.ivDetailSheet \.itemDetailTabs\{padding:0\}\.ivDetailSheet \.itemDetailTabs button\{flex:1 1 0;padding:0 8px;gap:5px;font-size:12px\}\}/,'and the narrow-viewport fallback');
 });
 
-test('the invoices register is eight columns that never scroll sideways',()=>{
- assert.match(workspace,/<table className="ivInvoiceTable"><thead><tr>\{\['Invoice','Customer','Status','Invoice amount','Payment status','Organisation','Branch','Actions'\]\.map\(/,'the register names eight columns: the invoice, its customer, the lifecycle status AHEAD of the amount, the payment status, organisation and branch apart, and the row actions - the Order ID has no column here');
- assert.match(workspace,/onClick=\{\(\)=>\{setSelected\(i\.id\);setTab\('Overview'\)\}\}>\{i\.number\}<\/button><small>\{i\.date\}<\/small>/,'the invoice number and its date share one cell, and the lifecycle status lives in its own column rather than beside the date');
- assert.match(workspace,/<td>\{i\.customerName\}<\/td><td><StatusPill status=\{invoiceDisplayStatus\(i\)\} tone=\{invoiceDisplayTone\(i\)\}\/><\/td><td>\{money\(i\.totals\.total\)\}/,'the lifecycle status sits between the customer and the amount, and it reads through invoiceDisplayStatus - Draft, Pending or Published, from the stored record and its posted flag');
+test('the invoices register columns follow the working scope',()=>{
+ assert.match(workspace,/import \{useWorkingScopeVisibility,visibleScopeColumns\} from '\.\/working-scope\.js';/,'the register reads the shared scope helper');
+ assert.match(workspace,/const registerColumns=visibleScopeColumns\(\[/,'the columns are filtered and renormalised from the working scope');
+ assert.match(workspace,/\{key:'number',label:'Invoice',weight:11\},\s*\{key:'date',label:'Date',weight:12\}/,'the invoice and its date are separate columns');
+ assert.match(workspace,/\{key:'organisation',label:'Organisation',weight:9\.5,scope:'organisation'\}/,'Organisation is a scope column');
+ assert.match(workspace,/\{key:'branch',label:'Branch',weight:8,scope:'branch'\}/,'Branch is a scope column');
+ assert.match(workspace,/\{key:'actions',label:'Actions',weight:9,className:'ivRegisterActions'\}/,'Actions keeps its alignment class');
+ assert.match(workspace,/<table className="ivInvoiceTable"><thead><tr>\{registerColumns\.map\(column=><th key=\{column\.key\} scope="col" className=\{column\.className\}/,'the header renders the filtered column list');
+ assert.match(workspace,/<td>\{i\.date\}<\/td><td>\{i\.customerName\}<\/td>/,'the invoice date is a column of its own between the invoice number and the customer');
+ assert.match(workspace,/<td>\{i\.customerName\}<\/td><td><StatusPill status=\{invoiceDisplayStatus\(i\)\} tone=\{invoiceDisplayTone\(i\)\}\/><\/td><td className="ivAmountCell">\{money\(i\.totals\.total\)\}/,'the lifecycle status sits between the customer and the amount, and it reads through invoiceDisplayStatus - Draft, Pending or Published, from the stored record and its posted flag');
  assert.ok(!workspace.includes("<td>{orderNumberOf(i)||'Not linked'}</td>"),'the Order ID has no cell in the register - it is read on the invoice detail page, and only its filter remains here');
  assert.match(workspace,/<StatusPill status=\{paymentStatus\(db,i\)\} tone=\{PAYMENT_TONES\[paymentStatus\(db,i\)\]\|\|'neutral'\}\/>/, 'payment status uses the shared pill every other register uses, with the same tones');
- assert.match(workspace,/<td>\{i\.organizationName\|\|'Not recorded'\}<\/td><td>\{i\.branchName\|\|'Not recorded'\}<\/td>/,'organisation and branch are columns of their own instead of one merged cell');
+ assert.match(workspace,/\{workingScope\.showOrganisation&&<td className="scopeCell">\{i\.organizationName\|\|'Not recorded'\}<\/td>\}/,'Organisation renders only when the selected view spans more than one organisation');
+ assert.match(workspace,/\{workingScope\.showBranch&&<td className="scopeCell">\{i\.branchName\|\|'Not recorded'\}<\/td>\}/,'Branch renders only when the selected view spans more than one branch');
  assert.match(workspace,/<button className="ivIconButton" aria-label=\{'View '\+i\.number\} title=\{'View '\+i\.number\} onClick=\{\(\)=>\{setSelected\(i\.id\);setTab\('Overview'\)\}\}><IconEye size=\{17\}\/><\/button>/,'and the row View action is an eye icon, labelled for a screen reader');
  const css=fs.readFileSync(new URL('../src/invoice-workspace.css',import.meta.url),'utf8');
  assert.ok(css.includes('.invoiceWorkspace .ivInvoiceTable{table-layout:fixed;width:100%;min-width:0;white-space:nowrap}'),'the table takes the card width, which is what stops the sideways scroll the eight-column layout had');
- for(const [n,w] of [[1,'13%'],[2,'16%'],[3,'11%'],[4,'12%'],[5,'12%'],[6,'16%'],[7,'11%'],[8,'9%']])
- assert.ok(css.includes('.invoiceWorkspace .ivInvoiceTable th:nth-child('+n+'){width:'+w+'}'),'column '+n+' is '+w+' of the table, restated for eight');
- assert.ok(css.includes('.invoiceWorkspace .ivInvoiceTable td:nth-child(8),.invoiceWorkspace .ivInvoiceTable th:nth-child(8){text-align:right;overflow:visible}'),'with the actions column - now the last - still right-aligned and released from the cell clipping');
+ assert.ok(css.includes('.invoiceWorkspace .ivInvoiceTable td.ivAmountCell,.invoiceWorkspace .ivInvoiceTable th.ivAmountCell{text-align:right}'),'the amount column is right-aligned by class, not by a position that shifts with the scope columns');
+ assert.ok(css.includes('.invoiceWorkspace .ivInvoiceTable td.ivRegisterActions,.invoiceWorkspace .ivInvoiceTable th.ivRegisterActions{text-align:right;overflow:visible}'),'the actions column stays right-aligned and released from the cell clipping');
+ assert.ok(css.includes('.invoiceWorkspace .ivInvoiceTable td.scopeCell{white-space:normal;overflow-wrap:anywhere}'),'scope names wrap inside their narrow conditional columns');
  assert.ok(css.includes('.invoiceWorkspace .ivInvoiceTable th,.invoiceWorkspace .ivInvoiceTable td{padding:12px 10px;overflow:hidden;text-overflow:ellipsis;vertical-align:top}'),'a long value ellipses inside its own cell instead of widening the grid');
  assert.ok(css.includes('.invoiceWorkspace .ivCard.ivRegisterCard{overflow:visible}'),'and the register card releases its overflow so the Filters panel is not clipped at the card edge');
 });
@@ -229,6 +236,23 @@ test('the invoices register heading and toolbar are one merged row',()=>{
  assert.match(workspace,/className="ivActions"><div className="registerSplit"><button type="button" className="primary registerSplitMain" onClick=\{\(\)=>create\(\)\}><IconPlus size=\{17\}\/>Create invoice<\/button><details className="registerSplitMore">/,'the add action is the shared split button over the same create the page already had');
  assert.match(workspace,/<div><button type="button" onClick=\{menuRun\(\(\)=>setConfig\(\{\.\.\.db\.config\}\)\)\}><IconSettings size=\{16\}\/>Account mapping<\/button><\/div>/,'and its caret holds Account mapping alone: the demo-example and export entries were removed on request');
  assert.ok(!workspace.includes('exportRegister')&&!workspace.includes('IconDownload')&&!workspace.includes('wayvida-invoices.csv'),'the register export and everything it needed are deleted rather than left dead');
+ assert.match(workspace,/const menuRun=handler=>event=>\{event\.currentTarget\.closest\('details'\)\?\.removeAttribute\('open'\);handler\(\)\};/,'the caret closes itself before it runs its entry');
+ const shell=fs.readFileSync(new URL('../src/register-head.css',import.meta.url),'utf8');
+ assert.ok(shell.includes('.registerHead.ivHeading .registerHeadText h2{margin:0;font-size:24px;font-weight:700;line-height:1.25;letter-spacing:-.4px;color:#172033}'),'the merged row carries the Journal Entries title size');
+ assert.ok(shell.includes('.registerHead.ivHeading .registerHeadText p{margin:5px 0 0;color:#667085;font-size:12px}'),'and the Journal Entries description size');
+ assert.ok(shell.includes(' .registerHead:has(.soFiltersMore[open]),.registerHead:has(.customerFilters[open]){position:static}'),'and gives up its pin while a filter panel opens in the flow at a narrow width');
+ assert.ok(shell.includes('.registerHead .registerSplit>.registerSplitMore>summary{display:inline-grid;'),'the caret keeps the shared register split geometry');
+});
+
+/* The migrated register is one row: the page heading, its description, the search, the Filters
+   disclosure and the split action share it, and the register card finishes the card it opens. */
+test('the invoices register heading and toolbar are one merged row',()=>{
+ assert.match(workspace,/<div className="ivHeading registerHead"><div className="registerHeadText"><h2>Sales invoices<\/h2><p>Create invoices once\. Accounting follows automatically\.<\/p><\/div><div className="ivTools">/,'the page title and its description lead the shared merged row, which holds the toolbar');
+ assert.ok(workspace.indexOf('className="ivTools"')>workspace.indexOf('ivHeading registerHead'),'the register toolbar is merged into the heading row');
+ assert.match(workspace,/<div className="ivCard ivRegisterCard"><div className="ivScroll">/,'and the register card completes the one card the row opens');
+ assert.match(workspace,/className="ivActions"><div className="registerSplit"><button type="button" className="primary registerSplitMain" onClick=\{\(\)=>create\(\)\}><IconPlus size=\{17\}\/>Create invoice<\/button><details className="registerSplitMore">/,'the add action is the shared split button over the same create the page already had');
+ assert.match(workspace,/<button type="button" onClick=\{menuRun\(exportRegister\)\}><IconDownload size=\{16\}\/>Export<\/button>/,'and its caret carries the register export');
+ assert.match(workspace,/const exportRegister=\(\)=>\{const rows=\[\['Invoice number','Date','Customer','Order ID','Invoice amount','Payment status','Organisation','Branch','Lifecycle status'\],\.\.\.visibleInvoices\.map/,'which reads the same visible rows the table shows');
  assert.match(workspace,/const menuRun=handler=>event=>\{event\.currentTarget\.closest\('details'\)\?\.removeAttribute\('open'\);handler\(\)\};/,'the caret closes itself before it runs its entry');
  const shell=fs.readFileSync(new URL('../src/register-head.css',import.meta.url),'utf8');
  assert.ok(shell.includes('.registerHead.ivHeading .registerHeadText h2{margin:0;font-size:24px;font-weight:700;line-height:1.25;letter-spacing:-.4px;color:#172033}'),'the merged row carries the Journal Entries title size');

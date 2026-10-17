@@ -171,6 +171,118 @@
  .brEquation span{margin-left:26px}
 }
 
+/* ---------- The Income register's columns ---------- */
+
+/* The shared .je-page rules size nine columns and carry the Journal table's own cell paddings; the
+   Income register prints nine columns of its own, and ten or eleven once the working context
+   reaches past one organisation or one branch. Only the two leading columns and the trailing
+   Actions column are pinned here, so the columns between them share what is left however many of
+   them there are and the scope columns cannot squeeze Actions to nothing. */
+.je-page .je-table-wrap table.incomeRegister th:nth-child(1){width:11%}
+.je-page .je-table-wrap table.incomeRegister th:nth-child(2){width:11%}
+.je-page .je-table-wrap table.incomeRegister th:last-child{width:9%}
+
+/* THE COLUMN GAP. Every cell of this register takes ONE inset, so the space between any two of its
+   columns is the same constant on every row. The Journal table's own rhythm - 24px on the right of
+   its Journal ID cell and 18px on the right of its Particulars cell - was reaching this register
+   and made two of its gaps read 36px and 26px beside a 16px norm. The first and last cells keep the
+   card's own gutter so the row still lines up with the heading above it, and the column widths
+   above are untouched, so only the space between the columns changed. Below 1050px every column
+   tightens to the same smaller inset, the step the Journal table already takes at that width. */
+.je-page .je-table-wrap table.incomeRegister th,
+.je-page .je-table-wrap table.incomeRegister td{padding-left:12px!important;padding-right:12px!important}
+.je-page .je-table-wrap table.incomeRegister th:first-child,
+.je-page .je-table-wrap table.incomeRegister td:first-child{padding-left:16px!important}
+.je-page .je-table-wrap table.incomeRegister th:last-child,
+.je-page .je-table-wrap table.incomeRegister td:last-child{padding-right:16px!important}
+
+/* A value is read as one token. The global `td, th { overflow-wrap: anywhere }` rule in
+   src/ui-system.css lets auto layout break a money figure between its own digits, so the
+   register was printing "Rs 8,000.0" over "0" and splitting "Commission" into "Commiss"
+   and "ion". The register takes ordinary word wrapping back, and the four columns that
+   carry a single unbreakable token - the date, the document number, the amount and the
+   reference - never wrap at all. The column widths are left to auto layout, which widens a
+   column as far as its longest token needs once it is no longer allowed to break one. Every one of
+   these declarations carries !important because src/journal-entries.css answers the very same
+   selector with `white-space:normal!important; word-break:break-word!important`, and an important
+   declaration is settled on importance before source order or specificity is ever consulted. */
+.je-page .je-table-wrap table.incomeRegister th,
+.je-page .je-table-wrap table.incomeRegister td{overflow-wrap:normal!important;word-break:normal!important}
+.je-page .je-table-wrap table.incomeRegister td:nth-child(1),
+.je-page .je-table-wrap table.incomeRegister td:nth-child(2),
+.je-page .je-table-wrap table.incomeRegister td:nth-child(6),
+.je-page .je-table-wrap table.incomeRegister td:nth-child(7){white-space:nowrap!important}
+.je-page .je-table-wrap table.incomeRegister td:nth-child(6){font-variant-numeric:tabular-nums!important}
+/* The Sales and Purchases registers print their money through .brMoney, which sets the
+   figures right so the rupees, the thousands and the paise line up down the column.
+   The Income register printed the same figures left, so its column could not be read
+   as a column at all. The Amount column takes the house alignment; every other column
+   of this register is a name, a date or a status and stays left. */
+.je-page .je-table-wrap table.incomeRegister th:nth-child(6),
+.je-page .je-table-wrap table.incomeRegister td:nth-child(6){text-align:right!important}
+
+/* Holding four columns to one line asks the table for a little more width than it had, which
+   pushed the register 11px past its card at a 1024px window and put a scrollbar under it. The
+   columns between the two pinned ends now each state their own share, so the table still fits the
+   card it is drawn in and the money column keeps the floor it needs to print a figure whole. */
+.je-page .je-table-wrap table.incomeRegister th:nth-child(3){width:14%}
+.je-page .je-table-wrap table.incomeRegister th:nth-child(4){width:13%}
+.je-page .je-table-wrap table.incomeRegister th:nth-child(5){width:9%}
+.je-page .je-table-wrap table.incomeRegister th:nth-child(6){width:11%}
+.je-page .je-table-wrap table.incomeRegister th:nth-child(7){width:11%}
+.je-page .je-table-wrap table.incomeRegister th:nth-child(8){width:11%}
+@media(max-width:1050px){
+ .je-page .je-table-wrap table.incomeRegister th,
+ .je-page .je-table-wrap table.incomeRegister td{padding-left:6px!important;padding-right:6px!important}
+ .je-page .je-table-wrap table.incomeRegister th:first-child,
+ .je-page .je-table-wrap table.incomeRegister td:first-child{padding-left:10px!important}
+ .je-page .je-table-wrap table.incomeRegister th:last-child,
+ .je-page .je-table-wrap table.incomeRegister td:last-child{padding-right:10px!important}
+}
+
+/* ---------- The Expense register's columns ----------
+   The register states ten columns: the date, the expense number, the payee, the expense account,
+   the bill reference, the payment method, the paying account, the amount, the status and the row
+   actions. The date, the number, the reference and the amount are single tokens, so they never
+   wrap; the two account columns take the widest shares because they carry account names. Amount
+   Paid is set right and in tabular figures so the rupees line up down the column. */
+.je-page .je-table-wrap table.expenseRegister th,
+.je-page .je-table-wrap table.expenseRegister td{overflow-wrap:normal!important;word-break:normal!important;vertical-align:middle}
+.je-page .je-table-wrap table.expenseRegister th:nth-child(1){width:8%}
+.je-page .je-table-wrap table.expenseRegister th:nth-child(2){width:11%}
+.je-page .je-table-wrap table.expenseRegister th:nth-child(3){width:14%}
+.je-page .je-table-wrap table.expenseRegister th:nth-child(4){width:13%}
+.je-page .je-table-wrap table.expenseRegister th:nth-child(5){width:10%}
+.je-page .je-table-wrap table.expenseRegister th:nth-child(6){width:10%}
+.je-page .je-table-wrap table.expenseRegister th:nth-child(7){width:14%}
+.je-page .je-table-wrap table.expenseRegister th:nth-child(8){width:11%}
+.je-page .je-table-wrap table.expenseRegister th:nth-child(9){width:8%}
+.je-page .je-table-wrap table.expenseRegister td:nth-child(1),
+.je-page .je-table-wrap table.expenseRegister td:nth-child(2),
+.je-page .je-table-wrap table.expenseRegister td:nth-child(5){white-space:nowrap!important}
+.je-page .je-table-wrap table.expenseRegister td:nth-child(8){white-space:nowrap!important;font-variant-numeric:tabular-nums!important;text-align:right!important}
+.je-page .je-table-wrap table.expenseRegister th:nth-child(8){text-align:right!important}
+@media(max-width:1100px){
+ .je-page.brExpense .je-table-wrap{overflow-x:auto!important;overflow-y:visible!important}
+ .je-page .je-table-wrap table.expenseRegister{min-width:940px!important}
+ .je-page .je-table-wrap table.expenseRegister th,
+ .je-page .je-table-wrap table.expenseRegister td{padding-left:6px!important;padding-right:6px!important}
+ .je-page .je-table-wrap table.expenseRegister th:first-child,
+ .je-page .je-table-wrap table.expenseRegister td:first-child{padding-left:10px!important}
+ .je-page .je-table-wrap table.expenseRegister th:last-child,
+ .je-page .je-table-wrap table.expenseRegister td:last-child{padding-right:10px!important}
+}
+/* The shared register heading is a three-column grid and the tools it holds have fixed
+   minimum widths, so below the fold its text column was collapsing to nothing. The Expenses
+   heading stacks instead: the title, then the search and Filters row, then the create action. */
+@media(max-width:900px){
+ .je-page.brExpense .je-heading.registerHead{display:flex!important;flex-direction:column!important;align-items:stretch!important;row-gap:10px!important;padding-bottom:12px!important}
+ .je-page.brExpense .je-heading.registerHead>.registerHeadText{flex:0 0 auto!important;width:100%!important}
+ .je-page.brExpense .je-heading.registerHead>.je-tools{width:100%!important;flex:1 1 auto!important}
+ .je-page.brExpense .je-heading.registerHead>.je-tools>label{flex:1 1 auto!important;max-width:none!important;margin-left:0!important}
+ .je-page.brExpense .je-heading.registerHead>.je-create-callout{align-self:flex-end!important}
+}
+
 @media print{@page{size:landscape;margin:12mm}
 body:has(.brPage) .app>aside,body:has(.brPage) .app>header,body:has(.brPage) .welcome,body:has(.brPage) .brHeadActions,body:has(.brPage) .brFilters,body:has(.brPage) .brActionsCol{display:none!important}
 .transactionPortal:has(.brPage){position:static!important;inset:auto!important;overflow:visible!important;padding:0!important;background:#fff!important}

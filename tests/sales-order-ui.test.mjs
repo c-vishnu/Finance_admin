@@ -17,7 +17,7 @@ test('every sales order row carries one eye that opens the order preview, beside
  assert.match(source,/function openInvoice\(order\)\{const id=invoiceIdOf\(order\);if\(!id\)return;sessionStorage\.setItem\('wayvida-open-invoice',id\);onNavigate\('Invoices'\)\}/,'and the row menu still hands the invoice over through the same sessionStorage key, which is why the icon is free to open the order itself');
  assert.ok(!styles.includes('.soPreviewButton'),'the Preview button rule is deleted rather than left dead');
  assert.match(styles,/\.soGridActions\{display:(?:inline-)?flex/);
- assert.match(styles,/\.soOrdersTable th:nth-child\(8\)\{width:12%\}/,'the Actions column keeps the width the eye and the row menu need');
+ assert.match(styles,/\.soOrdersTable th:last-child,\.soOrdersTable td:last-child\{text-align:right;overflow:visible\}/,'the Actions column stays right-aligned and released from the cell clipping');
 });
 
 /* Removing the row button must not remove the capability, so editing moves into the row menu. */
@@ -29,14 +29,20 @@ test('the row menu still offers editing, which the row button used to carry',()=
  assert.match(source,/<SalesOrderActions role=\{role\} onPreview=\{\(\)=>setPrintDoc\(x\)\} onOpenInvoice=\{\(\)=>openInvoice\(x\)\} onEdit=\{\(\)=>open\(x\)\}/,'wired to the page editor, and given the acting role so a conversion carries its context');
 });
 
-test('sales order register lists the agreed eight columns',()=>{
- assert.match(source,/\['Order','Customer','Organisation','Branch','Amount','Status','Payment status','Actions'\]\.map/,'the recommended column set: organisation and branch apart, and no Created by');
+test('sales order register columns follow the working scope',()=>{
+ assert.match(source,/import \{useWorkingScopeVisibility,visibleScopeColumns\} from '\.\/working-scope\.js';/,'the register reads the shared scope helper');
+ assert.match(source,/const registerColumns=visibleScopeColumns\(\[/,'the columns are filtered and renormalised from the working scope');
+ assert.match(source,/\{key:'number',label:'Order',weight:9\},\s*\{key:'date',label:'Date',weight:12\.5\}/,'the order and its date are separate columns');
+ assert.match(source,/\{key:'organisation',label:'Organisation',weight:9,scope:'organisation'\}/,'Organisation is a scope column');
+ assert.match(source,/\{key:'branch',label:'Branch',weight:6\.5,scope:'branch'\}/,'Branch is a scope column');
  assert.ok(!/\['Order','Customer'[^\]]*Expected shipment/.test(source),'Expected shipment is no longer a column');
- assert.match(source,/<b className="soOrderNumber">\{x\.number\}<\/b><small>\{fmtDate\(x\.date\)\}<\/small>/,'the order number and date share one cell');
- assert.match(source,/<td>\{x\.organizationName\|\|'Not recorded'\}<\/td><td>\{x\.branchName\|\|'Not recorded'\}<\/td>/,'organisation and branch are cells of their own, in that order, matching the invoices register');
+ assert.match(source,/<td><b className="soOrderNumber">\{x\.number\}<\/b><\/td><td>\{fmtDate\(x\.date\)\}<\/td>/,'the order number and date are separate cells');
+ assert.match(source,/\{workingScope\.showOrganisation&&<td className="scopeCell">\{x\.organizationName\|\|'Not recorded'\}<\/td>\}/,'Organisation renders only when the selected view spans more than one organisation');
+ assert.match(source,/\{workingScope\.showBranch&&<td className="scopeCell">\{x\.branchName\|\|'Not recorded'\}<\/td>\}/,'Branch renders only when the selected view spans more than one branch');
  assert.match(source,/className="soAmount">\{money\(x\.total\)\}/,'the order value keeps its own cell');
  assert.ok(!source.includes("<td>{x.createdBy||'Not recorded'}</td>"),'Created by has no cell in the grid - the register filter still offers it, because filtering by who raised an order is a search, not a column');
  assert.ok(!source.includes("'Reference'"),'the Reference column is gone from the grid');
+ assert.match(styles,/\.soOrdersTable td\.scopeCell\{white-space:normal;overflow-wrap:anywhere\}/,'scope names wrap inside their narrow conditional columns');
 });
 
 test('the blue Sales eyebrow and the record count are gone',()=>{

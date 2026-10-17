@@ -8,6 +8,8 @@ import {normaliseScope} from '../src/organisation-scope.js';
 import {demoOrganizations} from '../src/demo-organisations.js';
 import {supplierOutstanding} from '../src/supplier-outstanding.js';
 import {customerOutstanding} from '../src/customer-outstanding.js';
+import {supplierOutstanding} from '../src/supplier-outstanding.js';
+import {customerOutstanding} from '../src/customer-outstanding.js';
 
 const memory=()=>{const values=new Map();return {getItem:key=>values.get(key)??null,setItem:(key,value)=>values.set(key,String(value)),values}};
 
@@ -39,6 +41,17 @@ test('every seeded budget carries the scope the register narrows the working con
   assert.ok((budget.scope?.companyIds||[]).some(organisation=>working.companyIds.includes(organisation)),budget.name+' names the working organisation');
   assert.ok(budget.scope?.type==='Entire Organisation'||(budget.scope?.branchIds||[]).some(branch=>working.branchIds.includes(branch)),budget.name+' covers the working branch');
  }
+});
+
+/* The two outstanding reports group their table by party, so a register with more documents than
+   parties still opens short: the seed has to spread its posted documents across ten of each. */
+test('the outstanding reports open on ten or more parties',()=>{
+ const storage=memory();bootstrapDemoData(storage);
+ const accounting=JSON.parse(storage.getItem(KEY));
+ const payables=supplierOutstanding(accounting,JSON.parse(storage.getItem('wayvida-vendors-v1')));
+ const receivables=customerOutstanding(accounting,JSON.parse(storage.getItem('wayvida-customers')));
+ assert.ok(payables.tables.supplier.length>=10,'the supplier outstanding table groups '+payables.tables.supplier.length+' suppliers');
+ assert.ok(receivables.tables.customer.length>=10,'the customer outstanding table groups '+receivables.tables.customer.length+' customers');
 });
 
 /* The two outstanding reports group their table by party, so a register with more documents than

@@ -2,6 +2,8 @@ import {useMemo,useState} from 'react';
 import {IconArrowLeft,IconPlus,IconEye,IconFilter,IconSearch} from '@tabler/icons-react';
 import StatusPill from './StatusPill.jsx';
 import {KEY,initial,money} from './invoice-engine.js';
+import {getAccessibleOrganizations} from './organisation-context.js';
+import {useWorkingScopeVisibility,visibleScopeColumns} from './working-scope.js';
 import './purchases.css';
 import './invoice-workspace.css';
 import './sales-orders.css';
@@ -14,6 +16,23 @@ const fmtDate=value=>value?new Date(value+'T00:00:00').toLocaleDateString('en-IN
 
 export default function VendorPayments({onNavigate=()=>{}}){
  const db=(()=>{try{return JSON.parse(localStorage.getItem(KEY)||'null')||initial()}catch{return initial()}})(),[query,setQuery]=useState(''),[from,setFrom]=useState(''),[to,setTo]=useState(''),[view,setView]=useState(null);
+ const workingScope=useWorkingScopeVisibility();
+ const organisations=getAccessibleOrganizations();
+ const registerColumns=visibleScopeColumns([
+  {key:'number',label:'Payment',weight:10},
+  {key:'date',label:'Date',weight:12.5},
+  {key:'vendor',label:'Vendor',weight:11},
+  {key:'organisation',label:'Organisation',weight:9,scope:'organisation'},
+  {key:'branch',label:'Branch',weight:6,scope:'branch'},
+  {key:'applied',label:'Applied to',weight:8.5},
+  {key:'reference',label:'Reference',weight:8.5},
+  {key:'bank',label:'Bank account',weight:8},
+  {key:'amount',label:'Amount',weight:10,className:'vpAmount'},
+  {key:'status',label:'Status',weight:12.5,className:'vpStatus'},
+  {key:'actions',label:'Actions',weight:5.5,className:'vpActions'}
+ ],workingScope);
+ const organisationNameOf=row=>row.bill?.organizationName||row.organizationName||organisations.find(org=>org.id===(row.bill?.organizationId||row.organizationId)||org.code===(row.bill?.organizationId||row.organizationId))?.name||'Not recorded';
+ const branchNameOf=row=>row.bill?.branchName||row.branchName||organisations.flatMap(org=>org.branches||[]).find(branch=>branch.id===(row.bill?.branchId||row.branchId)||branch.name===(row.bill?.branchId||row.branchId))?.name||'Not recorded';
  const accountLabel=code=>{
   const acc=(db.accounts||[]).find(a=>a.code===code);
   if(acc?.name)return `${acc.code} · ${acc.name}`;
@@ -135,20 +154,16 @@ export default function VendorPayments({onNavigate=()=>{}}){
     <table className="ivInvoiceTable vpTable">
      <thead>
       <tr>
-       <th>Payment & date</th>
-       <th>Vendor</th>
-       <th>Applied to</th>
-       <th>Reference</th>
-       <th>Bank account</th>
-       <th className="vpAmount">Amount</th>
-       <th className="vpStatus">Status</th>
-       <th className="vpActions">Actions</th>
+       {registerColumns.map(column=><th key={column.key} className={column.className} style={{width:column.width}}>{column.label}</th>)}
       </tr>
      </thead>
      <tbody>
-      {rows.map(row=><tr key={row.id}>
-       <td><b className="soOrderNumber" style={{cursor:'pointer'}} onClick={()=>setView(row)}>{row.number}</b><small>{fmtDate(row.date)}</small></td>
+       {rows.map(row=><tr key={row.id}>
+        <td><b className="soOrderNumber" style={{cursor:'pointer'}} onClick={()=>setView(row)}>{row.number}</b></td>
+        <td>{fmtDate(row.date)}</td>
        <td>{row.bill?.vendorName||row.vendorName||'-'}</td>
+       {workingScope.showOrganisation&&<td className="scopeCell">{organisationNameOf(row)}</td>}
+       {workingScope.showBranch&&<td className="scopeCell">{branchNameOf(row)}</td>}
        <td>{row.bill?<button type="button" className="ivLink" onClick={()=>onNavigate('Purchase Bills')}>{row.bill.number}</button>:(row.allocations?.length>1?`${row.allocations.length} Bills`:'Vendor Advance')}</td>
        <td>{row.reference||'-'}</td>
        <td>{accountLabel(row.bankAccount)}</td>

@@ -5,51 +5,35 @@
 
 .receiptBankEmpty{display:flex;align-items:flex-start;gap:12px;margin-top:14px;padding:16px;border:1px solid #b2ccff;border-radius:8px;background:#f5f8ff;color:#175cd3}.receiptBankEmpty p{margin:5px 0 12px;color:#475467;line-height:1.5}.receiptBankEmpty button{display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border:1px solid #84adff;border-radius:6px;background:#fff;color:#175cd3;font-weight:600}
 
-/* These widths carry `.receiptWorkspace table.receiptTable` rather than a bare `.receiptTable`
-   because the table also wears `ivInvoiceTable`, and `src/invoice-workspace.css` declares the first
-   seven columns from `.invoiceWorkspace .ivInvoiceTable th:nth-child(n)` - one class more specific
-   than a bare `.receiptTable th:nth-child(n)`, so those seven widths were silently winning and this
-   sheet never had its own proportions. Repeating the section class and the element outranks them,
-   and the eight widths below then total exactly 100% so the browser does not have to scale them.
-   The Payment Receipts register carries the eight columns the register asks for on the same
-   fixed-layout table the invoice register uses, so it declares its own widths and never scrolls
-   sideways. The first cell stacks the receipt, its date and the invoice it settles. */
+/* The register's column widths come from `visibleScopeColumns()` as inline styles: the receipt,
+   its own date column, the optional organisation and branch columns, and the six facts beside
+   them. That helper also renormalises the remaining widths to 100% when a scope column is hidden,
+   so this sheet does not restate positional widths that would disagree with the selected scope.
+   The fixed layout and cell clipping are still shared with the invoice register. */
 .receiptTable{table-layout:fixed;width:100%;min-width:0;white-space:nowrap}
 .receiptTable th,.receiptTable td{padding:12px 10px;overflow:hidden;text-overflow:ellipsis;vertical-align:top}
 .receiptTable th{white-space:normal;line-height:1.3;font-weight:600}
-/* The Invoice, Reference and payment-mode cells hold free text: a receipt can settle several
-   invoices, a reference is typed by hand, and the mode line concatenates the payment mode with the
-   account it landed in ("Bank Transfer · HDFC Bank - 1234"). At a fixed column width those were
-   being cut off, so they wrap onto a second line instead. Only `white-space` and `overflow-wrap`
-   are overridden; an unbreakable token breaks rather than spilling over the neighbouring cell, and
-   the sheet ellipsis stays as the last resort. */
-.receiptWorkspace table.receiptTable td:nth-child(2),
-.receiptWorkspace table.receiptTable td:nth-child(5),
-/* The payment type sits under the status pill, and a fixed nowrap on the cell was cutting "Customer
-   payment" short - the wrap is stated for every small in this register, not for one column number. */
-.receiptWorkspace table.receiptTable td small{display:block;white-space:normal;overflow-wrap:anywhere}
+/* The Reference and payment-mode cells hold free text: a reference is typed by hand, and the mode
+   line concatenates the payment mode with the account it landed in ("Bank Transfer · HDFC Bank -
+   1234"). The payment type also sits under the status pill. Every small line wraps rather than
+   being cut off, and an unbreakable token breaks instead of spilling into the next cell. */
+.receiptWorkspace table.receiptTable td small{display:block;margin-top:3px;white-space:normal;overflow-wrap:anywhere;overflow:hidden;text-overflow:ellipsis;color:#667085;font-size:12px;font-weight:400;line-height:1.35}
+/* Organisation and branch are only present in a multi-scope view, and their names wrap instead of
+   ellipsising inside the narrow scope columns. */
+.receiptWorkspace table.receiptTable td.scopeCell{white-space:normal;overflow-wrap:anywhere}
 
 /* The row carries one visible View details action beside the row menu, on the register row-button
    tokens the invoices and sales orders registers use, so the button and the trigger read as one
    control pair instead of a lone kebab. The menu keeps its deliberate in-flow panel: it is not a
    flex item, so an open 218px panel is never squeezed to the column width. */
-.receiptWorkspace table.receiptTable td:last-child{white-space:nowrap}
+.receiptWorkspace table.receiptTable td.receiptRegisterActions{white-space:nowrap;text-align:right;overflow:visible}
 .receiptWorkspace .receiptViewButton{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 9px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;font:inherit;font-weight:600;white-space:nowrap;vertical-align:top;cursor:pointer}
 .receiptWorkspace .receiptViewButton:hover{border-color:#98a2b3;background:#f9fafb}
 .receiptWorkspace .receiptViewButton:focus-visible{outline:2px solid #84adff;outline-offset:2px}
 .receiptWorkspace .receiptMore{display:inline-block;vertical-align:top;margin-left:6px}
 .receiptWorkspace .receiptMore>summary{display:inline-grid;place-items:center;width:36px;height:36px;min-height:36px;padding:0;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#475467}
 .receiptWorkspace .receiptMore>summary:hover{background:#f9fafb;border-color:#98a2b3}
-.receiptWorkspace table.receiptTable th:nth-child(1){width:14%}
-.receiptWorkspace table.receiptTable th:nth-child(2){width:14%}
-.receiptWorkspace table.receiptTable th:nth-child(3){width:13%}
-.receiptWorkspace table.receiptTable th:nth-child(4){width:15%}
-.receiptWorkspace table.receiptTable th:nth-child(5){width:14%}
-.receiptWorkspace table.receiptTable th:nth-child(6){width:14%}
-.receiptWorkspace table.receiptTable th:nth-child(7){width:16%}
-.receiptWorkspace 
-.receiptTable td small{display:block;margin-top:3px;overflow:hidden;text-overflow:ellipsis;color:#667085;font-size:12px;font-weight:400;line-height:1.35}
-.receiptTable td:last-child,.receiptTable th:last-child{text-align:right;overflow:visible}
+.receiptTable td.receiptRegisterActions,.receiptTable th.receiptRegisterActions{text-align:right;overflow:visible}
 @media(max-width:720px){.receiptWorkspace.ivDetailOpen .ivDetailSheet>.receiptDetailBody{padding:12px}}
 /* The receipt more-action trigger is stated larger than the shared default: on this page the icon
    read as missing beside the row figures and in the detail header. Both the register rows and the

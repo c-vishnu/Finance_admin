@@ -2,13 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
-/* The Create Expense basic details were regrouped on the user request of 2026-10-13 and tightened the
-   same day, when the operator reported that a row showed only two inputs: Date, Expense Type and Paid To
-   share the top row, and Amount, the Paid Via Cash/Bank picker and Payment Account share the second, so
-   every row in the card carries three fields and no row is left holding a lone control beside an empty
-   track. CreateExpensePage carries two returns and only the first one - the exp-reference page - is
-   reachable, so these tests read that block, and they pin the row grouping rather than the field list,
-   because every field already existed. */
+/* Create Expense was restructured on the user request of 2026-10-17: the Basic Details heading and
+   its "Tell us about the expense." sentence are gone, the collapsed More Details block is gone, and
+   the whole form is one card in the operator's order - Date Paid, Paid To, Payment For, Amount Paid,
+   Paid From, Reference No., Outstanding Bills, Tax / GST, Payment Method, Notes, Attachment. The
+   helper lines are gone, Reference No. carries its own attach control like Record Income, and
+   Notes and Attachment share a closing row. CreateExpensePage
+   carries two returns and only the first one - the exp-reference page - is reachable, so these tests
+   read that block. */
 /* Both files are normalised to LF first: the stylesheet is checked out with CRLF on Windows and the
    multi-line assertions below read exact rule text, which must not depend on the checkout's endings. */
 const page = readFileSync(new URL('../src/CreateExpensePage.jsx', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
@@ -18,46 +19,116 @@ const liveStart = page.indexOf('<section className="rt-page itemCreatePage je-cr
 const liveEnd = page.indexOf('<section className="rt-page itemCreatePage je-create exp-create-page"');
 const live = page.slice(liveStart, liveEnd);
 
-const rowStarts = [...live.matchAll(/<div className="exp-reference-(?:grid|payment)[^"]*">/g)].map(match => match.index);
-const rowEnd = live.indexOf('</section>');
-const rows = rowStarts.map((start, index) => live.slice(start, index + 1 < rowStarts.length ? rowStarts[index + 1] : rowEnd));
-
-test('the Create Expense page renders the exp-reference layout as two rows', () => {
+test('the Create Expense page is one card with no Basic Details or More Details headings', () => {
   assert.ok(liveStart >= 0, 'the exp-reference page is the rendered one');
   assert.ok(liveEnd > liveStart, 'and it is the return that comes first');
-  assert.equal(rowStarts.length, 2, 'Basic Details is two rows');
+  assert.ok(!live.includes('Basic Details'), 'the Basic Details heading is removed');
+  assert.ok(!live.includes('Tell us about the expense.'), 'and so is its sentence');
+  assert.ok(!live.includes('exp-more-details'), 'the collapsed More Details block is removed');
+  assert.ok(!live.includes('<details'), 'nothing is left to open on the form');
+  assert.equal((live.match(/<section className="exp-reference-card">/g) || []).length, 1, 'the form is one card');
 });
 
-test('Date, Expense Type and Paid To share the top row', () => {
-  const top = rows[0];
-  assert.ok(top.includes('className="exp-reference-grid exp-reference-top"'), 'the top row is the three-track grid');
-  assert.ok(top.includes('<span>Date <b>*</b></span>'), 'Date leads it');
-  assert.ok(top.includes('<span>Expense Type <b>*</b></span>'), 'Expense Type follows');
-  assert.ok(top.includes('<span>Paid To</span>'), 'and Paid To closes it');
-  assert.ok(!top.includes('exp-amount'), 'Amount is not in the top row');
-  assert.equal((top.match(/<label/g) || []).length, 3, 'and the row holds exactly three fields');
+test('the operator fields appear in the requested order', () => {
+  const order = [
+    '<span>Date Paid <b>*</b></span>',
+    '<span>Paid To</span>',
+    '<span>Payment For <b>*</b></span>',
+    '<span>Amount Paid (₹) <b>*</b></span>',
+    '<span>Paid From <b>*</b></span>',
+    '<span>Reference No.</span>',
+    '<h3>Outstanding Bills',
+    '<span>Tax / GST</span>',
+    '<span>GST Rate</span>',
+    '<span>Notes</span>',
+    '<span>Attachment</span>'
+  ];
+  let previous = -1;
+  for (const marker of order) {
+    const at = live.indexOf(marker);
+    assert.ok(at > previous, `${marker} comes after the field before it`);
+    previous = at;
+  }
 });
 
-test('Amount, the Paid Via picker and Payment Account share the second row', () => {
-  const second = rows[1];
-  assert.ok(second.includes('className="exp-reference-payment"'), 'the row is the shared two-column row');
-  assert.ok(second.includes('<label className="exp-amount">'), 'Amount is its first field');
-  assert.ok(second.includes('<div className="exp-method-picker"><span>Paid Via <b>*</b></span>'), 'the Cash/Bank picker is its second');
-  assert.ok(second.includes('<span>Payment Account <b>*</b></span>'), 'and Payment Account is its third');
-  assert.equal((second.match(/<label/g) || []).length, 2, 'so two labels sit beside the picker');
-  assert.equal(rows[2], undefined, 'and no row is left holding the payment account alone');
+test('the helper lines are removed from the form', () => {
+  const hints = [
+    'When was the money paid?',
+    'Select vendor, person, or business',
+    'Existing Purchase Bills / Other Expense',
+    'How much money did you pay?',
+    'For direct expenses only; existing bill tax is already recorded.',
+    'Cash or Bank account',
+    'Cash, UPI, Bank Transfer, Cheque, Card',
+    'UTR / Cheque / Transaction ID',
+    'Optional explanation',
+    'Receipt or payment proof'
+  ];
+  assert.ok(!live.includes('exp-field-hint'), 'no purpose line remains under a control');
+  for (const hint of hints) assert.ok(!live.includes(hint), hint);
 });
 
-test('both rows are three tracks wide and fold on a narrow viewport', () => {
-  assert.ok(css.includes('.exp-reference-page .exp-reference-top,\n.exp-reference-page .exp-reference-payment{grid-template-columns:repeat(3,minmax(0,1fr))}'), 'the third track is stated for both rows, above the shared row rule');
-  assert.ok(css.includes('@media(max-width:1024px){\n  .exp-reference-page .exp-reference-top,\n  .exp-reference-page .exp-reference-payment{grid-template-columns:repeat(2,minmax(0,1fr))}\n}'), 'and steps back to two before the three fields squeeze');
-  assert.ok(css.includes('@media(max-width:760px){\n  .exp-reference-page .exp-reference-top,\n  .exp-reference-page .exp-reference-payment{grid-template-columns:1fr}\n}'), 'and to one column at the shared fold');
+test('the Payment For field names both workflows and carries accounts under Other Expense', () => {
+  assert.ok(live.includes('<select aria-label="Payment For" value={settlement ? \'bills\' : form.expenseAccount} onChange={e => handlePaymentForChange(e.target.value)}>'), 'the workflow and account are one dropdown');
+  assert.ok(live.includes('<option value="bills">Existing Purchase Bills</option>'), 'the payables workflow is named plainly');
+  assert.ok(live.includes('<optgroup label="Other Expense">'), 'the direct-expense accounts are grouped under Other Expense');
+  assert.ok(live.includes('{expenseAccountOptions.map(a => <option key={a.code} value={a.code}>{a.code} · {a.name}</option>)}'), 'the chart accounts live in that group');
+  assert.ok(!live.includes('aria-label="Expense Account"'), 'there is no second account picker beneath the workflow');
+  assert.ok(page.includes('const handlePaymentForChange = (mode) =>'), 'the single handler still sets the workflow');
+  assert.ok(page.includes("const directAccount = isSettlement ? (f.directExpenseAccount || '5900') : (mode || f.directExpenseAccount || '5900');"), 'choosing an account records it as the direct account');
+  assert.ok(page.includes('directExpenseAccount: directAccount,'), 'the remembered direct account follows the selection');
+  assert.ok(!page.includes('handleExpenseAccountChange'), 'the separate account handler is gone');
 });
 
-test('the shared two-column row rule is still the untouched base', () => {
-  assert.ok(css.includes('.exp-reference-grid,.exp-reference-payment{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 24px;margin-top:16px}'), 'the shared row rule still states two columns and its own spacing');
-  assert.equal((css.match(/\.exp-reference-page \.exp-reference-payment\{grid-template-columns/g) || []).length, 3, 'the page-scoped override appears once per breakpoint and nowhere else');
+test('Paid From is one grouped Cash and Bank account dropdown', () => {
+  assert.ok(live.includes('<select aria-label="Paid From" value={form.paidThrough} onChange={e => handlePaidFromChange(e.target.value)}>'), 'one select chooses the money account');
+  assert.ok(live.includes('<optgroup label="Cash">'), 'cash ledgers are a named group');
+  assert.ok(live.includes('<optgroup label="Bank">'), 'bank ledgers are the other named group');
+  assert.ok(page.includes("if (!bankPaymentAccounts.length) bankPaymentAccounts.push({ code: '1010', name: 'Bank Account' });"), 'a bank account remains available in an empty book');
+  assert.ok(page.includes('const handlePaidFromChange = (code) =>'), 'the ledger choice also states Cash or Bank');
+  assert.ok(page.includes("return code === '1000' || /cash/.test(name) || account.accountPurpose === 'Cash';"), 'cash is read from the ledger itself, not the shared Cash and Bank group');
+  assert.ok(!live.includes('aria-label="Payment Account"'), 'the old second account picker is gone');
+  assert.ok(!live.includes("handlePaidFromMode('Cash')"), 'and so are the Cash/Bank buttons');
 });
+
+test('Tax / GST and GST Rate are offered for direct expenses only', () => {
+  const tax = live.indexOf('<span>Tax / GST</span>');
+  const reference = live.indexOf('<span>Reference No.</span>');
+  const gstRate = live.indexOf('<span>GST Rate</span>');
+  assert.ok(tax > live.indexOf('<h3>Outstanding Bills'), 'it follows Outstanding Bills in the order');
+  assert.ok(tax > reference, 'it follows the Amount / Paid From / Reference row');
+  assert.ok(gstRate > tax, 'GST Rate follows Tax / GST');
+  assert.ok(!live.includes('Payment Method'), 'the account choice states the method, so there is no second picker');
+  assert.ok(!page.includes('form.paymentMethod'), 'no stored payment-method field remains');
+  assert.ok(page.includes("const paymentMethod = paidFromAccount && isCashPaymentAccount(paidFromAccount) ? 'Cash' : 'Bank Transfer';"), 'the saved method is derived from Paid From');
+  assert.ok(live.includes('{!settlement && ('), 'the tax band is rendered only when the payment is a direct expense');
+});
+
+test('the form uses the Record Income three-track grid and folds at the same breakpoints', () => {
+  assert.ok(css.includes('.exp-reference-page .exp-form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 24px;margin-top:18px}'), 'three fields per row with the form spacing');
+  assert.ok(css.includes('.exp-reference-page .exp-form-grid{align-items:start}'), 'rows align at the top instead of stretching a short field to a taller neighbour');
+  assert.ok(css.includes('.exp-reference-page .exp-field{align-content:start}'), 'and each field keeps its own control heights');
+  assert.ok(css.includes('.exp-reference-page .exp-field-wide{grid-column:1/-1}'), 'Outstanding Bills, Notes and Attachment take the whole row');
+  assert.equal((live.match(/<div className="exp-form-grid">/g) || []).length, 1, 'the main fields share one grid like Record Income');
+  const firstRow = live.slice(live.indexOf('<div className="exp-form-grid">'), live.indexOf('<span>Amount Paid'));
+  assert.ok(firstRow.includes('<span>Date Paid <b>*</b></span>'), 'Date Paid opens the three-track row');
+  assert.ok(firstRow.includes('<span>Paid To</span>'), 'Paid To is the second field in that row');
+  assert.ok(firstRow.includes('<span>Payment For <b>*</b></span>'), 'and Payment For is the third');
+  const secondRow = live.slice(live.indexOf('<span>Amount Paid'), live.indexOf('<h3>Outstanding Bills'));
+  assert.ok(secondRow.includes('<span>Paid From <b>*</b></span>'), 'Paid From sits beside Amount Paid');
+  assert.ok(secondRow.includes('<span>Reference No.</span>'), 'and Reference No. is the third field in that row');
+  assert.ok(live.includes('className="exp-field exp-paid-from"'), 'Paid From is one of the three inputs, not a full-width field');
+  assert.ok(live.includes('className="exp-field exp-reference-no" role="group" aria-label="Reference No."'), 'Reference No. is its own field group');
+  assert.ok(live.includes('className="exp-reference-input"'), 'the reference number and its upload share one box');
+  assert.ok(live.includes('className="exp-reference-attach"'), 'the upload is the Record Income Attach control');
+  assert.ok(live.includes('className="exp-field-wide exp-notes-attachment"'), 'Notes and Attachment share one full-width row');
+  assert.ok(css.includes('.exp-reference-page .exp-notes-attachment{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 24px}'), 'the closing row has two tracks');
+  assert.ok(css.includes('.exp-reference-page .exp-notes{grid-column:auto}'), 'Notes stays in one of those tracks instead of spanning the old full-width row');
+  assert.ok(css.includes('.exp-reference-page .exp-reference-input{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 6px 0 13px;border:1px solid #cfdced;border-radius:9px;background:#fff}'), 'the reference box keeps the Record Income border and height');
+  assert.ok(css.includes('@media(max-width:820px){\n  .exp-reference-page .exp-form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}'), 'the grid keeps three tracks through the in-app desktop width and steps down to two at 820px');
+  assert.ok(css.includes('@media(max-width:760px){\n  .exp-reference-page .exp-form-grid{grid-template-columns:1fr}'), 'and to one column at the shared phone width');
+});
+
 
 /* The operator then asked, on the same day, for the Cancel / Save Draft / Save Expense bar to sit still
    at the bottom of the page the way the Record Income bar does, instead of trailing the form - and

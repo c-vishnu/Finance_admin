@@ -27,7 +27,7 @@ test('the drawer no longer paints inside the report page', () => {
 
 test('the drawer keeps every income detail fact and action', () => {
   for (const token of [
-    '<dt>Income Category</dt>', '<dt>Received From</dt>', '<dt>Amount</dt>', '<dt>Status</dt>',
+    '<dt>Income Type</dt>', '<dt>Received From</dt>', '<dt>Amount</dt>', '<dt>Status</dt>', '<dt>Reference Number</dt>',
     'Accounting Posting Details:', 'Income Account:', 'Deposit Ledger:', 'GST Tax Rate:',
     'Description / Notes', '>Close</button>', 'Cancel Record', 'className="irDanger"',
     'handleReverseIncome(activeDrawerIncome.recordId)', 'money(activeDrawerIncome.amount)',

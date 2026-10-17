@@ -1,4 +1,7 @@
 import {initial,journal,KEY,minor} from './invoice-engine.js';
+import {receiptCommand} from './receipt-engine.js';
+import {directIncomeTax, gstRateOf, placeOfSupply} from './income-tax.js';
+import {rupeeString} from './income-allocation.js';
 
 export const OPERATIONS_KEY='wayvida-operations-v1';
 const today='2026-09-07';
@@ -89,62 +92,133 @@ export function saveOperations(value){localStorage.setItem(OPERATIONS_KEY,JSON.s
 export function accountingState(){try{return JSON.parse(localStorage.getItem(KEY)||'null')||initial()}catch{return initial()}}
 const ensure=(state,code,name,type,nature)=>{let row=state.accounts.find(x=>x.code===code);if(!row){row={id:`operations:${code}`,code,name,type,nature,group:type==='Assets'?'Current Assets':type==='Income'?'Operating Income':'Operating Expenses',active:true,isGroup:false,system:true,revision:1};state.accounts.push(row)}if(!row.active||row.isGroup)throw Error(`Configure active posting account ${code}.`);return code};
 
-export function createIncome(store,accounting,input){
- const next=clone(store),state=clone(accounting),amount=minor(input.amount);
+/* The GST facts an income record states, resolved the one way, from the record alone.
+
+   The record keeps what the operator chose - the treatment, the rate, the inclusive/exclusive mode
+   and the payer's state - and this reads those, falling back to the rate its own tax LABEL names for
+   a record an older build wrote, so nothing that already posted changes meaning. The rate is never
+   parsed out of a two-word label when the record states it, and the CGST/SGST against IGST decision
+   is made against the book's registered state (\`state.config.state\`), which is the same fact
+   \`applyAccountingSettings\` writes from the settings record. \`received\` decides whether the tax is
+   split out of money that arrived or charged on income still awaited - the same rule the page
+   previews, so the store and the surface cannot drift. */
+function incomeTaxFacts(state,record,isReceived){
+ const labelled=gstRateOf(record.tax);
+ const stated=record.gstRate===undefined||record.gstRate===''?labelled:Number(record.gstRate);
+ const treatment=record.taxTreatment||(stated>0?'Taxable':'Non-GST / Out of Scope');
+ const place=placeOfSupply({buyerState:record.placeOfSupply,registeredState:state.config?.state});
+ return directIncomeTax({amount:rupeeString(record.amount),treatment,rate:stated,mode:record.taxMode||'exclusive',intra:place.intra,received:isReceived===true});
+}
+
+/* The entry a recorded income writes: the destination account debited - the bank or cash account
+   when the money is in, Accounts Receivable while it is still expected - the income account
+   credited for the taxable value, and the output tax the same money carries split into the ledgers
+   the book maps CGST, SGST and IGST to. A receipt that settled an invoice never reaches here at all
+   (see createReceiptIncome), which is what keeps revenue and output tax from being recognised
+   twice. A DRAFT writes no entry, which is what makes a draft safe to edit. createIncome and
+   updateIncome both post through here, so a draft that is saved as a real income writes exactly the
+   entry the create surface would have written and the two can never drift. */
+function postIncomeJournal(state,record,isReceived){
+ if(record.status==='Draft')return null;
+ const incomeAccount=ensure(state,record.account||'4100','Income Account','Income','Credit');
+ const debitAccount=isReceived
+  ? ensure(state,record.paidThrough||'1010','Bank','Assets','Debit')
+  : ensure(state,record.accountReceivable||'1100','Accounts Receivable','Assets','Debit');
+ const tax=incomeTaxFacts(state,record,isReceived);
+ const journalLines=[
+  {account:debitAccount,debit:tax.receivable,credit:0,description:isReceived?`Income received from ${record.receivedFrom||'customer'}`:`Unpaid income receivable from ${record.receivedFrom||'customer'}`},
+  {account:incomeAccount,debit:0,credit:tax.taxable,description:record.name}
+ ];
+ /* The tax the split found, into the book's own ledgers: IGST outside the registered state, CGST and
+    SGST inside it. The three components add back to the tax exactly, because the split gave the odd
+    paisa to one of them rather than rounding each on its own, so the entry balances by construction. */
+ for(const [key,label] of [['cgst','CGST'],['sgst','SGST'],['igst','IGST']]){
+  if(!tax[key])continue;
+  const code=ensure(state,state.config?.[key]||'2100',`${label} Payable`,'Liabilities','Credit');
+  journalLines.push({account:code,debit:0,credit:tax[key],description:`${label} payable on ${record.name}`});
+ }
+ const entry=journal(state,record,'Income',journalLines,record.date,`income:${record.id}`);
+ record.journalId=entry.id;
+ return entry;
+}
+
+/* The four facts every income create and update states, validated once. */
+function incomeFields(input){
+ const amount=minor(input.amount);
  const name=input.name?.trim()||input.description?.trim()||input.category;
  if(!name||!input.date||!input.category||amount<=0)throw Error('Enter the date, income title or description, category, and a valid positive amount.');
- 
  const isReceived=input.received===true||input.received==='true'||input.received==='Yes';
  const status=input.status==='Draft'?'Draft':(isReceived?'Posted':'Pending');
+ return {amount,name,isReceived,status};
+}
+
+/* The register row a customer receipt leaves behind.
+
+   The money is already in the ledger - the receipt engine posted the entry when it settled the
+   invoices - so this writes the row the Income register reads and points it at the receipt own
+   journal. It is deliberately NOT createIncome: posting here would credit income and output GST a
+   second time for money that settled revenue already recognised. A draft receipt has posted
+   nothing yet, which is why a draft is the one shape this may be reopened in. */
+export function createReceiptIncome(store,input){
+ const next=clone(store);
+ if(!next.incomes)next.incomes=[];
+ const existing=input.id?next.incomes.find(x=>x.id===input.id):null;
+ const amount=minor(input.amount);
+ if(amount<=0)throw Error('Enter the amount received.');
+ const status=input.status==='Draft'?'Draft':'Posted';
+ const number=input.number||existing?.number||('INC-'+String(next.incomes.length+1).padStart(5,'0'));
+ const record={...existing,...input,id:existing?.id||crypto.randomUUID(),number,name:input.name||input.category,amount,receiptType:'InvoicePayment',received:status!=='Draft',status,createdAt:existing?.createdAt||new Date().toISOString()};
+ if(existing)Object.assign(existing,record);else next.incomes.unshift(record);
+ next.audit.push({id:crypto.randomUUID(),action:status==='Draft'?'invoice receipt draft saved':'invoice receipt recorded',recordId:record.id,receiptId:record.receiptId,journalId:record.journalId,at:new Date().toISOString(),by:'Admin'});
+ return {store:next,record};
+}
+
+/* The register row a purchase-bill payment leaves behind.
+
+   The money is already in the ledger - src/purchase-service.js recordPurchasePayment posted the
+   vendor payment when it settled the bill - so this writes the row the Expense register reads and
+   points it at that payment own journal. It is deliberately NOT createExpense: posting here would
+   debit the expense account a second time for a cost the purchase bill already recognised. */
+export function createPurchasePaymentExpense(store,input){
+ const next=clone(store);
+ if(!next.expenses)next.expenses=[];
+ const amount=minor(input.amount);
+ if(amount<=0)throw Error('Enter the amount paid.');
+ const record={...input,id:crypto.randomUUID(),number:input.number||`EXP-${String(next.expenses.length+44).padStart(5,'0')}`,amount,status:'Posted',createdAt:new Date().toISOString()};
+ next.expenses.unshift(record);
+ next.audit.push({id:crypto.randomUUID(),action:'purchase bill payment recorded',recordId:record.id,journalId:record.journalId,at:record.createdAt,by:'Admin'});
+ return {store:next,record};
+}
+
+export function createIncome(store,accounting,input){
+ const next=clone(store),state=clone(accounting);
+ const {amount,name,isReceived,status}=incomeFields(input);
  const number=input.number||`INC-${String((next.incomes||[]).length+1).padStart(5,'0')}`;
- 
- const record={
-  ...input,
-  id:crypto.randomUUID(),
-  number,
-  name,
-  amount,
-  received:isReceived,
-  status,
-  createdAt:new Date().toISOString()
- };
-
- if(status!=='Draft'){
-  const incomeAccount=ensure(state,input.account||'4100','Income Account','Income','Credit');
-  const debitAccount=isReceived
-   ? ensure(state,input.paidThrough||'1010','Bank','Assets','Debit')
-   : ensure(state,input.accountReceivable||'1100','Accounts Receivable','Assets','Debit');
-
-  const gstRateMatch=(input.tax||'').match(/\d+/);
-  const gstRate=gstRateMatch?Number(gstRateMatch[0]):0;
-  
-  let netAmount=amount, gstAmount=0;
-  if(gstRate>0){
-   if(input.taxMode==='inclusive'){
-    gstAmount=Math.round((amount*gstRate)/(100+gstRate));
-    netAmount=amount-gstAmount;
-   }else{
-    gstAmount=Math.round((amount*gstRate)/100);
-   }
-  }
-
-  const journalLines=[
-   {account:debitAccount,debit:isReceived||input.taxMode!=='exclusive'?amount:amount+gstAmount,credit:0,description:isReceived?`Income received from ${input.receivedFrom||'customer'}`:`Unpaid income receivable from ${input.receivedFrom||'customer'}`},
-   {account:incomeAccount,debit:0,credit:netAmount,description:name}
-  ];
-
-  if(gstAmount>0){
-   ensure(state,'2100','GST Payable','Liabilities','Credit');
-   journalLines.push({account:'2100',debit:0,credit:gstAmount,description:`GST payable on ${name}`});
-  }
-
-  const entry=journal(state,record,'Income',journalLines,record.date,`income:${record.id}`);
-  record.journalId=entry.id;
- }
-
+ const record={...input,id:crypto.randomUUID(),number,name,amount,received:isReceived,status,createdAt:new Date().toISOString()};
+ postIncomeJournal(state,record,isReceived);
  if(!next.incomes)next.incomes=[];
  next.incomes.unshift(record);
  next.audit.push({id:crypto.randomUUID(),action:'income recorded',recordId:record.id,journalId:record.journalId,at:new Date().toISOString(),by:'Admin'});
+ return {store:next,accounting:state,record};
+}
+
+/* Editing a recorded income. A DRAFT is the only income the create surface may reopen, because a
+   draft never reached the ledger - the same rule the journal register applies to its own records
+   through canEditStatus in src/simple-journal-transaction.js. A recorded income has posted an
+   entry that other reports read, so it is corrected by cancelling it and recording a new one, and
+   its number, its identity and its posting are never rewritten under the operator. */
+export function updateIncome(store,accounting,incomeId,input){
+ const next=clone(store),state=clone(accounting);
+ const record=next.incomes?.find(x=>x.id===incomeId);
+ if(!record)throw Error('Income record not found.');
+ /* A receipt's money is already in the ledger against its invoices; rewriting it here would post
+    the entry a second time, so an invoice payment is always recorded from Record Income. */
+ if(record.receiptType==='InvoicePayment')throw Error('An invoice payment is recorded against its invoices from Record Income. Cancel it and record a new one instead.');
+ if(record.status!=='Draft')throw Error('Only a draft income can be edited. Cancel this income and record a new one instead.');
+ const {amount,name,isReceived,status}=incomeFields(input);
+ Object.assign(record,{...input,id:record.id,number:record.number,name,amount,received:isReceived,status});
+ postIncomeJournal(state,record,isReceived);
+ next.audit.push({id:crypto.randomUUID(),action:status==='Draft'?'income draft saved':'income draft recorded',recordId:record.id,journalId:record.journalId,at:new Date().toISOString(),by:'Admin'});
  return {store:next,accounting:state,record};
 }
 
@@ -152,6 +226,7 @@ export function markIncomeAsReceived(store,accounting,incomeId,paymentDetails={}
  const next=clone(store),state=clone(accounting);
  const record=next.incomes?.find(x=>x.id===incomeId);
  if(!record)throw Error('Income record not found.');
+ if(record.receiptType==='InvoicePayment')throw Error('An invoice payment is already received. Allocate it to another invoice instead.');
  if(record.received)throw Error('This income is already marked as received.');
 
  const bankAccount=ensure(state,paymentDetails.paidThrough||'1010','Bank','Assets','Debit');
@@ -187,6 +262,16 @@ export function reverseIncome(store,accounting,incomeId){
  if(!record)throw Error('Income record not found.');
  if(record.status==='Cancelled')throw Error('Income is already cancelled.');
 
+ /* An invoice payment is reversed by the receipt engine, which is the only thing that knows how to
+    give back the money and the invoices it settled together: reversing the journal alone would
+    leave every invoice it paid still marked paid. */
+ const receipt=(state.receipts||[]).find(r=>r.id===record.receiptId);
+ if(receipt&&receipt.status==='Posted'){
+  const out=receiptCommand(state,'reverse',{id:receipt.id,date:new Date().toISOString().split('T')[0],reason:'Cancelled from the Income register'},{actor:'Local user',canApprove:true});
+  record.status='Cancelled';
+  next.audit.push({id:crypto.randomUUID(),action:'income cancelled',recordId:record.id,receiptId:receipt.id,journalId:record.journalId,at:new Date().toISOString(),by:'Admin'});
+  return {store:next,accounting:out.state,record};
+ }
  if(record.journalId){
   const origJournal=state.journals?.find(j=>j.id===record.journalId);
   if(origJournal){

@@ -22,6 +22,7 @@ const BILL_HANDOFF='wayvida-open-bill';
 const handoffBill=()=>{try{const id=sessionStorage.getItem(BILL_HANDOFF);if(!id)return null;sessionStorage.removeItem(BILL_HANDOFF);return read(PURCHASE_BILL_KEY).find(row=>row.id===id)||null}catch{return null}};
 
 import {getAccessibleOrganizations} from './organisation-context.js';
+import {useWorkingScopeVisibility,visibleScopeColumns} from './working-scope.js';
 
 export default function Purchases({page='Purchase Orders',onNavigate=()=>{}}){
  const isBill=page==='Purchase Bills';
@@ -38,6 +39,32 @@ export default function Purchases({page='Purchase Orders',onNavigate=()=>{}}){
  const [sort,setSort]=useState('newest');
  const [current,setCurrent]=useState(1);
  const [organisations,setOrganisations]=useState(getAccessibleOrganizations);
+ const workingScope=useWorkingScopeVisibility();
+ const registerColumns=visibleScopeColumns(isBill?[
+  {key:'number',label:'Bill',weight:10},
+  {key:'date',label:'Date',weight:13.5},
+  {key:'vendor',label:'Vendor',weight:11.5},
+  {key:'organisation',label:'Organisation',weight:9,scope:'organisation'},
+  {key:'branch',label:'Branch',weight:6,scope:'branch'},
+  {key:'vendorInvoice',label:'Vendor invoice',weight:9},
+  {key:'amount',label:'Amount',weight:10.5,className:'purchaseAmountCell'},
+  {key:'balance',label:'Balance due',weight:12,className:'purchaseAmountCell'},
+  {key:'status',label:'Status',weight:11},
+  {key:'actions',label:'Actions',weight:7.5}
+ ]:[
+  {key:'number',label:'Order',weight:9},
+  {key:'date',label:'Date',weight:13.5},
+  {key:'vendor',label:'Vendor',weight:11.5},
+  {key:'organisation',label:'Organisation',weight:9,scope:'organisation'},
+  {key:'branch',label:'Branch',weight:6,scope:'branch'},
+  {key:'reference',label:'Reference',weight:9},
+  {key:'amount',label:'Amount',weight:10.5,className:'purchaseAmountCell'},
+  {key:'status',label:'Status',weight:11},
+  {key:'expected',label:'Expected delivery',weight:13.5},
+  {key:'actions',label:'Actions',weight:7}
+ ],workingScope);
+ const organisationNameOf=row=>row.organizationName||organisations.find(org=>org.id===row.organizationId||org.code===row.organizationId)?.name||'Not recorded';
+ const branchNameOf=row=>row.branchName||organisations.flatMap(org=>org.branches||[]).find(branch=>branch.id===row.branchId||branch.name===row.branchId)?.name||'Not recorded';
 
  const vendors=readVendors().filter(v=>v?.status==='Active');
  const items=read('finance-erp-items',itemSeeds).filter(item=>item.purchase!==false);
@@ -238,9 +265,9 @@ export default function Purchases({page='Purchase Orders',onNavigate=()=>{}}){
   </div>
   <div className="itemsCard soListCard ivRegisterCard">
    <div className="ivScroll">
-    <table className="ivInvoiceTable">
+    <table className="ivInvoiceTable purchaseRegisterTable">
      <thead>
-      <tr>{(isBill?['Bill & date','Vendor','Vendor invoice','Amount','Balance due','Status','Actions']:['Order & date','Vendor','Reference','Amount','Status','Expected delivery','Actions']).map(h=><th key={h}>{h}</th>)}</tr>
+      <tr>{registerColumns.map(column=><th key={column.key} className={column.className} style={{width:column.width}}>{column.label}</th>)}</tr>
      </thead>
      <tbody>
       {paged.map(row=>{
@@ -252,17 +279,23 @@ export default function Purchases({page='Purchase Orders',onNavigate=()=>{}}){
        const contact=row.vendorContact&&row.vendorContact!=='Contact not recorded'?row.vendorContact:null;
        return <tr key={row.id}>
         {isBill?<>
-         <td><b className="soOrderNumber" style={{cursor:'pointer'}} onClick={()=>setView(row)}>{row.number}</b><small>{fmtDate(row.date)}</small></td>
+         <td><b className="soOrderNumber" style={{cursor:'pointer'}} onClick={()=>setView(row)}>{row.number}</b></td>
+         <td>{fmtDate(row.date)}</td>
          <td>{row.vendorName}{contact&&<small>{contact}</small>}</td>
+         {workingScope.showOrganisation&&<td className="scopeCell">{organisationNameOf(row)}</td>}
+         {workingScope.showBranch&&<td className="scopeCell">{branchNameOf(row)}</td>}
          <td>{row.vendorInvoice||'-'}</td>
-         <td>{money(row.total)}</td>
-         <td>{isDraft?'—':<>{money(bal)}{isBillOverdue?<small style={{color:'#ef4444',fontWeight:600,display:'block'}}>Overdue by {daysOverdue} {daysOverdue===1?'day':'days'}</small>:<small style={{display:'block'}}>Due {fmtDate(row.dueDate)}</small>}</>}</td>
+         <td className="purchaseAmountCell">{money(row.total)}</td>
+         <td className="purchaseAmountCell">{isDraft?'—':<>{money(bal)}{isBillOverdue?<small style={{color:'#ef4444',fontWeight:600,display:'block'}}>Overdue by {daysOverdue} {daysOverdue===1?'day':'days'}</small>:<small style={{display:'block'}}>Due {fmtDate(row.dueDate)}</small>}</>}</td>
          <td><StatusPill status={row.status} tone={PURCHASE_TONES(row.status,isBillOverdue)}/></td>
         </>:<>
-         <td><b className="soOrderNumber" style={{cursor:'pointer'}} onClick={()=>setView(row)}>{row.number}</b><small>{fmtDate(row.date)}</small></td>
+         <td><b className="soOrderNumber" style={{cursor:'pointer'}} onClick={()=>setView(row)}>{row.number}</b></td>
+         <td>{fmtDate(row.date)}</td>
          <td>{row.vendorName}{contact&&<small>{contact}</small>}</td>
+         {workingScope.showOrganisation&&<td className="scopeCell">{organisationNameOf(row)}</td>}
+         {workingScope.showBranch&&<td className="scopeCell">{branchNameOf(row)}</td>}
          <td>{row.reference||'-'}</td>
-         <td>{money(row.total)}</td>
+         <td className="purchaseAmountCell">{money(row.total)}</td>
          <td><StatusPill status={isPoOverdue?'Overdue':row.status} tone={PURCHASE_TONES(row.status,isPoOverdue)}/></td>
          <td>{row.expectedDate?<span style={isPoOverdue?{color:'#ef4444',fontWeight:600}:{}}>{fmtDate(row.expectedDate)}</span>:'-'}</td>
         </>}

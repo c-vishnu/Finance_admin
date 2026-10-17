@@ -1811,9 +1811,9 @@ body:has(.inc-create-page) .app main .inc-create-page.je-create {
 }
 
 /* Reference-led Record Income composer. */
-.inc-reference-page{background:#f7faff!important;padding-bottom:86px!important}.inc-reference-page .itemDialogHead{background:#fff!important}.inc-reference-content{display:grid;gap:16px;max-width:1280px;margin:0 auto;padding:22px 24px 0}.inc-reference-card,.inc-reference-page .inc-more-details{background:#fff;border:1px solid #dce6f3;border-radius:13px;box-shadow:0 4px 16px rgba(31,62,109,.04)}.inc-reference-card{padding:18px 22px 16px}.inc-reference-heading{display:flex;align-items:center;gap:13px;min-width:0}.inc-reference-heading i{display:grid;place-items:center;flex:0 0 48px;width:48px;height:48px;border-radius:50%;background:#eaf3ff;color:#146cf4}.inc-reference-heading h3,.inc-reference-heading strong{display:block;margin:0;color:#172b4d;font-size:18px;font-weight:700;line-height:1.2}.inc-reference-heading p,.inc-reference-heading small{display:block;margin:3px 0 0;color:#7082a5;font-size:13px;line-height:1.35}.inc-reference-heading em{font-style:normal;color:#405474;font-weight:600}.inc-reference-grid,.inc-reference-payment,.inc-more-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 24px;margin-top:18px}.inc-reference-page label,.inc-method-picker{display:grid;gap:7px;min-width:0;color:#162b4e;font-size:13px;font-weight:700}.inc-reference-page label>span,.inc-method-picker>span{line-height:1.25}.inc-reference-page label b,.inc-method-picker b{color:#e54861}.inc-reference-page input,.inc-reference-page select,.inc-reference-page textarea{width:100%;min-height:44px;border:1px solid #cfdced;border-radius:9px;background:#fff;padding:0 13px;color:#203655;font:14px 'Instrument Sans',Arial,sans-serif;outline:0}.inc-reference-page textarea{min-height:68px;padding:10px 13px;resize:vertical}.inc-reference-page input:focus,.inc-reference-page select:focus,.inc-reference-page textarea:focus{border-color:#2879f8;box-shadow:0 0 0 3px rgba(40,121,248,.12)}.inc-reference-page .inc-amount-input input{font-size:16px;font-weight:650;font-variant-numeric:tabular-nums}.inc-reference-page .inc-customer-field button{min-height:44px!important;border:1px solid #cfdced!important;border-radius:9px!important}.inc-reference-payment{align-items:end}.inc-method-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.inc-method-option{display:flex;align-items:center;justify-content:center;gap:8px;min-height:46px;border:1px solid #d5e0ef;border-radius:9px;background:#f5f8fd;color:#304565;font-size:14px;font-weight:600;cursor:pointer}.inc-method-option:hover{border-color:#87b4ff;background:#f0f6ff;color:#146cf4}.inc-method-option.selected{border-color:#2778f7;background:#edf5ff;color:#146cf4;box-shadow:0 0 0 1px #2778f7 inset}.inc-ledger-note{display:flex;grid-column:1/-1;align-items:center;gap:14px;margin:0;padding:15px 18px;border-radius:9px;background:#e9f3ff;color:#243b61;font-size:13px}.inc-ledger-note svg{flex:none;color:#176ef3}.inc-reference-page .inc-more-details{margin:0;overflow:hidden}.inc-reference-page .inc-more-details summary{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 22px;list-style:none;cursor:pointer;background:linear-gradient(90deg,#f8fbff,#f1f6fd)}.inc-reference-page .inc-more-details summary::-webkit-details-marker{display:none}.inc-reference-page .inc-more-details summary>.inc-reference-heading i{width:44px;height:44px;flex-basis:44px}.inc-reference-page .inc-more-details summary>svg{transition:transform .16s;color:#1d3558}.inc-reference-page .inc-more-details:not([open]) summary>svg{transform:rotate(-90deg)}.inc-reference-page .inc-more-grid{margin:0;padding:0 22px 18px}.inc-reference-page .inc-attachments{display:grid;gap:7px;color:#162b4e;font-size:13px;font-weight:700}.inc-dropzone{display:flex!important;align-items:center;gap:13px;min-height:80px;padding:12px 18px;border:1px dashed #a8c3eb!important;border-radius:9px!important;background:#fbfdff;cursor:pointer}.inc-dropzone>svg{flex:none;color:#356ba9}.inc-dropzone>span{display:grid;gap:3px;color:#597196;font-size:13px;font-weight:400}.inc-dropzone b{color:#146cf4;font-weight:650}.inc-dropzone small{color:#7990af;font-size:12px}.inc-dropzone input{position:absolute;width:1px!important;min-height:1px!important;opacity:0}.inc-file-list{display:flex;flex-wrap:wrap;gap:6px}.inc-file-list>span{display:inline-flex;align-items:center;gap:5px;padding:5px 7px;border:1px solid #d8e3f0;border-radius:6px;background:#fff;color:#405474;font-size:12px}.inc-file-list button{display:grid;place-items:center;border:0;background:transparent;color:#667085}.inc-reference-page .inc-footer{position:fixed!important;right:0;bottom:0;left:0;z-index:30;max-width:none!important;min-height:72px!important;margin:0!important;padding:12px 28px!important;border:0!important;border-top:1px solid #dce5f0!important;border-radius:0!important;background:rgba(255,255,255,.97)!important;box-shadow:0 -5px 18px rgba(16,38,76,.07)!important;justify-content:flex-end}.inc-reference-page .inc-footer button{min-width:112px!important;height:44px!important;border:1px solid #cfdbeb!important;border-radius:8px!important;background:#fff!important;color:#1d3153!important;font-weight:650}.inc-reference-page .inc-footer .primary{min-width:144px!important;border-color:#146cf4!important;background:#146cf4!important;color:#fff!important}@media(max-width:760px){.inc-reference-content{padding:14px 12px 0}.inc-reference-card{padding:16px}.inc-reference-grid,.inc-reference-payment,.inc-more-grid{grid-template-columns:1fr;gap:14px;margin-top:16px}.inc-reference-page .inc-more-grid{padding:0 16px 16px}.inc-reference-page .inc-more-details summary{padding:13px 16px}.inc-reference-page .inc-footer{padding:10px 12px!important}.inc-reference-page .inc-footer button{min-width:0!important;flex:1 1 100px}.inc-reference-heading h3,.inc-reference-heading strong{font-size:16px}}
-.inc-reference-page .inc-ledger-note b{display:block;margin-bottom:2px;color:#173b70;font-size:13px}.inc-reference-page .inc-footer-summary{display:grid;min-width:160px;margin-right:auto;line-height:1.2}.inc-reference-page .inc-footer-summary span{color:#667b9b;font-size:12px}.inc-reference-page .inc-footer-summary strong{margin:2px 0;color:#173b70;font-size:16px;font-variant-numeric:tabular-nums}.inc-reference-page .inc-footer-summary small{color:#7183a0;font-size:12px}@media(max-width:760px){.inc-reference-page .inc-footer-summary{display:none}}
-.inc-reference-page .itemDialogHead{margin:0!important}.inc-reference-page .itemHeadText{min-height:40px;display:flex;align-items:center}.inc-reference-page .inc-more-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.inc-reference-page .inc-more-grid>label:nth-child(4){grid-column:span 2}.inc-reference-page .inc-footer{left:250px!important}.app.navCollapsed .inc-reference-page .inc-footer{left:72px!important}@media(max-width:760px){.inc-reference-page .inc-more-grid>label:nth-child(4){grid-column:auto}.inc-reference-page .inc-footer{left:0!important}}
+.inc-reference-page{background:#f7faff!important}.inc-reference-page .itemDialogHead{background:#fff!important}.inc-reference-content{display:grid;gap:16px;max-width:1280px;margin:0 auto;padding:22px 24px 0}.inc-reference-card,.inc-reference-page .inc-more-details{background:#fff;border:1px solid #dce6f3;border-radius:13px;box-shadow:0 4px 16px rgba(31,62,109,.04)}.inc-reference-card{padding:18px 22px 16px}.inc-reference-heading{display:flex;align-items:center;gap:13px;min-width:0}.inc-reference-heading i{display:grid;place-items:center;flex:0 0 48px;width:48px;height:48px;border-radius:50%;background:#eaf3ff;color:#146cf4}.inc-reference-heading h3,.inc-reference-heading strong{display:block;margin:0;color:#172b4d;font-size:18px;font-weight:700;line-height:1.2}.inc-reference-heading p,.inc-reference-heading small{display:block;margin:3px 0 0;color:#7082a5;font-size:13px;line-height:1.35}.inc-reference-heading em{font-style:normal;color:#405474;font-weight:600}.inc-reference-grid,.inc-reference-payment,.inc-more-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 24px;margin-top:18px}.inc-reference-page label,.inc-reference-page .inc-customer-field,.inc-reference-page .inc-reference-field,.inc-method-picker{display:grid;gap:7px;min-width:0;color:#162b4e;font-size:13px;font-weight:700}.inc-reference-page label>span,.inc-reference-page .inc-customer-field>span,.inc-reference-page .inc-reference-field>span,.inc-method-picker>span{line-height:1.25}.inc-reference-page label b,.inc-reference-page .inc-customer-field b,.inc-reference-page .inc-reference-field b,.inc-method-picker b{color:#e54861}.inc-reference-page input,.inc-reference-page select,.inc-reference-page textarea{width:100%;min-height:44px;border:1px solid #cfdced;border-radius:9px;background:#fff;padding:0 13px;color:#203655;font:14px 'Instrument Sans',Arial,sans-serif;outline:0}.inc-reference-page textarea{min-height:68px;padding:10px 13px;resize:vertical}.inc-reference-page input:focus,.inc-reference-page select:focus,.inc-reference-page textarea:focus{border-color:#2879f8;box-shadow:0 0 0 3px rgba(40,121,248,.12)}.inc-reference-page .inc-amount-input input{font-size:16px;font-weight:650;font-variant-numeric:tabular-nums}.inc-reference-page .inc-customer-field button{min-height:44px!important;border:1px solid #cfdced!important;border-radius:9px!important}.inc-reference-payment{align-items:end}.inc-method-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.inc-method-option{display:flex;align-items:center;justify-content:center;gap:8px;min-height:46px;border:1px solid #d5e0ef;border-radius:9px;background:#f5f8fd;color:#304565;font-size:14px;font-weight:600;cursor:pointer}.inc-method-option:hover{border-color:#87b4ff;background:#f0f6ff;color:#146cf4}.inc-method-option.selected{border-color:#2778f7;background:#edf5ff;color:#146cf4;box-shadow:0 0 0 1px #2778f7 inset}.inc-ledger-note{display:flex;grid-column:1/-1;align-items:center;gap:14px;margin:0;padding:15px 18px;border-radius:9px;background:#e9f3ff;color:#243b61;font-size:13px}.inc-ledger-note svg{flex:none;color:#176ef3}.inc-reference-page .inc-more-details{margin:0;overflow:hidden}.inc-reference-page .inc-more-details summary{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 22px;list-style:none;cursor:pointer;background:linear-gradient(90deg,#f8fbff,#f1f6fd)}.inc-reference-page .inc-more-details summary::-webkit-details-marker{display:none}.inc-reference-page .inc-more-details summary>.inc-reference-heading i{width:44px;height:44px;flex-basis:44px}.inc-reference-page .inc-more-details summary>svg{transition:transform .16s;color:#1d3558}.inc-reference-page .inc-more-details:not([open]) summary>svg{transform:rotate(-90deg)}.inc-reference-page .inc-more-grid{margin:0;padding:0 22px 18px}.inc-reference-page .inc-attachments{display:grid;gap:7px;color:#162b4e;font-size:13px;font-weight:700}.inc-reference-page .inc-notes-attachment{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 24px}.inc-dropzone{display:flex!important;align-items:center;gap:13px;min-height:80px;padding:12px 18px;border:1px dashed #a8c3eb!important;border-radius:9px!important;background:#fbfdff;cursor:pointer}.inc-dropzone>svg{flex:none;color:#356ba9}.inc-dropzone>span{display:grid;gap:3px;color:#597196;font-size:13px;font-weight:400}.inc-dropzone b{color:#146cf4;font-weight:650}.inc-dropzone small{color:#7990af;font-size:12px}.inc-dropzone input{position:absolute;width:1px!important;min-height:1px!important;opacity:0}.inc-file-list{display:flex;flex-wrap:wrap;gap:6px}.inc-file-list>span{display:inline-flex;align-items:center;gap:5px;padding:5px 7px;border:1px solid #d8e3f0;border-radius:6px;background:#fff;color:#405474;font-size:12px}.inc-file-list button{display:grid;place-items:center;border:0;background:transparent;color:#667085}.inc-reference-page .inc-footer{position:fixed!important;right:0;bottom:0;left:0;z-index:30;max-width:none!important;min-height:72px!important;margin:0!important;padding:12px 28px!important;border:0!important;border-top:1px solid #dce5f0!important;border-radius:0!important;background:rgba(255,255,255,.97)!important;box-shadow:0 -5px 18px rgba(16,38,76,.07)!important;justify-content:flex-end}.inc-reference-page .inc-footer button{min-width:112px!important;height:44px!important;border:1px solid #cfdbeb!important;border-radius:8px!important;background:#fff!important;color:#1d3153!important;font-weight:650}.inc-reference-page .inc-footer .primary{min-width:144px!important;border-color:#146cf4!important;background:#146cf4!important;color:#fff!important}@media(max-width:760px){.inc-reference-content{padding:14px 12px 0}.inc-reference-card{padding:16px}.inc-reference-grid,.inc-reference-payment,.inc-more-grid{grid-template-columns:1fr;gap:14px;margin-top:16px}.inc-reference-page .inc-more-grid{padding:0 16px 16px}.inc-reference-page .inc-more-details summary{padding:13px 16px}.inc-reference-page .inc-footer{padding:10px 12px!important}.inc-reference-page .inc-footer button{min-width:0!important;flex:1 1 100px}.inc-reference-heading h3,.inc-reference-heading strong{font-size:16px}}
+.inc-reference-page .inc-ledger-note b{display:block;margin-bottom:2px;color:#173b70;font-size:13px}.inc-reference-page .inc-footer-summary{display:flex;flex-wrap:wrap;align-items:flex-end;gap:4px 22px;min-width:0;margin-right:auto;line-height:1.2}.inc-reference-page .inc-footer-summary>span{display:grid;gap:1px;min-width:0}.inc-reference-page .inc-footer-summary span{color:#667b9b;font-size:12px}.inc-reference-page .inc-footer-summary strong{margin:2px 0;color:#173b70;font-size:16px;font-variant-numeric:tabular-nums}.inc-reference-page .inc-footer-summary small{color:#7183a0;font-size:12px}.inc-reference-page .inc-footer-summary>small{flex:0 0 100%}@media(max-width:760px){.inc-reference-page .inc-footer-summary{display:none}}
+.inc-reference-page .itemDialogHead{margin:0!important}.inc-reference-page .itemHeadText{min-height:40px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:2px}.inc-reference-page .inc-more-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.inc-reference-page .inc-more-grid>label:nth-child(4){grid-column:span 2}.inc-reference-page .inc-footer{left:250px!important}.app.navCollapsed .inc-reference-page .inc-footer{left:72px!important}@media(max-width:760px){.inc-reference-page .inc-more-grid>label:nth-child(4){grid-column:auto}.inc-reference-page .inc-footer{left:0!important}}
 /* The Record Income surface owns no outer gutter; only its controls retain spacing. */
 body:has(.inc-reference-page) .app main,
 body:has(.inc-reference-page) .app main .inc-reference-page.je-create,
@@ -1912,28 +1912,33 @@ body:has(.exp-reference-page) .app main .rt-page.exp-reference-page>.exp-footer{
   .exp-reference-page .exp-reference-payment{grid-template-columns:1fr}
 }
 
-/* Record Income asks its three compact Basic Details - Date, Income Type and Amount - in one
-   three-track row, and its second row pairs Received From with the received question and the Received
-   Via picker, so no row is left holding a lone control beside an empty track. The row after that is
-   the account the money landed in, which spans the whole row and caps its own select so it does not
-   stretch across the full-bleed card. The basic row states its own three-track rule at 0,2,0 against
-   the shared .inc-reference-grid,.inc-reference-payment,.inc-more-grid row's 0,1,0, which also means
-   it outranks the shared 760px collapse - so it carries its own @media steps, two tracks at 1024px
-   and one at 760px, because a media query adds no specificity and source order alone would lose at
-   phone width. The payment row keeps the three-track rule it already states, and its expected-date
-   cell no longer spans two tracks now that Received From shares the row. */
+/* Record Income asks every one of its inputs in ONE card. The card that used to hold three basic
+   details, with the rest of the form folded into a collapsed More Details block underneath, now
+   carries the whole thing: Date Received, Received From and Income For on the first row, the amount
+   beside the account it landed in and the method it arrived by, then the tax rate and the reference
+   the operator filed, and the three fields that hold more than a one-line control - the invoice
+   link, Notes and the Attachment dropzone - take the whole row through `1/-1`, so no row is left
+   holding a lone control beside an empty track. The card states its own three-track rule at 0,2,0
+   against the shared .inc-reference-grid,.inc-reference-payment,.inc-more-grid row's 0,1,0, which
+   also means it outranks the shared 760px collapse - so it carries its own @media steps, two tracks
+   at 1024px and one at 760px, because a media query adds no specificity and source order alone
+   would lose at phone width. Received In names the account itself now that the Cash/Bank picker
+   beside it is gone, so the account field is one track wide like the others instead of spanning the
+   card, and its select fills that track rather than being capped at 420px. */
 .inc-reference-page .inc-reference-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
-.inc-reference-page .inc-account-field{grid-column:1/-1}
-.inc-reference-page .inc-account-field select{max-width:420px}
+.inc-reference-page .inc-reference-grid>.inc-wide-field{grid-column:1/-1}
 @media(max-width:1024px){
   .inc-reference-page .inc-reference-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .inc-reference-page .inc-notes-attachment{grid-template-columns:1fr}
+  .inc-reference-page .inc-tax{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(max-width:760px){
   .inc-reference-page .inc-reference-grid{grid-template-columns:1fr}
+  .inc-reference-page .inc-tax{grid-template-columns:1fr}
 }
 
-/* The page bar above stays full-bleed, but the Basic Details and More Details cards
-   get a left/right gutter so their fields stop hugging the nav rail and the window
+/* The page bar above stays full-bleed, but the single card the whole form now sits in
+   gets a left/right gutter so its fields stop hugging the nav rail and the window
    edge. The value is the same fluid gutter the other create pages use, with their
    one 600px step. */
 .inc-reference-page .inc-reference-content{padding-left:clamp(16px,2.2vw,24px)!important;padding-right:clamp(16px,2.2vw,24px)!important}
@@ -1983,4 +1988,239 @@ body:has(.exp-reference-page) .app main .rt-page.exp-reference-page>.exp-footer 
   body:has(.exp-reference-page) .app main .rt-page.exp-reference-page>.exp-footer{padding:10px 12px!important}
   .transactionPortal:has(.exp-reference-page) .rt-page.exp-reference-page>.exp-footer button,
   body:has(.exp-reference-page) .app main .rt-page.exp-reference-page>.exp-footer button{min-width:0!important;flex:1 1 100px!important}
+}
+
+/* Record Income settles money against invoices now, so the page carries three surfaces the
+   earlier single-card pass never had to skin: the receipt number chip beside the page title,
+   the invoice the register reads back (renamed from Link to Sales Invoice and moved up beside
+   the amount it is paid against), and the inline allocation table with its own head, scroll
+   box, totals line and advance choice. The settlement summary keeps the same left/right split
+   the footer already had - the numbers stay at the left, Cancel and Save at the right - but
+   its five figures read across one line instead of stacking, because the operator is checking
+   a row of related numbers against the table above rather than reading one big total. */
+.inc-reference-page .inc-allocation{display:grid;gap:12px;padding:14px 16px;border:1px solid #dce6f3;border-radius:11px;background:#fbfdff}
+.inc-reference-page .inc-allocation-reset{flex:none;height:34px;padding:0 12px;border:1px solid #cfdbeb;border-radius:8px;background:#fff;color:#1d3153;font-size:12px;font-weight:650;cursor:pointer}
+.inc-reference-page .inc-allocation-reset:hover{border-color:#87b4ff;color:#146cf4}
+.inc-reference-page .inc-allocation-empty{margin:0;padding:14px 16px;border:1px dashed #c3d5ee;border-radius:9px;background:#fff;color:#597196;font-size:13px;font-weight:400}
+.inc-reference-page .inc-allocation-table{width:100%;border-collapse:collapse;font-size:13px;white-space:nowrap}
+.inc-reference-page .inc-allocation-table th{padding:10px 16px;border-bottom:1px solid #e2eaf5;background:#f5f9ff;color:#5b7092;font-size:11px;font-weight:700;letter-spacing:.03em;text-align:left;text-transform:uppercase}
+.inc-reference-page .inc-allocation-table td{padding:9px 16px;border-bottom:1px solid #eef3fa;color:#203655;font-variant-numeric:tabular-nums}
+/* Even-handed columns: a document reads at the left - the date it carries and the number it is known
+   by - and the three money columns and the payment box take a fixed share of the width and right-align,
+   so a figure never drifts away from the heading it belongs to. */
+.inc-reference-page .inc-unpaid .inc-allocation-table th:nth-child(1),.inc-reference-page .inc-unpaid .inc-allocation-table td:nth-child(1){width:11%}
+.inc-reference-page .inc-unpaid .inc-allocation-table th:nth-child(2),.inc-reference-page .inc-unpaid .inc-allocation-table td:nth-child(2){width:16%}
+.inc-reference-page .inc-unpaid .inc-allocation-table th:nth-child(3),.inc-reference-page .inc-unpaid .inc-allocation-table td:nth-child(3){width:16%;text-align:right}
+.inc-reference-page .inc-unpaid .inc-allocation-table th:nth-child(4),.inc-reference-page .inc-unpaid .inc-allocation-table td:nth-child(4){width:17%;text-align:right}
+.inc-reference-page .inc-unpaid .inc-allocation-table th:nth-child(5),.inc-reference-page .inc-unpaid .inc-allocation-table td:nth-child(5){width:15%;text-align:right}
+.inc-reference-page .inc-unpaid .inc-allocation-table th:nth-child(6),.inc-reference-page .inc-unpaid .inc-allocation-table td:nth-child(6){width:23%;text-align:right}
+.inc-reference-page .inc-unpaid .inc-allocation-table td:nth-child(n+3) input[type="number"]{margin-left:auto}
+.inc-reference-page .inc-allocation-table tbody tr:last-child td{border-bottom:0}
+.inc-reference-page .inc-allocation-table tbody tr.is-manual{background:#f7f4ff}
+.inc-reference-page .inc-unpaid .inc-allocation-invoice{color:#172b4d;font-weight:650}
+.inc-reference-page .inc-allocation-table input[type="number"]{width:100%;max-width:132px;min-height:38px;padding:0 10px;text-align:right;font-variant-numeric:tabular-nums}
+.inc-reference-page .inc-allocation-manual{display:block;margin-top:3px;color:#7a5ad1;font-size:11px;font-style:normal;font-weight:600}
+    /* The row a keystroke kept, named under the table: the split is reorganised around it, so the
+    line says whose figure was held and which way the difference went. */
+    .inc-reference-page .inc-allocation-note{display:block;margin:10px 0 0;padding:9px 12px;border:1px solid #e2dcf7;border-radius:9px;background:#f8f6ff;color:#4b3f7a;font-size:13px;font-variant-numeric:tabular-nums}
+/* A row the book does not hold says so on the row itself, so the figure beside it is never mistaken
+   for money this payer actually owes. */
+.inc-reference-page .inc-allocation-sample{display:block;margin-top:3px;color:#8a6d1f;font-size:11px;font-style:normal;font-weight:600}
+/* The tax questions the income workflows ask, drawn as one row of the card directly above the
+   reference number: what kind of supply this money is, the rate the book's own configuration names
+   for it (offered only while the treatment is the taxable one, because an exempt supply has no rate
+   to name), and whether the income already includes that tax - which is a picker only while the
+   money is still awaited, because a receipt that has already landed is its own gross and the engine
+   takes the tax out of it whatever the picker was set to. The sentence under them is the row's own,
+   saying what the answer does to the money rather than leaving the operator to work it out from the
+   bar. The settlement workflow never draws this row, because the invoice it settles already recorded
+   its own tax, and a direct income is the only thing here that recognises new tax. */
+.inc-reference-page .inc-tax{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 24px;align-items:start}
+.inc-reference-page .inc-tax-note{grid-column:1/-1;margin:0;color:#7082a5;font-size:12px;font-weight:400;line-height:1.4}
+/* The calculation the row cannot ask for because the money has already arrived: the field is still
+   there, wearing the shape of the select beside it, stating the answer the engine will use. */
+.inc-reference-page .inc-tax-fixed{display:grid;gap:7px;min-width:0;color:#162b4e;font-size:13px;font-weight:700}
+.inc-reference-page .inc-tax-fixed>span{line-height:1.25}
+.inc-reference-page .inc-tax-fixed>em{display:flex;align-items:center;min-height:44px;padding:0 13px;border:1px solid #e3e9f2;border-radius:9px;background:#f5f7fa;color:#405474;font-size:13px;font-style:normal;font-weight:500;line-height:1.3}
+/* The section head is the Payment Received page own heading and subtitle, and the empty sentence and
+   the Allocated / Received line under the table are the ones that page closes its section with. */
+.inc-reference-page .inc-unpaid-head{display:flex;align-items:flex-start;gap:12px}
+.inc-reference-page .inc-unpaid-head h3{flex:1;min-width:0;margin:0;color:#172b4d;font-size:15px;font-weight:700;line-height:1.3}
+.inc-reference-page .inc-unpaid-head h3 small{display:block;margin-top:2px;color:#7082a5;font-size:12px;font-weight:400;line-height:1.35}
+.inc-reference-page .inc-unpaid .ivScroll p{margin:0;padding:12px 0 0;color:#597196;font-size:13px}
+.inc-reference-page .inc-allocation-line{margin:0;color:#667b9b;font-size:13px;font-variant-numeric:tabular-nums}
+.inc-reference-page .inc-allocation-reset{display:inline-flex;align-items:center;gap:6px}
+/* Money the payer still owes, on the workflow that settles nothing: one line, and the one click
+   that switches this form to the workflow that does. */
+.inc-reference-page .inc-owed-note,.inc-reference-page .inc-sample-note{display:flex;align-items:center;gap:10px;margin:0;padding:12px 14px;border:1px solid #dce6f3;border-radius:11px;background:#fbfdff;color:#203655;font-size:13px}
+.inc-reference-page .inc-owed-note>svg,.inc-reference-page .inc-sample-note>svg{flex:none;color:#146cf4}
+.inc-reference-page .inc-owed-note>span,.inc-reference-page .inc-sample-note>span{flex:1;min-width:0}
+.inc-reference-page .inc-owed-note button,.inc-reference-page .inc-sample-note button{flex:none;height:32px;padding:0 12px;border:1px solid #cfdbeb;border-radius:8px;background:#fff;color:#146cf4;font-size:12px;font-weight:650;cursor:pointer}
+.inc-reference-page .inc-owed-note button:hover,.inc-reference-page .inc-sample-note button:hover{border-color:#87b4ff}
+@media(max-width:1024px){
+  .inc-reference-page .inc-allocation-table th,
+  .inc-reference-page .inc-allocation-table td{padding-left:12px;padding-right:12px}
+}
+@media(max-width:760px){
+  .inc-reference-page .inc-allocation{padding:12px}
+  .inc-reference-page .inc-unpaid-head{flex-wrap:wrap}
+  .inc-reference-page .inc-owed-note,.inc-reference-page .inc-sample-note{flex-wrap:wrap}
+}
+/* ---------------------------------------------------------------------------
+   Record Income - the two faults the composer still carried.
+
+   1. Its actions are pinned to the foot of the window and that bar carries the money
+      summary, so the bar stands taller than the 32px tail the shared .inc-create-page
+      rule grants this page - and that rule outranks the bare .inc-reference-page
+      selector, so the 86px tail declared above it never took effect at all. The bar
+      measured 116px with the summary stacked, which left the Attachment dropzone
+      behind it once the page was scrolled to the end. The content box now carries the tail,
+      and the page measures the bar it has to clear before writing that tail, so the last
+      field is reachable at every width and however many tiles the summary is showing; the
+      140px here is only the fallback for the first paint and for a browser with no
+      ResizeObserver.
+
+   2. A native select clips its chosen label mid-word ("Bank transf", "Consultancy
+      inco") with nothing to show that it was clipped. It ends in an ellipsis instead,
+      so a shortened option reads as shortened rather than as a different value.
+   --------------------------------------------------------------------------- */
+.inc-reference-page .inc-reference-content {
+  padding-bottom: var(--inc-bar-tail, 140px) !important;
+}
+.inc-reference-page select {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* A text input clips its own placeholder the same way the select clipped its chosen
+   value - the Reference No. field printed "e.g. UTR #, transaction ID or cheque
+   numl" - so the input takes the ellipsis too and a shortened hint reads as
+   shortened rather than as a different, misspelled one. */
+.inc-reference-page input {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* The reference number and the document it comes from are one box rather than two: the
+   input keeps the left of it and the attach control holds the right, and the border and the
+   focus ring belong to the box, so the pair reads as a single field. The input inside drops
+   the border the generic rule gives every input, because the box is already drawing it. */
+.inc-reference-page .inc-reference-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 6px 0 13px;
+  border: 1px solid #cfdced;
+  border-radius: 9px;
+  background: #fff;
+}
+.inc-reference-page .inc-reference-input:focus-within {
+  border-color: #2879f8;
+  box-shadow: 0 0 0 3px rgba(40,121,248,.12);
+}
+.inc-reference-page .inc-reference-input > input {
+  flex: 1 1 auto;
+  width: auto;
+  min-height: 42px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.inc-reference-page .inc-reference-input > input:focus {
+  box-shadow: none;
+}
+.inc-reference-page .inc-reference-attach {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid #d5e0ef;
+  border-radius: 7px;
+  background: #f5f8fd;
+  color: #146cf4;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+}
+.inc-reference-page .inc-reference-attach:hover {
+  border-color: #87b4ff;
+  background: #f0f6ff;
+}
+.inc-reference-page .inc-reference-attach > input {
+  position: absolute;
+  width: 1px !important;
+  min-height: 1px !important;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+}
+
+/* Create Expense · unpaid purchase bills allocation (2026-10-17)
+   The payables mirror of the Record Income allocation table. It keeps the same
+   six-pixel rhythm, number inputs and manual mark as the income table, but is
+   scoped to the expense page so the two sheets can evolve independently. */
+.exp-reference-page .exp-allocation{display:grid;gap:12px;padding:14px 16px;border:1px solid #dce6f3;border-radius:11px;background:#fbfdff;margin-top:16px}
+.exp-reference-page .exp-allocation-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.exp-reference-page .exp-allocation-head h3{margin:0;color:#172b4d;font-size:15px;font-weight:700}
+.exp-reference-page .exp-allocation-head h3 small{margin-left:8px;color:#6b7f9e;font-size:12px;font-weight:500}
+.exp-reference-page .exp-allocation-reset{flex:none;display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border:1px solid #cfdbeb;border-radius:8px;background:#fff;color:#1d3153;font-size:12px;font-weight:650;cursor:pointer}
+.exp-reference-page .exp-allocation-reset:hover{border-color:#87b4ff;color:#146cf4}
+.exp-reference-page .exp-allocation-table{width:100%;border-collapse:collapse;font-size:13px;white-space:nowrap}
+.exp-reference-page .exp-allocation-table th{padding:10px 16px;border-bottom:1px solid #e2eaf5;background:#f5f9ff;color:#5b7092;font-size:11px;font-weight:700;letter-spacing:.03em;text-align:left;text-transform:uppercase}
+.exp-reference-page .exp-allocation-table td{padding:9px 16px;border-bottom:1px solid #eef3fa;color:#203655;font-variant-numeric:tabular-nums}
+.exp-reference-page .exp-unpaid .exp-allocation-table th:nth-child(1),.exp-reference-page .exp-unpaid .exp-allocation-table td:nth-child(1){width:12%}
+.exp-reference-page .exp-unpaid .exp-allocation-table th:nth-child(2),.exp-reference-page .exp-unpaid .exp-allocation-table td:nth-child(2){width:20%}
+.exp-reference-page .exp-unpaid .exp-allocation-table th:nth-child(3),.exp-reference-page .exp-unpaid .exp-allocation-table td:nth-child(3){width:20%;text-align:right}
+.exp-reference-page .exp-unpaid .exp-allocation-table th:nth-child(4),.exp-reference-page .exp-unpaid .exp-allocation-table td:nth-child(4){width:20%;text-align:right}
+.exp-reference-page .exp-unpaid .exp-allocation-table th:nth-child(5),.exp-reference-page .exp-unpaid .exp-allocation-table td:nth-child(5){width:28%;text-align:right}
+.exp-reference-page .exp-allocation-table td:nth-child(n+3) input[type="number"]{margin-left:auto}
+.exp-reference-page .exp-allocation-table tbody tr:last-child td{border-bottom:0}
+.exp-reference-page .exp-allocation-table tbody tr.is-manual{background:#f7f4ff}
+.exp-reference-page .exp-allocation-bill{color:#172b4d;font-weight:650}
+.exp-reference-page .exp-allocation-table input[type="number"]{width:100%;max-width:132px;min-height:38px;padding:0 10px;text-align:right;font-variant-numeric:tabular-nums}
+.exp-reference-page .exp-allocation-manual{display:block;margin-top:3px;color:#7a5ad1;font-size:11px;font-style:normal;font-weight:600}
+.exp-reference-page .exp-allocation-note{margin:0;padding:10px 12px;border:1px solid #e2dcf7;border-radius:9px;background:#f8f6ff;color:#4b3f7a;font-size:13px;font-variant-numeric:tabular-nums}
+.exp-reference-page .exp-allocation-line{margin:0;color:#667b9b;font-size:13px;font-variant-numeric:tabular-nums}
+.exp-reference-page .exp-allocation-empty{margin:0;padding:14px 16px;border:1px dashed #c3d5ee;border-radius:9px;background:#fff;color:#597196;font-size:13px;font-weight:400}
+.exp-reference-page .exp-allocation-table+p{margin:10px 16px 0;color:#597196;font-size:13px}
+@media(max-width:1050px){
+  .exp-reference-page .exp-allocation-table th,
+  .exp-reference-page .exp-allocation-table td{padding-left:12px;padding-right:12px}
+  .exp-reference-page .exp-allocation{padding:12px}
+}
+
+/* Create Expense is one card in the operator's order, laid out like Record Income: the main fields
+   flow through one three-track grid, while Outstanding Bills, Notes and Attachment span the row.
+   Date Paid, Paid To and Payment For open the first row; Amount Paid, Paid From and the Reference
+   No. box share the next row; Tax / GST and GST Rate then sit beside Payment Method for direct
+   expenses, or the payables allocation spans the row. Notes and Attachment share the closing row.
+   The old Basic Details heading, the collapsed More Details block and the helper lines are gone. */
+.exp-reference-page .exp-form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 24px;margin-top:18px}
+.exp-reference-page .exp-form-grid:first-child{margin-top:0}
+.exp-reference-page .exp-form-grid{align-items:start}
+.exp-reference-page .exp-field{display:grid;gap:7px;min-width:0;color:#162b4e;font-size:12px;font-weight:700}
+.exp-reference-page .exp-field{align-content:start}
+.exp-reference-page .exp-field>span>b{color:#e54861}
+.exp-reference-page .exp-field-wide{grid-column:1/-1}
+.exp-reference-page .exp-payment-for>select,
+.exp-reference-page .exp-paid-from>select{min-height:44px;font-weight:550}
+.exp-reference-page .exp-reference-input{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 6px 0 13px;border:1px solid #cfdced;border-radius:9px;background:#fff}
+.exp-reference-page .exp-reference-input:focus-within{border-color:#2879f8;box-shadow:0 0 0 3px rgba(40,121,248,.12)}
+.exp-reference-page .exp-reference-input>input{flex:1 1 auto;width:auto;min-height:42px;padding:0;border:0;border-radius:0;background:transparent}
+.exp-reference-page .exp-reference-input>input:focus{box-shadow:none}
+.exp-reference-page .exp-reference-attach{display:inline-flex;align-items:center;gap:6px;flex:none;min-height:32px;padding:0 10px;border:1px solid #d5e0ef;border-radius:7px;background:#f5f8fd;color:#146cf4;font-size:12px;font-weight:650;cursor:pointer}
+.exp-reference-page .exp-reference-attach:hover{border-color:#87b4ff;background:#f0f6ff}
+.exp-reference-page .exp-reference-attach>input{position:absolute;width:1px!important;min-height:1px!important;padding:0;border:0;opacity:0}
+.exp-reference-page .exp-notes-attachment{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 24px}
+.exp-reference-page .exp-notes{grid-column:auto}
+.exp-reference-page .exp-form-grid label>div button{min-height:42px!important;border:1px solid #cfdced!important;border-radius:8px!important}
+@media(max-width:820px){
+  .exp-reference-page .exp-form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .exp-reference-page .exp-notes-attachment{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  .exp-reference-page .exp-form-grid{grid-template-columns:1fr}
+  .exp-reference-page .exp-field-wide{grid-column:auto}
 }

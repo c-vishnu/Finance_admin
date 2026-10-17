@@ -1,20 +1,20 @@
 import { useDeferredValue, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
-  IconAdjustments, IconAlertTriangle, IconChevronDown, IconDownload, IconEye,
-  IconFileSpreadsheet, IconFileTypePdf, IconFilter, IconPlus, IconRefresh,
-  IconSearch, IconUpload, IconCircleCheck, IconX, IconCashBanknote, IconDotsVertical
+  IconAlertTriangle, IconChevronDown, IconEye, IconFileSpreadsheet, IconFilter,
+  IconPlus, IconRefresh, IconSearch, IconUpload, IconCircleCheck, IconX, IconDots,
+  IconEdit, IconCopy, IconBan
 } from '@tabler/icons-react';
 import { readAccounts } from './account-store.js';
 import { money } from './invoice-engine.js';
-import { ALL, DASH, DEFAULT_SORT, POSTED, SORT_OPTIONS, incomeExportSheet, incomeReport, sortTransactions } from './business-reports.js';
+import { ALL, DASH, DEFAULT_SORT, RECEIPT_AWAITING, RECEIPT_RECEIVED, SORT_OPTIONS, incomeExportSheet, incomeReport, sortTransactions } from './business-reports.js';
 import { downloadReport, excelReport } from './daybook-export.js';
 import { getAccessibleOrganizations, getCurrentOrganizationContext } from './organisation-context.js';
-import { accountingState, createIncome, markIncomeAsReceived, reverseIncome, readOperations, saveOperations, DEFAULT_INCOME_CATEGORIES } from './operations-store.js';
+import { getScopeVisibility } from './organisation-scope.js';
+import { accountingState, createIncome, markIncomeAsReceived, reverseIncome, readOperations, saveOperations } from './operations-store.js';
 import { tableExport } from './tax-compliance.js';
 import CreateIncomePage from './CreateIncomePage.jsx';
 import EmptyState from './EmptyState.jsx';
-import OutstandingActions from './OutstandingActions.jsx';
 import StatusPill from './StatusPill.jsx';
 import './journal-entries.css';
 import './business-reports.css';
@@ -22,9 +22,13 @@ import './income-detail-drawer.css';
 
 const dateText = value => value ? new Date(value + 'T00:00:00').toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : DASH;
 
-const STATUS_TONES = { Draft: 'neutral', Unpaid: 'warn', Pending: 'warn', Received: 'ok', Posted: 'ok' };
+/* Recorded is the settled state and Cancelled is the dead one, so the register reads the same
+   three words the lifecycle does. */
+const STATUS_TONES = { Draft: 'neutral', Recorded: 'ok', Cancelled: 'danger', Unpaid: 'warn', Pending: 'warn', Received: 'ok', Posted: 'ok' };
 
-const blankFilters = () => ({ from: '', to: '', party: ALL, status: ALL, branch: ALL, account: ALL, category: ALL, payment: ALL });
+/* The receipt filter is the one the receipt switch used to be: it narrows to the incomes the money
+   has arrived for, or to the ones still owed, without inventing a fourth status for either. */
+const blankFilters = () => ({ from: '', to: '', party: ALL, status: ALL, receipt: ALL, branch: ALL, account: ALL, category: ALL, payment: ALL });
 
 export default function IncomeReport({ page = 'Income', onNavigate = () => {} }) {
   const [revision, setRevision] = useState(0);
@@ -36,22 +40,47 @@ export default function IncomeReport({ page = 'Income', onNavigate = () => {} })
   const [pageIndex, setPage] = useState(1);
   const [stamp, setStamp] = useState(() => new Date());
   const [mode, setMode] = useState(page === 'Record Income' ? 'create' : 'list'); // 'list' | 'create' | 'categories'
+  /* Which income the Record Income surface was opened for, and whether it is an edit or a copy.
+     The register owns this because the create surface is a mode of this page, not a route. */
+  const [formSeed, setFormSeed] = useState(null);
   const [activeDrawerIncome, setActiveDrawerIncome] = useState(null);
   const [markPaidModal, setMarkPaidModal] = useState(null);
   const [paidDetails, setPaidDetails] = useState({ paidThrough: '1010', method: 'Bank transfer', reference: '' });
 
   const deferredSearch = useDeferredValue(search);
   const busy = deferredSearch !== search;
-  const organisation = getCurrentOrganizationContext().company;
-  const branches = useMemo(() => getAccessibleOrganizations().find(item => item.id === organisation.id)?.branches || [], [organisation.id]);
+
+  /* The working context, resolved once per revision. getScopeVisibility is the shared rule the
+     journal lines, Period Lock and the Chart of Accounts already read: the Organisation column is
+     printed only when the context reaches past one organisation, and the Branch column only when it
+     reaches past one branch - so a single-organisation, single-branch context shows neither. */
+  const context = useMemo(() => {
+    const { company, branch } = getCurrentOrganizationContext();
+    const organisations = getAccessibleOrganizations();
+    const visibility = getScopeVisibility({ organisations, label: 'Income' });
+    return {
+      organisation: company,
+      branch,
+      organisations,
+      branches: organisations.flatMap(item => item.branches),
+      showOrganisation: visibility.showOrgColumn,
+      showBranch: visibility.showBranchColumn
+    };
+  }, [revision]);
+  const { organisation, branches, showOrganisation, showBranch } = context;
+  const columnCount = 9 + (showOrganisation ? 1 : 0) + (showBranch ? 1 : 0);
 
   const refresh = () => setRevision(value => value + 1);
   useEffect(() => {
     window.addEventListener('wayvida-accounts-updated', refresh);
     window.addEventListener('storage', refresh);
+    window.addEventListener('wayvida-working-context-change', refresh);
+    window.addEventListener('wayvida-organization-change', refresh);
     return () => {
       window.removeEventListener('wayvida-accounts-updated', refresh);
       window.removeEventListener('storage', refresh);
+      window.removeEventListener('wayvida-working-context-change', refresh);
+      window.removeEventListener('wayvida-organization-change', refresh);
     };
   }, []);
 
@@ -64,12 +93,20 @@ export default function IncomeReport({ page = 'Income', onNavigate = () => {} })
   }, [revision]);
 
   const report = useMemo(() => {
+    const scope = {
+      branches,
+      organisations: context.organisations,
+      organisationName: organisation.name,
+      workingBranch: context.branch?.name || '',
+      showOrganisation,
+      showBranch
+    };
     try {
-      return incomeReport(book || {}, operations || {}, { ...filters, search: deferredSearch, branches, organisation: organisation.id, organisationCode: organisation.code });
+      return incomeReport(book || {}, operations || {}, { ...filters, ...scope, search: deferredSearch });
     } catch {
-      return incomeReport({}, { incomes: [] }, { ...filters, search: deferredSearch, branches, organisation: organisation.id, organisationCode: organisation.code });
+      return incomeReport({}, { incomes: [] }, { ...filters, ...scope, search: deferredSearch });
     }
-  }, [book, operations, filters, deferredSearch, branches, organisation.id, organisation.code]);
+  }, [book, operations, filters, deferredSearch, branches, context, organisation.name, showOrganisation, showBranch]);
 
   const ordered = useMemo(() => sortTransactions(report.rows, sort), [report.rows, sort]);
   const pageCount = Math.max(1, Math.ceil(ordered.length / perPage));
@@ -83,14 +120,14 @@ export default function IncomeReport({ page = 'Income', onNavigate = () => {} })
   const set = (key, value) => setFilters(current => ({ ...current, [key]: value }));
   const clear = () => { setFilters(blankFilters()); setSearch(''); setSort(DEFAULT_SORT); setPage(1); };
   const sortLabel = (SORT_OPTIONS.find(option => option.value === sort) || {}).label || 'Newest first';
-  const activeFilters = ['from', 'to'].filter(key => filters[key]).length + ['party', 'account', 'category', 'payment'].filter(key => filters[key] !== ALL).length + (filters.status !== ALL ? 1 : 0) + (filters.branch !== ALL ? 1 : 0) + (sort !== DEFAULT_SORT ? 1 : 0);
+  const activeFilters = ['from', 'to'].filter(key => filters[key]).length + ['party', 'account', 'category', 'payment'].filter(key => filters[key] !== ALL).length + ['status', 'receipt', 'branch'].filter(key => filters[key] !== ALL).length + (sort !== DEFAULT_SORT ? 1 : 0);
 
   function exportExcel() {
     const sheet = incomeExportSheet(report);
     const content = excelReport(tableExport(sheet.header, sheet.rows, {
       title: 'Wayvida Books · Income Report', subtitle: 'View and manage business income records.',
       organisation: organisation.name, branch: filters.branch, from: filters.from, to: filters.to,
-      filters: { 'Income Status': filters.status, Category: filters.category, 'Received From': filters.party, Branch: filters.branch, Search: search },
+      filters: { Status: filters.status, Receipt: filters.receipt, Category: filters.category, 'Received From': filters.party, Branch: filters.branch, Search: search },
       count: report.rows.length, generatedBy: 'Local user', generatedAt: stamp.toISOString()
     }));
     downloadReport(content, 'wayvida-income-report.xml', 'application/xml;charset=utf-8');
@@ -99,14 +136,20 @@ export default function IncomeReport({ page = 'Income', onNavigate = () => {} })
   function handleMarkAsReceivedSubmit(e) {
     if (e) e.preventDefault();
     if (!markPaidModal) return;
+    /* Which income the dialog was opened for, read before the dialog is dismissed. */
+    const receivedId = markPaidModal.recordId;
     try {
       const store = readOperations();
       const db = accountingState();
-      const out = markIncomeAsReceived(store, db, markPaidModal.recordId, paidDetails);
+      const out = markIncomeAsReceived(store, db, receivedId, paidDetails);
       saveOperations(out.store);
       localStorage.setItem('wayvida-accounting-v1', JSON.stringify(out.accounting));
       setMarkPaidModal(null);
       refresh();
+      /* The detail drawer describes the income whose receipt just changed - its deposit ledger is
+         the account the money was owed into a moment ago - so it closes rather than restating a stale
+         record, and the refreshed register below is what the operator reads. */
+      setActiveDrawerIncome(current => (current && current.recordId === receivedId ? null : current));
     } catch (err) {
       alert('Failed to mark income as received: ' + err.message);
     }
@@ -183,8 +226,36 @@ export default function IncomeReport({ page = 'Income', onNavigate = () => {} })
     input.click();
   }
 
+  /* One register menu, opened by the row and closed by a press anywhere else or Escape, so the
+     panel can never be left open behind the next one. */
+  const openMenus = () => document.querySelectorAll('.je-row-actions details[open]');
+  const menuRun = handler => () => { openMenus().forEach(node => node.removeAttribute('open')); handler(); };
+  const closeMenus = () => openMenus().forEach(node => node.removeAttribute('open'));
+  useEffect(() => {
+    const onPointerDown = event => openMenus().forEach(node => { if (!node.contains(event.target)) node.removeAttribute('open'); });
+    const onKeyDown = event => { if (event.key === 'Escape') closeMenus(); };
+    document.addEventListener('pointerdown', onPointerDown);
+    document.addEventListener('keydown', onKeyDown);
+    return () => { document.removeEventListener('pointerdown', onPointerDown); document.removeEventListener('keydown', onKeyDown); };
+  }, []);
+
+  /* Edit and Duplicate both reopen the Record Income surface: Edit only for a draft, which has not
+     reached the ledger, and Duplicate for any income, saving its values as a new record. */
+  const openForm = (income, copy) => { setFormSeed({ income, copy }); setMode('create'); };
+  const closeForm = () => { setFormSeed(null); setMode('list'); };
+  const rowActions = entry => {
+    const cancelled = entry.status === 'Cancelled';
+    const editable = entry.status === 'Draft';
+    return [
+      { key: 'view', label: 'View', icon: IconEye, run: () => setActiveDrawerIncome(entry) },
+      { key: 'edit', label: 'Edit', icon: IconEdit, disabled: !editable, reason: editable ? '' : 'Only a draft income can be edited. Cancel this income and record a new one instead.', run: () => openForm(entry, false) },
+      { key: 'duplicate', label: 'Duplicate', icon: IconCopy, run: () => openForm(entry, true) },
+      { key: 'cancel', label: 'Cancel Income', icon: IconBan, danger: true, disabled: cancelled, reason: cancelled ? 'This income is already cancelled.' : '', run: () => handleReverseIncome(entry.recordId) }
+    ];
+  };
+
   if (mode === 'create') {
-    return <CreateIncomePage onCancel={() => setMode('list')} onSaved={() => { refresh(); setMode('list'); }} />;
+    return <CreateIncomePage income={formSeed?.income || null} copy={Boolean(formSeed?.copy)} onCancel={closeForm} onSaved={() => { refresh(); closeForm(); }} />;
   }
 
   return (
@@ -206,7 +277,7 @@ export default function IncomeReport({ page = 'Income', onNavigate = () => {} })
             <div>
               <label>Date From<input type="date" value={filters.from} onChange={event => set('from', event.target.value)} /></label>
               <label>Date To<input type="date" value={filters.to} onChange={event => set('to', event.target.value)} /></label>
-              <label>Category
+              <label>Income Type
                 <select value={filters.category} onChange={event => set('category', event.target.value)}>
                   <option value={ALL}>All categories</option>
                   {report.categoryOptions.map(value => <option key={value} value={value}>{value}</option>)}
@@ -218,12 +289,17 @@ export default function IncomeReport({ page = 'Income', onNavigate = () => {} })
                   {report.partyOptions.map(option => <option key={option.name} value={option.name}>{option.name}</option>)}
                 </select>
               </label>
-              <label>Payment Status
+              <label>Status
                 <select value={filters.status} onChange={event => set('status', event.target.value)}>
                   <option value={ALL}>All statuses</option>
-                  <option value="Received">Received</option>
-                  <option value="Unpaid">Unpaid / Receivable</option>
-                  <option value="Draft">Draft</option>
+                  {report.statusOptions.map(value => <option key={value} value={value}>{value}</option>)}
+                </select>
+              </label>
+              <label>Receipt
+                <select value={filters.receipt} onChange={event => set('receipt', event.target.value)}>
+                  <option value={ALL}>Received and awaiting</option>
+                  <option value={RECEIPT_RECEIVED}>Received</option>
+                  <option value={RECEIPT_AWAITING}>Awaiting receipt</option>
                 </select>
               </label>
               <label>Sort
@@ -269,131 +345,62 @@ export default function IncomeReport({ page = 'Income', onNavigate = () => {} })
       {/* Main Income Data Table */}
       <div className="je-card unified">
         <div className="je-table-wrap">
-          <table>
+          <table className="incomeRegister">
             <thead>
               <tr>
-                <th>Income # & Date</th>
-                <th>Category</th>
-                <th>Received From</th>
-                <th>Description</th>
-                <th>Deposit Account</th>
-                <th>Status</th>
+                <th>Date</th>
+                <th>Income No./Inv No.</th>
+                <th>Income From</th>
+                <th>Income Type</th>
+                <th>Received In</th>
                 <th>Amount</th>
+                <th>Reference Number</th>
+                <th>Status</th>
+                {showOrganisation && <th>Organisation</th>}
+                {showBranch && <th>Branch</th>}
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {ordered.slice(startIndex, startIndex + perPage).map(entry => (
                 <tr key={entry.id}>
+                  <td>{dateText(entry.date)}</td>
                   <td>
                     <button type="button" className="je-link" title={'Open income details ' + entry.number} onClick={() => setActiveDrawerIncome(entry)}>
-                      {entry.number}
+                      {entry.documentNumber}
                     </button>
-                    <small style={{ display: 'block', color: '#64748b', marginTop: '3px', fontSize: '0.8125rem', fontWeight: 400 }}>{dateText(entry.date)}</small>
                   </td>
-                  <td>{entry.category}</td>
                   <td><strong>{entry.party}</strong></td>
-                  <td>{entry.description || entry.name || '—'}</td>
-                  <td>{entry.received ? (entry.paymentAccountName || '1010 Bank Account') : 'Accounts Receivable (1100)'}</td>
-                  <td><StatusPill status={entry.status} tone={STATUS_TONES[entry.status] || 'neutral'} /></td>
+                  <td>{entry.category}</td>
+                  <td>{entry.receivedIn}</td>
                   <td><b>{money(entry.amount)}</b></td>
+                  <td>{entry.reference}</td>
+                  <td><StatusPill status={entry.status} tone={STATUS_TONES[entry.status] || 'neutral'} /></td>
+                  {showOrganisation && <td>{entry.organisationName}</td>}
+                  {showBranch && <td>{entry.branchName}</td>}
                   <td>
-                    <details className="customerKebab" style={{ position: 'relative', display: 'inline-block' }}>
-                      <summary
-                        className="rt-btn rt-btn-sm"
-                        style={{
-                          padding: '4px 8px',
-                          cursor: 'pointer',
-                          listStyle: 'none',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          borderRadius: '6px',
-                          border: '1px solid #d7e0eb',
-                          background: '#fff',
-                          color: '#475467'
-                        }}
-                        title="More Actions"
-                      >
-                        <IconDotsVertical size={16} />
-                      </summary>
-                      <div
-                        className="customerMoreMenu"
-                        style={{
-                          position: 'absolute',
-                          right: 0,
-                          top: 'calc(100% + 4px)',
-                          zIndex: 100,
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: '2px',
-                          minWidth: '155px',
-                          padding: '6px',
-                          background: '#fff',
-                          border: '1px solid #eaecf0',
-                          borderRadius: '8px',
-                          boxShadow: '0 10px 30px rgba(16, 24, 40, 0.12)'
-                        }}
-                      >
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.currentTarget.closest('details')?.removeAttribute('open');
-                            setActiveDrawerIncome(entry);
-                          }}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            width: '100%',
-                            padding: '7px 10px',
-                            border: 0,
-                            borderRadius: '6px',
-                            background: 'transparent',
-                            color: '#344054',
-                            fontSize: '13px',
-                            fontWeight: 500,
-                            textAlign: 'left',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          <IconEye size={15} style={{ color: '#3478f6' }} /> View
-                        </button>
-
-                        {!entry.received && entry.status !== 'Cancelled' && (
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.currentTarget.closest('details')?.removeAttribute('open');
-                              setMarkPaidModal(entry);
-                            }}
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '8px',
-                              width: '100%',
-                              padding: '7px 10px',
-                              border: 0,
-                              borderRadius: '6px',
-                              background: 'transparent',
-                              color: '#059669',
-                              fontSize: '13px',
-                              fontWeight: 500,
-                              textAlign: 'left',
-                              cursor: 'pointer'
-                            }}
-                          >
-                            <IconCircleCheck size={15} style={{ color: '#059669' }} /> Receive
-                          </button>
-                        )}
-                      </div>
-                    </details>
+                    <div className="je-row-actions">
+                      <details>
+                        <summary aria-label={'More actions for ' + entry.number}><IconDots size={17} /></summary>
+                        <div>
+                          {rowActions(entry).map(action => {
+                            const ActionIcon = action.icon;
+                            return (
+                              <button key={action.key} type="button" disabled={action.disabled} title={action.reason || undefined} className={action.danger ? 'je-row-danger' : ''} onClick={action.disabled ? undefined : menuRun(action.run)}>
+                                <ActionIcon size={17} />
+                                <span>{action.label}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </details>
+                    </div>
                   </td>
                 </tr>
               ))}
               {!report.rows.length && (
                 <tr className="emptyStateRow">
-                  <td colSpan={8} className="emptyStateCell">
+                  <td colSpan={columnCount} className="emptyStateCell">
                     <EmptyState
                       variant="budget"
                       title={report.hasRows ? 'No income records match your filters.' : 'No income records found.'}
@@ -488,7 +495,7 @@ export default function IncomeReport({ page = 'Income', onNavigate = () => {} })
             <div className="opsDrawerBody irDrawerBody">
               <dl className="irFacts">
                 <div>
-                  <dt>Income Category</dt>
+                  <dt>Income Type</dt>
                   <dd>{activeDrawerIncome.category}</dd>
                 </div>
                 <div>
@@ -503,6 +510,14 @@ export default function IncomeReport({ page = 'Income', onNavigate = () => {} })
                   <dt>Status</dt>
                   <dd><StatusPill status={activeDrawerIncome.status} tone={STATUS_TONES[activeDrawerIncome.status] || 'neutral'} /></dd>
                 </div>
+                {/* The register prints the reference number in its own column, so View states it too
+                    rather than leaving the operator to read it off the row behind the drawer. */}
+                {activeDrawerIncome.reference && activeDrawerIncome.reference !== DASH && (
+                  <div>
+                    <dt>Reference Number</dt>
+                    <dd>{activeDrawerIncome.reference}</dd>
+                  </div>
+                )}
               </dl>
 
               <div className="irPosting">
@@ -524,6 +539,12 @@ export default function IncomeReport({ page = 'Income', onNavigate = () => {} })
 
             <footer>
               <button type="button" onClick={() => setActiveDrawerIncome(null)}>Close</button>
+              {/* Receipt is not one of the register's four row actions, so it lives where the operator
+                  already has the record's own facts in front of them. Only a recorded income can be
+                  collected: a draft has not reached the ledger, so there is nothing to collect against. */}
+              {activeDrawerIncome.status === 'Recorded' && !activeDrawerIncome.received && (
+                <button type="button" className="irReceive" onClick={() => setMarkPaidModal(activeDrawerIncome)}>Mark as received</button>
+              )}
               {activeDrawerIncome.status !== 'Cancelled' && (
                 <button type="button" className="irDanger" onClick={() => handleReverseIncome(activeDrawerIncome.recordId)}>Cancel Record</button>
               )}

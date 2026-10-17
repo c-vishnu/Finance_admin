@@ -1,7 +1,11 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
-import { IconArrowLeft, IconAlertTriangle, IconPaperclip, IconTrash, IconPlus, IconSearch, IconChevronDown, IconReceipt, IconWallet, IconPercentage, IconInfoCircle, IconBuildingBank, IconCashBanknote, IconFileText } from '@tabler/icons-react';
+import { IconArrowLeft, IconAlertTriangle, IconPaperclip, IconTrash, IconPlus, IconSearch, IconChevronDown, IconReceipt, IconWallet, IconPercentage, IconInfoCircle, IconFileText, IconRefresh } from '@tabler/icons-react';
 import { readAccounts } from './account-store.js';
-import { readOperations, saveOperations, createExpense, accountingState } from './operations-store.js';
+import { readOperations, saveOperations, createExpense, createPurchasePaymentExpense, accountingState } from './operations-store.js';
+import { fifoAllocation, rebalanceAllocation, validateAllocation, money, paise, rupeeString } from './income-allocation.js';
+import { outstandingPurchaseBills, PURCHASE_PAYMENT_TYPE } from './purchase-allocation.js';
+import { recordPurchasePayment } from './purchase-service.js';
+import { getCurrentOrganizationContext } from './organisation-context.js';
 import { readVendors } from './vendor-store.js';
 import { KEY } from './invoice-engine.js';
 import { customerSeeds } from './Customers.jsx';
@@ -40,6 +44,9 @@ const GST_TREATMENTS = [
 const TAX_OPTIONS = [
   'GST 18%', 'GST 12%', 'GST 5%', 'GST 28%', 'GST 0%', 'Non-GST / Exempt'
 ];
+
+/* The date under a bill number reads the way every other date in the book reads. */
+const shortDate = value => value ? new Date(value + 'T00:00:00').toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
 
 function SearchableVendorSelect({ vendors, selectedVendorId, selectedVendorName, onSelect }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -336,6 +343,50 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
   const accounts = readAccounts();
   const expenseAccounts = (accounts?.accounts || []).filter(a => a.type === 'Expenses' || a.code?.startsWith('5'));
   const assetAccounts = (accounts?.accounts || []).filter(a => a.type === 'Assets' || a.code?.startsWith('1'));
+  /* Paid From is one account picker. Cash and bank are the two groups the operator
+     thinks in, while the chart stores the ledgers themselves; grouping the chart
+     here keeps the form from offering receivables or fixed assets as money sources. */
+  const cashPaymentAccounts = [];
+  const bankPaymentAccounts = [];
+  const paymentAccountCodes = new Set();
+  /* The saved chart often inherits the group "Cash and Bank", so accountNature can
+     say Cash for a current account. The ledger's own name and code are the reliable
+     distinction: 1000 and cash-named ledgers are cash, every other bank ledger is Bank. */
+  const isCashPaymentAccount = account => {
+    const code = String(account.code || '');
+    const name = String(account.name || '').toLowerCase();
+    return code === '1000' || /cash/.test(name) || account.accountPurpose === 'Cash';
+  };
+  for (const account of assetAccounts) {
+    const code = String(account.code || '');
+    if (!code || account.active === false || account.isGroup || paymentAccountCodes.has(code)) continue;
+    const name = String(account.name || '').toLowerCase();
+    const isCash = isCashPaymentAccount(account);
+    const isBank = !isCash && (
+      account.accountNature === 'Bank'
+      || account.accountPurpose === 'Bank Account'
+      || /bank|current account|savings|overdraft/.test(name)
+      || account.group === 'Cash and Bank'
+    );
+    if (!isCash && !isBank) continue;
+    paymentAccountCodes.add(code);
+    (isCash ? cashPaymentAccounts : bankPaymentAccounts).push({ ...account, code });
+  }
+  if (!cashPaymentAccounts.length) cashPaymentAccounts.push({ code: '1000', name: 'Cash / Petty Cash' });
+  if (!bankPaymentAccounts.length) bankPaymentAccounts.push({ code: '1010', name: 'Bank Account' });
+  const paymentAccountOptions = [...cashPaymentAccounts, ...bankPaymentAccounts];
+  const expenseAccountOptions = (() => {
+    const seen = new Set();
+    const rows = [];
+    for (const [code, name] of [['5900', 'Other Operating Expenses'], ['5000', 'Office Supplies'], ['5300', 'Rent & Utilities'], ['5400', 'Travel & Conveyance'], ['5600', 'Professional Fees']]) {
+      if (!seen.has(code)) { seen.add(code); rows.push({ code, name }); }
+    }
+    for (const account of expenseAccounts) {
+      const code = String(account.code || '');
+      if (code && !seen.has(code)) { seen.add(code); rows.push({ code, name: account.name || code }); }
+    }
+    return rows;
+  })();
 
   // Vendor list
   const vendors = useMemo(() => readVendors(), []);
@@ -357,7 +408,6 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
     amount: '',
     paidThroughMode: 'Bank',
     paidThrough: '1010',
-    paymentMethod: 'Bank Transfer',
     transactionRef: '',
     sac: '',
     vendorId: '',
@@ -372,6 +422,10 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
     customerId: '',
     customerName: '',
     files: [],
+    expenseTypeChosen: false,
+    directExpenseAccount: '5900',
+    allocations: {},
+    allocationManual: false,
   });
 
   // Bulk lines state
@@ -385,6 +439,40 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
     setForm(f => ({ ...f, [key]: value }));
   };
 
+  /* Create Expense now holds two workflows behind the one Expense Type picker,
+     the same way Record Income holds new income and invoice settlement. The
+     payables book is read once as the form opens; a vendor who still owes on
+     posted purchase bills opens the allocation table, and any other vendor
+     records a new expense. */
+  const book = useMemo(() => accountingState(), []);
+  const { company, branch } = getCurrentOrganizationContext();
+  const settlement = form.expenseAccount === PURCHASE_PAYMENT_TYPE;
+  const openBills = settlement && form.vendorId
+    ? outstandingPurchaseBills(book, { vendorId: form.vendorId, branchId: branch?.id || '', organisationId: company?.id || '' })
+    : [];
+  /* FIFO is the default recommendation and a typed row is the one thing a
+     keystroke may not rewrite; the arithmetic is the income allocation's own. */
+  const fifo = fifoAllocation({ amount: form.amount, invoices: openBills });
+  const fifoAmounts = Object.fromEntries(fifo.rows.map(row => [row.invoiceId, row.amount]));
+  const spread = rebalanceAllocation({ amount: form.amount, invoices: openBills, pinned: form.allocationManual ? form.allocations : {} });
+  const allocationAmounts = spread.amounts;
+  const pinnedBill = form.allocationManual
+    ? openBills.find(bill => form.allocations[bill.id] !== undefined) || null
+    : null;
+  const pinnedAmount = pinnedBill ? spread.rows.find(row => row.invoiceId === pinnedBill.id)?.amount || 0 : 0;
+  const amountError = (() => { try { paise(form.amount); return ''; } catch (reason) { return reason.message; } })();
+  const paidPaise = amountError ? 0 : paise(form.amount);
+  const paidFromAccount = paymentAccountOptions.find(a => String(a.code) === String(form.paidThrough));
+  const paymentMethod = paidFromAccount && isCashPaymentAccount(paidFromAccount) ? 'Cash' : 'Bank Transfer';
+  const checkedAllocation = amountError
+    ? { allocations: [], allocated: 0, unallocated: 0, errors: [] }
+    : validateAllocation({
+        amount: form.amount,
+        rows: openBills.map(bill => ({ invoiceId: bill.id, amount: allocationAmounts[bill.id] })),
+        invoices: openBills,
+        labels: { object: 'bill', party: 'vendor' }
+      });
+
   const detectStateFromVendor = (v) => {
     if (!v) return 'Kerala';
     if (v.billing?.state && STATE_LIST.includes(v.billing.state)) return v.billing.state;
@@ -397,26 +485,91 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
     return 'Kerala';
   };
 
+  /* Who is being paid decides which bills the money may settle. An untouched
+     Expense Type follows the vendor - somebody who still owes on a purchase
+     opens the payables workflow, anybody else a new expense - while a type the
+     operator chose is never overwritten. Either way the previous vendor's split
+     leaves with the vendor it belonged to. */
   const handleVendorSelect = (vendorId) => {
     setError('');
     if (!vendorId) {
-      setForm(f => ({ ...f, vendorId: '', vendor: '', vendorGstin: '', sourceOfSupply: 'Kerala' }));
+      setForm(f => ({
+        ...f,
+        vendorId: '',
+        vendor: '',
+        vendorGstin: '',
+        sourceOfSupply: 'Kerala',
+        expenseAccount: f.expenseTypeChosen ? f.expenseAccount : (f.directExpenseAccount || '5900'),
+        allocations: {},
+        allocationManual: false
+      }));
       return;
     }
     const v = vendors.find(x => x.id === vendorId || x.name === vendorId);
     if (v) {
       const detectedState = detectStateFromVendor(v);
+      const owes = outstandingPurchaseBills(book, {
+        vendorId: v.id,
+        branchId: branch?.id || '',
+        organisationId: company?.id || ''
+      }).length > 0;
       setForm(f => ({
         ...f,
         vendorId: v.id,
         vendor: v.name,
         vendorGstin: v.gstin || '',
         gstTreatment: v.gstTreatment || (v.gstin ? 'Registered Business - Regular' : 'Unregistered Business'),
-        sourceOfSupply: detectedState
+        sourceOfSupply: detectedState,
+        expenseAccount: f.expenseTypeChosen ? f.expenseAccount : (owes ? PURCHASE_PAYMENT_TYPE : (f.directExpenseAccount || '5900')),
+        allocations: {},
+        allocationManual: false
       }));
     } else {
-      setForm(f => ({ ...f, vendorId: '', vendor: vendorId }));
+      setForm(f => ({ ...f, vendorId: '', vendor: vendorId, allocations: {}, allocationManual: false }));
     }
+  };
+
+  /* Payment For is the operator answering the workflow question, so the vendor
+     stops answering it. The Other Expense group carries the account choices in
+     the same dropdown, and leaving or entering the payables side clears the
+     previous split rather than carrying it across. */
+  const handlePaymentForChange = (mode) => {
+    setError('');
+    setForm(f => {
+      const wasSettlement = f.expenseAccount === PURCHASE_PAYMENT_TYPE;
+      const isSettlement = mode === 'bills';
+      const directAccount = isSettlement ? (f.directExpenseAccount || '5900') : (mode || f.directExpenseAccount || '5900');
+      return {
+        ...f,
+        expenseAccount: isSettlement ? PURCHASE_PAYMENT_TYPE : directAccount,
+        directExpenseAccount: directAccount,
+        expenseTypeChosen: true,
+        ...(wasSettlement === isSettlement ? {} : { allocations: {}, allocationManual: false })
+      };
+    });
+  };
+
+  /* The account answers which ledger is credited; the saved payment method is
+     derived from that ledger, so the form does not ask the same question twice. */
+  const handlePaidFromChange = (code) => {
+    setError('');
+    const account = paymentAccountOptions.find(a => String(a.code) === String(code));
+    const isCash = Boolean(account && isCashPaymentAccount(account));
+    setForm(f => ({
+      ...f,
+      paidThroughMode: isCash ? 'Cash' : 'Bank',
+      paidThrough: code
+    }));
+  };
+
+  const handleAllocateChange = (billId, value) => {
+    setError('');
+    setForm(f => ({ ...f, allocationManual: true, allocations: { [billId]: value } }));
+  };
+
+  const resetToFifo = () => {
+    setError('');
+    setForm(f => ({ ...f, allocationManual: false, allocations: {} }));
   };
 
   const handleCustomerSelect = (customerId) => {
@@ -473,12 +626,88 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
   const handleSubmit = (e, targetStatus = 'Posted') => {
     if (e) e.preventDefault();
     try {
+      if (amountError) throw new Error(amountError);
       const store = readOperations();
       const db = accountingState();
 
       if (expenseMode === 'single') {
         if (!form.amount || Number(form.amount) <= 0) {
           throw new Error('Please enter a valid expense amount.');
+        }
+
+        /* A payment on the payables side settles purchase bills the book already posted, so it
+           posts vendor payment journals through the purchase engine and never debits an expense
+           account a second time. FIFO is only a preview: the rows are validated here against the
+           same open bills the table read, and each bill engine call re-reads the bill it is paying. */
+        if (settlement) {
+          if (targetStatus === 'Draft') {
+            throw new Error('A purchase bill payment is posted immediately; there is no draft. Use Post Payment to record it.');
+          }
+          if (!form.vendorId) {
+            throw new Error('Select the vendor whose unpaid purchase bills this payment settles.');
+          }
+          if (!openBills.length) {
+            throw new Error('This vendor has no unpaid purchase bills in this book. Choose Other Expense to record a new expense instead.');
+          }
+          if (checkedAllocation.errors.length) {
+            throw new Error(checkedAllocation.errors.join(' '));
+          }
+          if (checkedAllocation.unallocated > 0) {
+            throw new Error(`${money(checkedAllocation.unallocated)} of the amount paid is not accounted for. Allocate the whole amount across the bills above.`);
+          }
+
+          let currentDb = db;
+          const payments = [];
+          for (const row of checkedAllocation.allocations) {
+            const bill = (currentDb.purchaseBills || []).find(entry => entry.id === row.invoiceId);
+            if (!bill) throw new Error('That purchase bill is no longer available. Refresh the page and try again.');
+            const out = recordPurchasePayment(currentDb, bill, {
+              amount: rupeeString(row.amount),
+              date: form.date,
+              bankAccount: form.paidThrough || '1010',
+              paymentMethod,
+              reference: form.invoiceNo || '',
+              notes: form.notes || '',
+              attachment: form.files?.[0] || null,
+              role: 'Admin'
+            });
+            currentDb = out.state;
+            payments.push({ bill: out.bill, payment: out.payment });
+          }
+          localStorage.setItem(KEY, JSON.stringify(currentDb));
+
+          /* One register row per settled bill, each pointing at the vendor payment journal that
+             paid it, so the Expense Report can state what left the bank without reposting it. */
+          let nextStore = store;
+          for (const { bill, payment } of payments) {
+            nextStore = createPurchasePaymentExpense(nextStore, {
+              date: form.date,
+              name: `Payment for ${bill.number}`,
+              category: 'Purchase Bill Payment',
+              payee: bill.vendorName || form.vendor || 'Vendor',
+              account: bill.payableAccount || '2000',
+              paidThrough: form.paidThrough || '1010',
+              paymentMethod,
+              amount: rupeeString(payment.amount),
+              tax: '',
+              reference: bill.number,
+              vendor: bill.vendorName || form.vendor,
+              vendorId: bill.vendorId,
+              vendorGstin: form.vendorGstin,
+              purchaseBillId: bill.id,
+              vendorPaymentId: payment.id,
+              journalId: payment.journalId,
+              notes: form.notes,
+              customerId: form.customerId,
+              customerName: form.customerName,
+              customer: form.customerName,
+              files: form.files,
+              frequency: 'single'
+            }).store;
+          }
+          saveOperations(nextStore);
+          if (onSaved) onSaved();
+          return;
         }
 
         const input = {
@@ -488,6 +717,8 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
           payee: form.vendor || 'Vendor',
           account: form.expenseAccount || '5900',
           paidThrough: form.paidThrough || '1010',
+          paymentMethod,
+          transactionRef: form.invoiceNo,
           amount: Number(form.amount),
           sac: form.sac,
           vendor: form.vendor,
@@ -527,6 +758,8 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
             payee: form.vendor || 'Vendor',
             account: line.expenseAccount || '5900',
             paidThrough: form.paidThrough || '1010',
+            paymentMethod,
+            transactionRef: form.invoiceNo,
             amount: Number(line.amount),
             vendor: form.vendor,
             vendorGstin: form.vendorGstin,
@@ -566,24 +799,120 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
       {error && <div className="je-error exp-error"><IconAlertTriangle size={18} /><span>{error}</span></div>}
       <main className="exp-reference-content">
         <section className="exp-reference-card">
-          <div className="exp-reference-heading"><i><IconFileText size={21} /></i><div><h3>Basic Details</h3><p>Tell us about the expense.</p></div></div>
-          <div className="exp-reference-grid exp-reference-top">
-            <label><span>Date <b>*</b></span><input type="date" required value={form.date} onChange={e => setField('date', e.target.value)} /></label>
-            <label><span>Expense Type <b>*</b></span><select value={form.expenseAccount} onChange={e => setField('expenseAccount', e.target.value)}><option value="5900">5900 · Other Operating Expenses</option><option value="5000">5000 · Office Supplies</option><option value="5300">5300 · Rent & Utilities</option><option value="5400">5400 · Travel & Conveyance</option><option value="5600">5600 · Professional Fees</option>{expenseAccounts.map(a => <option key={a.code} value={a.code}>{a.code} · {a.name}</option>)}</select></label>
-            <label><span>Paid To</span><SearchableVendorSelect vendors={vendors} selectedVendorId={form.vendorId} selectedVendorName={form.vendor} onSelect={handleVendorSelect} /></label>
-          </div>
-          <div className="exp-reference-payment">
-            <label className="exp-amount"><span>Amount (₹) <b>*</b></span><input type="number" step="0.01" required placeholder="0.00" value={form.amount} onChange={e => setField('amount', e.target.value)} /></label>
-            <div className="exp-method-picker"><span>Paid Via <b>*</b></span><div className="exp-method-options"><button type="button" className={form.paidThroughMode==='Cash'?'selected':''} aria-pressed={form.paidThroughMode==='Cash'} onClick={() => setForm(f => ({...f,paidThroughMode:'Cash',paidThrough:'1000',paymentMethod:'Cash'}))}><IconCashBanknote size={18} />Cash</button><button type="button" className={form.paidThroughMode!=='Cash'?'selected':''} aria-pressed={form.paidThroughMode!=='Cash'} onClick={() => setForm(f => ({...f,paidThroughMode:'Bank',paidThrough:'1010',paymentMethod:'Bank Transfer'}))}><IconBuildingBank size={18} />Bank</button></div></div>
-            <label><span>Payment Account <b>*</b></span><select value={form.paidThrough} onChange={e => setField('paidThrough', e.target.value)}>{form.paidThroughMode==='Cash'?<><option value="1000">1000 · Cash / Petty Cash</option><option value="1020">1020 · Undeposited Cash Funds</option></>:<><option value="1010">1010 · HDFC Bank Operating Account</option>{assetAccounts.filter(a=>a.code!=='1000').map(a=><option key={a.code} value={a.code}>{a.code} · {a.name}</option>)}</>}</select></label>
+          <div className="exp-form-grid">
+            <label className="exp-field">
+              <span>Date Paid <b>*</b></span>
+              <input type="date" required value={form.date} onChange={e => setField('date', e.target.value)} />
+            </label>
+            <label className="exp-field">
+              <span>Paid To</span>
+              <SearchableVendorSelect vendors={vendors} selectedVendorId={form.vendorId} selectedVendorName={form.vendor} onSelect={handleVendorSelect} />
+            </label>
+            <div className="exp-field exp-payment-for">
+              <span>Payment For <b>*</b></span>
+              <select aria-label="Payment For" value={settlement ? 'bills' : form.expenseAccount} onChange={e => handlePaymentForChange(e.target.value)}>
+                <option value="bills">Existing Purchase Bills</option>
+                <optgroup label="Other Expense">
+                  {expenseAccountOptions.map(a => <option key={a.code} value={a.code}>{a.code} · {a.name}</option>)}
+                </optgroup>
+              </select>
+            </div>
+            <label className="exp-field exp-amount">
+              <span>Amount Paid (₹) <b>*</b></span>
+              <input type="number" step="0.01" required placeholder="0.00" value={form.amount} onChange={e => setField('amount', e.target.value)} />
+            </label>
+            <div className="exp-field exp-paid-from">
+              <span>Paid From <b>*</b></span>
+              <select aria-label="Paid From" value={form.paidThrough} onChange={e => handlePaidFromChange(e.target.value)}>
+                <optgroup label="Cash">
+                  {cashPaymentAccounts.map(a => <option key={a.code} value={a.code}>{a.code === '1000' ? '1000 · Cash / Petty Cash' : `${a.code} · ${a.name}`}</option>)}
+                </optgroup>
+                <optgroup label="Bank">
+                  {bankPaymentAccounts.map(a => <option key={a.code} value={a.code}>{a.code} · {a.name}</option>)}
+                </optgroup>
+                {form.paidThrough && !paymentAccountOptions.some(a => String(a.code) === String(form.paidThrough)) && (
+                  <option value={form.paidThrough}>{form.paidThrough} · Selected account</option>
+                )}
+              </select>
+            </div>
+            <div className="exp-field exp-reference-no" role="group" aria-label="Reference No.">
+              <span>Reference No.</span>
+              <div className="exp-reference-input">
+                <input type="text" placeholder="e.g. UTR or cheque no." value={form.invoiceNo} onChange={e => setField('invoiceNo', e.target.value)} />
+                <label className="exp-reference-attach" title="Attach the document the reference number comes from"><IconPaperclip size={15} /><span>Attach</span><input type="file" multiple accept=".pdf,image/*,.doc,.docx,.xls,.xlsx" onChange={handleFileUpload} /></label>
+              </div>
+            </div>
+          {settlement && (
+            <section className="exp-allocation exp-unpaid exp-field-wide">
+              <div className="exp-allocation-head">
+                <h3>Outstanding Bills <small>{form.vendorId ? 'Oldest bill first · the whole amount paid must be allocated' : 'Select a vendor to see their bills'}</small></h3>
+                {openBills.length > 0 && <button type="button" className="exp-allocation-reset" onClick={resetToFifo} title="Spread the amount paid over the oldest bills again"><IconRefresh size={15} />Auto Allocate</button>}
+              </div>
+              {form.vendorId ? (
+                <>
+                  <div className="ivScroll">
+                    <table className="exp-allocation-table">
+                      <thead>
+                        <tr><th>Date</th><th>Bill number</th><th>Bill amount</th><th>Amount due</th><th>Payment</th></tr>
+                      </thead>
+                      <tbody>
+                        {openBills.map(bill => {
+                          const typed = allocationAmounts[bill.id];
+                          const changed = form.allocationManual && form.allocations[bill.id] !== undefined;
+                          return (
+                            <tr key={bill.id} className={changed ? 'is-manual' : ''}>
+                              <td>{shortDate(bill.date)}</td>
+                              <td className="exp-allocation-bill" title={`Bill total ${money(bill.total)} · due ${shortDate(bill.dueDate || bill.date)}`}>{bill.number}</td>
+                              <td>{money(bill.total)}</td>
+                              <td>{money(bill.outstanding)}</td>
+                              <td><input className="receiptAmount" type="number" step="0.01" min="0" inputMode="decimal" aria-label={`Payment for ${bill.number}`} value={typed} onChange={e => handleAllocateChange(bill.id, e.target.value)} />{changed && <em className="exp-allocation-manual">manual</em>}</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                    {!openBills.length && <p>No unpaid purchase bills for this vendor.</p>}
+                  </div>
+                  {pinnedBill && (
+                    <p className="exp-allocation-note">{pinnedBill.number} keeps your {money(pinnedAmount)}. {pinnedAmount >= (fifoAmounts[pinnedBill.id] || 0) ? 'The difference comes off the other bills' : 'The money you freed goes to the other bills'}, oldest first, so the whole amount paid stays allocated.</p>
+                  )}
+                  <p className="exp-allocation-line">Allocated: {money(checkedAllocation.allocated)} · Amount: {money(paidPaise)}</p>
+                  {checkedAllocation.unallocated > 0 && (
+                    <p className="exp-allocation-empty">Allocate the remaining {money(checkedAllocation.unallocated)} across the bills above: the whole amount paid has to be accounted for before this payment is posted.</p>
+                  )}
+                </>
+              ) : (
+                <p className="exp-allocation-empty">Select the vendor being paid to see their unpaid purchase bills.</p>
+              )}
+            </section>
+          )}
+          {!settlement && (
+            <>
+              <label className="exp-field">
+                <span>Tax / GST</span>
+                <select value={form.gstTreatment} onChange={e => setField('gstTreatment', e.target.value)}>{GST_TREATMENTS.map(x => <option key={x}>{x}</option>)}</select>
+              </label>
+              <label className="exp-field">
+                <span>GST Rate</span>
+                <select value={form.tax} onChange={e => setField('tax', e.target.value)}>{TAX_OPTIONS.map(x => <option key={x}>{x}</option>)}</select>
+              </label>
+            </>
+          )}
+            <div className="exp-field-wide exp-notes-attachment">
+              <label className="exp-field exp-notes">
+                <span>Notes</span>
+                <textarea rows={2} value={form.notes} onChange={e => setField('notes', e.target.value)} />
+              </label>
+              <div className="exp-field exp-attachments">
+                <span>Attachment</span>
+                <label className="exp-dropzone"><IconPaperclip size={24} /><span><b>Choose files</b> or drag and drop<small>PDF, JPG, PNG (Max 5 MB)</small></span><input type="file" multiple accept=".pdf,image/*,.doc,.docx,.xls,.xlsx" onChange={handleFileUpload} /></label>
+                {form.files.length > 0 && <div className="exp-file-list">{form.files.map((file, index) => <span key={index}>{file.name}<button type="button" aria-label={`Remove ${file.name}`} onClick={() => removeFile(index)}><IconTrash size={14} /></button></span>)}</div>}
+              </div>
+            </div>
           </div>
         </section>
-        <details className="exp-more-details">
-          <summary><span className="exp-reference-heading"><i><IconInfoCircle size={21} /></i><span><strong>More Details <em>(Optional)</em></strong><small>Add tax details, reference number or notes if needed.</small></span></span><IconChevronDown size={19} /></summary>
-          <div className="exp-more-grid"><label><span>GST Details</span><select value={form.gstTreatment} onChange={e=>setField('gstTreatment',e.target.value)}>{GST_TREATMENTS.map(x=><option key={x}>{x}</option>)}</select></label><label><span>GST Rate</span><select value={form.tax} onChange={e=>setField('tax',e.target.value)}>{TAX_OPTIONS.map(x=><option key={x}>{x}</option>)}</select></label><label><span>Reference No.</span><input placeholder="e.g. INV-2026-889 / UTR #" value={form.invoiceNo} onChange={e=>setField('invoiceNo',e.target.value)} /></label><label className="exp-notes"><span>Notes</span><textarea rows={2} placeholder="Add any notes (optional)" value={form.notes} onChange={e=>setField('notes',e.target.value)} /></label><div className="exp-attachments"><span>Attachments</span><label className="exp-dropzone"><IconPaperclip size={24}/><span><b>Choose files</b> or drag and drop<small>PDF, JPG, PNG (Max 5 MB)</small></span><input type="file" multiple accept=".pdf,image/*,.doc,.docx,.xls,.xlsx" onChange={handleFileUpload}/></label>{form.files.length>0&&<div className="exp-file-list">{form.files.map((file,index)=><span key={index}>{file.name}<button type="button" aria-label={`Remove ${file.name}`} onClick={()=>removeFile(index)}><IconTrash size={14}/></button></span>)}</div>}</div></div>
-        </details>
       </main>
-      <footer className="exp-footer"><button type="button" onClick={onCancel}>Cancel</button><button type="button" onClick={e=>handleSubmit(e,'Draft')}>Save Draft</button><button type="button" className="primary" onClick={e=>handleSubmit(e,'Posted')}>Save Expense</button></footer>
+      <footer className="exp-footer"><button type="button" onClick={onCancel}>Cancel</button><button type="button" disabled={settlement} title={settlement ? 'A purchase bill payment is posted immediately; there is no draft.' : undefined} onClick={e=>handleSubmit(e,'Draft')}>Save Draft</button><button type="button" className="primary" onClick={e=>handleSubmit(e,'Posted')}>{settlement ? 'Post Payment' : 'Save Expense'}</button></footer>
     </section>
   );
 
@@ -738,26 +1067,9 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
               </select>
             </label>
 
-            {/* Conditionally ask Payment Method and Transaction Ref if Bank */}
+            {/* Conditionally ask Transaction Reference if Bank */}
             {(form.paidThroughMode || 'Bank') === 'Bank' && (
               <>
-                <label>
-                  <div className="je-label-header">
-                    <span>Payment Method</span>
-                  </div>
-                  <select
-                    value={form.paymentMethod || 'Bank Transfer'}
-                    onChange={e => setField('paymentMethod', e.target.value)}
-                  >
-                    <option value="Bank Transfer">Bank Transfer / NEFT / RTGS / IMPS</option>
-                    <option value="UPI">UPI / QR Code</option>
-                    <option value="Cheque">Cheque</option>
-                    <option value="Credit Card">Credit / Debit Card</option>
-                    <option value="Online">Online Banking / Gateway</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </label>
-
                 <label>
                   <div className="je-label-header">
                     <span>Transaction Reference / UTR #</span>
