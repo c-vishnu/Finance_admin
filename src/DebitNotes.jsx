@@ -674,11 +674,9 @@ export default function DebitNotes({ onNavigate = () => {} }) {
                 </p>
               )}
             </div>
-          </div>
 
           {/* 3. DEBIT NOTE DETAILS */}
-          <div className="ivCard soFormSection">
-            <div className="soSectionHead">
+          <div className="soSectionHead">
               <h3>Debit note details</h3>
             </div>
             <div className="ivFields soFieldRow">

@@ -283,9 +283,6 @@ export default function PurchaseDocumentFields({form,setForm,vendors,items,confi
      <input value={form.shippingMethod||''} onChange={e=>setForm({...form,shippingMethod:e.target.value})} placeholder="Carrier, freight, or shipping terms"/>
     </Field>
    </div>
-  </div>
-
-  <div className="ivCard">
    <div className="ivHeading">
     <h3>{kind==='order'?'Order items':'Bill items'}<span className="soItemsCount">{form.lines.length} {form.lines.length===1?'item':'items'}</span></h3>
     <details className="soAddItem">
