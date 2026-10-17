@@ -895,8 +895,6 @@ export default function SalesDocumentFields({
             </select>
           </Field>
         </div>
-      </div>{" "}
-      <div className="ivCard">
         <div className="ivHeading">
           <h3>
             {kind === "order" ? "Order items" : "Invoice items"}

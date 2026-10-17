@@ -242,7 +242,7 @@
 
 /* ---------- The Expense register's columns ----------
    The register states ten columns: the date, the expense number, the payee, the expense account,
-   the bill reference, the payment method, the paying account, the amount, the status and the row
+   the bill reference, the paying account, the amount, the status and the row
    actions. The date, the number, the reference and the amount are single tokens, so they never
    wrap; the two account columns take the widest shares because they carry account names. Amount
    Paid is set right and in tabular figures so the rupees line up down the column. */
@@ -253,15 +253,14 @@
 .je-page .je-table-wrap table.expenseRegister th:nth-child(3){width:14%}
 .je-page .je-table-wrap table.expenseRegister th:nth-child(4){width:13%}
 .je-page .je-table-wrap table.expenseRegister th:nth-child(5){width:10%}
-.je-page .je-table-wrap table.expenseRegister th:nth-child(6){width:10%}
-.je-page .je-table-wrap table.expenseRegister th:nth-child(7){width:14%}
-.je-page .je-table-wrap table.expenseRegister th:nth-child(8){width:11%}
-.je-page .je-table-wrap table.expenseRegister th:nth-child(9){width:8%}
+.je-page .je-table-wrap table.expenseRegister th:nth-child(6){width:14%}
+.je-page .je-table-wrap table.expenseRegister th:nth-child(7){width:11%}
+.je-page .je-table-wrap table.expenseRegister th:nth-child(8){width:8%}
 .je-page .je-table-wrap table.expenseRegister td:nth-child(1),
 .je-page .je-table-wrap table.expenseRegister td:nth-child(2),
 .je-page .je-table-wrap table.expenseRegister td:nth-child(5){white-space:nowrap!important}
-.je-page .je-table-wrap table.expenseRegister td:nth-child(8){white-space:nowrap!important;font-variant-numeric:tabular-nums!important;text-align:right!important}
-.je-page .je-table-wrap table.expenseRegister th:nth-child(8){text-align:right!important}
+.je-page .je-table-wrap table.expenseRegister td:nth-child(7){white-space:nowrap!important;font-variant-numeric:tabular-nums!important;text-align:right!important}
+.je-page .je-table-wrap table.expenseRegister th:nth-child(7){text-align:right!important}
 @media(max-width:1100px){
  .je-page.brExpense .je-table-wrap{overflow-x:auto!important;overflow-y:visible!important}
  .je-page .je-table-wrap table.expenseRegister{min-width:940px!important}

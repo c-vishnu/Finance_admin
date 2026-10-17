@@ -39,7 +39,7 @@ const bills=[
  bill('b4','BILL-CANCELLED','2026-09-13','Cancelled',12000,{posted:false})
 ];
 const expenses=[
- expense('e1','EXP-00041','2026-09-05','Posted','Cloudstack Services','Software & subscriptions','5600',1180),
+ expense('e1','EXP-00041','2026-09-05','Posted','Cloudstack Services','Software & subscriptions','5600',1180,{purchaseBillId:'b1'}),
  expense('e2','EXP-00042','2026-09-30','Posted','Kochi Business Park','Rent & lease','5300',8500),
  expense('e3','EXP-00043','2026-09-07','Draft','Metro Cabs','Travel & conveyance','5400',2450)
 ];
@@ -214,11 +214,11 @@ test('the Expense Report states the requested copy, columns and structure',()=>{
  const page=read('ExpenseReport.jsx');
  assert.ok(page.includes('<h2>Expenses'),'the title');
  assert.ok(page.includes('View business expenses by date, account and payee.'),'the subtitle');
- const columns=['Date','Expense No.','Paid To','Payment For','Bill Reference','Payment Method','Paid From','Amount Paid','Status','Actions'];
+ const columns=['Date','Expense No.','Paid To','Payment For','Bill Reference','Paid From','Amount Paid','Status','Actions'];
  assert.deepEqual([...page.matchAll(/<th>(.*?)<\/th>/g)].map(match=>match[1]),columns,'the columns in the requested order');
  assert.ok(page.includes('<td>{dateText(entry.date)}</td>'),'the date is its own cell');
  assert.ok(page.includes("onClick={()=>openDocument(entry)}>{entry.number}</button>"),'the expense number is its own cell');
- assert.ok(page.includes('colSpan={10}'),'the empty state spans every column');
+ assert.ok(page.includes('colSpan={9}'),'the empty state spans every column');
  for(const filter of ['>Date From<','>Date To<','>Expense Account<','>Category<','>Vendor Name<','>Status<','>Payment Account<'])assert.ok(page.includes(filter),'the '+filter+' filter');
  assert.ok(page.includes('View Expense'),'the row action');
  assert.ok(page.includes('Expenses will appear here once they are posted.'),'the empty-state description');
@@ -253,6 +253,25 @@ test('the Expense Report offers no Branch filter when no expense carries a branc
  const withBranch=expenseReport(book(),{expenses:[{...expenses[0],journalId:'j-i7'}]},{branches,organisation:'abc',organisationCode:'ABC01',status:POSTED,party:ALL,branch:ALL});
  assert.deepEqual(withBranch.branchOptions,['Trivandrum'],'a branch read from the posted journal resolves to the organisation\'s own branch name');
  assert.equal(withBranch.rows.length,1,'and the row is stated');
+});
+
+test('the Expense Report Bill Reference states the linked purchase bill vendor invoice',()=>{
+ const report=expenses_();
+ assert.equal(report.rows.find(row=>row.number==='EXP-00041').reference,'VINV/BILL-00001','a settled bill states the vendor invoice number');
+ assert.equal(report.rows.find(row=>row.number==='EXP-00042').reference,'','an unlinked expense states its stored reference');
+ assert.equal(expenses_({search:'vinv/bill-00001'}).rows.length,1,'the search reads the vendor invoice number');
+ assert.equal(expenses_({search:'bill-00001'}).rows.length,1,'the search still reads the linked BILL number');
+ const converted={...bills[0],id:'b5',number:'BILL-00005',vendorInvoice:'',referenceOrder:'PO-00009'};
+ const convertedReport=expenseReport({...book(),purchaseBills:[...bills,converted]},{expenses:[{...expenses[0],purchaseBillId:'b5'}],audit:[]},{branches,organisation:'abc',organisationCode:'ABC01',status:POSTED,party:ALL,branch:ALL});
+ assert.equal(convertedReport.rows[0].reference,'PO-00009','a bill with no vendor invoice states its purchase order number');
+ const storedReport=expenseReport(book(),{expenses:[{...expenses[0],reference:'UTR-778'}],audit:[]},{branches,organisation:'abc',organisationCode:'ABC01',status:POSTED,party:ALL,branch:ALL});
+ assert.equal(storedReport.rows[0].reference,'VINV/BILL-00001','the linked vendor invoice wins over the stored BILL number');
+ const metro={...bills[2],id:'b8',number:'BILL-00008',vendorInvoice:'VINV/METRO-2',vendorName:'Metro Cabs',date:'2026-09-07'};
+ const partReport=expenseReport({...book(),purchaseBills:[...bills,metro]},{expenses:[{...expenses[2],purchaseBillId:undefined,reference:undefined}],audit:[]},{branches,organisation:'abc',organisationCode:'ABC01',status:ALL,party:ALL,branch:ALL});
+ assert.equal(partReport.rows[0].reference,'VINV/METRO-2','a row without a purchaseBillId states the vendor bill its payee names');
+ const older={...metro,id:'b7',number:'BILL-00007',vendorInvoice:'VINV/METRO-1',date:'2026-09-01'};
+ const nearest=expenseReport({...book(),purchaseBills:[...bills,older,metro]},{expenses:[{...expenses[2],purchaseBillId:undefined,reference:undefined}],audit:[]},{branches,organisation:'abc',organisationCode:'ABC01',status:ALL,party:ALL,branch:ALL});
+ assert.equal(nearest.rows[0].reference,'VINV/METRO-2','several vendor bills are resolved by the date nearest the expense');
 });
 
 /* ---------- exports ---------- */

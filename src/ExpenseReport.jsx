@@ -195,7 +195,6 @@ export default function ExpenseReport({onNavigate=()=>{}}){
        <th>Paid To</th>
        <th>Payment For</th>
        <th>Bill Reference</th>
-       <th>Payment Method</th>
        <th>Paid From</th>
        <th>Amount Paid</th>
        <th>Status</th>
@@ -209,13 +208,12 @@ export default function ExpenseReport({onNavigate=()=>{}}){
        <td>{entry.party||DASH}</td>
        <td>{entry.expenseAccountName||entry.expenseAccount||DASH}</td>
        <td>{entry.reference||DASH}</td>
-       <td>{entry.method||DASH}</td>
        <td>{entry.paymentAccountName||entry.paymentAccount||DASH}</td>
        <td><b>{money(entry.amount)}</b></td>
        <td><StatusPill status={entry.status} tone={STATUS_TONES[entry.status]||'neutral'}/></td>
        <td><div className="je-row-actions"><OutstandingActions label={'Actions for expense '+entry.number} items={rowActions(entry)}/></div></td>
       </tr>)}
-      {!report.rows.length&&<tr className="emptyStateRow"><td colSpan={10} className="emptyStateCell"><EmptyState variant="budget" title={report.hasRows?'No transactions match your filters.':'No expense transactions found.'} description={report.hasRows?'Try a wider date range, or clear the filters to see every expense in this scope.':'Expenses will appear here once they are posted.'} actionLabel={report.hasRows?'Clear filters':undefined} onAction={report.hasRows?clear:undefined}/></td></tr>}
+      {!report.rows.length&&<tr className="emptyStateRow"><td colSpan={9} className="emptyStateCell"><EmptyState variant="budget" title={report.hasRows?'No transactions match your filters.':'No expense transactions found.'} description={report.hasRows?'Try a wider date range, or clear the filters to see every expense in this scope.':'Expenses will appear here once they are posted.'} actionLabel={report.hasRows?'Clear filters':undefined} onAction={report.hasRows?clear:undefined}/></td></tr>}
      </tbody>
     </table>
    </div>

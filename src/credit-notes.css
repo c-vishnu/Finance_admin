@@ -83,6 +83,9 @@
 @media(max-width:560px){.cnInvoiceDrawer{width:100%}}
 /* The create head carries the document status on the right, exactly as the receipt head does. */
 .creditNotes .soCreateHead .soHeadStatus{flex:none}
+/* Customer and Credit note details share one card; the second heading opens the next job with one
+   hairline instead of a second card border. */
+.creditNotes .soFormSection>.soSectionHead:not(:first-child){margin-top:16px;padding-top:16px;border-top:1px solid #e8edf4}
 /* Two financial facts sit side by side on the chosen customer: what is still owed, and how much
    credit is already available. The shared strip is a single label-above-value stack, so the wrapper
    here turns it into two of those columns without adding a second row of height. */

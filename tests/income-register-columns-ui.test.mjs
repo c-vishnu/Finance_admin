@@ -90,17 +90,19 @@ test('the register states the three lifecycle words and keeps a cancelled income
   assert.equal(report.valid, true, 'and the register\'s own consistency checks pass, which is what lets the footer state them');
 });
 
-test('Received In states Cash or Bank, and no destination at all while the money is still owed', () => {
+test('Received In states Cash or Bank, and the receivable ledger while the money is still owed', () => {
   const rows = incomeReport(book(), operations(), context()).rows;
   assert.equal(rows[0].receivedIn, 'Bank', 'the money landed in the bank, the second of the two answers the operator allows here');
-  assert.equal(rows[1].receivedIn, DASH, 'an income still owed states nothing, because where it will land is not a fact yet');
+  assert.equal(rows[1].receivedIn, 'Accounts Receivable', 'an income still owed states the ledger it is owed into, so the column is never left with a dash');
   assert.equal(rows[0].received, true, 'and the receipt itself is a fact of the row, which is what the Receipt filter reads');
+  const named = incomeReport({...book(), accounts: [...book().accounts, {code: '1100', name: 'Trade Receivables'}]}, operations(), context()).rows;
+  assert.equal(named[1].receivedIn, 'Trade Receivables', 'the book own receivable account name is stated when it resolves');
   const cash = incomeReport(book(), {incomes: [{id: 'c', number: 'INC-1', date: '2026-10-02', category: 'Other', receivedFrom: 'Walk-in customer', amount: 50000, received: true, paidThrough: '1000', method: 'Cash', status: 'Posted'}]}, context()).rows[0];
   assert.equal(cash.receivedIn, 'Cash', 'cash is the other answer, read off the account the money landed in');
   const elsewhere = incomeReport(book(), {incomes: [{id: 'o', number: 'INC-2', date: '2026-10-03', category: 'Other', receivedFrom: 'Someone', amount: 50000, received: true, paidThrough: '9999', status: 'Posted'}]}, context()).rows[0];
   assert.equal(elsewhere.receivedIn, 'Bank', 'and no third answer exists: another account is never printed as an account name');
   assert.ok(page.includes('<td>{entry.receivedIn}</td>'), 'the page prints the value the report stated rather than deriving it');
-  assert.ok(!page.includes("'Accounts Receivable (1100)'"), 'the receivable the money is owed into left this column');
+  assert.ok(!page.includes("'Accounts Receivable (1100)'"), 'the page still derives nothing: the report states the receivable ledger name');
 });
 
 test('the Receipt control narrows on the receipt without inventing a fourth status', () => {

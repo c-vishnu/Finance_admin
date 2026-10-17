@@ -1,3 +1,42 @@
+## New credit note merges Customer and Credit note details into one card - 2026-10-17
+
+**Last verified:** 2026-10-17
+
+- What changed: `src/CreditNotes.jsx` removed the `div.ivCard.soFormSection` boundary between the Customer block and the Credit note details block, so one card now holds the Customer heading, customer search and facts, the Credit note details heading, all seven detail fields and the Organisation/Branch row. `src/credit-notes.css` adds `.creditNotes .soFormSection>.soSectionHead:not(:first-child){margin-top:16px;padding-top:16px;border-top:1px solid #e8edf4}` as the divider. No field, handler, validation, posting path, route or storage key changed.
+- Validation actually executed: a direct source assertion confirmed the old boundary is gone, the merged heading follows one closing `div`, and the divider rule exists; the edited JSX parsed with `@babel/parser`; `npm run docs:check` passed. `node tests/credit-note-ui.test.mjs` cannot execute in this sandbox because the file imports esbuild and fails at `spawn EPERM` before its assertions run. No production build is claimed.
+- Live check at http://localhost:5173/ on Sales - Credit Notes - New credit note: the first `.creditNotes .ivCard.soFormSection` contained two direct headings, `Customer *` and `Credit note details`, with the customer row and the seven-field details grid inside the same card; the second heading's computed `border-top-width` was `0.8px`.
+- Files: `src/CreditNotes.jsx`, `src/credit-notes.css` and the knowledge-transfer documents.
+
+## Create Sales Order merges customer fields and Order items into one card - 2026-10-17
+
+**Last verified:** 2026-10-17
+
+- What changed: `src/SalesDocumentFields.jsx` removed the closing `div.ivCard` after the document fields and the opening `div.ivCard` before the Order items heading. The customer search, the read-only customer strip and the Sales order ID / date / reference / payment-terms row now share one `div.ivCard.soFormSection` with the Order items heading, the Add item menu and the line table. `src/sales-orders.css` adds `.soCreatePage .soFormSection>.ivHeading{margin-top:16px;padding-top:16px;border-top:1px solid #e8edf4}` as the visual divider. No field, handler, table column, calculation, route or storage key changed; the Billing summary is still the next card.
+- Validation actually executed: `npm run docs:check` passed (15 required files, valid manifest, metadata and local links). The edited JSX parsed with `@babel/parser` (`sourceType:'module'`, `plugins:['jsx']`). `node --test tests/sales-order-ui.test.mjs` cannot start in this sandbox because Node's test runner fails at `spawn EPERM`; running the file directly with `node tests/sales-order-ui.test.mjs` completes 56 tests with 28 passing and 28 failing. Those failures are the stale Sales Orders layout assertions already recorded in this document (old Customer / Order details card markup and the 16px card padding); no failing assertion names the merged card. No production build is claimed here.
+- Live check at http://localhost:5173/ on Sales - Sales Orders - New sales order: `.soCreatePage .ivCard` count was 2 (the form card plus Billing summary), the first card's direct `.ivHeading` read `Order items 1 item`, its `div.ivScroll > table` was inside that card, and the heading's computed `border-top-width` was `0.8px`. The customer search and all four document fields stayed visible in the same card above the divider.
+- Files: `src/SalesDocumentFields.jsx`, `src/sales-orders.css` and the knowledge-transfer documents.
+
+## Income register fills Received In on every row - 2026-10-17
+
+**Last verified:** 2026-10-17
+
+- What changed: `incomeReceivedIn(income,isReceived,book)` in `src/business-reports.js` no longer returns the dash while an income's money is still owed. It states the record's `accountReceivable` ledger name (`1100` by default, the book's own account name when it resolves, `Accounts Receivable` otherwise), so the register and `incomeExportSheet` fill the Received In cell on every row. Money that arrived still states Cash or Bank.
+- Tests updated: `tests/income-register-columns-ui.test.mjs` now expects `Accounts Receivable` for an awaiting income, and `Trade Receivables` when the book supplies that name for account `1100`.
+- Validation actually executed: `node tests/income-register-columns-ui.test.mjs` - 15 / 15 / 0. `npm run build` remains blocked by `spawn EPERM` in this sandbox.
+- Live check: the dev app at http://localhost:5173/ rendered Income (5) with `Accounts Receivable` on INC-00005 and INC-00003 and `Bank` on INC-00004, INC-00002 and INC-00001; no Received In cell was a dash.
+- Files: `src/business-reports.js`, `tests/income-register-columns-ui.test.mjs` and the knowledge-transfer documents.
+
+## Expense register states the linked purchase bill INV number - 2026-10-17
+
+**Last verified:** 2026-10-17
+
+- What changed: the Expenses register no longer prints a Payment Method column. Its nine columns are Date, Expense No., Paid To, Payment For, Bill Reference, Paid From, Amount Paid, Status and Actions; the empty-state row spans nine cells and the column widths were shifted for the removed column. `src/business-reports.js` now resolves Bill Reference for an expense linked to a purchase bill from `linkedBill.vendorInvoice`, then `linkedBill.referenceOrder` (the purchase order a converted bill came from), then `linkedBill.number`. A row with no `purchaseBillId` and no stored reference falls back to the vendor bill its payee names (excluding cancelled/voided bills and bills outside the working organisation), resolving several bills by the date nearest the expense; only then does it state the expense's stored `reference` / `invoiceNo` / `transactionRef` / `billNumber`. The search haystack reads the displayed reference, the stored reference and the linked BILL number. `src/CreateExpensePage.jsx` writes that same vendor invoice / order / bill number into the register row's `reference` on the payables path.
+- Tests updated: `tests/business-reports.test.mjs` pins the nine-column header and empty-state span, and adds a test that a linked vendor invoice wins over a stored BILL number, a converted bill falls back to `referenceOrder`, an unlinked expense keeps its stored reference, and search finds both the vendor invoice and the BILL number.
+- Validation actually executed: `node tests/business-reports.test.mjs` - 18 tests / 12 passing / 6 failing, where the six failures are the pre-existing sidebar, Sales Report and Purchase Report copy/structure assertions unrelated to this change; `node tests/expense-create-layout-ui.test.mjs` - 12 / 12 / 0; `node tests/expense-create-allocation-ui.test.mjs` - 6 / 6 / 0; `node tests/expense-detail-drawer-ui.test.mjs` - 7 / 7 / 0. Files were run directly because `node --test` cannot spawn in this sandbox.
+- Build not verified here: `npm run build` fails before compiling with `Error: spawn EPERM` when Vite starts esbuild, so no production bundle is claimed for this pass.
+- Live check: the dev app at http://localhost:5173/ rendered the Expenses register with the nine columns above and no Payment Method column. The demo rows now state the related vendor bill INV: EXP-00050 `VINV/2026/186`, EXP-00047 `VINV/2026/188`, EXP-00041 `VINV/2026/181` and EXP-00045 `VINV/2026/187`; the three payees with no purchase bill (HDFC Bank, Lakeview Hotels and Kochi Business Park) correctly state `-`. A payment recorded from Create Expense's Existing Purchase Bills side states the linked bill's `VINV/...` (or its purchase order number for a converted bill).
+- Files: `src/ExpenseReport.jsx`, `src/business-reports.css`, `src/business-reports.js`, `src/CreateExpensePage.jsx`, `tests/business-reports.test.mjs` and the knowledge-transfer documents.
+
 ## Create Expense is one card in the operator's order - 2026-10-17
 
 **Last verified:** 2026-10-17

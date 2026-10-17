@@ -690,7 +690,7 @@ export default function CreateExpensePage({ onCancel, onSaved }) {
               paymentMethod,
               amount: rupeeString(payment.amount),
               tax: '',
-              reference: bill.number,
+              reference: bill.vendorInvoice?.trim() || bill.referenceOrder || bill.number,
               vendor: bill.vendorName || form.vendor,
               vendorId: bill.vendorId,
               vendorGstin: form.vendorGstin,

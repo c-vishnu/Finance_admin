@@ -253,6 +253,7 @@ body:has(.soCreatePage) .app>main{height:auto;max-height:none;overflow:visible;s
    src/invoice-workspace.css loads after this sheet and styles bare elements.
    --------------------------------------------------------------------------- */
 .soCreatePage .soFormSection{padding:14px 16px}
+.soCreatePage .soFormSection>.ivHeading{margin-top:16px;padding-top:16px;border-top:1px solid #e8edf4}
 .soCreatePage .soSectionHead{display:flex;flex-direction:column;gap:3px;margin-bottom:10px}
 .soCreatePage .soSectionHead h3{margin:0;color:#172033;font-size:14px;font-weight:650}
 .soCreatePage .soSectionHead p{margin:0;color:#667085;font-size:12px;line-height:1.45}

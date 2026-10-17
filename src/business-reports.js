@@ -322,7 +322,29 @@ export function expenseReport(book={},operations={},filters={}){
   const amount=minor(expense.amount);
   const expenseAccount=text(expense.account),paymentAccount=text(expense.paidThrough);
   const tax=text(expense.tax),hasTax=Boolean(tax)&&!/^no\s*tax$/i.test(tax);
-  const category=text(expense.category),payee=text(expense.payee),reference=text(expense.reference),description=text(expense.description);
+  const bills=list(book,'purchaseBills'),category=text(expense.category),payee=text(expense.payee);
+  const storedReference=text(expense.reference||expense.invoiceNo||expense.transactionRef||expense.billNumber);
+  let linkedBill=expense.purchaseBillId?bills.find(bill=>text(bill.id)===text(expense.purchaseBillId)):null;
+  /* A register row written before the payables link existed - the demo rows among them - carries no
+     purchaseBillId. When its payee names a vendor in this book and it has no reference of its own,
+     state that vendor's nearest bill, the one the payment most plausibly relates to. An explicit
+     purchaseBillId always wins, and a payee with several bills is resolved by date, never invented. */
+  if(!linkedBill&&!storedReference){
+   const vendorId=text(expense.vendorId),lowerPayee=payee.toLowerCase(),scopeOrganisation=text(organisation);
+   const candidates=bills.filter(bill=>{
+    if(/^(cancelled|voided)$/i.test(text(bill.status)))return false;
+    if(scopeOrganisation&&text(bill.organizationId)&&text(bill.organizationId)!==scopeOrganisation)return false;
+    return vendorId?text(bill.vendorId)===vendorId:Boolean(lowerPayee)&&text(bill.vendorName).toLowerCase()===lowerPayee;
+   });
+   const day=Date.parse(text(expense.date)),distance=bill=>{const at=Date.parse(text(bill.date));return Number.isFinite(day)&&Number.isFinite(at)?Math.abs(at-day):Number.POSITIVE_INFINITY};
+   linkedBill=candidates.sort((a,b)=>distance(a)-distance(b)||text(b.date).localeCompare(text(a.date)))[0]||null;
+  }
+  /* An expense that settles a purchase bill states the vendor's own invoice number - the number
+     printed on the bill - so the register's Bill Reference column answers the question the
+     operator actually has. A bill converted from a purchase order before the vendor invoice was
+     keyed in falls back to that order's number, and only an unlinked bill states its BILL number. */
+  const billReference=text(linkedBill?.vendorInvoice)||text(linkedBill?.referenceOrder)||text(linkedBill?.number);
+  const reference=billReference||storedReference,description=text(expense.description);
    const customerName=text(expense.customerName||expense.customer||expense.customer_name);
   const branch=text(expense.branch||expense.branchName||index.get(expense.journalId));
   rows.push({
@@ -338,7 +360,7 @@ export function expenseReport(book={},operations={},filters={}){
    status,storedStatus:text(expense.status),posted:expense.status==='Posted',
    branch,branchName:branchName(branch,branches),
    reference,description,
-   haystack:[expense.number,payee,category,expenseAccount,accountName(book,expenseAccount),reference,description].filter(Boolean).join(' ').toLowerCase(),
+   haystack:[expense.number,payee,category,expenseAccount,accountName(book,expenseAccount),reference,storedReference,text(linkedBill?.number),description].filter(Boolean).join(' ').toLowerCase(),
    handshake:'wayvida-open-expense',page:'Expense Claims'
   });
  }
@@ -355,12 +377,13 @@ export function expenseReport(book={},operations={},filters={}){
    status, so nothing printed as a status is a state the books do not have.
 
    THE RECEIVED IN COLUMN AND THE RECEIPT FILTER. The operator asked for that column to state the
-   destination of the money and nothing else: Cash or Bank, the two answers the Record Income
-   surface itself offers, read off the account the money landed in through `incomeReceivedIn` on the
-   row. An income whose money has NOT arrived states the dash, because where it will land is not a
-   fact yet - the awaiting truth is carried by the Receipt filter, whose two words live here with
-   the rule and not in the page, and the drawer still names the ledger the money is owed into. The
-   table and the export print that one value rather than deriving it a second time. */
+   destination of the money: Cash or Bank, the two answers the Record Income surface itself offers,
+   read off the account the money landed in through `incomeReceivedIn` on the row. An income whose
+   money has NOT arrived states the receivable ledger the money is owed into - the record own
+   `accountReceivable` name, `Accounts Receivable` when the book cannot resolve it - so no row is
+   left with a dash. The awaiting truth is still carried by the Receipt filter, whose two words live
+   here with the rule and not in the page. The table and the export print that one value rather than
+   deriving it a second time. */
 export const INCOME_STATUSES=['Draft','Recorded','Cancelled'];
 
 /* The stored status reduced to those three words. Anything that is neither a draft nor a
@@ -372,12 +395,16 @@ function incomeLifecycle(status){
  return /^draft$/i.test(raw)?'Draft':'Recorded';
 }
 
-/* The one word the Received In column prints. Only the two answers the Record Income surface
-   offers are ever stated - the money landed in cash or in a bank - so an account the register
-   cannot read as either is stated as Bank rather than as an account name the column was never
-   asked for. A record that has not received its money yet has no destination to state at all. */
-function incomeReceivedIn(income,isReceived){
- if(!isReceived)return DASH;
+/* The one value the Received In column prints. Money that arrived states the two answers the Record
+   Income surface offers - Cash or Bank, with an account the register cannot read as either stated as
+   Bank rather than as an account name the column was never asked for. Money that has not arrived
+   states the receivable ledger it is owed into, so every row is filled and the column never prints a
+   dash. */
+function incomeReceivedIn(income,isReceived,book){
+ if(!isReceived){
+  const code=text(income.accountReceivable)||'1100',name=text(accountName(book,code));
+  return name&&name!==code?name:'Accounts Receivable';
+ }
  const account=text(income.paidThrough||income.paymentAccount),method=text(income.method||income.paymentType);
  return /^(1000|cash)$/i.test(account)||/^cash$/i.test(method)?'Cash':'Bank';
 }
@@ -431,7 +458,7 @@ export function incomeReport(book={},operations={},filters={}){
    incomeAccount,incomeAccountName:accountName(book,incomeAccount),
    expenseAccount:incomeAccount,expenseAccountName:accountName(book,incomeAccount),
    paymentAccount,paymentAccountName:accountName(book,paymentAccount),
-   receivedIn:incomeReceivedIn(income,isReceived),
+    receivedIn:incomeReceivedIn(income,isReceived,book),
    method:text(income.method),category,
    received:isReceived,
    expectedDate:text(income.expectedDate),
