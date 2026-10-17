@@ -92,6 +92,16 @@ html,body,#root{max-width:100%;min-height:100%}
   border-right:0!important;
   box-shadow:-18px 0 48px #10182826!important;
 }
+/* The base layout's bare `aside` rule in styles.css pins every aside to the left
+   edge with position:fixed, and portaled drawers are asides too - so the shell's
+   flex-end never placed them. Return an operation drawer to normal flow inside
+   its overlay; the specificity here outranks that element selector. */
+.opsOverlay>.opsDrawer{
+  position:relative;
+  inset:auto;
+  left:auto;
+  right:auto;
+}
 :where(.gl-drawer,.drawer){
   left:auto!important;
   right:0!important;
